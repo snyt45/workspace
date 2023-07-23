@@ -26,7 +26,7 @@ Windows ホスト用の設定とツール郡のインストールを行う。
 
 ```
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-setup.ps1
+.\setup.ps1
 ```
 
 ## Windows 設定, WSL2 の構築
