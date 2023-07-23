@@ -4,7 +4,7 @@ function info($msg) {
 
 info "Start backup_vm.ps1"
 
-$external_storage = "D:\backup\wsl"
+$external_storage = "C:\backup\wsl"
 $distr = "Ubuntu-22.04"
 $today = Get-Date -UFormat "%Y-%m-%d"
 $out_basename = "${distr}_${today}"

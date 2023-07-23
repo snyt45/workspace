@@ -9,7 +9,7 @@ function err($msg) {
 info "Creating a new VM from backup VM file."
 
 $wsl_dir = "c:\Users\snyt45\wsl"
-$external_storage = "D:\backup\wsl"
+$external_storage = "C:\backup\wsl"
 $tmp_dir = "c:\Users\snyt45\tmp"
 
 ls "$external_storage"
