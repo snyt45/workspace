@@ -3,21 +3,21 @@
 ; IME_SET(0): IME OFF、IME_SET(1): IME ON
 ; ref: https://namayakegadget.com/765/
 ; ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
-IME_SET(SetSts, WinTitle="A")    {
-  ControlGet,hwnd,HWND,,,%WinTitle%
-  if (WinActive(WinTitle)) {
+IME_SET(SetSts, WinTitle:="A")
+{
+  hwnd := WinGetID(WinTitle)
+  if WinActive(WinTitle) {
     ptrSize := !A_PtrSize ? 4 : A_PtrSize
-      VarSetCapacity(stGTI, cbSize:=4+4+(PtrSize*6)+16, 0)
-      NumPut(cbSize, stGTI,  0, "UInt")   ; DWORD   cbSize;
-    hwnd := DllCall("GetGUIThreadInfo", Uint,0, Uint,&stGTI)
-                ? NumGet(stGTI,8+PtrSize,"UInt") : hwnd
+    stGTI := Buffer(cbSize:=4+4+(ptrSize*6)+16, 0)
+    NumPut("UInt", cbSize, stGTI, 0)   ; DWORD   cbSize;
+    ;hwnd := DllCall("GetGUIThreadInfo", "Uint", 0, "Uint", stGTI)
+    ;            ? NumGet(stGTI, 8+ptrSize, "UInt") : hwnd
   }
-
     return DllCall("SendMessage"
-          , UInt, DllCall("imm32\ImmGetDefaultIMEWnd", Uint,hwnd)
-          , UInt, 0x0283  ;Message : WM_IME_CONTROL
-          ,  Int, 0x006   ;wParam  : IMC_SETOPENSTATUS
-          ,  Int, SetSts) ;lParam  : 0 or 1
+          , "UInt", DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", hwnd)
+          , "UInt", 0x0283  ;Message : WM_IME_CONTROL
+          ,  "Int", 0x006   ;wParam  : IMC_SETOPENSTATUS
+          ,  "Int", SetSts) ;lParam  : 0 or 1
 }
 
 
@@ -41,20 +41,20 @@ vk1D & l::Right
 ; word jump
 ; ----------------------------------
 vk1D & u::
+{
   if GetKeyState("Shift") {
-    Send ^+{Left}
-    return
+    Send "^+{Left}"
   }
-  Send ^{Left}
-  return
+  Send "^{Left}"
+}
 
 vk1D & i::
+{
   if GetKeyState("Shift") {
-    Send ^+{Right}
-    return
+    Send "^+{Right}"
   }
-  Send ^{Right}
-  return
+  Send "^{Right}"
+}
 
 ; ----------------------------------
 ; コロン(vkBA)とセミコロン(vkBB)をEnter
@@ -74,11 +74,11 @@ vk1D & m::Del
 ; カーソル位置から行末まで削除
 ; ----------------------------------
 vk1D & o::
-  send {ShiftDown}{End}{ShiftUp}
-  send ^c
-  send {Del}
-  return
-
+{
+  Send "{ShiftDown}{End}{ShiftUp}"
+  Send "^c"
+  Send "{Del}"
+}
 
 ; ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 ; 変換キーをベースとしたショートカットキー割当

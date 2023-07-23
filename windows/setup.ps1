@@ -36,7 +36,7 @@ echo "Windowsの設定が完了しました。"
 echo "ソフトウェアのインストールを開始します..."
 
 winget install Google.Chrome
-winget install Lexikos.AutoHotkey
+winget install AutoHotkey.AutoHotkey
 winget install Microsoft.PowerToys
 winget install Docker.DockerDesktop
 winget install Microsoft.VisualStudioCode
