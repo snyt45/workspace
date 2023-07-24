@@ -59,14 +59,16 @@ git config --global user.email "snyt45@gmail.com"
 git config --global core.editor vim
 success "Git Setting Done."
 
+title "Shared Setting"
 # 作業データ共有用のディレクトリ
 mkdir -p ~/work/
 # 作業用コンテナで作業時のキャッシュを残すためのディレクトリ
 mkdir -p ~/.shared_cache/
 # Git 認証用の SSH 鍵を置くディレクトリ
 mkdir -p ~/.ssh/
-
-# TODO: .ssh配下にSSH鍵とconfigファイルをコピーしてくる、SSH鍵は適切なパーミッションを設定する
+ln -snfv ~/.dotfiles/wsl2/ssh/config ~/
+info "ssh鍵はコピーして、chmod 600で適切なパーミッションを設定してください"
+success "Shared Setting Done."
 
 title "Clipboard"
 [ -p ~/clip ] && echo already exists the pipe for clip || mkfifo ~/clip
