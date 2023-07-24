@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -eu
 
 COLOR_GRAY="\033[1;38;5;243m"
 COLOR_BLUE="\033[1;34m"
@@ -35,20 +35,21 @@ success() {
 title "Tool Install"
 sudo apt-get update -yqq
 sudo apt-get upgrade -yqq
-sudo apt install make \
-                 git \
-                 zoxide \
-                 fzf
+sudo apt install -yqq \
+  make \
+  git \
+  zoxide \
+  fzf
 success "Tool Install Done."
 
 title "WSL2 Setting"
-ln -s ~/.dotfiles/wsl2/wsl/wsl.conf ~/
-ln -s ~/.dotfiles/wsl2/wsl/resolv.conf ~/
+ln -snfv ~/.dotfiles/wsl2/wsl/wsl.conf ~/
+ln -snfv ~/.dotfiles/wsl2/wsl/resolv.conf ~/
 success "WSL2 Setting Done."
 
 title "Bash Setting"
-ln -s ~/.dotfiles/wsl2/bash/.bashrc ~/
-ln -s ~/.dotfiles/wsl2/bash/.bashrc_local ~/
+ln -snfv ~/.dotfiles/wsl2/bash/.bashrc ~/
+ln -snfv ~/.dotfiles/wsl2/bash/.bashrc_local ~/
 
 success "Bash Setting Done."
 
@@ -69,7 +70,7 @@ mkdir -p ~/.ssh/
 
 title "Clipboard"
 [ -p ~/clip ] && echo already exists the pipe for clip || mkfifo ~/clip
-ln -s ~/dotfiles/wsl2/dotfiles/script/clip.sh ~/
+ln -snfv ~/dotfiles/wsl2/dotfiles/script/clip.sh ~/
 chmod +x ~/clip.sh
 success "Clipboard Done."
 
