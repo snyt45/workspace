@@ -1,0 +1,10 @@
+# crontabの起動チェック
+if [[ -n `service cron status | grep not` ]];then
+  echo "cron is not running. Type password to run it."
+  sudo service cron start
+fi
+
+# zoxide
+if command -v zoxide &> /dev/null; then eval "$(zoxide init bash)"; fi;
+
+alias g='git'
