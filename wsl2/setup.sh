@@ -11,8 +11,8 @@ COLOR_YELLOW="\033[1;33m"
 COLOR_NONE="\033[0m"
 
 title() {
-  echo "${COLOR_PURPLE}$1${COLOR_NONE}"
-  echo "${COLOR_GRAY}==============================${COLOR_NONE}"
+  echo -e "${COLOR_PURPLE}$1${COLOR_NONE}"
+  echo -e "${COLOR_GRAY}==============================${COLOR_NONE}"
 }
 
 error() {
@@ -25,11 +25,11 @@ warning() {
 }
 
 info() {
-  echo "${COLOR_BLUE}Info: ${COLOR_NONE}$1"
+  echo -e "${COLOR_BLUE}Info: ${COLOR_NONE}$1"
 }
 
 success() {
-  echo "${COLOR_GREEN}$1${COLOR_NONE}"
+  echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
 }
 
 title "Tool Install"
@@ -43,13 +43,13 @@ sudo apt install -yqq \
 success "Tool Install Done."
 
 title "WSL2 Setting"
-ln -snfv ~/.dotfiles/wsl2/wsl/wsl.conf ~/
-ln -snfv ~/.dotfiles/wsl2/wsl/resolv.conf ~/
+ln -snfv ./wsl/wsl.conf ~/
+ln -snfv ./wsl/resolv.conf ~/
 success "WSL2 Setting Done."
 
 title "Bash Setting"
-ln -snfv ~/.dotfiles/wsl2/bash/.bashrc ~/
-ln -snfv ~/.dotfiles/wsl2/bash/.bashrc_local ~/
+ln -snfv ./bash/.bashrc ~/
+ln -snfv ./bash/.bashrc_local ~/
 
 success "Bash Setting Done."
 
@@ -70,12 +70,12 @@ mkdir -p ~/.ssh/
 
 title "Clipboard"
 [ -p ~/clip ] && echo already exists the pipe for clip || mkfifo ~/clip
-ln -snfv ~/dotfiles/wsl2/dotfiles/script/clip.sh ~/
-chmod +x ~/clip.sh
+chmod +x ./script/clip.sh
+ln -snfv ./script/clip.sh ~/
 success "Clipboard Done."
 
 title "Crontab"
-crontab ~/dotfiles/wsl2/dotfiles/cron/cron.conf
+crontab ./cron/cron.conf
 success "Crontab Done."
 
 info "wsl --shutdownでWSL2を再起動してください。"
