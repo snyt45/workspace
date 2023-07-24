@@ -43,13 +43,13 @@ sudo apt install -yqq \
 success "Tool Install Done."
 
 title "WSL2 Setting"
-ln -snfv ./wsl/wsl.conf ~/
-ln -snfv ./wsl/resolv.conf ~/
+ln -snfv ~/.dotfiles/wsl2/wsl/wsl.conf /etc/
+ln -snfv ~/.dotfiles/wsl2/wsl/resolv.conf /etc/
 success "WSL2 Setting Done."
 
 title "Bash Setting"
-ln -snfv ./bash/.bashrc ~/
-ln -snfv ./bash/.bashrc_local ~/
+ln -snfv ~/.dotfiles/wsl2/bash/.bashrc ~/
+ln -snfv ~/.dotfiles/wsl2/bash/.bashrc_local ~/
 
 success "Bash Setting Done."
 
@@ -71,11 +71,11 @@ mkdir -p ~/.ssh/
 title "Clipboard"
 [ -p ~/clip ] && echo already exists the pipe for clip || mkfifo ~/clip
 chmod +x ./script/clip.sh
-ln -snfv ./script/clip.sh ~/
+ln -snfv ~/.dotfiles/wsl2/script/clip.sh ~/
 success "Clipboard Done."
 
 title "Crontab"
-crontab ./cron/cron.conf
+crontab ~/.dotfiles/wsl2/cron/cron.conf
 success "Crontab Done."
 
 info "wsl --shutdownでWSL2を再起動してください。"
