@@ -67,7 +67,7 @@ mkdir -p ~/.shared_cache/
 # Git 認証用の SSH 鍵を置くディレクトリ
 mkdir -p ~/.ssh/
 sudo ln -snfv ~/.dotfiles/wsl2/ssh/config ~/.ssh/
-sudo info "ssh鍵はコピーして適切なパーミッションを設定してください"
+info "ssh鍵はコピーして適切なパーミッションを設定してください"
 success "Shared Setting Done."
 
 title "Clipboard"
