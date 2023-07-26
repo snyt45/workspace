@@ -1,0 +1,110 @@
+" ----------------------------------------------------------------------------
+" VIM SETTINGS
+" ----------------------------------------------------------------------------
+
+set number                   " 画面左端に行番号を表示
+set signcolumn=yes           " 画面左端にサイン列を常に表示
+set laststatus=2             " 画面最下部に常にステータスラインを表示
+set cmdheight=2              " 画面最下部(ステータス行より下)のメッセージ表示欄を2行にする
+set showtabline=2            " タブ毎に常にタブラインを表示
+
+set virtualedit=block        " 矩形選択時に仮想編集を有効化
+set wildmenu wildoptions=pum " コマンドラインでTAB補完時に候補メニューを表示
+set wildignorecase           " コマンドラインでTAB補完時に大文字・小文字を区別しない
+
+set tabstop=2                " タブを2文字分にする
+set expandtab                " タブの代わりに半角スペースを使用
+set shiftwidth=2             " インデントを半角スペース2文字にする
+set smartindent              " 新しい行追加時に自動でインデントを追加
+set foldmethod=indent        " 同じインデントレベルのコードを折り畳む
+set foldlevel=100            " 初期表示時に勝手に折り畳まれないように折り畳みレベルを深めに設定
+
+set hlsearch                 " 文字列検索のハイライト
+set ignorecase               " 文字列検索で大文字・小文字を区別しない
+set smartcase                " 文字列検索で大文字を含んでいたらignorecaseを上書きし、大文字・小文字を区別する
+set incsearch                " インクリメンタルサーチ
+
+set noswapfile               " スワップファイル(.swp)を生成しない
+set nobackup                 " バックアップファイル(~)を生成しない
+set noundofile               " undoファイル(.un~)を生成しない
+set encoding=utf-8           " Vim内部で使われる文字エンコーディングにutf-8にする
+set updatetime=100           " 更新時間を100msに設定
+set mouse=a                  " マウス操作を有効にする
+set helplang=ja,en
+
+" Vimのカーソル表示
+" ref: https://qiita.com/Linda_pp/items/9e0c94eb82b18071db34
+if has('vim_starting')
+    let &t_SI .= "\e[6 q" " 挿入モード時に非点滅の縦棒タイプのカーソル
+    let &t_EI .= "\e[2 q" " ノーマルモード時に非点滅のブロックタイプのカーソル
+    let &t_SR .= "\e[4 q" " 置換モード時に非点滅の下線タイプのカーソル
+endif
+
+" バッファに入るか、フォーカスを取得するときにリロード
+augroup vimrc_vim_check_file_change
+  autocmd!
+  autocmd FocusGained,BufEnter * :checktime
+augroup END
+
+" ----------------------------------------------------------------------------
+" PLUGINS
+" ----------------------------------------------------------------------------
+
+call plug#begin('~/.shared_cache/.vim/plugged')
+
+Plug 'morhetz/gruvbox'                              " カラースキーマ
+Plug 'vim-jp/vimdoc-ja'                             " Vimのヘルプを日本語化
+Plug 'liuchengxu/vim-which-key'
+Plug 'itchyny/lightline.vim'                        " ステータスライン・タブライン
+  Plug 'shinchu/lightline-gruvbox.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'                       " 画面左端のサイン列にgit diffマーカーを表示
+Plug 'rhysd/accelerated-jk'                         " jkでの移動を高速にする
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Vimでfzfを使えるようにする
+  Plug 'junegunn/fzf.vim'
+  Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
+Plug 'lambdalisue/nerdfont.vim'                     " Windows側にnerdfontをインストールしている必要あり
+Plug 'lambdalisue/fern.vim'                         " ファイルエクスプローラー
+  Plug 'lambdalisue/fern-renderer-nerdfont.vim'     " ファイル横にアイコン表示
+  Plug 'lambdalisue/fern-git-status.vim'            " ファイル横にGitの状態表示
+Plug 'tyru/caw.vim'                                 " コメントアウト
+Plug 'junegunn/vim-easy-align'                      " いい感じにインデントを揃える
+Plug 'andymass/vim-matchup'                         " 対応するテキストのペアの識別を強化
+Plug 'tpope/vim-rails'                              " Rails開発を便利にする
+Plug 'mattn/vim-maketable'                          " カンマ区切りのテキストテーブル表記に変換
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'                       " 各language-serverを1コマンドで導入できる
+Plug 'prabirshrestha/asyncomplete.vim'              " 非同期オートコンプリート
+Plug 'prabirshrestha/asyncomplete-lsp.vim'          " asyncomplete.vimのsource
+Plug 'voldikss/vim-floaterm'                        " フロートウィンドウでターミナルを開く
+Plug 'thinca/vim-qfreplace'                         " quickfixの置換
+Plug 'hrsh7th/vim-vsnip'                            " スニペット
+Plug 'hrsh7th/vim-vsnip-integ'
+Plug 'rust-lang/rust.vim'
+
+call plug#end()
+
+augroup vimrc_vim_plug_install
+  autocmd!
+
+  " 足りないプラグインがあれば :PlugInstall を実行
+  autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+    \| PlugInstall --sync | source $MYVIMRC
+  \| endif
+augroup END
+
+" ----------------------------------------------------------------------------
+" VIM SETTINGS & PLUGIN SETTINGS
+" ----------------------------------------------------------------------------
+
+" .vim/config/*.vim を順次読み込む
+"   prefix:
+"     000 - Vim設定
+"     100 - Vim設定に影響するプラグイン設定
+"     200 - ファイルタイプ関連
+"     300 - プラグイン固有設定
+
+call map(
+  \ sort(split(globpath(&runtimepath, 'config/*.vim'))),
+  \ {-> execute('exec "source" v:val') }
+  \ )

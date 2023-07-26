@@ -1,0 +1,122 @@
+########################################################################################################################
+# .bashrc_local
+#   ログインシェル起動時: ~/.bash_profile -> ~/.bashrc -> ~/bashrc_local
+#   対話的シェル起動時: ~/.bashrc -> ~/bashrc_local
+#   ※bashrcはUbuntuが自動生成したものを変更せずに使いたいため、bashrcにbashrc_localを読む込むようにする
+########################################################################################################################
+
+########################################################################################################################
+# ソフトウェア設定
+########################################################################################################################
+# starshilp
+if command -v starship &> /dev/null; then eval "$(starship init bash)"; fi;
+
+# zoxide
+if command -v zoxide &> /dev/null; then eval "$(zoxide init bash)"; fi;
+export _ZO_DATA_DIR="$HOME/.shared_cache/zoxide/"
+
+# volta
+export VOLTA_HOME="$HOME/.shared_cache/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# rbenv
+if command -v rbenv &> /dev/null; then eval "$(rbenv init -)"; fi;
+export RBENV_VERSION=3.1.2
+
+# fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+HISTCONTROL=erasedups # 重複したコマンドは保存しない
+export FZF_DEFAULT_OPTS='--layout=reverse'
+
+# golang
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+
+# rust
+if [ -f "$HOME/.cargo/env" ]; then . "$HOME/.cargo/env"; fi;
+
+########################################################################################################################
+# カスタムコマンド
+########################################################################################################################
+# history検索(Ctrl + r)
+_history_search() {
+  local l
+  l=$(HISTTIMEFORMAT='' history | sort -k1,1nr | sed -e 's/^[[:space:]]*[0-9]\+[[:space:]]*//' | fzf --query "$READLINE_LINE")
+  READLINE_LINE="$l"
+  READLINE_POINT=${#l}
+}
+bind -x '"\C-r": _history_search'
+
+# fzfで選択したファイルをvimで開く
+_open_file_vim() {
+  files=$(find . -path '*/\.*' -type d -prune -o -type f -print -o -type l -print 2> /dev/null | sed s/^..//) &&
+  selected_files=$(echo "$files" | \
+                   fzf --prompt 'all files> ' \
+                       --preview="bat --color=always --style=numbers --line-range=:500 {}" \
+                       --preview-window 'down:60%') &&
+  vim $selected_files
+}
+
+# fzfで選択したgit管理ファイルをvimで開く
+_open_git_file_vim() {
+  files=$(git ls-files) &&
+  selected_files=$(echo "$files" | \
+                   fzf --prompt 'git files> ' \
+                       --preview="bat --color=always --style=numbers --line-range=:500 {}" \
+                       --preview-window 'down:60%') &&
+  vim $selected_files
+}
+
+# CtrlP検索(Ctrl + p)
+_fzf_omni_files() {
+	if [ -n "$(git status 2> /dev/null)" ]; then
+    _open_git_file_vim
+  else
+    _open_file_vim
+	fi
+}
+bind -x '"\C-p": _fzf_omni_files'
+
+# fzfで全文検索して選択したファイルをvimで開く(Ctrl + f)
+_fzf_ripgrep() {
+  RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+  INITIAL_QUERY="${*:-}"
+  IFS=: read -ra selected < <(
+    FZF_DEFAULT_COMMAND="$RG_PREFIX $(printf %q "$INITIAL_QUERY")" \
+    fzf --ansi \
+        --disabled --query "$INITIAL_QUERY" \
+        --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
+        --delimiter : \
+        --preview 'bat --color=always {1} --highlight-line {2}' \
+        --preview-window 'down:60%'
+  )
+  [ -n "${selected[0]}" ] && vim "${selected[0]}" "+${selected[1]}"
+}
+bind -x '"\C-f": _fzf_ripgrep'
+
+# 選択したブランチに移動(gbc)
+gbc() {
+  local branches branch
+  branches=$(git branch --all | grep -v HEAD) &&
+  branch=$(echo "$branches" |
+           fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+
+# コミットログをfzfで検索して表示(gshow)
+gshow() {
+  git log --graph --color=always \
+      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+      --bind "ctrl-m:execute:
+                (grep -o '[a-f0-9]\{7\}' | head -1 |
+                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                {}
+FZF-EOF"
+}
+
+########################################################################################################################
+# alias
+########################################################################################################################
+alias g="git"
+alias lz="lazygit"
