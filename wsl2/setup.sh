@@ -43,13 +43,13 @@ sudo apt install -yqq \
 success "Tool Install Done."
 
 title "WSL2 Setting"
-ln -snfv ~/.dotfiles/wsl2/wsl/wsl.conf /etc/
-ln -snfv ~/.dotfiles/wsl2/wsl/resolv.conf /etc/
+sudo ln -snfv ~/.dotfiles/wsl2/wsl/wsl.conf /etc/
+sudo ln -snfv ~/.dotfiles/wsl2/wsl/resolv.conf /etc/
 success "WSL2 Setting Done."
 
 title "Bash Setting"
-ln -snfv ~/.dotfiles/wsl2/bash/.bashrc ~/
-ln -snfv ~/.dotfiles/wsl2/bash/.bashrc_local ~/
+sudo ln -snfv ~/.dotfiles/wsl2/bash/.bashrc ~/
+sudo ln -snfv ~/.dotfiles/wsl2/bash/.bashrc_local ~/
 
 success "Bash Setting Done."
 
@@ -66,14 +66,14 @@ mkdir -p ~/work/
 mkdir -p ~/.shared_cache/
 # Git 認証用の SSH 鍵を置くディレクトリ
 mkdir -p ~/.ssh/
-ln -snfv ~/.dotfiles/wsl2/ssh/config ~/.ssh/
-info "ssh鍵はコピーして、chmod 600で適切なパーミッションを設定してください"
+sudo ln -snfv ~/.dotfiles/wsl2/ssh/config ~/.ssh/
+sudo info "ssh鍵はコピーして適切なパーミッションを設定してください"
 success "Shared Setting Done."
 
 title "Clipboard"
 [ -p ~/clip ] && echo already exists the pipe for clip || mkfifo ~/clip
-chmod +x ./script/clip.sh
-ln -snfv ~/.dotfiles/wsl2/script/clip.sh ~/
+sudo chmod +x ./script/clip.sh
+sudo ln -snfv ~/.dotfiles/wsl2/script/clip.sh ~/
 success "Clipboard Done."
 
 title "Crontab"
