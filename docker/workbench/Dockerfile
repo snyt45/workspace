@@ -1,14 +1,18 @@
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ★base-image
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# NOTE: 基本的な設定はここで行う。変更が入ると後続のキャッシュが効かなくなるので極力変更が入らないレイヤーにする
-#       ビルドした成果物を最終イメージのみに含めて最終イメージを軽量化する使い方ではなく単純にレイヤーを分けて変更が少ない箇所と多い箇所を分けることが目的。
 FROM ubuntu:23.04 AS base-image
 
 ARG local_docker_gid
+ARG local_uid=9001
+ARG local_gid=9001
+ARG local_whoami
+ARG password=password
 
 # apt高速化
 RUN sed -i 's@archive.ubuntu.com@ftp.jaist.ac.jp/pub/Linux@g' /etc/apt/sources.list
+# sudo
+RUN apt-get update && apt-get install -y sudo
 # 日本語locale
 RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
     && localedef -i ja_JP -c -f UTF-8 -A /usr/share/locale/locale.alias ja_JP.UTF-8
@@ -26,46 +30,9 @@ RUN apt-get update && \
      "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
      $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get update && \
-    apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 # dockerグループのgidをホストと同じにする
 RUN groupmod -g ${local_docker_gid} docker
-
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# ★workbench
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# NOTE: workbenchに必要なライブラリ等のインストールを行うレイヤー
-FROM base-image AS workbench
-
-ARG local_uid=9001
-ARG local_gid=9001
-ARG local_home
-ARG local_whoami
-ARG password=password
-
-########################################################################################################################
-# apt install
-########################################################################################################################
-# rootユーザーで実施。この後作成するユーザーだとライブラリによってインストールが進行しないことがあったため。
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      sudo \
-      curl \
-      wget \
-      unzip \
-      trash-cli \
-      git \
-      vim \
-      tmux \
-      fzf \
-      ripgrep \
-      bat \
-      zoxide \
-      golang
-
-########################################################################################################################
-# ユーザー作成 & 切替
-########################################################################################################################
 # ubuntu 23.04ではUID・GIDが1000のユーザーが既に存在するためIDを変更しておく
 RUN usermod -u 9999 ubuntu && groupmod -g 9999 ubuntu
 # rootユーザーのパスワードをrootに設定。rootユーザーに切替えたいとき用。
@@ -84,9 +51,31 @@ RUN gpasswd -a ${local_whoami} docker
 USER ${local_whoami}
 WORKDIR /home/${local_whoami}/
 
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ★workbench
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+FROM base-image AS workbench
+
+ARG local_whoami
+
 ########################################################################################################################
 # ソフトウェアインストール
 ########################################################################################################################
+RUN sudo apt-get update && \
+    DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
+      curl \
+      wget \
+      unzip \
+      trash-cli \
+      git \
+      vim \
+      tmux \
+      fzf \
+      ripgrep \
+      bat \
+      zoxide \
+      golang
+
 # starship
 RUN sudo sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes
 # volta

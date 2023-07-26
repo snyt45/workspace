@@ -11,4 +11,7 @@ test -d /home/${LOCAL_WHOAMI}/.shared_cache/bash/ || mkdir -p /home/${LOCAL_WHOA
 test -f /home/${LOCAL_WHOAMI}/.shared_cache/bash/bash_history || touch /home/${LOCAL_WHOAMI}/.shared_cache/bash/bash_history && chmod 600 /home/${LOCAL_WHOAMI}/.shared_cache/bash/bash_history
 ln -s /home/${LOCAL_WHOAMI}/.shared_cache/bash/bash_history /home/${LOCAL_WHOAMI}/.bash_history
 
+# volta
+test -d /home/${LOCAL_WHOAMI}/.shared_cache/.volta/ || mv /home/${LOCAL_WHOAMI}/.volta /home/${LOCAL_WHOAMI}/.shared_cache/.volta/
+
 /bin/bash
