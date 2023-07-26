@@ -133,5 +133,4 @@ RUN mkdir -p /home/${local_whoami}/.config/lazygit && \
     ln -s /etc/dotfiles/.config/lazygit/config.yml /home/${local_whoami}/.config/lazygit
 
 # docker run実行時に毎回実行する
-# docker run時に環境変数やdocker.sockをマウントするため、このタイミングでdocker.sockなどに対して設定している
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
