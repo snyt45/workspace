@@ -27,3 +27,15 @@ chmod 600 <SSH key>
 # 接続確認
 ssh -T git@<user name>
 ```
+
+WSL と cron の設定を反映させるために再起動する。
+
+```
+wsl --shutdown
+
+# cronの設定確認: systemdがPID=1で起動していること
+ps -ae
+
+# resolv.confの設定が反映されていること
+cat /etc/resolv.conf
+```
