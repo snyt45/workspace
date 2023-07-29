@@ -82,6 +82,7 @@ RUN sudo sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes
 RUN ["/bin/bash", "-l", "-c", "curl https://get.volta.sh | bash"]
 RUN ["/bin/bash", "-l", "-c", "volta install node"]
 RUN ["/bin/bash", "-l", "-c", "volta install yarn"]
+RUN ["/bin/bash", "-l", "-c", "volta install npm"]
 # lazygit
 RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*') && \
     curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" && \

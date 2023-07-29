@@ -12,6 +12,12 @@ test -f /home/${LOCAL_WHOAMI}/.shared_cache/bash/bash_history || touch /home/${L
 ln -s /home/${LOCAL_WHOAMI}/.shared_cache/bash/bash_history /home/${LOCAL_WHOAMI}/.bash_history
 
 # volta
-test -d /home/${LOCAL_WHOAMI}/.shared_cache/.volta/ || mv /home/${LOCAL_WHOAMI}/.volta /home/${LOCAL_WHOAMI}/.shared_cache/.volta/
+# voltaの永続化 & シンボリックリンクの向き先変更
+test -d /home/${LOCAL_WHOAMI}/.shared_cache/.volta/ || mv /home/${LOCAL_WHOAMI}/.volta /home/${LOCAL_WHOAMI}/.shared_cache/.volta/ &&\
+                                                       ln -nfs volta-shim /home/${LOCAL_WHOAMI}/.shared_cache/.volta/bin/node &&\
+                                                       ln -nfs volta-shim /home/${LOCAL_WHOAMI}/.shared_cache/.volta/bin/npm &&\
+                                                       ln -nfs volta-shim /home/${LOCAL_WHOAMI}/.shared_cache/.volta/bin/npx &&\
+                                                       ln -nfs volta-shim /home/${LOCAL_WHOAMI}/.shared_cache/.volta/bin/pnpm &&\
+                                                       ln -nfs volta-shim /home/${LOCAL_WHOAMI}/.shared_cache/.volta/bin/yarn
 
 /bin/bash
