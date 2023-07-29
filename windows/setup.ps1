@@ -50,6 +50,7 @@ winget install SlackTechnologies.Slack
 winget install Zoom.Zoom
 winget install TheDocumentFoundation.LibreOffice
 winget install Microsoft.PCManager
+winget install XPDNZJFNCR1B07 # Avast Free Antivirus
 
 echo "ソフトウェアのインストールが完了しました。"
 
