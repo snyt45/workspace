@@ -95,6 +95,13 @@ RUN sudo wget https://github.com/dandavison/delta/releases/download/0.14.0/delta
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 # rustfmt
 RUN ["/bin/bash", "-l", "-c", "rustup component add rustfmt"]
+# 業務系：できれば依存したくない
+# aws cli
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    sudo ./aws/install
+# tfenv
+RUN git clone https://github.com/tfutils/tfenv.git ~/.tfenv
 
 ########################################################################################################################
 # ファイル追加・権限
