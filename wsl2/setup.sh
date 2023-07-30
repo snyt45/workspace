@@ -72,7 +72,7 @@ success "Shared Setting Done."
 
 title "Clipboard"
 [ -p ~/clip ] && echo already exists the pipe for clip || mkfifo ~/clip
-sudo chmod +x ./script/clip.sh
+chmod +x ./script/clip.sh
 sudo ln -snfv ~/.dotfiles/wsl2/script/clip.sh ~/
 success "Clipboard Done."
 
