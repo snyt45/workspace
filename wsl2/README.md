@@ -39,3 +39,25 @@ ps -ae
 # resolv.confの設定が反映されていること
 cat /etc/resolv.conf
 ```
+
+## トラブルシューティング
+
+### クリップボード連携がうまく動かない
+
+```
+# cronの起動確認
+service cron status
+
+# cronを再起動
+sudo service cron restart
+
+# ログ確認
+cat /var/log/cron.log
+
+# clip.shに実行権限が付与されているか確認
+ls -al ~/.dotfiles/wsl2/script
+chmod +x ~/.dotfiles/wsl2/script/clip.sh
+
+# reboot
+wsl --shutdown
+```
