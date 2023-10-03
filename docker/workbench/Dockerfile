@@ -96,6 +96,8 @@ RUN sudo wget https://github.com/dandavison/delta/releases/download/0.14.0/delta
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 # rustfmt
 RUN ["/bin/bash", "-l", "-c", "rustup component add rustfmt"]
+# rust-analyzer
+RUN ["/bin/bash", "-l", "-c", "rustup component add rust-analyzer"]
 # 業務系：できれば依存したくない
 # aws cli
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
