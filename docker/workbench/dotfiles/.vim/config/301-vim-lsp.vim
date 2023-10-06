@@ -8,16 +8,17 @@ nnoremap <buffer> <expr><c-b> lsp#scroll(-4)
 
 let g:lsp_diagnostics_enabled = 1       " Diagnosticsを有効にする
 let g:lsp_diagnostics_echo_cursor = 1   " カーソル下のエラー、警告、情報、ヒントを画面下部のコマンドラインに表示
-let g:lsp_diagnostics_echo_delay = 50
+let g:lsp_diagnostics_echo_delay = 10
 let g:lsp_diagnostics_float_cursor = 1  " カーソル下のエラー、警告、情報、ヒントをフロート表示
 let g:lsp_diagnostics_signs_enabled = 1 " 画面左端のサイン列にエラー、警告、情報、ヒントのアイコンを表示
-let g:lsp_diagnostics_signs_delay = 50
+let g:lsp_diagnostics_virtual_text_enabled = 0 " エラー、警告、情報、ヒントの仮想テキストを非表示
+let g:lsp_diagnostics_signs_delay = 10
 let g:lsp_diagnostics_signs_insert_mode_enabled = 0
-" let g:lsp_diagnostics_signs_error = {'text': '👾'}
-" let g:lsp_diagnostics_signs_warning = {'text': '💣️'}
-" let g:lsp_diagnostics_signs_hint = {'text': '💡'}
-" let g:lsp_diagnostics_signs_information = {'text': 'ℹ️'}
-let g:lsp_diagnostics_highlights_delay = 50
+let g:lsp_diagnostics_signs_error = {'text': '👾'}
+let g:lsp_diagnostics_signs_warning = {'text': '💣️'}
+let g:lsp_diagnostics_signs_hint = {'text': '💡'}
+let g:lsp_diagnostics_signs_information = {'text': 'ℹ️'}
+let g:lsp_diagnostics_highlights_delay = 10
 let g:lsp_diagnostics_highlights_insert_mode_enabled = 0
 let g:lsp_document_code_action_signs_enabled = 0 " 画面左端のサイン列にコードアクションのアイコン非表示
 
