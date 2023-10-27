@@ -74,7 +74,8 @@ RUN sudo apt-get update && \
       ripgrep \
       bat \
       zoxide \
-      golang
+      golang \
+      lldb
 
 # starship
 RUN sudo sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes
