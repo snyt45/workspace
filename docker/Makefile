@@ -1,6 +1,7 @@
 ## const
 INIT_SHELL=/bin/bash
 WORKBENCH=workbench
+PLAYWRIGHT=playwright
 
 ## args
 # makeコマンドの引数
@@ -44,8 +45,11 @@ ifeq ($(TGT), $(WORKBENCH))
 	# DockerでC++デバッグを有効にする
 	# see: https://stackoverflow.com/questions/70108775/gdb-exits-immediately-process-finished-with-exit-code-1-or-lldb-a-packet-ret/70108776#70108776
 	runopt+= --cap-add=SYS_PTRACE --security-opt seccomp=unconfined
-else
-	runopt=-u `id -u`:`id -g`
+endif
+ifeq ($(TGT), $(PLAYWRIGHT))
+	runopt= -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix
+	# マウントオプション work
+	runopt+= --mount type=bind,src=$(HOME)/work,dst=$(HOME)/work
 endif
 ifneq ($(PORT), )
 	portopt= -p 0.0.0.0:$(PORT):$(PORT)
