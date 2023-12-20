@@ -82,6 +82,7 @@ Plug 'hrsh7th/vim-vsnip'                            " スニペット
 Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'rust-lang/rust.vim'
 Plug 'thinca/vim-quickrun'                          " シュッとコードを実行する
+Plug 'github/copilot.vim'
 
 call plug#end()
 
