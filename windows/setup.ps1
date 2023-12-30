@@ -51,6 +51,7 @@ winget install Zoom.Zoom
 winget install TheDocumentFoundation.LibreOffice
 winget install Microsoft.PCManager
 winget install Microsoft.Sysinternals.ZoomIt
+winget install XP9B10L8591572 # Nozbe
 
 echo "ソフトウェアのインストールが完了しました。"
 
