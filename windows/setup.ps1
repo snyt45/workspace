@@ -50,7 +50,6 @@ winget install SlackTechnologies.Slack
 winget install Zoom.Zoom
 winget install TheDocumentFoundation.LibreOffice
 winget install Microsoft.PCManager
-winget install XPDNZJFNCR1B07 # Avast Free Antivirus
 winget install Microsoft.Sysinternals.ZoomIt
 
 echo "ソフトウェアのインストールが完了しました。"
