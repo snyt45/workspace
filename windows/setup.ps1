@@ -1,39 +1,39 @@
 <#
-ps1ãƒ•ã‚¡ã‚¤ãƒ«ãŒå‹•ä½œã—ãªã„å ´åˆã¯æ–‡å­—ã‚³ãƒ¼ãƒ‰ã€æ”¹è¡Œã‚³ãƒ¼ãƒ‰ã‚’è¦‹ç›´ã—ã¦ãã ã•ã„ã€‚
-æ—¥æœ¬èªæ–‡å­—åˆ—ã‚’å«ã‚€å ´åˆã€æ–‡å­—åˆ—ã‚³ãƒ¼ãƒ‰ã¯ã€ŒSJISã€ãƒ»æ”¹è¡Œã‚³ãƒ¼ãƒ‰ã¯ã€ŒCRLFã€ã§ã‚ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚
+ps1ƒtƒ@ƒCƒ‹‚ª“®ì‚µ‚È‚¢ê‡‚Í•¶šƒR[ƒhA‰üsƒR[ƒh‚ğŒ©’¼‚µ‚Ä‚­‚¾‚³‚¢B
+“ú–{Œê•¶š—ñ‚ğŠÜ‚Şê‡A•¶š—ñƒR[ƒh‚ÍuSJISvE‰üsƒR[ƒh‚ÍuCRLFv‚Å‚ ‚é•K—v‚ª‚ ‚è‚Ü‚·B
 ref: https://cyzennt.co.jp/blog/2020/06/27/windows%E3%83%90%E3%83%83%E3%83%81%E3%81%8C%E6%AD%A3%E5%B8%B8%E3%81%AB%E5%8B%95%E4%BD%9C%E3%81%97%E3%81%AA%E3%81%84%E5%A0%B4%E5%90%88%E3%81%AB%E8%A6%8B%E7%9B%B4%E3%81%99%E3%83%9D%E3%82%A4%E3%83%B3/
 #>
 
-# ç®¡ç†è€…æ¨©é™ã§å®Ÿè¡Œã•ã‚Œã¦ã„ãªã‘ã‚Œã°ã€ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’ç®¡ç†è€…æ¨©é™ã§å®Ÿè¡Œã—ç›´ã™
+# ŠÇ—ÒŒ ŒÀ‚ÅÀs‚³‚ê‚Ä‚¢‚È‚¯‚ê‚ÎAƒXƒNƒŠƒvƒg‚ğŠÇ—ÒŒ ŒÀ‚ÅÀs‚µ’¼‚·
 # ref: https://www.cats-insteadof-pc.net/wpdb/index.php/2021/12/31/runas/
 If (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')){
   Start-Process -FilePath PowerShell.exe -ArgumentList "-NoLogo -ExecutionPolicy Bypass -File $($MyInvocation.MyCommand.Path)" -Verb RunAs
   Exit
 }
 
-echo "Windowsã®è¨­å®šã‚’é–‹å§‹ã—ã¾ã™..."
+echo "Windows‚Ìİ’è‚ğŠJn‚µ‚Ü‚·..."
 
-echo "Windowsãƒ•ã‚¡ã‚¤ã‚¢ã‚¦ã‚©ãƒ¼ãƒ«: ON"
+echo "Windowsƒtƒ@ƒCƒAƒEƒH[ƒ‹: ON"
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True
 
-echo "ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ãƒ¼: ãƒ•ã‚¡ã‚¤ãƒ«åæ‹¡å¼µå­: è¡¨ç¤º"
+echo "ƒGƒNƒXƒvƒ[ƒ‰[: ƒtƒ@ƒCƒ‹–¼Šg’£q: •\¦"
 Set-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -name "HideFileExt" -Value 0
 
-echo "ã‚¨ã‚¯ã‚¹ãƒ—ãƒ­ãƒ¼ãƒ©ãƒ¼: éš ã—ãƒ•ã‚¡ã‚¤ãƒ«: è¡¨ç¤º"
+echo "ƒGƒNƒXƒvƒ[ƒ‰[: ‰B‚µƒtƒ@ƒCƒ‹: •\¦"
 Set-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced -name "Hidden" -Value 1
 
 # Pin a folder to quick access
 # https://cloud6.net/so/powershell/284167
 # https://www.vwnet.jp/Windows/w10/2017020201/Pin2QuickAccess.htm
-echo "ã‚¯ã‚¤ãƒƒã‚¯ã‚¢ã‚¯ã‚»ã‚¹: ãƒ›ãƒ¼ãƒ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ãƒ”ãƒ³ç•™ã‚ã—ã¾ã—ãŸ"
+echo "ƒNƒCƒbƒNƒAƒNƒZƒX: ƒz[ƒ€ƒfƒBƒŒƒNƒgƒŠ‚ğƒsƒ“—¯‚ß‚µ‚Ü‚µ‚½"
 $shell = New-Object -ComObject "Shell.Application"
 $folder = $shell.Namespace("C:\Users\$env:UserName")
-$verb = $folder.self.Verbs() | ? {$_.Name -match "^ã‚¯ã‚¤ãƒƒã‚¯ ã‚¢ã‚¯ã‚»ã‚¹ã«.+ãƒ”ãƒ³ç•™ã‚"}
+$verb = $folder.self.Verbs() | ? {$_.Name -match "^ƒNƒCƒbƒN ƒAƒNƒZƒX‚É.+ƒsƒ“—¯‚ß"}
 if ($verb) {$verb.DoIt()}
 
-echo "Windowsã®è¨­å®šãŒå®Œäº†ã—ã¾ã—ãŸã€‚"
+echo "Windows‚Ìİ’è‚ªŠ®—¹‚µ‚Ü‚µ‚½B"
 
-echo "ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã‚’é–‹å§‹ã—ã¾ã™..."
+echo "ƒ\ƒtƒgƒEƒFƒA‚ÌƒCƒ“ƒXƒg[ƒ‹‚ğŠJn‚µ‚Ü‚·..."
 
 winget install Google.Chrome
 winget install AutoHotkey.AutoHotkey
@@ -50,15 +50,15 @@ winget install SlackTechnologies.Slack
 winget install Zoom.Zoom
 winget install XP9B10L8591572 # Nozbe
 
-echo "ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãŒå®Œäº†ã—ã¾ã—ãŸã€‚"
+echo "ƒ\ƒtƒgƒEƒFƒA‚ÌƒCƒ“ƒXƒg[ƒ‹‚ªŠ®—¹‚µ‚Ü‚µ‚½B"
 
-echo "AutoHotkeyã‚’ã‚¹ã‚¿ãƒ¼ãƒˆã‚¢ãƒƒãƒ—ã«ç™»éŒ²ã—ã¾ã—ãŸã€‚"
+echo "AutoHotkey‚ğƒXƒ^[ƒgƒAƒbƒv‚É“o˜^‚µ‚Ü‚µ‚½B"
 New-Item -ItemType SymbolicLink -Path "C:\Users\$env:UserName\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\" -Name "keysetting.lnk" -Value "C:\Users\$env:UserName\.dotfiles\windows\autohotkey\keysetting.ahk"
 
-echo ".wslconfigã‚’ãƒ›ãƒ¼ãƒ ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ã‚³ãƒ”ãƒ¼ã—ã¾ã—ãŸã€‚"
+echo ".wslconfig‚ğƒz[ƒ€ƒfƒBƒŒƒNƒgƒŠ‚ÉƒRƒs[‚µ‚Ü‚µ‚½B"
 Copy-Item C:\Users\$env:UserName\.dotfiles\windows\wsl\.wslconfig C:\Users\$env:UserName\.wslconfig
 
-echo "ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—ã‚’å®Œäº†ã™ã‚‹ã«ã¯PCã‚’å†èµ·å‹•ã—ã¦ãã ã•ã„ã€‚"
+echo "ƒZƒbƒgƒAƒbƒv‚ğŠ®—¹‚·‚é‚É‚ÍPC‚ğÄ‹N“®‚µ‚Ä‚­‚¾‚³‚¢B"
 
-# å‡¦ç†ãŒçµ‚ã‚ã£ã¦ã‚‚ãƒ—ãƒ­ãƒ³ãƒ—ãƒˆã‚’é–‰ã˜ãªã„ã‚ˆã†ã«pauseã™ã‚‹
+# ˆ—‚ªI‚í‚Á‚Ä‚àƒvƒƒ“ƒvƒg‚ğ•Â‚¶‚È‚¢‚æ‚¤‚Épause‚·‚é
 pause
