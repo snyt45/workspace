@@ -48,7 +48,6 @@ winget install DeepL.DeepL
 winget install Dropbox.Dropbox
 winget install SlackTechnologies.Slack
 winget install Zoom.Zoom
-winget install XP9B10L8591572 # Nozbe
 
 echo "ソフトウェアのインストールが完了しました。"
 
