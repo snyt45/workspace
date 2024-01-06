@@ -1,8 +1,6 @@
 let mapleader = "\<Space>"
 let maplocalleader = ","
 
-nmap j <Plug>(accelerated_jk_gj)
-nmap k <Plug>(accelerated_jk_gk)
 nmap <C-j> 5j
 nmap <C-k> 5k
 nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc> " 文字列検索のハイライトオフ

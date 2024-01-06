@@ -59,7 +59,6 @@ Plug 'itchyny/lightline.vim'                        " ステータスライン�
   Plug 'shinchu/lightline-gruvbox.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'                       " 画面左端のサイン列にgit diffマーカーを表示
-Plug 'rhysd/accelerated-jk'                         " jkでの移動を高速にする
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Vimでfzfを使えるようにする
   Plug 'junegunn/fzf.vim'
   Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
