@@ -144,10 +144,6 @@ let g:asyncomplete_popup_delay = 100
 " ------------------------------------------------------------
 " lsp
 " ------------------------------------------------------------
-" hover scroll
-nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-nnoremap <buffer> <expr><c-b> lsp#scroll(-4)
-
 let g:lsp_diagnostics_enabled = 1
 let g:lsp_diagnostics_echo_cursor = 1
 let g:lsp_diagnostics_echo_delay = 10
