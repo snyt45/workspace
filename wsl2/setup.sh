@@ -80,5 +80,13 @@ title "Crontab"
 crontab ~/.dotfiles/wsl2/cron/cron.conf
 success "Crontab Done."
 
+# see: https://tanshio.net/blog/2017/08/use-ctags-for-vim/
+title "Ctags Setting"
+git config --global init.templatedir '~/.git_template'
+mkdir -p ~/.git_template/hooks
+chmod +x ./script/ctags
+sudo ln -snfv ~/.dotfiles/wsl2/script/ctags ~/.git_template/hooks/
+success "Ctags Setting Done."
+
 info "wsl --shutdownでWSL2を再起動してください。"
 success "Setup Done."
