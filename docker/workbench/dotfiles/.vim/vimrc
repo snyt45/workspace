@@ -112,22 +112,6 @@ imap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 imap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 imap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 
-" ----------------------------------------------------------------------------
-" VIM SETTINGS & PLUGIN SETTINGS
-" ----------------------------------------------------------------------------
-
-" .vim/config/*.vim を順次読み込む
-"   prefix:
-"     000 - Vim設定
-"     100 - Vim設定に影響するプラグイン設定
-"     200 - ファイルタイプ関連
-"     300 - プラグイン固有設定
-
-call map(
-  \ sort(split(globpath(&runtimepath, 'config/*.vim'))),
-  \ {-> execute('exec "source" v:val') }
-  \ )
-
 " カレントバッファのファイルパスをクリップボードにコピー
 command! CopyFilePath :echo "copied fullpath: " . expand('%:p') | let @"=expand('%:p') | call system('clip -i', @")
 
