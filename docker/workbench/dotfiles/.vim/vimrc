@@ -43,24 +43,6 @@ set noundofile
 " vim help japanese
 set helplang=ja,en
 
-" ----------------------------------------------------------------------------
-" VIM SETTINGS
-" ----------------------------------------------------------------------------
-
-" set number                   " 画面左端に行番号を表示
-" set signcolumn=yes           " 画面左端にサイン列を常に表示
-" set laststatus=2             " 画面最下部に常にステータスラインを表示
-" set cmdheight=2              " 画面最下部(ステータス行より下)のメッセージ表示欄を2行にする
-" set showtabline=2            " タブ毎に常にタブラインを表示
-" 
-" set tabstop=2                " タブを2文字分にする
-" set expandtab                " タブの代わりに半角スペースを使用
-" set shiftwidth=2             " インデントを半角スペース2文字にする
-" set smartindent              " 新しい行追加時に自動でインデントを追加
-
-" set encoding=utf-8           " Vim内部で使われる文字エンコーディングにutf-8にする
-" set mouse=a                  " マウス操作を有効にする
-
 " Vimのカーソル表示
 " ref: https://qiita.com/Linda_pp/items/9e0c94eb82b18071db34
 if has('vim_starting')
@@ -68,12 +50,6 @@ if has('vim_starting')
     let &t_EI .= "\e[2 q" " ノーマルモード時に非点滅のブロックタイプのカーソル
     let &t_SR .= "\e[4 q" " 置換モード時に非点滅の下線タイプのカーソル
 endif
-
-" バッファに入るか、フォーカスを取得するときにリロード
-" augroup vimrc_vim_check_file_change
-"   autocmd!
-"   autocmd FocusGained,BufEnter * :checktime
-" augroup END
 
 " ----------------------------------------------------------------------------
 " PLUGINS
