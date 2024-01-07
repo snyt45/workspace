@@ -77,7 +77,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'                       " 画面左端のサイン列にgit diffマーカーを表示
 Plug 'tyru/caw.vim'                                 " コメントアウト
 Plug 'tpope/vim-rails'                              " Rails開発を便利にする
-Plug 'mattn/vim-maketable'                          " カンマ区切りのテキストテーブル表記に変換
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'                       " 各language-serverを1コマンドで導入できる
 Plug 'prabirshrestha/asyncomplete.vim'              " 非同期オートコンプリート
@@ -250,17 +249,6 @@ let g:which_key_map.F = {
   \ '4'    : [':set foldlevel=4'  , 'level4'],
   \ '5'    : [':set foldlevel=5'  , 'level5'],
   \ '6'    : [':set foldlevel=6'  , 'level6']
-  \ }
-
-" ----------------------------------------------------------------------------------------------------------------------
-" Prefix Key <Leader>M
-" markdown
-" ----------------------------------------------------------------------------------------------------------------------
-let g:which_key_map.M = {
-  \ 'name' : '+markdown'     ,
-  \ 'm'    : [':MakeTable'   , 'make table'],
-  \ 'M'    : [':MakeTable!'  , 'make table!'],
-  \ 'u'    : [':UnmakeTable' , 'unmake table'],
   \ }
 
 " ----------------------------------------------------------------------------------------------------------------------
