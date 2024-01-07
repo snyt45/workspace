@@ -1,6 +1,9 @@
 " ------------------------------------------------------------
 " vim settings
 " ------------------------------------------------------------
+" leaders
+let mapleader = ","
+
 " filetype and intent
 filetype plugin indent on
 
@@ -55,6 +58,7 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'morhetz/gruvbox'
   Plug 'itchyny/lightline.vim'
     Plug 'shinchu/lightline-gruvbox.vim'
+  Plug 'ctrlpvim/ctrlp.vim'
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
   Plug 'tyru/caw.vim'
@@ -97,6 +101,17 @@ let g:lightline = {
   \   'gitbranch': 'fugitive#head',
   \ },
   \ }
+
+" ------------------------------------------------------------
+" ctrlp
+" ------------------------------------------------------------
+let g:ctrlp_map = '<leader><leader>'
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+nnoremap <leader>b :CtrlPBuffer<cr>
+nnoremap <leader>t :CtrlPTag<cr>
+nnoremap <leader>f :CtrlPBufTag<cr>
+nnoremap <leader>q :CtrlPQuickfix<cr>
+nnoremap <leader>m :CtrlPMRUFiles<cr>
 
 " ------------------------------------------------------------
 " vimdoc-ja
@@ -184,9 +199,6 @@ augroup END
 " ------------------------------------------------------------
 " key mappings
 " ------------------------------------------------------------
-" leaders
-let mapleader = ","
-
 " highlight off
 nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 
@@ -195,3 +207,20 @@ map q <silent>
 
 " file path copy
 command! CopyFilePath :echo "copied fullpath: " . expand('%:p') | let @"=expand('%:p') | call system('clip -i', @")
+nnoremap <leader>c :CopyFilePath<cr>
+
+" buffers and quickfix
+function! ToggleQuickFix()
+  if empty(filter(getwininfo(), 'v:val.quickfix'))
+    copen
+  else
+    cclose
+  endif
+endfunction
+nnoremap <leader>w :call ToggleQuickFix()<cr>
+nnoremap <leader>d :bd<cr>
+
+" searching ang grepping
+nnoremap <leader>g :copen<cr>:Ggrep!<SPACE>
+nnoremap K :Ggrep "\b<C-R><C-W>\b"<cr>:cw<cr>
+
