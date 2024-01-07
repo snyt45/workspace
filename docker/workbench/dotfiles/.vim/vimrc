@@ -75,9 +75,6 @@ Plug 'itchyny/lightline.vim'                        " ステータスライン�
   Plug 'shinchu/lightline-gruvbox.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'                       " 画面左端のサイン列にgit diffマーカーを表示
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Vimでfzfを使えるようにする
-  Plug 'junegunn/fzf.vim'
-  Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
 Plug 'lambdalisue/nerdfont.vim'                     " Windows側にnerdfontをインストールしている必要あり
 Plug 'tyru/caw.vim'                                 " コメントアウト
 Plug 'andymass/vim-matchup'                         " 対応するテキストのペアの識別を強化
@@ -139,20 +136,6 @@ call map(
 
 " カレントバッファのファイルパスをクリップボードにコピー
 command! CopyFilePath :echo "copied fullpath: " . expand('%:p') | let @"=expand('%:p') | call system('clip -i', @")
-
-" fzfでカレントディレクトリ配下のgit管理ファイル検索
-command! -bang -nargs=? GFilesCwd
-  \ call fzf#vim#gitfiles(<q-args>, fzf#vim#with_preview(<q-args> == '?' ? { 'dir': getcwd(), 'placeholder': '' } : { 'dir': getcwd() }), <bang>0)
-
-" globを指定して、Rgコマンドを実行する
-" graphqlを含むディレクトリに絞り込んで検索 :Rgglob '**/*graphql*/**'
-" graphqlを含むファイルに絞り込んで検索 :Rgglob '*graphql*'
-function! Rgglob(query, fullscreen)
-  let glob_pattern = input("glob pattern? : ", "'**/*ptn*/**'")
-  call fzf#vim#grep("rg --column --hidden --line-number --no-heading --color=always --ignore-case "."-g ".glob_pattern." -- ".shellescape(a:query), 1, fzf#vim#with_preview(), a:fullscreen)
-endfunction
-
-command! -nargs=* Rgglob call Rgglob("", 0)
 
 " ref: https://zenn.dev/kato_k/articles/vim-tips-no004
 command! Profile call s:command_profile()
@@ -294,7 +277,6 @@ let g:which_key_map.l = {
   \ 'h'    : [':LspHover'                      , 'hover'],
   \ 'l'    : [':LspCodeLens'                   , 'code Lens'],
   \ 'r'    : [':LspRename'                     , 'rename symbol'],
-  \ '/'    : [':FzfPreviewVimLspReferencesRpc' , 'fzf references'],
   \ }
 
 " ----------------------------------------------------------------------------------------------------------------------
@@ -336,7 +318,6 @@ let g:which_key_map.q = {
   \ 'P'    : [':cpf'                   , 'previous file'],
   \ 'o'    : [':cwindow'               , 'open'],
   \ 'c'    : [':cclose'                , 'close'],
-  \ 'q'    : [':FzfPreviewQuickFixRpc' , 'search'],
   \ }
 
 " ----------------------------------------------------------------------------------------------------------------------
@@ -364,10 +345,8 @@ let g:which_key_local_map.t = {
 let g:which_key_local_map[','] = {
   \ 'name' : '+util'                         ,
   \ 'c'    : [':CopyFilePath'                , 'copy filepath'],
-  \ 'j'    : [':FzfPreviewJumpsRpc'          , 'jump history'],
   \ 'm'    : [':Maps'                        , 'mappings'],
   \ 's'    : [':Git'                         , 'git status'],
-  \ 'r'    : [':FzfPreviewCommandPaletteRpc' , 'command history'],
   \ '/'    : [':History/'                    , 'search history'],
   \ }
 
@@ -450,18 +429,11 @@ let g:lsp_settings_filetype_ruby = ['solargraph']
 
 let g:asyncomplete_popup_delay = 100
 
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
-
 function! s:build_quickfix_list(lines)
   call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
   copen
   cc
 endfunction
-let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
-  \ 'ctrl-e': 'tab split',
-  \ 'ctrl-s': 'split',
-  \ 'ctrl-v': 'vsplit' }
 
 let g:floaterm_shell = 'bash'
 let g:floaterm_height = 0.9
