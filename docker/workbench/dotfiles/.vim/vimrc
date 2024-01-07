@@ -24,6 +24,9 @@ set incsearch
 " highlight off
 nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 
+" enable virtual editing in rectangle visual mode
+set virtualedit=block
+
 " fold
 set foldmethod=indent
 set foldlevel=99
@@ -46,8 +49,6 @@ set noundofile
 " set laststatus=2             " 画面最下部に常にステータスラインを表示
 " set cmdheight=2              " 画面最下部(ステータス行より下)のメッセージ表示欄を2行にする
 " set showtabline=2            " タブ毎に常にタブラインを表示
-" 
-" set virtualedit=block        " 矩形選択時に仮想編集を有効化
 " 
 " set tabstop=2                " タブを2文字分にする
 " set expandtab                " タブの代わりに半角スペースを使用
