@@ -13,35 +13,35 @@ end
 " VIM SETTINGS
 " ----------------------------------------------------------------------------
 
-set number                   " 画面左端に行番号を表示
-set signcolumn=yes           " 画面左端にサイン列を常に表示
-set laststatus=2             " 画面最下部に常にステータスラインを表示
-set cmdheight=2              " 画面最下部(ステータス行より下)のメッセージ表示欄を2行にする
-set showtabline=2            " タブ毎に常にタブラインを表示
-
-set virtualedit=block        " 矩形選択時に仮想編集を有効化
-set wildmenu wildoptions=pum " コマンドラインでTAB補完時に候補メニューを表示
-set wildignorecase           " コマンドラインでTAB補完時に大文字・小文字を区別しない
-
-set tabstop=2                " タブを2文字分にする
-set expandtab                " タブの代わりに半角スペースを使用
-set shiftwidth=2             " インデントを半角スペース2文字にする
-set smartindent              " 新しい行追加時に自動でインデントを追加
-set foldmethod=indent        " 同じインデントレベルのコードを折り畳む
-set foldlevel=100            " 初期表示時に勝手に折り畳まれないように折り畳みレベルを深めに設定
-
-set hlsearch                 " 文字列検索のハイライト
-set ignorecase               " 文字列検索で大文字・小文字を区別しない
-set smartcase                " 文字列検索で大文字を含んでいたらignorecaseを上書きし、大文字・小文字を区別する
-set incsearch                " インクリメンタルサーチ
-
-set noswapfile               " スワップファイル(.swp)を生成しない
-set nobackup                 " バックアップファイル(~)を生成しない
-set noundofile               " undoファイル(.un~)を生成しない
-set encoding=utf-8           " Vim内部で使われる文字エンコーディングにutf-8にする
-set updatetime=100           " 更新時間を100msに設定
-set mouse=a                  " マウス操作を有効にする
-set helplang=ja,en
+" set number                   " 画面左端に行番号を表示
+" set signcolumn=yes           " 画面左端にサイン列を常に表示
+" set laststatus=2             " 画面最下部に常にステータスラインを表示
+" set cmdheight=2              " 画面最下部(ステータス行より下)のメッセージ表示欄を2行にする
+" set showtabline=2            " タブ毎に常にタブラインを表示
+" 
+" set virtualedit=block        " 矩形選択時に仮想編集を有効化
+" set wildmenu wildoptions=pum " コマンドラインでTAB補完時に候補メニューを表示
+" set wildignorecase           " コマンドラインでTAB補完時に大文字・小文字を区別しない
+" 
+" set tabstop=2                " タブを2文字分にする
+" set expandtab                " タブの代わりに半角スペースを使用
+" set shiftwidth=2             " インデントを半角スペース2文字にする
+" set smartindent              " 新しい行追加時に自動でインデントを追加
+" set foldmethod=indent        " 同じインデントレベルのコードを折り畳む
+" set foldlevel=100            " 初期表示時に勝手に折り畳まれないように折り畳みレベルを深めに設定
+" 
+" set hlsearch                 " 文字列検索のハイライト
+" set ignorecase               " 文字列検索で大文字・小文字を区別しない
+" set smartcase                " 文字列検索で大文字を含んでいたらignorecaseを上書きし、大文字・小文字を区別する
+" set incsearch                " インクリメンタルサーチ
+" 
+" set noswapfile               " スワップファイル(.swp)を生成しない
+" set nobackup                 " バックアップファイル(~)を生成しない
+" set noundofile               " undoファイル(.un~)を生成しない
+" set encoding=utf-8           " Vim内部で使われる文字エンコーディングにutf-8にする
+" set updatetime=100           " 更新時間を100msに設定
+" set mouse=a                  " マウス操作を有効にする
+" set helplang=ja,en
 
 " Vimのカーソル表示
 " ref: https://qiita.com/Linda_pp/items/9e0c94eb82b18071db34
@@ -52,10 +52,10 @@ if has('vim_starting')
 endif
 
 " バッファに入るか、フォーカスを取得するときにリロード
-augroup vimrc_vim_check_file_change
-  autocmd!
-  autocmd FocusGained,BufEnter * :checktime
-augroup END
+" augroup vimrc_vim_check_file_change
+"   autocmd!
+"   autocmd FocusGained,BufEnter * :checktime
+" augroup END
 
 " ----------------------------------------------------------------------------
 " PLUGINS
@@ -137,3 +137,381 @@ call map(
   \ sort(split(globpath(&runtimepath, 'config/*.vim'))),
   \ {-> execute('exec "source" v:val') }
   \ )
+
+" カレントバッファのファイルパスをクリップボードにコピー
+command! CopyFilePath :echo "copied fullpath: " . expand('%:p') | let @"=expand('%:p') | call system('clip -i', @")
+
+" fzfでカレントディレクトリ配下のgit管理ファイル検索
+command! -bang -nargs=? GFilesCwd
+  \ call fzf#vim#gitfiles(<q-args>, fzf#vim#with_preview(<q-args> == '?' ? { 'dir': getcwd(), 'placeholder': '' } : { 'dir': getcwd() }), <bang>0)
+
+" globを指定して、Rgコマンドを実行する
+" graphqlを含むディレクトリに絞り込んで検索 :Rgglob '**/*graphql*/**'
+" graphqlを含むファイルに絞り込んで検索 :Rgglob '*graphql*'
+function! Rgglob(query, fullscreen)
+  let glob_pattern = input("glob pattern? : ", "'**/*ptn*/**'")
+  call fzf#vim#grep("rg --column --hidden --line-number --no-heading --color=always --ignore-case "."-g ".glob_pattern." -- ".shellescape(a:query), 1, fzf#vim#with_preview(), a:fullscreen)
+endfunction
+
+command! -nargs=* Rgglob call Rgglob("", 0)
+
+" ref: https://zenn.dev/kato_k/articles/vim-tips-no004
+command! Profile call s:command_profile()
+function! s:command_profile() abort
+  profile start ~/profile.txt
+  profile func *
+  profile file *
+endfunction
+
+set background=dark " colorschemeがdarkグループの配色を使うように指定
+colorscheme gruvbox
+
+augroup filepath_typescriptreact
+  au!
+  autocmd FileType typescriptreact :setl path+=**;/features/**
+  autocmd FileType typescriptreact :setl includeexpr=substitute(v:fname,'^/','','')
+augroup END
+
+set timeoutlen=500 " 100msだと他のキーマッピングが上手く動かないため500msに設定
+
+let g:which_key_ignore_outside_mappings = 1 " 辞書にないマッピングは非表示にする
+let g:which_key_sep = '→'
+let g:which_key_use_floating_win = 0
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key s
+" windows
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map_window = { 'name' : '+windows' }
+call which_key#register('s', 'g:which_key_map_window')
+nmap s :<c-u>WhichKey 's'<CR>
+vmap s :<c-u>WhichKeyVisual 's'<CR>
+
+let g:which_key_map_window.s    = [':sp'              , 'split horizontaly']
+let g:which_key_map_window.v    = [':vs'              , 'split verticaly']
+let g:which_key_map_window.h    = ['<C-w>h'           , 'focus left']
+let g:which_key_map_window.j    = ['<C-w>j'           , 'focus down']
+let g:which_key_map_window.k    = ['<C-w>k'           , 'focus up']
+let g:which_key_map_window.l    = ['<C-w>l'           , 'focus right']
+let g:which_key_map_window.H    = ['<C-w>H'           , 'move left']
+let g:which_key_map_window.J    = ['<C-w>J'           , 'move down']
+let g:which_key_map_window.K    = ['<C-w>K'           , 'move up']
+let g:which_key_map_window.L    = ['<C-w>L'           , 'move right']
+let g:which_key_map_window['<'] = [':vert resize -10 ', 'resize left']
+let g:which_key_map_window['>'] = [':vert resize +10' , 'resize right']
+let g:which_key_map_window['-'] = [':resize -10'      , 'resize down']
+let g:which_key_map_window['+'] = [':resize +10'      , 'resize up']
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key t
+" tabs
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map_tabs = { 'name' : '+tabs' }
+call which_key#register('t', 'g:which_key_map_tabs')
+nmap t :<c-u>WhichKey 't'<CR>
+vmap t :<c-u>WhichKeyVisual 't'<CR>
+
+let g:which_key_map_tabs.e = [':tabedit'   , 'new']
+let g:which_key_map_tabs.t = [':tab split' , 'split']
+let g:which_key_map_tabs.h = [':tabprev'   , 'focus left']
+let g:which_key_map_tabs.l = [':tabnext'   , 'focus right']
+let g:which_key_map_tabs.H = [':tabmove -1', 'move left']
+let g:which_key_map_tabs.L = [':tabmove +1', 'move right']
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Leader key map bindings
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map = {}
+call which_key#register('<Space>', 'g:which_key_map')
+nmap <leader> :<c-u>WhichKey '<leader>'<CR>
+vmap <leader> :<c-u>WhichKeyVisual '<leader>'<CR>
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <Leader>b
+" buffers
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map.b = {
+  \ 'name' : '+buffers'    ,
+  \ 'b'    : [':Buffers'   , 'buffers'],
+  \ 'n'    : [':bnext'     , 'next'],
+  \ 'p'    : [':bprevious' , 'previous'],
+  \ 'd'    : [':bd'        , 'destroy'],
+  \ }
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <Leader>f
+" files
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map.f = {
+  \ 'name' : '+files'                                         ,
+  \ 'b'    : [':Git blame'                                    , 'blame'],
+  \ 'e'    : [':Fern . -reveal=%'                             , 'open explorer'],
+  \ 't'    : [':Fern . -drawer -stay -keep -toggle -reveal=%' , 'toggle filetree'],
+  \ 'g'    : [':Rgglob'                                       , 'grep glob pattern'],
+  \ 'l'    : [':BCommits'                                     , 'current logs'],
+  \ 'f'    : [':Rg'                                           , 'grep'],
+  \ 'h'    : [':History'                                      , 'history'],
+  \ 'p'    : [':GFilesCwd'                                    , 'project files'],
+  \ 's'    : [':GFiles?'                                      , 'git status files'],
+  \ '/'    : [':BLines'                                       , 'line'],
+  \}
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <Leader>F
+" fold
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map.F = {
+  \ 'name' : '+fold'              ,
+  \ 'O'    : [':set foldlevel=20' , 'open all'],
+  \ 'C'    : [':set foldlevel=0'  , 'close all'],
+  \ 'c'    : [':foldclose'        , 'close'],
+  \ 'o'    : [':foldopen'         , 'open'],
+  \ '1'    : [':set foldlevel=1'  , 'level1'],
+  \ '2'    : [':set foldlevel=2'  , 'level2'],
+  \ '3'    : [':set foldlevel=3'  , 'level3'],
+  \ '4'    : [':set foldlevel=4'  , 'level4'],
+  \ '5'    : [':set foldlevel=5'  , 'level5'],
+  \ '6'    : [':set foldlevel=6'  , 'level6']
+  \ }
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <Leader>M
+" markdown
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map.M = {
+  \ 'name' : '+markdown'     ,
+  \ 'm'    : [':MakeTable'   , 'make table'],
+  \ 'M'    : [':MakeTable!'  , 'make table!'],
+  \ 'u'    : [':UnmakeTable' , 'unmake table'],
+  \ }
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <Leader>l
+" lsp
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map.l = {
+  \ 'name' : '+lsp'                            ,
+  \ 'a'    : [':LspCodeAction'                 , 'code action'],
+  \ 'd'    : [':LspDocumentDiagnostics'        , 'diagnostics'],
+  \ 'f'    : [':LspDocumentFormat'             , 'format'],
+  \ 'h'    : [':LspHover'                      , 'hover'],
+  \ 'l'    : [':LspCodeLens'                   , 'code Lens'],
+  \ 'r'    : [':LspRename'                     , 'rename symbol'],
+  \ '/'    : [':FzfPreviewVimLspReferencesRpc' , 'fzf references'],
+  \ }
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <Leader>lg
+" goto
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map.l.g = {
+  \ 'name' : '+goto'               ,
+  \ 'd'    : [':LspDefinition'     , 'goto definition'],
+  \ 'y'    : [':LspTypeDefinition' , 'goto type definition'],
+  \ 'i'    : [':LspImplementation' , 'goto implementation'],
+  \ 'r'    : [':LspReferences'     , 'goto references'],
+  \ }
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <Leader>p
+" package
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map.p = {
+  \ 'name' : '+package'       ,
+  \ 'c'    : [':PlugClean'    , 'clean'],
+  \ 'd'    : [':PlugDiff'     , 'diff'],
+  \ 'i'    : [':PlugInstall'  , 'install'],
+  \ 's'    : [':PlugSnapshot' , 'snapshot'],
+  \ 'S'    : [':PlugStatus'   , 'status'],
+  \ 'u'    : [':PlugUpgrade'  , 'upgrade'],
+  \ 'U'    : [':PlugUpdate'   , 'update'],
+  \ }
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <Leader>q
+" quickfix
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_map.q = {
+  \ 'name' : '+quickfix'               ,
+  \ 'n'    : [':cn'                    , 'next line'],
+  \ 'p'    : [':cnf'                   , 'previous line'],
+  \ 'N'    : [':cp'                    , 'next file'],
+  \ 'P'    : [':cpf'                   , 'previous file'],
+  \ 'o'    : [':cwindow'               , 'open'],
+  \ 'c'    : [':cclose'                , 'close'],
+  \ 'q'    : [':FzfPreviewQuickFixRpc' , 'search'],
+  \ }
+
+" ----------------------------------------------------------------------------------------------------------------------
+" LocalLeader key map bindings
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_local_map = {}
+call which_key#register(',', 'g:which_key_local_map')
+nmap <localleader> :<c-u>WhichKey '<localleader>'<CR>
+vmap <localleader> :<c-u>WhichKeyVisual '<localleader>'<CR>
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <localleader>t
+" terminal
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_local_map.t = {
+  \ 'name' : '+terminal'             ,
+  \ 't'    : [':FloatermNew'         , 'terminal'],
+  \ 'z'    : [':FloatermNew lazygit' , 'lazygit'],
+  \ }
+
+" ----------------------------------------------------------------------------------------------------------------------
+" Prefix Key <localleader>,
+" util
+" ----------------------------------------------------------------------------------------------------------------------
+let g:which_key_local_map[','] = {
+  \ 'name' : '+util'                         ,
+  \ 'c'    : [':CopyFilePath'                , 'copy filepath'],
+  \ 'j'    : [':FzfPreviewJumpsRpc'          , 'jump history'],
+  \ 'm'    : [':Maps'                        , 'mappings'],
+  \ 's'    : [':Git'                         , 'git status'],
+  \ 'r'    : [':FzfPreviewCommandPaletteRpc' , 'command history'],
+  \ '/'    : [':History/'                    , 'search history'],
+  \ }
+
+if !has('gui_running')
+  set t_Co=256
+endif
+
+let g:lightline = {
+  \ 'colorscheme': 'gruvbox',
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ],
+  \             [ 'gitbranch', 'readonly', 'filename', 'modified' ],
+  \           ]
+  \ },
+  \ 'component_function': {
+  \   'gitbranch': 'fugitive#head',
+  \ },
+  \ }
+
+let g:gitgutter_sign_added = '+'
+let g:gitgutter_sign_modified = '>'
+let g:gitgutter_sign_removed = '-'
+let g:gitgutter_sign_removed_first_line = '^'
+let g:gitgutter_sign_modified_removed = '<'
+
+" ref: https://teratail.com/questions/29844#reply-46767
+augroup vimrc_vim_gitgutter
+  autocmd!
+  " colorscheme読み込み後、サイン列の背景色をNONEにする ※Windows Terminal側の色を使いたいため
+  autocmd VimEnter,ColorScheme * highlight SignColumn guibg=NONE ctermbg=NONE
+
+  " colorscheme読み込み後、サイン列の記号の色を設定
+  autocmd VimEnter,ColorScheme * highlight GitGutterAdd guibg=NONE ctermbg=NONE guifg=#000900 ctermfg=2
+  autocmd VimEnter,ColorScheme * highlight GitGutterChange guibg=NONE ctermbg=NONE guifg=#bbbb00 ctermfg=3
+  autocmd VimEnter,ColorScheme * highlight GitGutterDelete guibg=NONE ctermbg=NONE guifg=#ff2222 ctermfg=1
+augroup END
+
+let g:fern#default_hidden=1 " 隠しファイルを表示する
+let g:fern#renderer='nerdfont'
+let g:fern#renderer#nerdfont#indent_markers = 1
+
+" hover scroll
+nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+nnoremap <buffer> <expr><c-b> lsp#scroll(-4)
+
+let g:lsp_diagnostics_enabled = 1       " Diagnosticsを有効にする
+let g:lsp_diagnostics_echo_cursor = 1   " カーソル下のエラー、警告、情報、ヒントを画面下部のコマンドラインに表示
+let g:lsp_diagnostics_echo_delay = 10
+let g:lsp_diagnostics_float_cursor = 1  " カーソル下のエラー、警告、情報、ヒントをフロート表示
+let g:lsp_diagnostics_signs_enabled = 1 " 画面左端のサイン列にエラー、警告、情報、ヒントのアイコンを表示
+let g:lsp_diagnostics_virtual_text_enabled = 0 " エラー、警告、情報、ヒントの仮想テキストを非表示
+let g:lsp_diagnostics_signs_delay = 10
+let g:lsp_diagnostics_signs_insert_mode_enabled = 0
+let g:lsp_diagnostics_signs_error = {'text': '🐛'}
+let g:lsp_diagnostics_signs_warning = {'text': '🪰'}
+let g:lsp_diagnostics_signs_hint = {'text': '💡'}
+let g:lsp_diagnostics_signs_information = {'text': 'ℹ️'}
+let g:lsp_diagnostics_highlights_delay = 10
+let g:lsp_diagnostics_highlights_insert_mode_enabled = 0
+let g:lsp_document_code_action_signs_enabled = 0 " 画面左端のサイン列にコードアクションのアイコン非表示
+
+" vim-lsp がバッファで有効になったときに実行される関数
+" バッファローカルなキーバインドやオプションを指定
+" See: https://mattn.kaoriya.net/software/vim/20191231213507.htm
+function! s:on_lsp_buffer_enabled() abort
+  let g:lsp_format_sync_timeout = 1000
+
+  " golang
+  " バッファ保存時に毎回「import補完」と「コードフォーマット」を実行
+  autocmd BufWritePre *.go call execute(['LspCodeActionSync source.organizeImports', 'LspDocumentFormatSync'])
+endfunction
+
+augroup lsp_install
+  au!
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+" debug
+" let g:lsp_log_verbose = 1 " ログを有効にする
+" let g:lsp_log_file = expand('~/.shared_cache/.vim/vim-lsp.log') " ログの出力先
+
+let g:lsp_settings_servers_dir='~/.shared_cache/.vim/servers'
+let g:lsp_settings_filetype_ruby = ['solargraph']
+
+let g:asyncomplete_popup_delay = 100
+
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
+
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-e': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+let g:floaterm_shell = 'bash'
+let g:floaterm_height = 0.9
+let g:floaterm_width = 0.9
+let g:floaterm_autoclose = 2
+
+let g:floaterm_keymap_new    = '<F7>'
+let g:floaterm_keymap_prev   = '<F8>'
+let g:floaterm_keymap_next   = '<F9>'
+let g:floaterm_keymap_toggle = '<F12>'
+
+" Expand
+imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+
+" Expand or jump
+"imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+"smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
+" Jump forward or backward
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+" Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+" See https://github.com/hrsh7th/vim-vsnip/pull/50
+nmap        S   <Plug>(vsnip-select-text)
+xmap        S   <Plug>(vsnip-select-text)
+" nmap        S   <Plug>(vsnip-cut-text)
+" xmap        S   <Plug>(vsnip-cut-text)
+
+" If you want to use snippet for multiple filetypes, you can `g:vsnip_filetypes` for it.
+let g:vsnip_filetypes = {}
+let g:vsnip_filetypes.javascriptreact = ['javascript']
+let g:vsnip_filetypes.typescriptreact = ['typescript','javascript']
+
+let g:vsnip_snippet_dir = expand('~/.vim/snippets')
+
+" 保存時に自動でrustfmt
+let g:rustfmt_autosave = 1
+
+let g:quickrun_config = {}
+let g:quickrun_config.rust = {'exec' : 'cargo run'}
+
+let g:copilot_filetypes = { 'gitcommit': v:true }
