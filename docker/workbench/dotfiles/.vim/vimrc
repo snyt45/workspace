@@ -24,6 +24,10 @@ set incsearch
 " highlight off
 nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 
+" fold
+set foldmethod=indent
+set foldlevel=99
+
 " ----------------------------------------------------------------------------
 " VIM SETTINGS
 " ----------------------------------------------------------------------------
@@ -42,10 +46,7 @@ nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 " set expandtab                " タブの代わりに半角スペースを使用
 " set shiftwidth=2             " インデントを半角スペース2文字にする
 " set smartindent              " 新しい行追加時に自動でインデントを追加
-" set foldmethod=indent        " 同じインデントレベルのコードを折り畳む
-" set foldlevel=100            " 初期表示時に勝手に折り畳まれないように折り畳みレベルを深めに設定
-" 
-" 
+
 " set noswapfile               " スワップファイル(.swp)を生成しない
 " set nobackup                 " バックアップファイル(~)を生成しない
 " set noundofile               " undoファイル(.un~)を生成しない
@@ -217,24 +218,6 @@ let g:which_key_map.f = {
   \ 's'    : [':GFiles?'                                      , 'git status files'],
   \ '/'    : [':BLines'                                       , 'line'],
   \}
-
-" ----------------------------------------------------------------------------------------------------------------------
-" Prefix Key <Leader>F
-" fold
-" ----------------------------------------------------------------------------------------------------------------------
-let g:which_key_map.F = {
-  \ 'name' : '+fold'              ,
-  \ 'O'    : [':set foldlevel=20' , 'open all'],
-  \ 'C'    : [':set foldlevel=0'  , 'close all'],
-  \ 'c'    : [':foldclose'        , 'close'],
-  \ 'o'    : [':foldopen'         , 'open'],
-  \ '1'    : [':set foldlevel=1'  , 'level1'],
-  \ '2'    : [':set foldlevel=2'  , 'level2'],
-  \ '3'    : [':set foldlevel=3'  , 'level3'],
-  \ '4'    : [':set foldlevel=4'  , 'level4'],
-  \ '5'    : [':set foldlevel=5'  , 'level5'],
-  \ '6'    : [':set foldlevel=6'  , 'level6']
-  \ }
 
 " ----------------------------------------------------------------------------------------------------------------------
 " Prefix Key <Leader>l
