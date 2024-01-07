@@ -81,7 +81,6 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'                       " 各language-serverを1コマンドで導入できる
 Plug 'prabirshrestha/asyncomplete.vim'              " 非同期オートコンプリート
 Plug 'prabirshrestha/asyncomplete-lsp.vim'          " asyncomplete.vimのsource
-Plug 'thinca/vim-qfreplace'                         " quickfixの置換
 Plug 'rust-lang/rust.vim'
 Plug 'github/copilot.vim'
 
