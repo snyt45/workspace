@@ -75,7 +75,6 @@ Plug 'itchyny/lightline.vim'                        " ステータスライン�
   Plug 'shinchu/lightline-gruvbox.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'                       " 画面左端のサイン列にgit diffマーカーを表示
-Plug 'lambdalisue/nerdfont.vim'                     " Windows側にnerdfontをインストールしている必要あり
 Plug 'tyru/caw.vim'                                 " コメントアウト
 Plug 'andymass/vim-matchup'                         " 対応するテキストのペアの識別を強化
 Plug 'tpope/vim-rails'                              " Rails開発を便利にする
