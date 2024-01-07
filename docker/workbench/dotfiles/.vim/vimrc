@@ -291,20 +291,6 @@ let g:which_key_map.p = {
   \ }
 
 " ----------------------------------------------------------------------------------------------------------------------
-" Prefix Key <Leader>q
-" quickfix
-" ----------------------------------------------------------------------------------------------------------------------
-let g:which_key_map.q = {
-  \ 'name' : '+quickfix'               ,
-  \ 'n'    : [':cn'                    , 'next line'],
-  \ 'p'    : [':cnf'                   , 'previous line'],
-  \ 'N'    : [':cp'                    , 'next file'],
-  \ 'P'    : [':cpf'                   , 'previous file'],
-  \ 'o'    : [':cwindow'               , 'open'],
-  \ 'c'    : [':cclose'                , 'close'],
-  \ }
-
-" ----------------------------------------------------------------------------------------------------------------------
 " LocalLeader key map bindings
 " ----------------------------------------------------------------------------------------------------------------------
 let g:which_key_local_map = {}
@@ -402,12 +388,6 @@ let g:lsp_settings_servers_dir='~/.shared_cache/.vim/servers'
 let g:lsp_settings_filetype_ruby = ['solargraph']
 
 let g:asyncomplete_popup_delay = 100
-
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
-endfunction
 
 " 保存時に自動でrustfmt
 let g:rustfmt_autosave = 1
