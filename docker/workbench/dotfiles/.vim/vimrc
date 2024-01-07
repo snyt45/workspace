@@ -32,6 +32,11 @@ set foldlevel=99
 set wildmenu wildoptions=pum
 set wildignorecase
 
+" no swap, backup, undo
+set noswapfile
+set nobackup
+set noundofile
+
 " ----------------------------------------------------------------------------
 " VIM SETTINGS
 " ----------------------------------------------------------------------------
@@ -49,9 +54,6 @@ set wildignorecase
 " set shiftwidth=2             " インデントを半角スペース2文字にする
 " set smartindent              " 新しい行追加時に自動でインデントを追加
 
-" set noswapfile               " スワップファイル(.swp)を生成しない
-" set nobackup                 " バックアップファイル(~)を生成しない
-" set noundofile               " undoファイル(.un~)を生成しない
 " set encoding=utf-8           " Vim内部で使われる文字エンコーディングにutf-8にする
 " set mouse=a                  " マウス操作を有効にする
 " set helplang=ja,en
