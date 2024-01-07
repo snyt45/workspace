@@ -1,8 +1,6 @@
 let mapleader = "\<Space>"
 let maplocalleader = ","
 
-nmap <C-j> 5j
-nmap <C-k> 5k
 nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc> " 文字列検索のハイライトオフ
 nmap PP "0p " ヤンクレジスタを使って貼り付け
 map q <silent> " よくミスタイプするのでマクロ記録しないようにする
