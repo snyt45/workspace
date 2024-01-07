@@ -1,28 +1,14 @@
-" leaders
-let mapleader = ","
-
+" ------------------------------------------------------------
+" vim settings
+" ------------------------------------------------------------
 " filetype and intent
 filetype plugin indent on
-
-" incompatible plugins
-if has('syntax') && has('eval')
-  packadd! matchit
-end
-
-" hidden header
-let g:netrw_banner=0
-
-" gitgutter update faster
-set updatetime=50
 
 " highlight on
 set hlsearch
 set ignorecase
 set smartcase
 set incsearch
-
-" highlight off
-nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 
 " enable virtual editing in rectangle visual mode
 set virtualedit=block
@@ -40,85 +26,62 @@ set noswapfile
 set nobackup
 set noundofile
 
-" vim help japanese
-set helplang=ja,en
+" yank send to clipboard
+augroup text_yank_post
+  au!
+  autocmd TextYankPost * :call system('clip -i', @")
+augroup END
 
-" Vimのカーソル表示
-" ref: https://qiita.com/Linda_pp/items/9e0c94eb82b18071db34
+" ------------------------------------------------------------
+" cursor
+" ------------------------------------------------------------
+" https://qiita.com/Linda_pp/items/9e0c94eb82b18071db34
 if has('vim_starting')
-    let &t_SI .= "\e[6 q" " 挿入モード時に非点滅の縦棒タイプのカーソル
-    let &t_EI .= "\e[2 q" " ノーマルモード時に非点滅のブロックタイプのカーソル
-    let &t_SR .= "\e[4 q" " 置換モード時に非点滅の下線タイプのカーソル
+  let &t_SI .= "\e[6 q" " Insert mode: non-blinking vertical bar cursor
+  let &t_EI .= "\e[2 q" " Normal mode: non-blinking block cursor
+  let &t_SR .= "\e[4 q" " Replace mode: non-blinking underline cursor
 endif
 
-" ----------------------------------------------------------------------------
-" PLUGINS
-" ----------------------------------------------------------------------------
+" ------------------------------------------------------------
+" plugin
+" ------------------------------------------------------------
+" incompatible plugins
+if has('syntax') && has('eval')
+  packadd! matchit
+end
 
 call plug#begin('~/.shared_cache/.vim/plugged')
-
-Plug 'morhetz/gruvbox'                              " カラースキーマ
-Plug 'vim-jp/vimdoc-ja'                             " Vimのヘルプを日本語化
-Plug 'itchyny/lightline.vim'                        " ステータスライン・タブライン
-  Plug 'shinchu/lightline-gruvbox.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'                       " 画面左端のサイン列にgit diffマーカーを表示
-Plug 'tyru/caw.vim'                                 " コメントアウト
-Plug 'tpope/vim-rails'                              " Rails開発を便利にする
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'                       " 各language-serverを1コマンドで導入できる
-Plug 'prabirshrestha/asyncomplete.vim'              " 非同期オートコンプリート
-Plug 'prabirshrestha/asyncomplete-lsp.vim'          " asyncomplete.vimのsource
-Plug 'rust-lang/rust.vim'
-Plug 'github/copilot.vim'
-
+  Plug 'vim-jp/vimdoc-ja'
+  Plug 'morhetz/gruvbox'
+  Plug 'itchyny/lightline.vim'
+    Plug 'shinchu/lightline-gruvbox.vim'
+  Plug 'tpope/vim-fugitive'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'tyru/caw.vim'
+  Plug 'prabirshrestha/vim-lsp'
+  Plug 'mattn/vim-lsp-settings'
+  Plug 'prabirshrestha/asyncomplete.vim'
+  Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  Plug 'github/copilot.vim'
 call plug#end()
 
-augroup vimrc_vim_plug_install
-  autocmd!
-
-  " 足りないプラグインがあれば :PlugInstall を実行
+" auto plug install
+augroup auto_plug_install
+  au!
   autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
     \| PlugInstall --sync | source $MYVIMRC
   \| endif
 augroup END
 
-" ----------------------------------------------------------------------------
-" MAPPINGS
-" ----------------------------------------------------------------------------
-nmap PP "0p " ヤンクレジスタを使って貼り付け
-map q <silent> " よくミスタイプするのでマクロ記録しないようにする
-
-" ヤンクした内容をクリップボードにコピー
-augroup Yank
-  au!
-  autocmd TextYankPost * :call system('clip -i', @")
-augroup END
-
-imap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-imap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-imap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
-
-" カレントバッファのファイルパスをクリップボードにコピー
-command! CopyFilePath :echo "copied fullpath: " . expand('%:p') | let @"=expand('%:p') | call system('clip -i', @")
-
-" ref: https://zenn.dev/kato_k/articles/vim-tips-no004
-command! Profile call s:command_profile()
-function! s:command_profile() abort
-  profile start ~/profile.txt
-  profile func *
-  profile file *
-endfunction
-
-set background=dark " colorschemeがdarkグループの配色を使うように指定
+" ------------------------------------------------------------
+" colorscheme
+" ------------------------------------------------------------
+set background=dark
 colorscheme gruvbox
 
-augroup filepath_typescriptreact
-  au!
-  autocmd FileType typescriptreact :setl path+=**;/features/**
-  autocmd FileType typescriptreact :setl includeexpr=substitute(v:fname,'^/','','')
-augroup END
-
+" ------------------------------------------------------------
+" lightline
+" ------------------------------------------------------------
 if !has('gui_running')
   set t_Co=256
 endif
@@ -135,6 +98,24 @@ let g:lightline = {
   \ },
   \ }
 
+" ------------------------------------------------------------
+" vimdoc-ja
+" ------------------------------------------------------------
+" vim help japanese
+set helplang=ja,en
+
+" ------------------------------------------------------------
+" netrw
+" ------------------------------------------------------------
+" hidden header
+let g:netrw_banner=0
+
+" ------------------------------------------------------------
+" gitgutter
+" ------------------------------------------------------------
+" gitgutter update faster
+set updatetime=50
+
 let g:gitgutter_sign_added = '+'
 let g:gitgutter_sign_modified = '>'
 let g:gitgutter_sign_removed = '-'
@@ -143,26 +124,36 @@ let g:gitgutter_sign_modified_removed = '<'
 
 " ref: https://teratail.com/questions/29844#reply-46767
 augroup vimrc_vim_gitgutter
-  autocmd!
-  " colorscheme読み込み後、サイン列の背景色をNONEにする ※Windows Terminal側の色を使いたいため
+  au!
   autocmd VimEnter,ColorScheme * highlight SignColumn guibg=NONE ctermbg=NONE
-
-  " colorscheme読み込み後、サイン列の記号の色を設定
   autocmd VimEnter,ColorScheme * highlight GitGutterAdd guibg=NONE ctermbg=NONE guifg=#000900 ctermfg=2
   autocmd VimEnter,ColorScheme * highlight GitGutterChange guibg=NONE ctermbg=NONE guifg=#bbbb00 ctermfg=3
   autocmd VimEnter,ColorScheme * highlight GitGutterDelete guibg=NONE ctermbg=NONE guifg=#ff2222 ctermfg=1
 augroup END
 
+" ------------------------------------------------------------
+" asyncomplete
+" ------------------------------------------------------------
+" Added key mappings for asyncomplete
+imap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+imap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+imap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+
+let g:asyncomplete_popup_delay = 100
+
+" ------------------------------------------------------------
+" lsp
+" ------------------------------------------------------------
 " hover scroll
 nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
 nnoremap <buffer> <expr><c-b> lsp#scroll(-4)
 
-let g:lsp_diagnostics_enabled = 1       " Diagnosticsを有効にする
-let g:lsp_diagnostics_echo_cursor = 1   " カーソル下のエラー、警告、情報、ヒントを画面下部のコマンドラインに表示
+let g:lsp_diagnostics_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
 let g:lsp_diagnostics_echo_delay = 10
-let g:lsp_diagnostics_float_cursor = 1  " カーソル下のエラー、警告、情報、ヒントをフロート表示
-let g:lsp_diagnostics_signs_enabled = 1 " 画面左端のサイン列にエラー、警告、情報、ヒントのアイコンを表示
-let g:lsp_diagnostics_virtual_text_enabled = 0 " エラー、警告、情報、ヒントの仮想テキストを非表示
+let g:lsp_diagnostics_float_cursor = 1
+let g:lsp_diagnostics_signs_enabled = 1
+let g:lsp_diagnostics_virtual_text_enabled = 0
 let g:lsp_diagnostics_signs_delay = 10
 let g:lsp_diagnostics_signs_insert_mode_enabled = 0
 let g:lsp_diagnostics_signs_error = {'text': '🐛'}
@@ -171,34 +162,40 @@ let g:lsp_diagnostics_signs_hint = {'text': '💡'}
 let g:lsp_diagnostics_signs_information = {'text': 'ℹ️'}
 let g:lsp_diagnostics_highlights_delay = 10
 let g:lsp_diagnostics_highlights_insert_mode_enabled = 0
-let g:lsp_document_code_action_signs_enabled = 0 " 画面左端のサイン列にコードアクションのアイコン非表示
+let g:lsp_document_code_action_signs_enabled = 0
 
-" vim-lsp がバッファで有効になったときに実行される関数
-" バッファローカルなキーバインドやオプションを指定
-" See: https://mattn.kaoriya.net/software/vim/20191231213507.htm
-function! s:on_lsp_buffer_enabled() abort
-  let g:lsp_format_sync_timeout = 1000
-
-  " golang
-  " バッファ保存時に毎回「import補完」と「コードフォーマット」を実行
-  autocmd BufWritePre *.go call execute(['LspCodeActionSync source.organizeImports', 'LspDocumentFormatSync'])
-endfunction
-
-augroup lsp_install
-  au!
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
+let g:lsp_settings_servers_dir='~/.shared_cache/.vim/servers'
+let g:lsp_settings_filetype_ruby = ['solargraph']
 
 " debug
 " let g:lsp_log_verbose = 1 " ログを有効にする
 " let g:lsp_log_file = expand('~/.shared_cache/.vim/vim-lsp.log') " ログの出力先
 
-let g:lsp_settings_servers_dir='~/.shared_cache/.vim/servers'
-let g:lsp_settings_filetype_ruby = ['solargraph']
-
-let g:asyncomplete_popup_delay = 100
-
-" 保存時に自動でrustfmt
-let g:rustfmt_autosave = 1
-
+" ------------------------------------------------------------
+" copilot
+" ------------------------------------------------------------
 let g:copilot_filetypes = { 'gitcommit': v:true }
+
+" ------------------------------------------------------------
+" filetype
+" ------------------------------------------------------------
+augroup ts_react_add_path
+  au!
+  autocmd FileType typescriptreact :setl path+=**;/features/**
+  autocmd FileType typescriptreact :setl includeexpr=substitute(v:fname,'^/','','')
+augroup END
+
+" ------------------------------------------------------------
+" key mappings
+" ------------------------------------------------------------
+" leaders
+let mapleader = ","
+
+" highlight off
+nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
+
+" This line maps the 'q' key to a silent action
+map q <silent>
+
+" file path copy
+command! CopyFilePath :echo "copied fullpath: " . expand('%:p') | let @"=expand('%:p') | call system('clip -i', @")
