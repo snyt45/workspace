@@ -74,9 +74,6 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Vimでfzfを使えるよ�
   Plug 'junegunn/fzf.vim'
   Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
 Plug 'lambdalisue/nerdfont.vim'                     " Windows側にnerdfontをインストールしている必要あり
-Plug 'lambdalisue/fern.vim'                         " ファイルエクスプローラー
-  Plug 'lambdalisue/fern-renderer-nerdfont.vim'     " ファイル横にアイコン表示
-  Plug 'lambdalisue/fern-git-status.vim'            " ファイル横にGitの状態表示
 Plug 'tyru/caw.vim'                                 " コメントアウト
 Plug 'junegunn/vim-easy-align'                      " いい感じにインデントを揃える
 Plug 'andymass/vim-matchup'                         " 対応するテキストのペアの識別を強化
@@ -243,8 +240,6 @@ let g:which_key_map.b = {
 let g:which_key_map.f = {
   \ 'name' : '+files'                                         ,
   \ 'b'    : [':Git blame'                                    , 'blame'],
-  \ 'e'    : [':Fern . -reveal=%'                             , 'open explorer'],
-  \ 't'    : [':Fern . -drawer -stay -keep -toggle -reveal=%' , 'toggle filetree'],
   \ 'g'    : [':Rgglob'                                       , 'grep glob pattern'],
   \ 'l'    : [':BCommits'                                     , 'current logs'],
   \ 'f'    : [':Rg'                                           , 'grep'],
@@ -405,10 +400,6 @@ augroup vimrc_vim_gitgutter
   autocmd VimEnter,ColorScheme * highlight GitGutterChange guibg=NONE ctermbg=NONE guifg=#bbbb00 ctermfg=3
   autocmd VimEnter,ColorScheme * highlight GitGutterDelete guibg=NONE ctermbg=NONE guifg=#ff2222 ctermfg=1
 augroup END
-
-let g:fern#default_hidden=1 " 隠しファイルを表示する
-let g:fern#renderer='nerdfont'
-let g:fern#renderer#nerdfont#indent_markers = 1
 
 " hover scroll
 nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
