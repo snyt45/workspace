@@ -40,6 +40,9 @@ set noswapfile
 set nobackup
 set noundofile
 
+" vim help japanese
+set helplang=ja,en
+
 " ----------------------------------------------------------------------------
 " VIM SETTINGS
 " ----------------------------------------------------------------------------
@@ -57,7 +60,6 @@ set noundofile
 
 " set encoding=utf-8           " Vim内部で使われる文字エンコーディングにutf-8にする
 " set mouse=a                  " マウス操作を有効にする
-" set helplang=ja,en
 
 " Vimのカーソル表示
 " ref: https://qiita.com/Linda_pp/items/9e0c94eb82b18071db34
