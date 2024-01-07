@@ -78,7 +78,6 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Vimでfzfを使えるよ�
   Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/rpc' }
 Plug 'lambdalisue/nerdfont.vim'                     " Windows側にnerdfontをインストールしている必要あり
 Plug 'tyru/caw.vim'                                 " コメントアウト
-Plug 'junegunn/vim-easy-align'                      " いい感じにインデントを揃える
 Plug 'andymass/vim-matchup'                         " 対応するテキストのペアの識別を強化
 Plug 'tpope/vim-rails'                              " Rails開発を便利にする
 Plug 'mattn/vim-maketable'                          " カンマ区切りのテキストテーブル表記に変換
