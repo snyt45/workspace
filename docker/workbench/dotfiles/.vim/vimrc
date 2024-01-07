@@ -83,7 +83,6 @@ Plug 'prabirshrestha/asyncomplete.vim'              " 非同期オートコン�
 Plug 'prabirshrestha/asyncomplete-lsp.vim'          " asyncomplete.vimのsource
 Plug 'thinca/vim-qfreplace'                         " quickfixの置換
 Plug 'rust-lang/rust.vim'
-Plug 'thinca/vim-quickrun'                          " シュッとコードを実行する
 Plug 'github/copilot.vim'
 
 call plug#end()
@@ -412,8 +411,5 @@ endfunction
 
 " 保存時に自動でrustfmt
 let g:rustfmt_autosave = 1
-
-let g:quickrun_config = {}
-let g:quickrun_config.rust = {'exec' : 'cargo run'}
 
 let g:copilot_filetypes = { 'gitcommit': v:true }
