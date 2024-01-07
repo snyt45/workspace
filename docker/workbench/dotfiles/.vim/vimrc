@@ -4,6 +4,11 @@ let mapleader = ","
 " filetype and intent
 filetype plugin indent on
 
+" incompatible plugins
+if has('syntax') && has('eval')
+  packadd! matchit
+end
+
 " ----------------------------------------------------------------------------
 " VIM SETTINGS
 " ----------------------------------------------------------------------------
