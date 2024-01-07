@@ -28,6 +28,10 @@ nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 set foldmethod=indent
 set foldlevel=99
 
+" wildmenu
+set wildmenu wildoptions=pum
+set wildignorecase
+
 " ----------------------------------------------------------------------------
 " VIM SETTINGS
 " ----------------------------------------------------------------------------
@@ -39,8 +43,6 @@ set foldlevel=99
 " set showtabline=2            " タブ毎に常にタブラインを表示
 " 
 " set virtualedit=block        " 矩形選択時に仮想編集を有効化
-" set wildmenu wildoptions=pum " コマンドラインでTAB補完時に候補メニューを表示
-" set wildignorecase           " コマンドラインでTAB補完時に大文字・小文字を区別しない
 " 
 " set tabstop=2                " タブを2文字分にする
 " set expandtab                " タブの代わりに半角スペースを使用
