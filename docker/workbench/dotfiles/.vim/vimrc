@@ -12,6 +12,9 @@ end
 " hidden header
 let g:netrw_banner=0
 
+" gitgutter update faster
+set updatetime=50
+
 " ----------------------------------------------------------------------------
 " VIM SETTINGS
 " ----------------------------------------------------------------------------
@@ -42,7 +45,6 @@ let g:netrw_banner=0
 " set nobackup                 " バックアップファイル(~)を生成しない
 " set noundofile               " undoファイル(.un~)を生成しない
 " set encoding=utf-8           " Vim内部で使われる文字エンコーディングにutf-8にする
-" set updatetime=100           " 更新時間を100msに設定
 " set mouse=a                  " マウス操作を有効にする
 " set helplang=ja,en
 
