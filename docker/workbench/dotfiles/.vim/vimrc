@@ -15,6 +15,15 @@ let g:netrw_banner=0
 " gitgutter update faster
 set updatetime=50
 
+" highlight on
+set hlsearch
+set ignorecase
+set smartcase
+set incsearch
+
+" highlight off
+nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
+
 " ----------------------------------------------------------------------------
 " VIM SETTINGS
 " ----------------------------------------------------------------------------
@@ -36,10 +45,6 @@ set updatetime=50
 " set foldmethod=indent        " 同じインデントレベルのコードを折り畳む
 " set foldlevel=100            " 初期表示時に勝手に折り畳まれないように折り畳みレベルを深めに設定
 " 
-" set hlsearch                 " 文字列検索のハイライト
-" set ignorecase               " 文字列検索で大文字・小文字を区別しない
-" set smartcase                " 文字列検索で大文字を含んでいたらignorecaseを上書きし、大文字・小文字を区別する
-" set incsearch                " インクリメンタルサーチ
 " 
 " set noswapfile               " スワップファイル(.swp)を生成しない
 " set nobackup                 " バックアップファイル(~)を生成しない
@@ -98,7 +103,6 @@ augroup END
 " ----------------------------------------------------------------------------
 " MAPPINGS
 " ----------------------------------------------------------------------------
-nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc> " 文字列検索のハイライトオフ
 nmap PP "0p " ヤンクレジスタを使って貼り付け
 map q <silent> " よくミスタイプするのでマクロ記録しないようにする
 
