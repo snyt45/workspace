@@ -40,8 +40,6 @@ ifeq ($(TGT), $(WORKBENCH))
 	runopt+= --mount type=bind,src=$(HOME)/.ssh,dst=$(HOME)/.ssh
 	# マウントオプション gitconfig
 	runopt+= --mount type=bind,src=$(HOME)/.gitconfig,dst=$(HOME)/.gitconfig
-	# マウントオプション .git_template
-	runopt+= --mount type=bind,src=$(HOME)/.git_template,dst=$(HOME)/.git_template
 	# マウントオプション clip
 	runopt+= --mount type=bind,src=$(HOME)/clip,dst=$(HOME)/clip
 	# DockerでC++デバッグを有効にする

@@ -190,17 +190,6 @@ let g:lsp_settings_filetype_ruby = ['solargraph']
 let g:copilot_filetypes = { 'gitcommit': v:true }
 
 " ------------------------------------------------------------
-" ctags
-" ------------------------------------------------------------
-augroup auto_generate_tags
-  au!
-  autocmd BufWritePost *
-    \ if exists('b:git_dir') && !empty(glob(b:git_dir.'/hooks/ctags')) |
-    \   call system('"'.b:git_dir.'/hooks/ctags"') |
-    \ endif
-augroup END
-
-" ------------------------------------------------------------
 " filetype
 " ------------------------------------------------------------
 augroup ts_react_add_path
