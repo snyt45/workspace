@@ -116,6 +116,31 @@ nnoremap <leader>q :CtrlPQuickfix<cr>
 nnoremap <leader>m :CtrlPMRUFiles<cr>
 
 " ------------------------------------------------------------
+" ctags
+" ------------------------------------------------------------
+" see: https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
+set tags=.tags;$HOME
+
+function! s:execute_ctags() abort
+  let tag_name = 'tags'
+  let tags_path = findfile(tag_name, '.;')
+  if tags_path ==# ''
+    return
+  endif
+
+  " タグファイルのディレクトリパスを取得
+  " `:p:h`の部分は、:h filename-modifiersで確認
+  let tags_dirpath = fnamemodify(tags_path, ':p:h')
+  " 見つかったタグファイルのディレクトリに移動して、ctagsをバックグラウンド実行（エラー出力破棄）
+  execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
+endfunction
+
+augroup update_ctags
+  au!
+  autocmd BufWritePost * call s:execute_ctags()
+augroup END
+
+" ------------------------------------------------------------
 " vimdoc-ja
 " ------------------------------------------------------------
 " vim help japanese
