@@ -14,6 +14,7 @@ Windows ホスト用のセットアップを行うため、Git をインスト�
 winget install Git.Git
 git config --global user.name "yuta.sano"
 git config --global user.email "snyt45@gmail.com"
+git config --global diff.tool vimdiff
 ```
 
 Windows ホスト用のセットアップを行うため、リポジトリをクローンする。
