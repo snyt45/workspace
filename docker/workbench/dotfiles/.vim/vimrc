@@ -29,6 +29,9 @@ set noswapfile
 set nobackup
 set noundofile
 
+" default shell
+set shell=bash
+
 " yank send to clipboard
 augroup text_yank_post
   au!
@@ -236,6 +239,10 @@ map q <silent>
 command! CopyFilePath :echo "copied fullpath: " . expand('%:p') | let @"=expand('%:p') | call system('clip -i', @")
 nnoremap <leader>c :CopyFilePath<cr>
 
+" quickfix
+nnoremap <silent> cn :cn<CR>
+nnoremap <silent> cp :cp<CR>
+
 " buffers and quickfix
 function! ToggleQuickFix()
   if empty(filter(getwininfo(), 'v:val.quickfix'))
@@ -250,3 +257,20 @@ nnoremap <leader>d :bd<cr>
 " searching ang grepping
 nnoremap <leader>g :copen<cr>:Ggrep!<SPACE>
 nnoremap K :Ggrep "\b<C-R><C-W>\b"<cr>:cw<cr>
+
+" git show
+function! GitShowCursorCommit()
+  let l:word = expand('<cword>')
+  execute ":term git show " . l:word
+endfunction
+
+nnoremap go :call GitShowCursorCommit()<cr>
+
+" git log for current file
+nnoremap gl :term git log %<cr>
+
+" git blame for current file
+nnoremap gb :term git blame %<cr>
+
+" git status
+nnoremap gs :term git status<cr>
