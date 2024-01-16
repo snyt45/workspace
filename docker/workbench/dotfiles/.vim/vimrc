@@ -230,7 +230,7 @@ endfunction
 
 augroup auto_setup_copilot
   au!
-  autocmd VimEnter * call timer_start(0, 'CheckCopilotStatus')
+  autocmd VimEnter * call timer_start(5000, 'CheckCopilotStatus')
 augroup END
 
 " ------------------------------------------------------------
