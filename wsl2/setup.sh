@@ -54,9 +54,7 @@ sudo ln -snfv ~/.dotfiles/wsl2/bash/.bashrc_local ~/
 success "Bash Setting Done."
 
 title "Git Setting"
-git config --global user.name "yuta.sano"
-git config --global user.email "snyt45@gmail.com"
-git config --global core.editor vim
+sudo cp ~/.dotfiles/wsl2/git/.gitconfig ~/.gitconfig
 success "Git Setting Done."
 
 title "Shared Setting"
