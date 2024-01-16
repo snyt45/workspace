@@ -62,6 +62,7 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'itchyny/lightline.vim'
     Plug 'shinchu/lightline-gruvbox.vim'
   Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'mattn/ctrlp-matchfuzzy'
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
   Plug 'tyru/caw.vim'
@@ -110,6 +111,7 @@ let g:lightline = {
 " ------------------------------------------------------------
 " ctrlp
 " ------------------------------------------------------------
+let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
 let g:ctrlp_map = '<leader><leader>'
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 nnoremap <leader>b :CtrlPBuffer<cr>
