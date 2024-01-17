@@ -62,10 +62,10 @@ function gbc() {
     fi
 }
 
-# 選択したファイルを add または unstage または delete する(gadd)
-function gadd() {
+# 選択したファイルを add または unstage または delete または vim で開く(gg)
+function gg() {
     local instructions preview selected action
-    instructions="Select multiple files by TAB, and then press Enter to add them."
+    instructions="Ctrl-u to page down, Ctrl-i to page up"
     preview='echo {} | \
       awk "
           \$0 ~ /^[AM] / { print \"git diff --color --staged \"\$2\" | delta --side-by-side --line-numbers -w ${FZF_PREVIEW_COLUMNS:-$COLUMNS}\" }
@@ -77,7 +77,7 @@ function gadd() {
     selected=$(git status -s |
                fzf -m --ansi \
                    --header="$instructions" \
-                   --bind=ctrl-a:toggle-all \
+                   --bind=ctrl-a:toggle-all,ctrl-u:preview-down,ctrl-i:preview-up \
                    --preview="$preview" \
                    --preview-window=up,60% |
                awk '{ print $2 }')
@@ -87,11 +87,14 @@ function gadd() {
         return 0
     fi
 
-    echo "[a]dd or [u]nstage or [d]elete?"
+    echo "[a]dd or [e]dit or [u]nstage or [d]elete?"
     read -r -n 1 action
     case "$action" in
         a)
             git add $selected
+            ;;
+        e)
+            vim $selected
             ;;
         u)
             git reset HEAD $selected
@@ -112,6 +115,17 @@ function gadd() {
             return 1
             ;;
     esac
+}
+
+gl() {
+  git log --color --pretty="%C(auto)%h%d %s %C(#C0C0C0)%C(bold)%cr" |
+  fzf --ansi \
+      --bind "ctrl-m:execute:
+              (grep -o '[a-f0-9]\{7\}' | head -1 |
+              xargs -I % sh -c 'git show --color=always % | delta') << 'FZF-EOF'
+              {}
+              FZF-EOF
+             "
 }
 
 ########################################################################################################################
