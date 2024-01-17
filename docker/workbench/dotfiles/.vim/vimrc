@@ -29,6 +29,9 @@ set noswapfile
 set nobackup
 set noundofile
 
+" mouse on
+set mouse=a
+
 " default shell
 set shell=bash
 
