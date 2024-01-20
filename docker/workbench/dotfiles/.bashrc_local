@@ -41,10 +41,11 @@ export PATH="$PATH:$HOME/.tfenv/bin"
 ########################################################################################################################
 # カスタムコマンド
 ########################################################################################################################
-# history検索(Ctrl + r)
+# history検索(C-r)
 function _history_search() {
-    local selected
-    selected=$(history | sed -e 's/^[[:space:]]*[0-9]\+[[:space:]]*//' -e 's/[[:space:]]*$//' | sort -u | fzf --query "$READLINE_LINE")
+    local regex_remove_numbers='s/^[[:space:]]*[0-9]\+[[:space:]]*//'
+    local regex_remove_spaces='s/^[[:space:]]*//'
+    local selected=$(history | sed -e $regex_remove_numbers -e $regex_remove_spaces | sort -u | fzf --query "$READLINE_LINE")
     if [[ -n "$selected" ]]; then
         READLINE_LINE="$selected"
         READLINE_POINT=${#selected}
@@ -54,78 +55,54 @@ bind -x '"\C-r": _history_search'
 
 # 選択したブランチに移動(gbc)
 function gbc() {
-    local branches selected
-    branches=$(git branch --all | grep -v HEAD)
-    selected=$(echo "$branches" | fzf | sed -e "s/.* //" -e "s#remotes/[^/]*/##")
+    local regex_remove_spaces='s/.* //'
+    local regex_remove_remote_origin='s#remotes/[^/]*/##'
+    local branches=$(git branch --all | grep -v HEAD)
+    local selected=$(echo "$branches" | fzf | sed -e $regex_remove_spaces -e $regex_remove_remote_origin)
     if [[ -n "$selected" ]]; then
         git checkout $selected
     fi
 }
 
-# 選択したファイルを add または unstage または delete または vim で開く(gg)
-function gg() {
-    local instructions preview selected action
-    instructions="Ctrl-u to page down, Ctrl-i to page up"
-    preview='echo {} | \
-      awk "
-          \$0 ~ /^[AM] / { print \"git diff --color --staged \"\$2\" | delta --side-by-side --line-numbers -w ${FZF_PREVIEW_COLUMNS:-$COLUMNS}\" }
-          \$0 ~ /^ [AM]/ { print \"git diff --color \"\$2\" | delta --side-by-side --line-numbers -w ${FZF_PREVIEW_COLUMNS:-$COLUMNS}\" }
-          \$0 ~ /^D /    { print \"git diff --color --staged -- \"\$2\" | delta --side-by-side --line-numbers -w ${FZF_PREVIEW_COLUMNS:-$COLUMNS}\" }
-          \$0 ~ /^ D/    { print \"git diff --color -- \"\$2\" | delta --side-by-side --line-numbers -w ${FZF_PREVIEW_COLUMNS:-$COLUMNS}\" }
-          \$0 ~ /^\?\? / { print \"git diff --color --no-index /dev/null \"\$2\" | delta --side-by-side --line-numbers -w ${FZF_PREVIEW_COLUMNS:-$COLUMNS}\" }" | \
-      xargs -I{} bash -c {}'
-    selected=$(git status -s |
-               fzf -m --ansi \
-                   --header="$instructions" \
-                   --bind=ctrl-a:toggle-all,ctrl-u:preview-down,ctrl-i:preview-up \
-                   --preview="$preview" \
-                   --preview-window=up,60% |
-               awk '{ print $2 }')
-
-    if [ -z "$selected" ]; then
-        echo "No files selected. Exiting."
-        return 0
-    fi
-
-    echo "[a]dd or [e]dit or [u]nstage or [d]elete?"
-    read -r -n 1 action
-    case "$action" in
-        a)
-            git add $selected
-            ;;
-        e)
-            vim $selected
-            ;;
-        u)
-            git reset HEAD $selected
-            ;;
-        d)
-            for file in $selected; do
-                status=$(git status -s $file | awk '{ print substr($0, 1, 2) }')
-                file=$(git status -s $file | awk '{ print substr($0, 4) }')
-                if [ "$status" == "??" ]; then
-                    rm $file
-                else
-                    git checkout -- $file
-                fi
-            done
-            ;;
-        *)
-            echo "Invalid action. Exiting."
-            return 1
-            ;;
-    esac
+# 選択したファイルをaddする(gadd)
+function gadd() {
+    local delta_cmd="delta --side-by-side --line-numbers -w ${FZF_PREVIEW_COLUMNS:-$COLUMNS}"
+    local preview='
+      status=$(echo {} | cut -c 1-2);
+      file=$(echo {} | awk '\''{print $2}'\'');
+      case $status in
+        "A "*|"M "*)
+          git diff --color --staged $file
+          ;;
+        " A"*|" M"*)
+          git diff --color $file
+          ;;
+        "D "*)
+          git diff --color --staged -- $file
+          ;;
+        " D"*)
+          git diff --color -- $file
+          ;;
+        "??"*)
+          git diff --color --no-index /dev/null $file
+          ;;
+      esac'
+    git status -s |
+    fzf -m --ansi \
+        --header="Space: add or unstage, Enter: open vim, C-u: to page down, C-i: to page up" \
+        --preview="$preview | $delta_cmd" \
+        --preview-window=up,60% \
+        --bind "space:execute-silent(echo {} | awk '{print \$2}' | xargs -I % sh -c 'git diff --name-only --cached % | grep -q % && git reset HEAD % || git add %')+reload(git status -s)" \
+        --bind "enter:become(vim {2})" \
+        --bind=ctrl-u:preview-down,ctrl-i:preview-up
 }
 
+# TODO: 途中
 gl() {
   git log --color --pretty="%C(auto)%h%d %s %C(#C0C0C0)%C(bold)%cr" |
   fzf --ansi \
-      --bind "ctrl-m:execute:
-              (grep -o '[a-f0-9]\{7\}' | head -1 |
-              xargs -I % sh -c 'git show --color=always % | delta') << 'FZF-EOF'
-              {}
-              FZF-EOF
-             "
+      --preview "echo {} | awk '{print \$1}' | git show --color=always | delta" \
+      --bind "ctrl-c:execute-silent(echo {} | awk '{print \$1}' | clip -i)+abort"
 }
 
 ########################################################################################################################
