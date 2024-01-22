@@ -58,7 +58,7 @@ function gbc() {
     local regex_remove_spaces='s/.* //'
     local regex_remove_remote_origin='s#remotes/[^/]*/##'
     local branches=$(git branch --all | grep -v HEAD)
-    local selected=$(echo "$branches" | fzf | sed -e $regex_remove_spaces -e $regex_remove_remote_origin)
+    local selected=$(echo "$branches" | fzf | sed -e "$regex_remove_spaces" -e "$regex_remove_remote_origin")
     if [[ -n "$selected" ]]; then
         git checkout $selected
     fi
