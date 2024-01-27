@@ -76,7 +76,8 @@ RUN sudo apt-get update && \
       zoxide \
       golang \
       lldb \
-      universal-ctags
+      universal-ctags \
+      gh
 
 # starship
 RUN sudo sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes
