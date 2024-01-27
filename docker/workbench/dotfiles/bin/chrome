@@ -1,0 +1,10 @@
+#!/bin/bash
+for i in "$@"
+do
+  case "$i" in
+  (-i|--input|-in)
+    tee <&0 > ~/chrome
+    exit 0
+    ;;
+  esac
+done

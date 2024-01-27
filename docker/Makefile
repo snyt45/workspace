@@ -42,6 +42,8 @@ ifeq ($(TGT), $(WORKBENCH))
 	runopt+= --mount type=bind,src=$(HOME)/.gitconfig,dst=$(HOME)/.gitconfig
 	# マウントオプション clip
 	runopt+= --mount type=bind,src=$(HOME)/clip,dst=$(HOME)/clip
+	# マウントオプション chrome
+	runopt+= --mount type=bind,src=$(HOME)/chrome,dst=$(HOME)/chrome
 	# DockerでC++デバッグを有効にする
 	# see: https://stackoverflow.com/questions/70108775/gdb-exits-immediately-process-finished-with-exit-code-1-or-lldb-a-packet-ret/70108776#70108776
 	runopt+= --cap-add=SYS_PTRACE --security-opt seccomp=unconfined

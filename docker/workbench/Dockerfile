@@ -116,6 +116,7 @@ RUN sudo chmod +x /usr/local/bin/entrypoint.sh
 ADD ./dotfiles /etc/dotfiles
 RUN sudo chmod +x /etc/dotfiles/bin/ide
 RUN sudo chmod +x /etc/dotfiles/bin/clip
+RUN sudo chmod +x /etc/dotfiles/bin/chrome
 RUN sudo chown -R ${local_whoami}:${local_whoami} /etc/dotfiles
 
 ########################################################################################################################
@@ -140,6 +141,7 @@ RUN ln -sf /etc/dotfiles/.bashrc /home/${local_whoami}/ && \
 # bin
 RUN sudo ln -s /etc/dotfiles/bin/ide /usr/local/bin/
 RUN sudo ln -s /etc/dotfiles/bin/clip /usr/local/bin/
+RUN sudo ln -s /etc/dotfiles/bin/chrome /usr/local/bin/chrome
 # lazygit
 RUN mkdir -p /home/${local_whoami}/.config/lazygit && \
     ln -s /etc/dotfiles/.config/lazygit/config.yml /home/${local_whoami}/.config/lazygit
