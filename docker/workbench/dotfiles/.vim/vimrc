@@ -306,12 +306,3 @@ function! GitShowCursorCommit()
 endfunction
 
 nnoremap go :call GitShowCursorCommit()<cr>
-
-" git log for current file
-nnoremap gl :term git log %<cr>
-
-" git blame for current file
-nnoremap gb :term git blame %<cr>
-
-" git status
-nnoremap gs :term git status<cr>
