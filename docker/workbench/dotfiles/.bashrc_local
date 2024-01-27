@@ -87,13 +87,32 @@ function gadd() {
           git diff --color --no-index /dev/null $file
           ;;
       esac'
+    local add_or_unstage='
+      file=$(echo {} | awk '\''{print $2}'\'');
+      if git diff --name-only --cached | grep -q $file; then
+        git reset HEAD $file
+      else
+        git add $file
+      fi'
+    local reset='
+      status=$(echo {} | cut -c 1-2);
+      file=$(echo {} | awk '\''{print $2}'\'');
+      case $status in
+        "??")
+          rm -f $file
+          ;;
+        *)
+          git checkout -- $file
+          ;;
+      esac'
     git status -s |
     fzf -m --ansi \
-        --header="Space: add or unstage, Enter: open vim, C-u: to page down, C-i: to page up" \
+        --header="Space: add or unstage, Enter: open vim, C-d: reset, C-u: to page down, C-i: to page up" \
         --preview="$preview | $delta_cmd" \
         --preview-window=up,60% \
-        --bind "space:execute-silent(echo {} | awk '{print \$2}' | xargs -I % sh -c 'git diff --name-only --cached % | grep -q % && git reset HEAD % || git add %')+reload(git status -s)" \
+        --bind "space:execute-silent($add_or_unstage)+reload(git status -s)" \
         --bind "enter:become(vim {2})" \
+        --bind "ctrl-d:execute-silent($reset)+reload(git status -s)" \
         --bind=ctrl-u:preview-down,ctrl-i:preview-up
 }
 
