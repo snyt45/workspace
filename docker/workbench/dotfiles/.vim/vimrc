@@ -299,6 +299,9 @@ nnoremap <leader>d :bd<cr>
 nnoremap <leader>g :copen<cr>:Ggrep!<SPACE>
 nnoremap K :Ggrep "\b<C-R><C-W>\b"<cr>:cw<cr>
 
+" ctags
+nnoremap <C-]> g<C-]>
+
 " git show
 function! GitShowCursorCommit()
   let l:word = expand('<cword>')
