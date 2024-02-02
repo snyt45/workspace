@@ -302,10 +302,27 @@ nnoremap K :Ggrep "\b<C-R><C-W>\b"<cr>:cw<cr>
 " ctags
 nnoremap <C-]> g<C-]>
 
-" git show
-function! GitShowCursorCommit()
+function! GitShowCursorPullRequest()
   let l:word = expand('<cword>')
-  execute ":term git show " . l:word
+  let l:get_pr_number = "gh api graphql
+      \ -F owner=':owner' -F repo=':repo' -F hash=" . l:word . "
+      \ -f query='query($repo:String!, $owner:String!, $hash:String) { repository(name: $repo, owner: $owner) { object(expression: $hash) { ... on Commit {associatedPullRequests(first: 1) { edges { node { number } } } } } } }'
+      \ | jq '.data.repository.object.associatedPullRequests.edges[0].node.number'"
+  let l:pr_number = system(l:get_pr_number)
+
+  echo "pr_number: " . l:pr_number
+  if match(l:pr_number, 'null\n') != -1
+    echo "Pull Request not found."
+    return
+  endif
+
+  let l:get_pr_url = "gh api graphql
+      \ -F owner=':owner' -F repo=':repo' -F number=" . str2nr(l:pr_number) . "
+      \ -f query='query($repo:String!, $owner:String!, $number:Int!) { repository(name: $repo, owner: $owner) { pullRequest(number: $number) { url } } }'
+      \ | jq '.data.repository.pullRequest.url'"
+  let l:pr_url = system(l:get_pr_url)
+  echo "open: " . l:pr_url | let @"=l:pr_url | call system('chrome -i', @")
 endfunction
 
-nnoremap go :call GitShowCursorCommit()<cr>
+command! ShowPullRequest :call GitShowCursorPullRequest()
+nnoremap go :ShowPullRequest<cr>

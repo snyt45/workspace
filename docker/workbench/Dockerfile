@@ -77,7 +77,8 @@ RUN sudo apt-get update && \
       golang \
       lldb \
       universal-ctags \
-      gh
+      gh \
+      jq
 
 # starship
 RUN sudo sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes
