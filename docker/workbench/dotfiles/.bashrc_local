@@ -122,8 +122,8 @@ function gadd() {
 # git logを表示する(gl)
 gl() {
   local log_line_to_hash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
-  local preview_commit="$log_line_to_hash | xargs -I % sh -c 'git show --color=always % | delta'"
-  local open_vim="$log_line_to_hash | xargs -I % sh -c 'git show %' | vim -"
+  local preview_commit="$log_line_to_hash | xargs -I % sh -c 'git show --color=always --stat --patch --no-prefix % | delta'"
+  local open_vim="$log_line_to_hash | xargs -I % sh -c 'git show --stat --patch --no-prefix %' | vim -"
   local copy_commit_hash="$log_line_to_hash | clip -i"
   git log --color --pretty="%C(auto)%h%d %s %C(#C0C0C0)%C(bold)%cr" |
   fzf --ansi \
