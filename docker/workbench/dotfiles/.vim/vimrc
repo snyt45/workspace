@@ -64,8 +64,6 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'morhetz/gruvbox'
   Plug 'itchyny/lightline.vim'
     Plug 'shinchu/lightline-gruvbox.vim'
-  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-  Plug 'junegunn/fzf.vim'
   Plug 'ctrlpvim/ctrlp.vim'
     Plug 'mattn/ctrlp-matchfuzzy'
   Plug 'tpope/vim-fugitive'
