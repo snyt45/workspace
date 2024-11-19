@@ -242,6 +242,17 @@ let g:lsp_settings_filetype_ruby = ['solargraph']
 " let g:lsp_log_verbose = 1 " ログを有効にする
 " let g:lsp_log_file = expand('~/.shared_cache/.vim/vim-lsp.log') " ログの出力先
 
+" vim-lsp がバッファで有効になったときに実行される関数
+" バッファローカルなキーバインドやオプションを指定
+" See: https://mattn.kaoriya.net/software/vim/20191231213507.htm
+function! s:on_lsp_buffer_enabled() abort
+  let g:lsp_format_sync_timeout = 1000
+
+  " golang
+  " バッファ保存時に毎回「import補完」と「コードフォーマット」を実行
+  autocmd BufWritePre *.go call execute(['LspCodeActionSync source.organizeImports', 'LspDocumentFormatSync'])
+endfunction
+
 " ------------------------------------------------------------
 " copilot
 " ------------------------------------------------------------
