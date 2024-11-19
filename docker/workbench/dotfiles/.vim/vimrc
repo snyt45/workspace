@@ -275,24 +275,24 @@ augroup END
 " ------------------------------------------------------------
 " session
 " ------------------------------------------------------------
-augroup SessionAutocommands
-  au!
-
-  autocmd VimEnter * nested call <SID>RestoreSessionWithConfirm()
-  autocmd VimLeave * execute 'SaveSession'
-augroup END
+" augroup SessionAutocommands
+"   au!
+" 
+"   autocmd VimEnter * nested call <SID>RestoreSessionWithConfirm()
+"   autocmd VimLeave * execute 'SaveSession'
+" augroup END
 
 command! RestoreSession :source ~/.shared_cache/.vim/.session
 command! SaveSession    :mksession! ~/.shared_cache/.vim/.session
 
 " Restore session with confirm
-function! s:RestoreSessionWithConfirm()
-  let msg = 'Do you want to restore previous session?'
-
-  if !argc() && confirm(msg, "&Yes\n&No", 1, 'Question') == 1
-    execute 'RestoreSession'
-  endif
-endfunction
+" function! s:RestoreSessionWithConfirm()
+"   let msg = 'Do you want to restore previous session?'
+" 
+"   if !argc() && confirm(msg, "&Yes\n&No", 1, 'Question') == 1
+"     execute 'RestoreSession'
+"   endif
+" endfunction
 
 " ------------------------------------------------------------
 " filetype
