@@ -74,6 +74,7 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'prabirshrestha/asyncomplete.vim'
   Plug 'prabirshrestha/asyncomplete-lsp.vim'
   Plug 'github/copilot.vim'
+  Plug 'thinca/vim-quickrun'
 call plug#end()
 
 " auto plug install
@@ -293,6 +294,16 @@ command! SaveSession    :mksession! ~/.shared_cache/.vim/.session
 "     execute 'RestoreSession'
 "   endif
 " endfunction
+
+" ------------------------------------------------------------
+" QuickRun
+" ------------------------------------------------------------
+let g:quickrun_config = {}
+let g:quickrun_config['go'] = {
+    \ 'command': 'go',
+    \ 'cmdopt': 'run',
+    \ 'exec': 'go run %S'
+    \ }
 
 " ------------------------------------------------------------
 " filetype
