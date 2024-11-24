@@ -73,7 +73,6 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'mattn/vim-lsp-settings'
   Plug 'prabirshrestha/asyncomplete.vim'
   Plug 'prabirshrestha/asyncomplete-lsp.vim'
-  Plug 'github/copilot.vim'
   Plug 'thinca/vim-quickrun'
 call plug#end()
 
@@ -253,25 +252,6 @@ function! s:on_lsp_buffer_enabled() abort
   " バッファ保存時に毎回「import補完」と「コードフォーマット」を実行
   autocmd BufWritePre *.go call execute(['LspCodeActionSync source.organizeImports', 'LspDocumentFormatSync'])
 endfunction
-
-" ------------------------------------------------------------
-" copilot
-" ------------------------------------------------------------
-let g:copilot_filetypes = { 'gitcommit': v:true }
-
-" check copilot status
-function! CheckCopilotStatus(timer_id)
-  let copilot_status = execute('Copilot status')
-
-  if copilot_status =~ 'Copilot: Not authenticated. Invoke :Copilot setup'
-    echo "Copilot: Not authenticated. Please manually run :Copilot setup"
-  endif
-endfunction
-
-augroup auto_setup_copilot
-  au!
-  autocmd VimEnter * call timer_start(5000, 'CheckCopilotStatus')
-augroup END
 
 " ------------------------------------------------------------
 " session
