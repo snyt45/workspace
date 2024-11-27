@@ -305,6 +305,9 @@ augroup END
 " highlight off
 nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 
+" vimrcを開く
+nmap <leader>v :e $MYVIMRC<CR>
+
 " This line maps the 'q' key to a silent action
 map q <silent>
 
