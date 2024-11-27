@@ -128,6 +128,7 @@ nnoremap <leader>m :CtrlPMRUFiles<cr>
 " ctrlp-launcher
 " ------------------------------------------------------------
 nnoremap <leader>e :<c-u>CtrlPLauncher<cr>
+let g:ctrlp_launcher_file = '~/.vim/config/.ctrlp-launcher'
 
 " ------------------------------------------------------------
 " ctags
