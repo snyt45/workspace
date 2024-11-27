@@ -66,6 +66,7 @@ call plug#begin('~/.shared_cache/.vim/plugged')
     Plug 'shinchu/lightline-gruvbox.vim'
   Plug 'ctrlpvim/ctrlp.vim'
     Plug 'mattn/ctrlp-matchfuzzy'
+    Plug 'mattn/ctrlp-launcher'
   Plug 'tpope/vim-fugitive'
   Plug 'airblade/vim-gitgutter'
   Plug 'tyru/caw.vim'
@@ -122,6 +123,11 @@ nnoremap <leader>t :CtrlPTag<cr>
 nnoremap <leader>f :CtrlPBufTag<cr>
 nnoremap <leader>q :CtrlPQuickfix<cr>
 nnoremap <leader>m :CtrlPMRUFiles<cr>
+
+" ------------------------------------------------------------
+" ctrlp-launcher
+" ------------------------------------------------------------
+nnoremap <leader>e :<c-u>CtrlPLauncher<cr>
 
 " ------------------------------------------------------------
 " ctags
