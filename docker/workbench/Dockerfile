@@ -109,6 +109,8 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     sudo ./aws/install
 # tfenv
 RUN git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+# deno
+RUN curl -fsSL https://deno.land/install.sh | sh -s -- -y
 
 ########################################################################################################################
 # ファイル追加・権限
