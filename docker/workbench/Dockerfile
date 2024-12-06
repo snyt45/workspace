@@ -68,7 +68,6 @@ RUN sudo apt-get update && \
       unzip \
       trash-cli \
       git \
-      vim \
       tmux \
       fzf \
       ripgrep \
@@ -79,6 +78,14 @@ RUN sudo apt-get update && \
       universal-ctags \
       gh \
       jq
+
+# vim
+RUN sudo apt-get update && \
+    DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
+      software-properties-common && \
+    sudo add-apt-repository ppa:jonathonf/vim && \
+    DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
+      vim
 
 # starship
 RUN sudo sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes
