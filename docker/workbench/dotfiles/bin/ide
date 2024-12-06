@@ -1,19 +1,19 @@
 #!/bin/bash
 if [ "$#" -eq 0 ]; then
-  tmux split-window -v -p 20
-  tmux split-window -h -p 66
-  tmux split-window -h -p 50
+  tmux split-window -v -l 20%
+  tmux split-window -h -l 66%
+  tmux split-window -h -l 50%
   tmux select-pane -t 0
 else
   case $1 in
     "1")
-      tmux split-window -v -p 20
-      tmux split-window -h -p 66
-      tmux split-window -h -p 50
+      tmux split-window -v -l 20%
+      tmux split-window -h -l 66%
+      tmux split-window -h -l 50%
       tmux select-pane -t 0
-      tmux split-window -v -p 30
-      tmux split-window -h -p 66
-      tmux split-window -h -p 50
+      tmux split-window -v -l 30%
+      tmux split-window -h -l 66%
+      tmux split-window -h -l 50%
       tmux select-pane -t 0
       ;;
     "kill")
