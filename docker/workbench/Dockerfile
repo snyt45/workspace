@@ -82,10 +82,18 @@ RUN sudo apt-get update && \
 # vim
 RUN sudo apt-get update && \
     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
-      software-properties-common && \
-    sudo add-apt-repository ppa:jonathonf/vim && \
-    DEBIAN_FRONTEND=noninteractive sudo apt-get install -y \
-      vim
+      make \
+      libncurses-dev
+RUN cd /tmp && \
+    git clone https://github.com/vim/vim.git && \
+    cd vim && \
+    ./configure \
+    --with-features=huge \
+    --enable-multibyte \
+    --prefix=/usr/local && \
+    make && \
+    sudo make install && \
+    sudo ln -sf /usr/local/bin/vim /usr/local/bin/vi
 
 # starship
 RUN sudo sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --yes
