@@ -188,32 +188,99 @@ set helplang=ja,en
 " ------------------------------------------------------------
 " netrw
 " ------------------------------------------------------------
-" hidden header
-let g:netrw_banner=0
+" デフォルト表示設定
+let g:netrw_liststyle = 3    " ツリー表示をデフォルトに
+let g:netrw_banner = 0       " バナーを非表示
+let g:netrw_winsize = 25
 
-let g:NetrwIsOpen=0
-function! ToggleNetrw()
-    let g:netrw_winsize = 25
-    let g:netrw_alto = 1
-    let g:netrw_browse_split = 4
+" Netrwのトグル制御用
+let g:NetrwIsOpen = 0
 
-    if g:NetrwIsOpen
-        let i = bufnr("$")
-        while (i >= 1)
-            if (getbufvar(i, "&filetype") == "netrw")
-                silent exe "bwipeout " . i
-            endif
-            let i-=1
-        endwhile
-        let g:NetrwIsOpen=0
-    else
-        let g:NetrwIsOpen=1
-        silent Vex
-    endif
+" Netrwをトグルで表示/非表示する関数
+function! ToggleNetrw() abort
+   if g:NetrwIsOpen
+       " 開いている場合は閉じる
+       let i = bufnr("$")
+       while (i >= 1)
+           if (getbufvar(i, "&filetype") == "netrw")
+               silent exe "bwipeout " . i
+           endif
+           let i-=1
+       endwhile
+       let g:NetrwIsOpen = 0
+   else
+       " 閉じている場合は開く
+       let g:NetrwIsOpen = 1
+       silent Vex
+   endif
 endfunction
 
-"ショートカットの設定
-"= を 2 回連続押下で toggle
+" パス関連の操作を行う関数
+function! s:GetNetrwPath() abort
+   " 現在のディレクトリツリーのパスを取得
+   let l:dirpath = netrw#Call('NetrwTreePath', w:netrw_treetop)
+   " カーソル位置のアイテム名を取得
+   let l:filename = netrw#Call('NetrwGetWord')
+   
+   " ディレクトリの場合（末尾が/）はディレクトリパスのみを返す
+   " ファイルの場合はディレクトリパスとファイル名を結合
+   return l:filename =~ '/$' ? l:dirpath : l:dirpath . '/' . l:filename
+endfunction
+
+" エンターキー押下時の処理
+function! s:HandleEnter() abort
+   let l:path = s:GetNetrwPath()
+
+   if isdirectory(l:path)
+       " ディレクトリの場合は標準のnetrw操作を実行
+       execute "normal \<Plug>NetrwLocalBrowseCheck"
+       return
+   endif
+
+   " ファイルの場合は指定ウィンドウで開く
+   call s:OpenFileInSharedWindow('edit')
+endfunction
+
+" ファイルを開く処理
+function! s:OpenFileInSharedWindow(mode) abort
+   let l:path = s:GetNetrwPath()
+   let l:prevwin = winnr('#')  " 前回のウィンドウ番号を取得
+
+   " ウィンドウが存在しない場合は新規作成
+   if l:prevwin == 0
+       vertical rightbelow new
+       vertical resize 80
+   else
+       " 既存のウィンドウを使用
+       execute l:prevwin . 'wincmd w'
+   endif
+
+   " ファイルを開く
+   execute 'edit ' . fnameescape(l:path)
+
+   " プレビューモードの場合はnetrwに戻る
+   if a:mode ==# 'preview'
+       wincmd p
+   endif
+endfunction
+
+" キーマッピングの設定
+function! s:set_netrw_mappings() abort
+   if !exists('g:loaded_netrwPlugin')
+       return
+   endif
+   nmap <buffer> p :call <SID>OpenFileInSharedWindow('preview')<CR>
+   nmap <buffer> <CR> :call <SID>HandleEnter()<CR>
+endfunction
+
+" 初期設定
+augroup InitNetrw
+   autocmd!
+   autocmd FileType netrw call s:set_netrw_mappings()
+augroup END
+
+" グローバルキーマッピング
+" == でnetrwをトグル
 noremap <silent>== :call ToggleNetrw()<CR>
 
 " ------------------------------------------------------------
