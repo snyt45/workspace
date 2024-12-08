@@ -113,6 +113,11 @@ let g:lightline = {
   \     ['fileformat', 'fileencoding', 'filetype', 'winbufnr']
   \   ]
   \ },
+  \ 'inactive': {
+  \   'right': [ [ 'lineinfo' ],
+  \              [ 'percent' ],
+  \              [ 'winbufnr' ] ]
+  \ },
   \ 'component_function': {
   \   'gitbranch': 'fugitive#head',
   \ },
