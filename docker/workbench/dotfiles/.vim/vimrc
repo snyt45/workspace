@@ -409,9 +409,9 @@ nmap <leader>v :e $MYVIMRC<CR>
 " This line maps the 'q' key to a silent action
 map q <silent>
 
-" file path copy
-command! CopyFilePath :echo "copied fullpath: " . expand('%:p') | let @"=expand('%:p') | call system('clip -i', @")
-nnoremap <leader>c :CopyFilePath<cr>
+" Git管理のファイルの相対パスをクリップボードにコピー
+command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git rev-parse --show-toplevel')), '', '') | echo @" | call system('clip -i', @")
+nnoremap <leader>c :CopyGitPath<cr>
 
 " quickfix
 nnoremap <silent> cn :cn<CR>
