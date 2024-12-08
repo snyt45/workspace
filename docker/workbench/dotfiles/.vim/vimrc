@@ -106,10 +106,18 @@ let g:lightline = {
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ],
   \             [ 'gitbranch', 'readonly', 'filename', 'modified' ],
-  \           ]
+  \           ],
+  \   'right': [
+  \     ['lineinfo'],
+  \     ['percent'],
+  \     ['fileformat', 'fileencoding', 'filetype', 'winbufnr']
+  \   ]
   \ },
   \ 'component_function': {
   \   'gitbranch': 'fugitive#head',
+  \ },
+  \ 'component': {
+  \   'winbufnr': 'win:%{winnr()} buf:%n'
   \ },
   \ }
 
