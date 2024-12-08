@@ -52,6 +52,36 @@ if has('vim_starting')
 endif
 
 " ------------------------------------------------------------
+" indent
+" ------------------------------------------------------------
+augroup fileTypeIndent
+  autocmd!
+  " Ruby (2スペース - Rubyスタイルガイド推奨)
+  autocmd FileType ruby setlocal expandtab shiftwidth=2 softtabstop=2
+
+  " Go (タブ - 公式ツール go fmt の標準)
+  autocmd FileType go setlocal noexpandtab shiftwidth=4 softtabstop=4 tabstop=4
+
+  " TypeScript/JavaScript (2スペース - Google/Airbnb スタイルガイド)
+  autocmd FileType typescript setlocal expandtab shiftwidth=2 softtabstop=2
+  autocmd FileType javascript setlocal expandtab shiftwidth=2 softtabstop=2
+  autocmd FileType typescriptreact setlocal expandtab shiftwidth=2 softtabstop=2
+
+  " Vim (2スペース - 一般的な慣習)
+  autocmd FileType vim setlocal expandtab shiftwidth=2 softtabstop=2
+
+  " YAML (2スペース - YAML仕様の可読性推奨)
+  autocmd FileType yaml setlocal expandtab shiftwidth=2 softtabstop=2
+  autocmd FileType yml setlocal expandtab shiftwidth=2 softtabstop=2
+
+  " JSON (2スペース - 一般的な慣習)
+  autocmd FileType json setlocal expandtab shiftwidth=2 softtabstop=2
+
+  " CSS (2スペース - Google/Airbnb スタイルガイド)
+  autocmd FileType css setlocal expandtab shiftwidth=2 softtabstop=2
+augroup END
+
+" ------------------------------------------------------------
 " plugin
 " ------------------------------------------------------------
 " incompatible plugins
@@ -76,6 +106,7 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'prabirshrestha/asyncomplete-lsp.vim'
   Plug 'thinca/vim-quickrun'
   Plug 'vim-denops/denops.vim'
+  Plug 'nathanaelkane/vim-indent-guides'
 call plug#end()
 
 " auto plug install
@@ -125,6 +156,18 @@ let g:lightline = {
   \   'winbufnr': 'win:%{winnr()} buf:%n'
   \ },
   \ }
+
+" ------------------------------------------------------------
+" vim-indent-guides
+" ------------------------------------------------------------
+" Vim起動時にインデントガイドを有効化
+let g:indent_guides_enable_on_vim_startup = 1
+
+" インデントガイドを表示し始めるレベル (2から開始)
+let g:indent_guides_start_level = 2
+
+" ガイドラインの幅を1文字分に設定
+let g:indent_guides_guide_size = 1
 
 " ------------------------------------------------------------
 " ctrlp
