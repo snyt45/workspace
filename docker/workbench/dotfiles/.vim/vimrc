@@ -76,7 +76,6 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'prabirshrestha/asyncomplete-lsp.vim'
   Plug 'thinca/vim-quickrun'
   Plug 'vim-denops/denops.vim'
-  Plug 'Shougo/ddu.vim'
 call plug#end()
 
 " auto plug install
