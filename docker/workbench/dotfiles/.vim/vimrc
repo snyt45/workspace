@@ -459,3 +459,37 @@ endfunction
 
 command! ShowPullRequest :call GitShowCursorPullRequest()
 nnoremap go :ShowPullRequest<cr>
+
+" 対応したspecファイルを開く
+command! OpenSpec :call OpenSpecFile()
+
+function! OpenSpecFile()
+  " 現在のファイルパスを取得
+  let current_file = expand('%:p')
+
+  " app/ を spec/ に置換し、末尾に _spec を追加
+  let spec_file = substitute(current_file, '/app/', '/spec/', '')
+  let spec_file = substitute(spec_file, '\.rb$', '_spec.rb', '')
+
+  " ファイルが存在するか確認
+  if filereadable(spec_file)
+    execute 'edit ' . spec_file
+  else
+    echo "Spec file not found: " . spec_file
+  endif
+endfunction
+
+" 対応した実装ファイルを開く
+command! OpenImplementation :call OpenImplementationFile()
+
+function! OpenImplementationFile()
+  let current_file = expand('%:p')
+  let impl_file = substitute(current_file, '/spec/', '/app/', '')
+  let impl_file = substitute(impl_file, '_spec\.rb$', '.rb', '')
+
+  if filereadable(impl_file)
+    execute 'edit ' . impl_file
+  else
+    echo "Implementation file not found: " . impl_file
+  endif
+endfunction

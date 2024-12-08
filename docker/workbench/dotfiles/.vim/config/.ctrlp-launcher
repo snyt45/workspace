@@ -2,3 +2,5 @@
 BufferDiff	:windo diffthis
 ClearBufferDiff	:diffoff!
 MakeTags	:MakeTags
+OpenSpec	:OpenSpec
+OpenImplementation	:OpenImplementation
