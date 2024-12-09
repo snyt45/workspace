@@ -24,6 +24,9 @@ set foldlevel=99
 set wildmenu wildoptions=pum
 set wildignorecase
 
+" 行番号を相対的に表示する
+set relativenumber
+
 " no swap, backup, undo
 set noswapfile
 set nobackup
