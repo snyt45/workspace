@@ -82,6 +82,31 @@ augroup fileTypeIndent
 augroup END
 
 " ------------------------------------------------------------
+" path
+" ------------------------------------------------------------
+set path+=api/app/**
+set path+=api/bin/**
+set path+=api/config/**
+set path+=api/db/**
+set path+=api/gen/**
+set path+=api/lib/**
+set path+=api/spec/**
+
+set path+=frontend/src/**
+set path+=frontend/tests/**
+
+set wildignore+=**/node_modules/**
+set wildignore+=**/tmp/**
+set wildignore+=**/dist/**
+set wildignore+=**/build/**
+set wildignore+=**/.git/**
+set wildignore+=*.log
+set wildignore+=*.tmp
+set wildignore+=*.png,*.jpg,*.gif
+set wildignore+=*.pdf
+set wildignore+=*.zip,*.tar.gz
+
+" ------------------------------------------------------------
 " plugin
 " ------------------------------------------------------------
 " incompatible plugins
