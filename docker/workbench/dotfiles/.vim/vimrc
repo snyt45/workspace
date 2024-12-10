@@ -524,7 +524,10 @@ command! SaveSession    :mksession! ~/.shared_cache/.vim/.session
 " ------------------------------------------------------------
 " QuickRun
 " ------------------------------------------------------------
+" QuickRunの基本設定
 let g:quickrun_config = {}
+
+" Go言語用の実行設定
 let g:quickrun_config['go'] = {
     \ 'command': 'go',
     \ 'cmdopt': 'run',
