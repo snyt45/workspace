@@ -316,12 +316,14 @@ set helplang=ja,en
 " ------------------------------------------------------------
 " netrw
 " ------------------------------------------------------------
-" デフォルト表示設定
-let g:netrw_liststyle = 3    " ツリー表示をデフォルトに
-let g:netrw_banner = 0       " バナーを非表示
+" ツリー表示形式を標準に設定
+let g:netrw_liststyle = 3
+" バナーを非表示
+let g:netrw_banner = 0
+" プレビューウィンドウのサイズ
 let g:netrw_winsize = 25
 
-" Netrwのトグル制御用
+" Netrwの表示状態管理用フラグ
 let g:NetrwIsOpen = 0
 
 " Netrwをトグルで表示/非表示する関数
@@ -343,14 +345,14 @@ function! ToggleNetrw() abort
    endif
 endfunction
 
-" パス関連の操作を行う関数
+" ファイルパス取得関数
 function! s:GetNetrwPath() abort
    " 現在のディレクトリツリーのパスを取得
    let l:dirpath = netrw#Call('NetrwTreePath', w:netrw_treetop)
    " カーソル位置のアイテム名を取得
    let l:filename = netrw#Call('NetrwGetWord')
    
-   " ディレクトリの場合（末尾が/）はディレクトリパスのみを返す
+   " ディレクトリの場合はディレクトリパスのみを返す
    " ファイルの場合はディレクトリパスとファイル名を結合
    return l:filename =~ '/$' ? l:dirpath : l:dirpath . '/' . l:filename
 endfunction
@@ -372,7 +374,8 @@ endfunction
 " ファイルを開く処理
 function! s:OpenFileInSharedWindow(mode) abort
    let l:path = s:GetNetrwPath()
-   let l:prevwin = winnr('#')  " 前回のウィンドウ番号を取得
+   " 前回のウィンドウ番号を取得
+   let l:prevwin = winnr('#')
 
    " ウィンドウが存在しない場合は新規作成
    if l:prevwin == 0
@@ -397,18 +400,19 @@ function! s:set_netrw_mappings() abort
    if !exists('g:loaded_netrwPlugin')
        return
    endif
+   " プレビュー表示用のマッピング
    nmap <buffer> p :call <SID>OpenFileInSharedWindow('preview')<CR>
+   " エンターキーの動作設定
    nmap <buffer> <CR> :call <SID>HandleEnter()<CR>
 endfunction
 
-" 初期設定
+" Netrw初期設定
 augroup InitNetrw
    autocmd!
    autocmd FileType netrw call s:set_netrw_mappings()
 augroup END
 
-" グローバルキーマッピング
-" == でnetrwをトグル
+" == でnetrwをトグル表示
 noremap <silent>== :call ToggleNetrw()<CR>
 
 " ------------------------------------------------------------
