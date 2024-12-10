@@ -270,7 +270,9 @@ nnoremap <leader>m :CtrlPMRUFiles<cr>
 " ------------------------------------------------------------
 " ctrlp-launcher
 " ------------------------------------------------------------
+" 起動キーマッピング
 nnoremap <leader>e :<c-u>CtrlPLauncher<cr>
+" ランチャー設定ファイルの場所を指定
 let g:ctrlp_launcher_file = '~/.vim/config/.ctrlp-launcher'
 
 " ------------------------------------------------------------
