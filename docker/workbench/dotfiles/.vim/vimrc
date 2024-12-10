@@ -547,26 +547,29 @@ augroup ts_react_add_path
 augroup END
 
 " ------------------------------------------------------------
-" key mappings
+" キーマッピング設定
 " ------------------------------------------------------------
-" highlight off
+" 検索ハイライトを消去
 nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 
 " vimrcを開く
 nmap <leader>v :e $MYVIMRC<CR>
 
-" This line maps the 'q' key to a silent action
+" qキーを無効化
 map q <silent>
 
-" Git管理のファイルの相対パスをクリップボードにコピー
+" Git管理下のファイルの相対パスをクリップボードにコピー
 command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git rev-parse --show-toplevel')), '', '') | echo @" | call system('clip -i', @")
 nnoremap <leader>c :CopyGitPath<cr>
 
-" quickfix
+" Quickfix操作
+" 次のエラーへ移動
 nnoremap <silent> cn :cn<CR>
+" 前のエラーへ移動
 nnoremap <silent> cp :cp<CR>
 
-" buffers and quickfix
+" バッファとQuickfixの操作
+" Quickfixウィンドウの表示切り替え関数
 function! ToggleQuickFix()
   if empty(filter(getwininfo(), 'v:val.quickfix'))
     copen
@@ -574,16 +577,23 @@ function! ToggleQuickFix()
     cclose
   endif
 endfunction
+" Quickfixウィンドウの表示切り替え
 nnoremap <leader>w :call ToggleQuickFix()<cr>
+" 現在のバッファを閉じる
 nnoremap <leader>d :bd<cr>
 
-" searching ang grepping
+" 検索とGrep
+" Gitグレップを開始
 nnoremap <leader>g :copen<cr>:Ggrep!<SPACE>
+" カーソル位置の単語でGitグレップを実行
 nnoremap K :Ggrep "\b<C-R><C-W>\b"<cr>:cw<cr>
 
-" ctags
+" Ctags
+" タグジャンプ時に複数候補がある場合はリスト表示
 nnoremap <C-]> g<C-]>
 
+" Git PR関連機能
+" カーソル位置のコミットハッシュに関連するPRを表示
 function! GitShowCursorPullRequest()
   let l:word = expand('<cword>')
   let l:get_pr_number = "gh api graphql
@@ -606,21 +616,24 @@ function! GitShowCursorPullRequest()
   echo "open: " . l:pr_url | let @"=l:pr_url | call system('chrome -i', @")
 endfunction
 
+" PRを表示するコマンドを定義
 command! ShowPullRequest :call GitShowCursorPullRequest()
+" PRを表示するキーマッピング
 nnoremap go :ShowPullRequest<cr>
 
-" 対応したspecファイルを開く
+" Specファイル関連の機能
+" 対応するspecファイルを開くコマンド
 command! OpenSpec :call OpenSpecFile()
 
+" Specファイルを開く関数
 function! OpenSpecFile()
   " 現在のファイルパスを取得
   let current_file = expand('%:p')
-
   " app/ を spec/ に置換し、末尾に _spec を追加
   let spec_file = substitute(current_file, '/app/', '/spec/', '')
   let spec_file = substitute(spec_file, '\.rb$', '_spec.rb', '')
 
-  " ファイルが存在するか確認
+  " ファイルが存在するか確認して開く
   if filereadable(spec_file)
     execute 'edit ' . spec_file
   else
@@ -628,14 +641,18 @@ function! OpenSpecFile()
   endif
 endfunction
 
-" 対応した実装ファイルを開く
+" 実装ファイルを開くコマンド
 command! OpenImplementation :call OpenImplementationFile()
 
+" 実装ファイルを開く関数
 function! OpenImplementationFile()
+  " 現在のファイルパスを取得
   let current_file = expand('%:p')
+  " spec/ を app/ に置換し、_spec.rb を .rb に変更
   let impl_file = substitute(current_file, '/spec/', '/app/', '')
   let impl_file = substitute(impl_file, '_spec\.rb$', '.rb', '')
 
+  " ファイルが存在するか確認して開く
   if filereadable(impl_file)
     execute 'edit ' . impl_file
   else
