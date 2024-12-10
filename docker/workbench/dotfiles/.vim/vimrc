@@ -57,13 +57,16 @@ augroup text_yank_post
 augroup END
 
 " ------------------------------------------------------------
-" cursor
+" カーソル設定
 " ------------------------------------------------------------
-" https://qiita.com/Linda_pp/items/9e0c94eb82b18071db34
+" Vimの起動時のカーソル設定
 if has('vim_starting')
-  let &t_SI .= "\e[6 q" " Insert mode: non-blinking vertical bar cursor
-  let &t_EI .= "\e[2 q" " Normal mode: non-blinking block cursor
-  let &t_SR .= "\e[4 q" " Replace mode: non-blinking underline cursor
+  " 挿入モード時: 非点滅の縦棒カーソル
+  let &t_SI .= "\e[6 q"
+  " ノーマルモード時: 非点滅のブロックカーソル
+  let &t_EI .= "\e[2 q"
+  " 置換モード時: 非点滅の下線カーソル
+  let &t_SR .= "\e[4 q"
 endif
 
 " ------------------------------------------------------------
