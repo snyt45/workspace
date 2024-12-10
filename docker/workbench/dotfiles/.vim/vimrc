@@ -535,11 +535,14 @@ let g:quickrun_config['go'] = {
     \ }
 
 " ------------------------------------------------------------
-" filetype
+" ファイルタイプ設定
 " ------------------------------------------------------------
+" TypeScript React用のパス設定
 augroup ts_react_add_path
   au!
-  autocmd FileType typescriptreact :setl path+=**;/features/**
+  " featuresディレクトリ以下のパスを検索対象に追加
+  autocmd FileType typescriptreact :setl path+=/features/**
+  " インクルード式の変換設定（先頭の/を除去）
   autocmd FileType typescriptreact :setl includeexpr=substitute(v:fname,'^/','','')
 augroup END
 
