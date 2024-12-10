@@ -198,14 +198,17 @@ set background=dark
 colorscheme gruvbox
 
 " ------------------------------------------------------------
-" lightline
+" lightline.vim
 " ------------------------------------------------------------
+" 常にステータスラインを表示
 set laststatus=2
 
+" GUIでない場合は256色を有効化
 if !has('gui_running')
   set t_Co=256
 endif
 
+" Lightlineの詳細設定
 let g:lightline = {
   \ 'colorscheme': 'gruvbox',
   \ 'active': {
