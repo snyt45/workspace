@@ -1,46 +1,48 @@
-" ------------------------------------------------------------
-" Vim基本設定
-" ------------------------------------------------------------
+" #=== Vim基本設定 {{{
+" ##=== 一般設定 {{{
+
 " リーダーキーの設定
 let mapleader = ","
 
-" ファイルタイプとインデントの設定
 " ファイルタイプの検出、プラグインとインデントを有効化
 filetype plugin indent on
 
-" 検索設定
 " 検索結果をハイライト表示
 set hlsearch
+
 " 検索時に大文字小文字を区別しない
 set ignorecase
+
 " 検索パターンに大文字を含む場合は大文字小文字を区別
 set smartcase
+
 " インクリメンタルサーチを有効化（検索文字入力時に随時検索）
 set incsearch
 
 " 矩形選択時の仮想編集を有効化
 set virtualedit=block
 
-" 折りたたみ設定
 " インデントに基づいて折りたたみを行う
 set foldmethod=indent
+
 " デフォルトですべての折りたたみを開く
 set foldlevel=99
 
-" コマンドライン補完の設定
 " 補完メニューを改善
 set wildmenu wildoptions=pum
+
 " ファイル名補完で大文字小文字を区別しない
 set wildignorecase
 
 " 行番号を相対的に表示
 set relativenumber
 
-" 一時ファイルの無効化
 " スワップファイルを作成しない
 set noswapfile
+
 " バックアップファイルを作成しない
 set nobackup
+
 " アンドゥファイルを作成しない
 set noundofile
 
@@ -56,9 +58,19 @@ augroup text_yank_post
   autocmd TextYankPost * :call system('clip -i', @")
 augroup END
 
-" ------------------------------------------------------------
-" カーソル設定
-" ------------------------------------------------------------
+" vimrc編集時のみmarkerベースの折りたたみを有効化
+augroup vimrc_folding
+  autocmd!
+  autocmd FileType vim
+        \ if expand('%:t') ==# 'vimrc' |
+        \   setlocal foldmethod=marker |
+        \   setlocal foldlevel=0 |
+        \ endif
+augroup END
+
+" ##=== }}}
+" ##=== カーソル設定 {{{
+
 " Vimの起動時のカーソル設定
 if has('vim_starting')
   " 挿入モード時: 非点滅の縦棒カーソル
@@ -69,71 +81,33 @@ if has('vim_starting')
   let &t_SR .= "\e[4 q"
 endif
 
-" ------------------------------------------------------------
-" インデント設定
-" ------------------------------------------------------------
+" ##=== }}}
+" ##=== インデント設定 {{{
+
 augroup fileTypeIndent
   autocmd!
-  " Ruby: 2スペース（Rubyスタイルガイド推奨）
-  autocmd FileType ruby setlocal expandtab shiftwidth=2 softtabstop=2
+  " 2スペースインデント
+  autocmd FileType ruby,typescript,javascript,typescriptreact,vim,yaml,yml,json,css
+        \ setlocal expandtab shiftwidth=2 softtabstop=2
 
-  " Go: タブ（公式ツール go fmt の標準）
+  " Go言語のみタブインデント（go fmt標準）
   autocmd FileType go setlocal noexpandtab shiftwidth=4 softtabstop=4 tabstop=4
-
-  " TypeScript/JavaScript: 2スペース（Google/Airbnb スタイルガイド準拠）
-  autocmd FileType typescript setlocal expandtab shiftwidth=2 softtabstop=2
-  autocmd FileType javascript setlocal expandtab shiftwidth=2 softtabstop=2
-  autocmd FileType typescriptreact setlocal expandtab shiftwidth=2 softtabstop=2
-
-  " Vim: 2スペース（一般的な慣習）
-  autocmd FileType vim setlocal expandtab shiftwidth=2 softtabstop=2
-
-  " YAML: 2スペース（YAML仕様の可読性推奨）
-  autocmd FileType yaml setlocal expandtab shiftwidth=2 softtabstop=2
-  autocmd FileType yml setlocal expandtab shiftwidth=2 softtabstop=2
-
-  " JSON: 2スペース（一般的な慣習）
-  autocmd FileType json setlocal expandtab shiftwidth=2 softtabstop=2
-
-  " CSS: 2スペース（Google/Airbnb スタイルガイド準拠）
-  autocmd FileType css setlocal expandtab shiftwidth=2 softtabstop=2
 augroup END
 
-" ------------------------------------------------------------
-" パス設定
-" ------------------------------------------------------------
-" APIディレクトリのパス設定
-set path+=api/.
-set path+=api/app/**
-set path+=api/bin/**
-set path+=api/config/**
-set path+=api/db/**
-set path+=api/gen/**
-set path+=api/lib/**
-set path+=api/spec/**
-
-" フロントエンドディレクトリのパス設定
-set path+=frontend/.
-set path+=frontend/src/**
-set path+=frontend/tests/**
+" ##=== }}}
+" ##=== 検索パス {{{
+" 検索パスの設定
+set path+=api/.,api/app/**,api/bin/**,api/config/**,api/db/**,api/gen/**,api/lib/**,api/spec/**
+set path+=frontend/.,frontend/src/**,frontend/tests/**
 
 " 検索から除外するパターン
-" ビルド・依存関係ディレクトリの除外
-set wildignore+=**/node_modules/**
-set wildignore+=**/tmp/**
-set wildignore+=**/dist/**
-set wildignore+=**/build/**
-set wildignore+=**/.git/**
-
-" 一時ファイル・バイナリファイルの除外
-set wildignore+=*.log
-set wildignore+=*.tmp
-" 画像ファイルの除外
-set wildignore+=*.png,*.jpg,*.gif
-" ドキュメントファイルの除外
-set wildignore+=*.pdf
-" アーカイブファイルの除外
+set wildignore+=**/node_modules/**,**/tmp/**,**/dist/**,**/build/**,**/.git/**
+set wildignore+=*.log,*.tmp
+set wildignore+=*.png,*.jpg,*.gif,*.pdf
 set wildignore+=*.zip,*.tar.gz
+
+" ##=== }}}
+" #=== }}}
 
 " ------------------------------------------------------------
 " プラグイン設定
