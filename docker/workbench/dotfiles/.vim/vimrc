@@ -70,32 +70,32 @@ if has('vim_starting')
 endif
 
 " ------------------------------------------------------------
-" indent
+" インデント設定
 " ------------------------------------------------------------
 augroup fileTypeIndent
   autocmd!
-  " Ruby (2スペース - Rubyスタイルガイド推奨)
+  " Ruby: 2スペース（Rubyスタイルガイド推奨）
   autocmd FileType ruby setlocal expandtab shiftwidth=2 softtabstop=2
 
-  " Go (タブ - 公式ツール go fmt の標準)
+  " Go: タブ（公式ツール go fmt の標準）
   autocmd FileType go setlocal noexpandtab shiftwidth=4 softtabstop=4 tabstop=4
 
-  " TypeScript/JavaScript (2スペース - Google/Airbnb スタイルガイド)
+  " TypeScript/JavaScript: 2スペース（Google/Airbnb スタイルガイド準拠）
   autocmd FileType typescript setlocal expandtab shiftwidth=2 softtabstop=2
   autocmd FileType javascript setlocal expandtab shiftwidth=2 softtabstop=2
   autocmd FileType typescriptreact setlocal expandtab shiftwidth=2 softtabstop=2
 
-  " Vim (2スペース - 一般的な慣習)
+  " Vim: 2スペース（一般的な慣習）
   autocmd FileType vim setlocal expandtab shiftwidth=2 softtabstop=2
 
-  " YAML (2スペース - YAML仕様の可読性推奨)
+  " YAML: 2スペース（YAML仕様の可読性推奨）
   autocmd FileType yaml setlocal expandtab shiftwidth=2 softtabstop=2
   autocmd FileType yml setlocal expandtab shiftwidth=2 softtabstop=2
 
-  " JSON (2スペース - 一般的な慣習)
+  " JSON: 2スペース（一般的な慣習）
   autocmd FileType json setlocal expandtab shiftwidth=2 softtabstop=2
 
-  " CSS (2スペース - Google/Airbnb スタイルガイド)
+  " CSS: 2スペース（Google/Airbnb スタイルガイド準拠）
   autocmd FileType css setlocal expandtab shiftwidth=2 softtabstop=2
 augroup END
 
