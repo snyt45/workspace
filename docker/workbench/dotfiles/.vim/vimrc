@@ -418,21 +418,31 @@ noremap <silent>== :call ToggleNetrw()<CR>
 " ------------------------------------------------------------
 " gitgutter
 " ------------------------------------------------------------
-" gitgutter update faster
+" 差分更新の間隔を短く設定
 set updatetime=50
 
+" 差分表示のサイン設定
+" 追加行のサイン
 let g:gitgutter_sign_added = '+'
+" 変更行のサイン
 let g:gitgutter_sign_modified = '>'
+" 削除行のサイン
 let g:gitgutter_sign_removed = '-'
+" 最初の行が削除された場合のサイン
 let g:gitgutter_sign_removed_first_line = '^'
+" 変更して削除された行のサイン
 let g:gitgutter_sign_modified_removed = '<'
 
-" ref: https://teratail.com/questions/29844#reply-46767
+" GitGutterの見た目のカスタマイズ
 augroup vimrc_vim_gitgutter
   au!
+  " サイン列の背景色を削除
   autocmd VimEnter,ColorScheme * highlight SignColumn guibg=NONE ctermbg=NONE
+  " 追加行の色設定
   autocmd VimEnter,ColorScheme * highlight GitGutterAdd guibg=NONE ctermbg=NONE guifg=#000900 ctermfg=2
+  " 変更行の色設定
   autocmd VimEnter,ColorScheme * highlight GitGutterChange guibg=NONE ctermbg=NONE guifg=#bbbb00 ctermfg=3
+  " 削除行の色設定
   autocmd VimEnter,ColorScheme * highlight GitGutterDelete guibg=NONE ctermbg=NONE guifg=#ff2222 ctermfg=1
 augroup END
 
