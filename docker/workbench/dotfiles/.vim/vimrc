@@ -136,34 +136,52 @@ set wildignore+=*.pdf
 set wildignore+=*.zip,*.tar.gz
 
 " ------------------------------------------------------------
-" plugin
+" プラグイン設定
 " ------------------------------------------------------------
-" incompatible plugins
+" 互換性のないプラグインの読み込み
 if has('syntax') && has('eval')
   packadd! matchit
 end
 
+" プラグインの定義
 call plug#begin('~/.shared_cache/.vim/plugged')
+  " 日本語ヘルプ
   Plug 'vim-jp/vimdoc-ja'
+  " カラースキーム
   Plug 'morhetz/gruvbox'
+  " ステータスライン
   Plug 'itchyny/lightline.vim'
+    " Lightline用のGruvboxテーマ
     Plug 'shinchu/lightline-gruvbox.vim'
+  " ファイルファインダー
   Plug 'ctrlpvim/ctrlp.vim'
+    " あいまい検索機能の強化
     Plug 'mattn/ctrlp-matchfuzzy'
+    " コマンドランチャー機能
     Plug 'mattn/ctrlp-launcher'
+  " Git操作
   Plug 'tpope/vim-fugitive'
+  " Git差分表示
   Plug 'airblade/vim-gitgutter'
+  " コメントアウト
   Plug 'tyru/caw.vim'
+  " LSPクライアント
   Plug 'prabirshrestha/vim-lsp'
+  " LSP設定管理
   Plug 'mattn/vim-lsp-settings'
+  " 非同期補完
   Plug 'prabirshrestha/asyncomplete.vim'
+  " LSPによる補完
   Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  " コード実行
   Plug 'thinca/vim-quickrun'
+  " Denops（Deno製プラグイン基盤）
   Plug 'vim-denops/denops.vim'
+  " インデントガイド
   Plug 'nathanaelkane/vim-indent-guides'
 call plug#end()
 
-" auto plug install
+" 未インストールのプラグインを自動インストール
 augroup auto_plug_install
   au!
   autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
