@@ -100,8 +100,9 @@ augroup fileTypeIndent
 augroup END
 
 " ------------------------------------------------------------
-" path
+" パス設定
 " ------------------------------------------------------------
+" APIディレクトリのパス設定
 set path+=api/.
 set path+=api/app/**
 set path+=api/bin/**
@@ -111,19 +112,27 @@ set path+=api/gen/**
 set path+=api/lib/**
 set path+=api/spec/**
 
+" フロントエンドディレクトリのパス設定
 set path+=frontend/.
 set path+=frontend/src/**
 set path+=frontend/tests/**
 
+" 検索から除外するパターン
+" ビルド・依存関係ディレクトリの除外
 set wildignore+=**/node_modules/**
 set wildignore+=**/tmp/**
 set wildignore+=**/dist/**
 set wildignore+=**/build/**
 set wildignore+=**/.git/**
+
+" 一時ファイル・バイナリファイルの除外
 set wildignore+=*.log
 set wildignore+=*.tmp
+" 画像ファイルの除外
 set wildignore+=*.png,*.jpg,*.gif
+" ドキュメントファイルの除外
 set wildignore+=*.pdf
+" アーカイブファイルの除外
 set wildignore+=*.zip,*.tar.gz
 
 " ------------------------------------------------------------
