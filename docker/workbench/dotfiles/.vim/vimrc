@@ -460,44 +460,56 @@ imap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 let g:asyncomplete_popup_delay = 100
 
 " ------------------------------------------------------------
-" lsp
+" LSP設定
 " ------------------------------------------------------------
+" 診断機能の基本設定
+" 診断機能を有効化
 let g:lsp_diagnostics_enabled = 1
+" カーソル下の診断メッセージをエコーエリアに表示
 let g:lsp_diagnostics_echo_cursor = 1
+" 診断メッセージの表示遅延時間
 let g:lsp_diagnostics_echo_delay = 10
+" カーソル下の診断をフロート表示
 let g:lsp_diagnostics_float_cursor = 1
+" サイン列での診断表示を有効化
 let g:lsp_diagnostics_signs_enabled = 1
+" 仮想テキストでの診断表示を無効化
 let g:lsp_diagnostics_virtual_text_enabled = 0
+" サイン表示の遅延時間
 let g:lsp_diagnostics_signs_delay = 10
+" 挿入モード時のサイン表示を無効化
 let g:lsp_diagnostics_signs_insert_mode_enabled = 0
-" let g:lsp_diagnostics_signs_error = {'text': '🐛'}
-" let g:lsp_diagnostics_signs_warning = {'text': '🪰'}
-" let g:lsp_diagnostics_signs_hint = {'text': '💡'}
-" let g:lsp_diagnostics_signs_information = {'text': 'ℹ️'}
+" 診断のハイライト遅延時間
 let g:lsp_diagnostics_highlights_delay = 10
+" 挿入モード時の診断ハイライトを無効化
 let g:lsp_diagnostics_highlights_insert_mode_enabled = 0
+" コードアクションのサイン表示を無効化
 let g:lsp_document_code_action_signs_enabled = 0
 
+" LSPサーバーの設定
+" サーバーのインストールディレクトリ
 let g:lsp_settings_servers_dir='~/.shared_cache/.vim/servers'
+" Rubyのサーバー設定
 let g:lsp_settings_filetype_ruby = ['solargraph']
 
-" debug
-" let g:lsp_log_verbose = 1 " ログを有効にする
-" let g:lsp_log_file = expand('~/.shared_cache/.vim/vim-lsp.log') " ログの出力先
+" デバッグ設定（必要な場合にコメントを解除）
+" let g:lsp_log_verbose = 1
+" let g:lsp_log_file = expand('~/.shared_cache/.vim/vim-lsp.log')
 
-" vim-lsp がバッファで有効になったときに実行される関数
-" バッファローカルなキーバインドやオプションを指定
-" See: https://mattn.kaoriya.net/software/vim/20191231213507.htm
+" LSPバッファが有効になったときの設定
 function! s:on_lsp_buffer_enabled() abort
+  " フォーマット時のタイムアウト設定
   let g:lsp_format_sync_timeout = 1000
 
-  " golang
-  " バッファ保存時に毎回「import補完」と「コードフォーマット」を実行
+  " Goファイル用の自動フォーマット設定
+  " ファイル保存時にインポートの整理とコードフォーマットを実行
   autocmd BufWritePre *.go call execute(['LspCodeActionSync source.organizeImports', 'LspDocumentFormatSync'])
 endfunction
 
+" LSPの初期化設定
 augroup lsp_install
   au!
+  " LSPバッファが有効になったときに実行する関数を設定
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
