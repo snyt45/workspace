@@ -278,15 +278,16 @@ let g:ctrlp_launcher_file = '~/.vim/config/.ctrlp-launcher'
 " ------------------------------------------------------------
 " ctags
 " ------------------------------------------------------------
-" see: https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
+" タグファイルの検索パス（カレントディレクトリから親ディレクトリに向かって検索）
 set tags=.tags;$HOME
 
 " ctagsのオプションを共通定義
 let s:ctags_options = '--exclude=node_modules --exclude=.git --exclude=*.css --exclude=*.json -R -f '
 
-" タグ生成コマンド
+" タグファイル生成コマンド
 command! MakeTags call system('ctags ' . s:ctags_options . '.tags')
 
+" タグファイルの自動更新機能
 function! s:execute_ctags() abort
   let tag_name = '.tags'
   let tags_path = findfile(tag_name, '.;')
@@ -295,12 +296,12 @@ function! s:execute_ctags() abort
   endif
 
   " タグファイルのディレクトリパスを取得
-  " `:p:h`の部分は、:h filename-modifiersで確認
   let tags_dirpath = fnamemodify(tags_path, ':p:h')
   " 見つかったタグファイルのディレクトリに移動して、ctagsをバックグラウンド実行（エラー出力破棄）
   execute 'silent !cd' tags_dirpath '&& ctags ' . s:ctags_options . tag_name . ' 2> /dev/null &'
 endfunction
 
+" ファイル保存時にタグファイルを自動更新
 augroup update_ctags
   au!
   autocmd BufWritePost * call s:execute_ctags()
