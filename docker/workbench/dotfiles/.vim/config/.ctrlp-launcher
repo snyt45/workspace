@@ -6,3 +6,4 @@ OpenSpec	:OpenSpec
 OpenImplementation	:OpenImplementation
 SaveSession	:SaveSession
 RestoreSession	:RestoreSession
+ShowPullRequest	ShowPullRequest
