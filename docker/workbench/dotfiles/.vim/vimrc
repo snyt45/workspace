@@ -196,35 +196,41 @@ endfunction
 " タグファイルの検索パス（カレントディレクトリから親ディレクトリに向かって検索）
 set tags=.tags;$HOME
 
+" タグジャンプ時に複数候補がある場合はリスト表示
+nnoremap <C-]> g<C-]>
+
 " ctagsのオプションを共通定義
-let s:ctags_options = '--exclude=node_modules --exclude=.git --exclude=*.css --exclude=*.json -R -f '
+let s:ctags_options = join([
+      \ '--exclude=node_modules',
+      \ '--exclude=.git',
+      \ '--exclude=*.css',
+      \ '--exclude=*.json',
+      \ '-R',
+      \ '-f'
+      \ ], ' ')
 
 " タグファイル生成コマンド
 command! MakeTags call system('ctags ' . s:ctags_options . '.tags')
 
-" タグファイルの自動更新機能
-function! s:execute_ctags() abort
-  let tag_name = '.tags'
-  let tags_path = findfile(tag_name, '.;')
-  if tags_path ==# ''
+" タグファイルの自動更新
+function! s:ExecuteCtags() abort
+  let l:tag_name = '.tags'
+  let l:tags_path = findfile(tag_name, '.;')
+  if l:tags_path ==# ''
     return
   endif
 
   " タグファイルのディレクトリパスを取得
-  let tags_dirpath = fnamemodify(tags_path, ':p:h')
+  let l:tags_dirpath = fnamemodify(tags_path, ':p:h')
   " 見つかったタグファイルのディレクトリに移動して、ctagsをバックグラウンド実行（エラー出力破棄）
-  execute 'silent !cd' tags_dirpath '&& ctags ' . s:ctags_options . tag_name . ' 2> /dev/null &'
+  execute 'silent !cd' l:tags_dirpath '&& ctags '
+        \ s:ctags_options l:tag_name '2> /dev/null &'
 endfunction
 
-" ファイル保存時にタグファイルを自動更新
-augroup MyCtags
+augroup MyCtagsAutoUpdate
   au!
-
-  autocmd BufWritePost * call s:execute_ctags()
+  autocmd BufWritePost * call s:ExecuteCtags()
 augroup END
-
-" タグジャンプ時に複数候補がある場合はリスト表示
-nnoremap <C-]> g<C-]>
 
 " ##=== }}}
 " ##=== 自動コマンド {{{
