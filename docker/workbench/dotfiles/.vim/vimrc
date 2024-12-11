@@ -291,8 +291,6 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'prabirshrestha/asyncomplete-lsp.vim'
   " コード実行
   Plug 'thinca/vim-quickrun'
-  " Denops（Deno製プラグイン基盤）
-  Plug 'vim-denops/denops.vim'
   " インデントガイド
   Plug 'nathanaelkane/vim-indent-guides'
 call plug#end()
