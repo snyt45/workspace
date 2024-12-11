@@ -52,22 +52,6 @@ set mouse=a
 " デフォルトシェルの設定
 set shell=bash
 
-" ヤンクをクリップボードに送信
-augroup text_yank_post
-  au!
-  autocmd TextYankPost * :call system('clip -i', @")
-augroup END
-
-" vimrc編集時のみmarkerベースの折りたたみを有効化
-augroup vimrc_folding
-  autocmd!
-  autocmd FileType vim
-        \ if expand('%:t') ==# 'vimrc' |
-        \   setlocal foldmethod=marker |
-        \   setlocal foldlevel=0 |
-        \ endif
-augroup END
-
 " ##=== }}}
 " ##=== カーソル設定 {{{
 
@@ -82,19 +66,6 @@ if has('vim_starting')
 endif
 
 " ##=== }}}
-" ##=== インデント設定 {{{
-
-augroup fileTypeIndent
-  autocmd!
-  " 2スペースインデント
-  autocmd FileType ruby,typescript,javascript,typescriptreact,vim,yaml,yml,json,css
-        \ setlocal expandtab shiftwidth=2 softtabstop=2
-
-  " Go言語のみタブインデント（go fmt標準）
-  autocmd FileType go setlocal noexpandtab shiftwidth=4 softtabstop=4 tabstop=4
-augroup END
-
-" ##=== }}}
 " ##=== 検索パス {{{
 
 " 検索パスの設定
@@ -106,15 +77,6 @@ set wildignore+=**/node_modules/**,**/tmp/**,**/dist/**,**/build/**,**/.git/**
 set wildignore+=*.log,*.tmp
 set wildignore+=*.png,*.jpg,*.gif,*.pdf
 set wildignore+=*.zip,*.tar.gz
-
-" TypeScript React用のパス設定
-augroup ts_react_add_path
-  au!
-  " featuresディレクトリ以下のパスを検索対象に追加
-  autocmd FileType typescriptreact :setl path+=/features/**
-  " インクルード式の変換設定（先頭の/を除去）
-  autocmd FileType typescriptreact :setl includeexpr=substitute(v:fname,'^/','','')
-augroup END
 
 " ##=== }}}
 " ##=== セッション設定 {{{
@@ -255,13 +217,46 @@ function! s:execute_ctags() abort
 endfunction
 
 " ファイル保存時にタグファイルを自動更新
-augroup update_ctags
+augroup MyCtags
   au!
+
   autocmd BufWritePost * call s:execute_ctags()
 augroup END
 
 " タグジャンプ時に複数候補がある場合はリスト表示
 nnoremap <C-]> g<C-]>
+
+" ##=== }}}
+" ##=== 自動コマンド {{{
+
+augroup MyVimBasic
+  au!
+
+  " ヤンクをクリップボードに送信
+  autocmd TextYankPost * :call system('clip -i', @")
+augroup END
+
+augroup MyFileType
+  au!
+
+  " vimrc編集時のみmarkerベースの折りたたみを有効化
+  autocmd FileType vim
+        \ if expand('%:t') ==# 'vimrc' |
+        \   setlocal foldmethod=marker |
+        \   setlocal foldlevel=0 |
+        \ endif
+
+  " インデント設定（2スペース）
+  autocmd FileType ruby,typescript,javascript,typescriptreact,vim,yaml,yml,json,css
+        \ setlocal expandtab shiftwidth=2 softtabstop=2
+
+  " Go言語のみタブインデント
+  autocmd FileType go setlocal noexpandtab shiftwidth=4 softtabstop=4 tabstop=4
+
+  " TypeScript React用のパス設定
+  autocmd FileType typescriptreact :setl path+=/features/**
+  autocmd FileType typescriptreact :setl includeexpr=substitute(v:fname,'^/','','')
+augroup END
 
 " ##=== }}}
 " #=== }}}
@@ -311,8 +306,9 @@ call plug#begin('~/.shared_cache/.vim/plugged')
 call plug#end()
 
 " 未インストールのプラグインを自動インストール
-augroup auto_plug_install
+augroup MyVimPlug
   au!
+
   autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
     \| PlugInstall --sync | source $MYVIMRC
   \| endif
@@ -503,9 +499,9 @@ function! s:set_netrw_mappings() abort
    nmap <buffer> <CR> :call <SID>HandleEnter()<CR>
 endfunction
 
-" Netrw初期設定
-augroup InitNetrw
-   autocmd!
+augroup MyNetrw
+   au!
+
    autocmd FileType netrw call s:set_netrw_mappings()
 augroup END
 
@@ -530,9 +526,9 @@ let g:gitgutter_sign_removed_first_line = '^'
 " 変更して削除された行のサイン
 let g:gitgutter_sign_modified_removed = '<'
 
-" GitGutterの見た目のカスタマイズ
-augroup vimrc_vim_gitgutter
+augroup MyGitGutter
   au!
+
   " サイン列の背景色を削除
   autocmd VimEnter,ColorScheme * highlight SignColumn guibg=NONE ctermbg=NONE
   " 追加行の色設定
@@ -602,9 +598,9 @@ function! s:on_lsp_buffer_enabled() abort
   autocmd BufWritePre *.go call execute(['LspCodeActionSync source.organizeImports', 'LspDocumentFormatSync'])
 endfunction
 
-" LSPの初期化設定
-augroup lsp_install
+augroup MyLsp
   au!
+
   " LSPバッファが有効になったときに実行する関数を設定
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
