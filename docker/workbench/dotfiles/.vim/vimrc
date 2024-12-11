@@ -290,8 +290,6 @@ call plug#begin('~/.shared_cache/.vim/plugged')
     Plug 'mattn/ctrlp-matchfuzzy'
     " コマンドランチャー機能
     Plug 'mattn/ctrlp-launcher'
-  " Git操作
-  Plug 'tpope/vim-fugitive'
   " Git差分表示
   Plug 'airblade/vim-gitgutter'
   " コメントアウト
