@@ -387,10 +387,11 @@ nnoremap <leader>m :CtrlPMRUFiles<cr>
 " ##=== }}}
 " ##=== ctrlp-launcher {{{
 
-" 起動キーマッピング
-nnoremap <leader>e :<c-u>CtrlPLauncher<cr>
 " ランチャー設定ファイルの場所を指定
 let g:ctrlp_launcher_file = '~/.vim/config/.ctrlp-launcher'
+
+" 起動キーマッピング
+nnoremap <leader>e :<c-u>CtrlPLauncher<cr>
 
 " ##=== }}}
 " ##=== vimdoc-ja {{{
@@ -408,11 +409,19 @@ let g:netrw_banner = 0
 " プレビューウィンドウのサイズ
 let g:netrw_winsize = 25
 
+" == でnetrwをトグル表示
+noremap <silent>== :call <SID>ToggleNetrw()<CR>
+
+augroup MyNetrw
+   au!
+   autocmd FileType netrw call s:set_netrw_mappings()
+augroup END
+
 " Netrwの表示状態管理用フラグ
 let g:NetrwIsOpen = 0
 
 " Netrwをトグルで表示/非表示する関数
-function! ToggleNetrw() abort
+function! s:ToggleNetrw() abort
    if g:NetrwIsOpen
        " 開いている場合は閉じる
        let i = bufnr("$")
@@ -491,22 +500,12 @@ function! s:set_netrw_mappings() abort
    nmap <buffer> <CR> :call <SID>HandleEnter()<CR>
 endfunction
 
-augroup MyNetrw
-   au!
-
-   autocmd FileType netrw call s:set_netrw_mappings()
-augroup END
-
-" == でnetrwをトグル表示
-noremap <silent>== :call ToggleNetrw()<CR>
-
 " ##=== }}}
 " ##=== gitgutter {{{
 
 " 差分更新の間隔を短く設定
 set updatetime=50
 
-" 差分表示のサイン設定
 " 追加行のサイン
 let g:gitgutter_sign_added = '+'
 " 変更行のサイン
@@ -534,15 +533,15 @@ augroup END
 " ##=== }}}
 " ##=== asyncomplete {{{
 
+" 補完ポップアップの表示遅延時間（ミリ秒）
+let g:asyncomplete_popup_delay = 100
+
 " 補完メニューが表示されている場合は次の候補を選択、そうでなければTabを入力
 imap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 " 補完メニューが表示されている場合は前の候補を選択、そうでなければShift+Tabを入力
 imap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 " 補完メニューが表示されている場合は補完を確定、そうでなければ改行
 imap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
-
-" 補完ポップアップの表示遅延時間（ミリ秒）
-let g:asyncomplete_popup_delay = 100
 
 " ##=== }}}
 " ##=== vim-lsp {{{
@@ -570,15 +569,24 @@ let g:lsp_diagnostics_highlights_insert_mode_enabled = 0
 " コードアクションのサイン表示を無効化
 let g:lsp_document_code_action_signs_enabled = 0
 
-" LSPサーバーの設定
 " サーバーのインストールディレクトリ
 let g:lsp_settings_servers_dir='~/.shared_cache/.vim/servers'
-" Rubyのサーバー設定
+
 let g:lsp_settings_filetype_ruby = ['solargraph']
+let g:lsp_settings_filetype_typescript = ['typescript-language-server']
+let g:lsp_settings_filetype_javascript = ['typescript-language-server']
+let g:lsp_settings_filetype_typescriptreact = ['typescript-language-server']
 
 " デバッグ設定（必要な場合にコメントを解除）
 " let g:lsp_log_verbose = 1
 " let g:lsp_log_file = expand('~/.shared_cache/.vim/vim-lsp.log')
+
+augroup MyLsp
+  au!
+
+  " LSPバッファが有効になったときに実行する関数を設定
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
 
 " LSPバッファが有効になったときの設定
 function! s:on_lsp_buffer_enabled() abort
@@ -589,18 +597,6 @@ function! s:on_lsp_buffer_enabled() abort
   " ファイル保存時にインポートの整理とコードフォーマットを実行
   autocmd BufWritePre *.go call execute(['LspCodeActionSync source.organizeImports', 'LspDocumentFormatSync'])
 endfunction
-
-augroup MyLsp
-  au!
-
-  " LSPバッファが有効になったときに実行する関数を設定
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
-" LSPサーバの指定
-let g:lsp_settings_filetype_typescript = ['typescript-language-server']
-let g:lsp_settings_filetype_javascript = ['typescript-language-server']
-let g:lsp_settings_filetype_typescriptreact = ['typescript-language-server']
 
 " ##=== }}}
 " ##=== QuickRun {{{
