@@ -107,6 +107,162 @@ set wildignore+=*.log,*.tmp
 set wildignore+=*.png,*.jpg,*.gif,*.pdf
 set wildignore+=*.zip,*.tar.gz
 
+" TypeScript React用のパス設定
+augroup ts_react_add_path
+  au!
+  " featuresディレクトリ以下のパスを検索対象に追加
+  autocmd FileType typescriptreact :setl path+=/features/**
+  " インクルード式の変換設定（先頭の/を除去）
+  autocmd FileType typescriptreact :setl includeexpr=substitute(v:fname,'^/','','')
+augroup END
+
+" ##=== }}}
+" ##=== セッション設定 {{{
+
+" セッションの復元コマンド
+command! RestoreSession :source ~/.shared_cache/.vim/.session
+" セッションの保存コマンド
+command! SaveSession    :mksession! ~/.shared_cache/.vim/.session
+
+" ##=== }}}
+" ##=== キーマッピング設定 {{{
+
+" 検索ハイライトを消去
+nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
+
+" vimrcを開く
+nmap <leader>v :e $MYVIMRC<CR>
+
+" qキーを無効化
+map q <silent>
+
+" quickfixの次のエラーへ移動
+nnoremap <silent> cn :cn<CR>
+" quickfixの前のエラーへ移動
+nnoremap <silent> cp :cp<CR>
+
+" Quickfixウィンドウの表示切り替え関数
+function! ToggleQuickFix()
+  if empty(filter(getwininfo(), 'v:val.quickfix'))
+    copen
+  else
+    cclose
+  endif
+endfunction
+
+" Quickfixウィンドウの表示切り替え
+nnoremap <leader>w :call ToggleQuickFix()<cr>
+
+" Git管理下のファイルの相対パスをクリップボードにコピー
+command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git rev-parse --show-toplevel')), '', '') | echo @" | call system('clip -i', @")
+nnoremap <leader>c :CopyGitPath<cr>
+
+" 現在のバッファを閉じる
+nnoremap <leader>d :bd<cr>
+
+" Git PR関連機能
+" カーソル位置のコミットハッシュに関連するPRを表示
+function! GitShowCursorPullRequest()
+  let l:word = expand('<cword>')
+  let l:get_pr_number = "gh api graphql
+      \ -F owner=':owner' -F repo=':repo' -F hash=" . l:word . "
+      \ -f query='query($repo:String!, $owner:String!, $hash:String) { repository(name: $repo, owner: $owner) { object(expression: $hash) { ... on Commit {associatedPullRequests(first: 1) { edges { node { number } } } } } } }'
+      \ | jq '.data.repository.object.associatedPullRequests.edges[0].node.number'"
+  let l:pr_number = system(l:get_pr_number)
+
+  echo "pr_number: " . l:pr_number
+  if match(l:pr_number, 'null\n') != -1
+    echo "Pull Request not found."
+    return
+  endif
+
+  let l:get_pr_url = "gh api graphql
+      \ -F owner=':owner' -F repo=':repo' -F number=" . str2nr(l:pr_number) . "
+      \ -f query='query($repo:String!, $owner:String!, $number:Int!) { repository(name: $repo, owner: $owner) { pullRequest(number: $number) { url } } }'
+      \ | jq '.data.repository.pullRequest.url'"
+  let l:pr_url = system(l:get_pr_url)
+  echo "open: " . l:pr_url | let @"=l:pr_url | call system('chrome -i', @")
+endfunction
+
+" PRを表示するコマンドを定義
+command! ShowPullRequest :call GitShowCursorPullRequest()
+" PRを表示するキーマッピング
+nnoremap go :ShowPullRequest<cr>
+
+" Specファイル関連の機能
+" 対応するspecファイルを開くコマンド
+command! OpenSpec :call OpenSpecFile()
+
+" Specファイルを開く関数
+function! OpenSpecFile()
+  " 現在のファイルパスを取得
+  let current_file = expand('%:p')
+  " app/ を spec/ に置換し、末尾に _spec を追加
+  let spec_file = substitute(current_file, '/app/', '/spec/', '')
+  let spec_file = substitute(spec_file, '\.rb$', '_spec.rb', '')
+
+  " ファイルが存在するか確認して開く
+  if filereadable(spec_file)
+    execute 'edit ' . spec_file
+  else
+    echo "Spec file not found: " . spec_file
+  endif
+endfunction
+
+" 実装ファイルを開くコマンド
+command! OpenImplementation :call OpenImplementationFile()
+
+" 実装ファイルを開く関数
+function! OpenImplementationFile()
+  " 現在のファイルパスを取得
+  let current_file = expand('%:p')
+  " spec/ を app/ に置換し、_spec.rb を .rb に変更
+  let impl_file = substitute(current_file, '/spec/', '/app/', '')
+  let impl_file = substitute(impl_file, '_spec\.rb$', '.rb', '')
+
+  " ファイルが存在するか確認して開く
+  if filereadable(impl_file)
+    execute 'edit ' . impl_file
+  else
+    echo "Implementation file not found: " . impl_file
+  endif
+endfunction
+
+" ##=== }}}
+" ##=== ctags {{{
+
+" タグファイルの検索パス（カレントディレクトリから親ディレクトリに向かって検索）
+set tags=.tags;$HOME
+
+" ctagsのオプションを共通定義
+let s:ctags_options = '--exclude=node_modules --exclude=.git --exclude=*.css --exclude=*.json -R -f '
+
+" タグファイル生成コマンド
+command! MakeTags call system('ctags ' . s:ctags_options . '.tags')
+
+" タグファイルの自動更新機能
+function! s:execute_ctags() abort
+  let tag_name = '.tags'
+  let tags_path = findfile(tag_name, '.;')
+  if tags_path ==# ''
+    return
+  endif
+
+  " タグファイルのディレクトリパスを取得
+  let tags_dirpath = fnamemodify(tags_path, ':p:h')
+  " 見つかったタグファイルのディレクトリに移動して、ctagsをバックグラウンド実行（エラー出力破棄）
+  execute 'silent !cd' tags_dirpath '&& ctags ' . s:ctags_options . tag_name . ' 2> /dev/null &'
+endfunction
+
+" ファイル保存時にタグファイルを自動更新
+augroup update_ctags
+  au!
+  autocmd BufWritePost * call s:execute_ctags()
+augroup END
+
+" タグジャンプ時に複数候補がある場合はリスト表示
+nnoremap <C-]> g<C-]>
+
 " ##=== }}}
 " #=== }}}
 
@@ -249,38 +405,6 @@ nnoremap <leader>e :<c-u>CtrlPLauncher<cr>
 let g:ctrlp_launcher_file = '~/.vim/config/.ctrlp-launcher'
 
 " ##=== }}}
-" ##=== ctags {{{
-
-" タグファイルの検索パス（カレントディレクトリから親ディレクトリに向かって検索）
-set tags=.tags;$HOME
-
-" ctagsのオプションを共通定義
-let s:ctags_options = '--exclude=node_modules --exclude=.git --exclude=*.css --exclude=*.json -R -f '
-
-" タグファイル生成コマンド
-command! MakeTags call system('ctags ' . s:ctags_options . '.tags')
-
-" タグファイルの自動更新機能
-function! s:execute_ctags() abort
-  let tag_name = '.tags'
-  let tags_path = findfile(tag_name, '.;')
-  if tags_path ==# ''
-    return
-  endif
-
-  " タグファイルのディレクトリパスを取得
-  let tags_dirpath = fnamemodify(tags_path, ':p:h')
-  " 見つかったタグファイルのディレクトリに移動して、ctagsをバックグラウンド実行（エラー出力破棄）
-  execute 'silent !cd' tags_dirpath '&& ctags ' . s:ctags_options . tag_name . ' 2> /dev/null &'
-endfunction
-
-" ファイル保存時にタグファイルを自動更新
-augroup update_ctags
-  au!
-  autocmd BufWritePost * call s:execute_ctags()
-augroup END
-
-" ##=== }}}
 " ##=== vimdoc-ja {{{
 
 " ヘルプの言語優先順位を設定（日本語を優先）
@@ -418,6 +542,7 @@ augroup vimrc_vim_gitgutter
   " 削除行の色設定
   autocmd VimEnter,ColorScheme * highlight GitGutterDelete guibg=NONE ctermbg=NONE guifg=#ff2222 ctermfg=1
 augroup END
+
 " ##=== }}}
 " ##=== asyncomplete {{{
 
@@ -483,13 +608,6 @@ augroup lsp_install
   " LSPバッファが有効になったときに実行する関数を設定
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
-" ##=== }}}
-" ##=== セッション設定 {{{
-
-" セッションの復元コマンド
-command! RestoreSession :source ~/.shared_cache/.vim/.session
-" セッションの保存コマンド
-command! SaveSession    :mksession! ~/.shared_cache/.vim/.session
 
 " ##=== }}}
 " ##=== QuickRun {{{
@@ -503,131 +621,5 @@ let g:quickrun_config['go'] = {
     \ 'cmdopt': 'run',
     \ 'exec': 'go run %S'
     \ }
-
-" ##=== }}}
-" ##=== ファイルタイプ設定 {{{
-
-" TypeScript React用のパス設定
-augroup ts_react_add_path
-  au!
-  " featuresディレクトリ以下のパスを検索対象に追加
-  autocmd FileType typescriptreact :setl path+=/features/**
-  " インクルード式の変換設定（先頭の/を除去）
-  autocmd FileType typescriptreact :setl includeexpr=substitute(v:fname,'^/','','')
-augroup END
-
-" ##=== }}}
-" ##=== キーマッピング設定 {{{
-
-" 検索ハイライトを消去
-nmap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
-
-" vimrcを開く
-nmap <leader>v :e $MYVIMRC<CR>
-
-" qキーを無効化
-map q <silent>
-
-" Git管理下のファイルの相対パスをクリップボードにコピー
-command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git rev-parse --show-toplevel')), '', '') | echo @" | call system('clip -i', @")
-nnoremap <leader>c :CopyGitPath<cr>
-
-" Quickfix操作
-" 次のエラーへ移動
-nnoremap <silent> cn :cn<CR>
-" 前のエラーへ移動
-nnoremap <silent> cp :cp<CR>
-
-" バッファとQuickfixの操作
-" Quickfixウィンドウの表示切り替え関数
-function! ToggleQuickFix()
-  if empty(filter(getwininfo(), 'v:val.quickfix'))
-    copen
-  else
-    cclose
-  endif
-endfunction
-" Quickfixウィンドウの表示切り替え
-nnoremap <leader>w :call ToggleQuickFix()<cr>
-" 現在のバッファを閉じる
-nnoremap <leader>d :bd<cr>
-
-" 検索とGrep
-" Gitグレップを開始
-nnoremap <leader>g :copen<cr>:Ggrep!<SPACE>
-" カーソル位置の単語でGitグレップを実行
-nnoremap K :Ggrep "\b<C-R><C-W>\b"<cr>:cw<cr>
-
-" Ctags
-" タグジャンプ時に複数候補がある場合はリスト表示
-nnoremap <C-]> g<C-]>
-
-" Git PR関連機能
-" カーソル位置のコミットハッシュに関連するPRを表示
-function! GitShowCursorPullRequest()
-  let l:word = expand('<cword>')
-  let l:get_pr_number = "gh api graphql
-      \ -F owner=':owner' -F repo=':repo' -F hash=" . l:word . "
-      \ -f query='query($repo:String!, $owner:String!, $hash:String) { repository(name: $repo, owner: $owner) { object(expression: $hash) { ... on Commit {associatedPullRequests(first: 1) { edges { node { number } } } } } } }'
-      \ | jq '.data.repository.object.associatedPullRequests.edges[0].node.number'"
-  let l:pr_number = system(l:get_pr_number)
-
-  echo "pr_number: " . l:pr_number
-  if match(l:pr_number, 'null\n') != -1
-    echo "Pull Request not found."
-    return
-  endif
-
-  let l:get_pr_url = "gh api graphql
-      \ -F owner=':owner' -F repo=':repo' -F number=" . str2nr(l:pr_number) . "
-      \ -f query='query($repo:String!, $owner:String!, $number:Int!) { repository(name: $repo, owner: $owner) { pullRequest(number: $number) { url } } }'
-      \ | jq '.data.repository.pullRequest.url'"
-  let l:pr_url = system(l:get_pr_url)
-  echo "open: " . l:pr_url | let @"=l:pr_url | call system('chrome -i', @")
-endfunction
-
-" PRを表示するコマンドを定義
-command! ShowPullRequest :call GitShowCursorPullRequest()
-" PRを表示するキーマッピング
-nnoremap go :ShowPullRequest<cr>
-
-" Specファイル関連の機能
-" 対応するspecファイルを開くコマンド
-command! OpenSpec :call OpenSpecFile()
-
-" Specファイルを開く関数
-function! OpenSpecFile()
-  " 現在のファイルパスを取得
-  let current_file = expand('%:p')
-  " app/ を spec/ に置換し、末尾に _spec を追加
-  let spec_file = substitute(current_file, '/app/', '/spec/', '')
-  let spec_file = substitute(spec_file, '\.rb$', '_spec.rb', '')
-
-  " ファイルが存在するか確認して開く
-  if filereadable(spec_file)
-    execute 'edit ' . spec_file
-  else
-    echo "Spec file not found: " . spec_file
-  endif
-endfunction
-
-" 実装ファイルを開くコマンド
-command! OpenImplementation :call OpenImplementationFile()
-
-" 実装ファイルを開く関数
-function! OpenImplementationFile()
-  " 現在のファイルパスを取得
-  let current_file = expand('%:p')
-  " spec/ を app/ に置換し、_spec.rb を .rb に変更
-  let impl_file = substitute(current_file, '/spec/', '/app/', '')
-  let impl_file = substitute(impl_file, '_spec\.rb$', '.rb', '')
-
-  " ファイルが存在するか確認して開く
-  if filereadable(impl_file)
-    execute 'edit ' . impl_file
-  else
-    echo "Implementation file not found: " . impl_file
-  endif
-endfunction
 
 " ##=== }}}
