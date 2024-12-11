@@ -108,48 +108,6 @@ set wildignore+=*.png,*.jpg,*.gif,*.pdf
 set wildignore+=*.zip,*.tar.gz
 
 " ##=== }}}
-" ##=== キーマッピング設定 {{{
-
-" Specファイル関連の機能
-" 対応するspecファイルを開くコマンド
-command! OpenSpec :call OpenSpecFile()
-
-" Specファイルを開く関数
-function! OpenSpecFile()
-  " 現在のファイルパスを取得
-  let current_file = expand('%:p')
-  " app/ を spec/ に置換し、末尾に _spec を追加
-  let spec_file = substitute(current_file, '/app/', '/spec/', '')
-  let spec_file = substitute(spec_file, '\.rb$', '_spec.rb', '')
-
-  " ファイルが存在するか確認して開く
-  if filereadable(spec_file)
-    execute 'edit ' . spec_file
-  else
-    echo "Spec file not found: " . spec_file
-  endif
-endfunction
-
-" 実装ファイルを開くコマンド
-command! OpenImplementation :call OpenImplementationFile()
-
-" 実装ファイルを開く関数
-function! OpenImplementationFile()
-  " 現在のファイルパスを取得
-  let current_file = expand('%:p')
-  " spec/ を app/ に置換し、_spec.rb を .rb に変更
-  let impl_file = substitute(current_file, '/spec/', '/app/', '')
-  let impl_file = substitute(impl_file, '_spec\.rb$', '.rb', '')
-
-  " ファイルが存在するか確認して開く
-  if filereadable(impl_file)
-    execute 'edit ' . impl_file
-  else
-    echo "Implementation file not found: " . impl_file
-  endif
-endfunction
-
-" ##=== }}}
 " ##=== ctags {{{
 
 " タグファイルの検索パス（カレントディレクトリから親ディレクトリに向かって検索）
@@ -185,6 +143,10 @@ command! MakeTags call s:ExecuteCtags()
 command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git rev-parse --show-toplevel')), '', '') | echo @" | call system('clip -i', @")
 " PRを表示するコマンドを定義
 command! ShowPullRequest :call s:GitShowCursorPullRequest()
+" 対応するspecファイルを開くコマンド
+command! OpenSpec :call s:OpenSpecFile()
+" 実装ファイルを開くコマンド
+command! OpenImplementation :call s:OpenImplementationFile()
 
 augroup MyCtagsAutoUpdate
   au!
@@ -254,6 +216,38 @@ function! s:GitShowCursorPullRequest()
       \ | jq '.data.repository.pullRequest.url'"
   let l:pr_url = system(l:get_pr_url)
   echo "open: " . l:pr_url | let @"=l:pr_url | call system('chrome -i', @")
+endfunction
+
+" Specファイルを開く関数
+function! s:OpenSpecFile()
+  " 現在のファイルパスを取得
+  let l:current_file = expand('%:p')
+  " app/ を spec/ に置換し、末尾に _spec を追加
+  let l:spec_file = substitute(l:current_file, '/app/', '/spec/', '')
+  let l:spec_file = substitute(l:spec_file, '\.rb$', '_spec.rb', '')
+
+  " ファイルが存在するか確認して開く
+  if filereadable(l:spec_file)
+    execute 'edit ' . l:spec_file
+  else
+    echo "Spec file not found: " . l:spec_file
+  endif
+endfunction
+
+" 実装ファイルを開く関数
+function! s:OpenImplementationFile()
+  " 現在のファイルパスを取得
+  let l:current_file = expand('%:p')
+  " spec/ を app/ に置換し、_spec.rb を .rb に変更
+  let l:impl_file = substitute(l:current_file, '/spec/', '/app/', '')
+  let l:impl_file = substitute(l:impl_file, '_spec\.rb$', '.rb', '')
+
+  " ファイルが存在するか確認して開く
+  if filereadable(l:impl_file)
+    execute 'edit ' . l:impl_file
+  else
+    echo "Implementation file not found: " . l:impl_file
+  endif
 endfunction
 
 " ##=== }}}
