@@ -282,6 +282,8 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'itchyny/lightline.vim'
     " Lightline用のGruvboxテーマ
     Plug 'shinchu/lightline-gruvbox.vim'
+    " Lightline用のGitブランチ表示
+    Plug 'itchyny/vim-gitbranch'
   " ファイルファインダー
   Plug 'ctrlpvim/ctrlp.vim'
     " あいまい検索機能の強化
@@ -356,7 +358,7 @@ let g:lightline = {
   \              [ 'winbufnr' ] ]
   \ },
   \ 'component_function': {
-  \   'gitbranch': 'fugitive#head',
+  \   'gitbranch': 'gitbranch#name',
   \ },
   \ 'component': {
   \   'winbufnr': 'win:%{winnr()} buf:%n'
