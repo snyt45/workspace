@@ -544,28 +544,36 @@ imap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 " ##=== }}}
 " ##=== vim-lsp {{{
 
-" 診断機能を有効化
-let g:lsp_diagnostics_enabled = 1
-" カーソル下の診断メッセージをエコーエリアに表示
-let g:lsp_diagnostics_echo_cursor = 1
-" 診断メッセージの表示遅延時間
-let g:lsp_diagnostics_echo_delay = 10
-" カーソル下の診断をフロート表示
-let g:lsp_diagnostics_float_cursor = 1
-" サイン列での診断表示を有効化
-let g:lsp_diagnostics_signs_enabled = 1
-" 仮想テキストでの診断表示を無効化
-let g:lsp_diagnostics_virtual_text_enabled = 0
-" サイン表示の遅延時間
-let g:lsp_diagnostics_signs_delay = 10
-" 挿入モード時のサイン表示を無効化
-let g:lsp_diagnostics_signs_insert_mode_enabled = 0
-" 診断のハイライト遅延時間
-let g:lsp_diagnostics_highlights_delay = 10
-" 挿入モード時の診断ハイライトを無効化
-let g:lsp_diagnostics_highlights_insert_mode_enabled = 0
-" コードアクションのサイン表示を無効化
-let g:lsp_document_code_action_signs_enabled = 0
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+
+    let g:lsp_format_sync_timeout = 1000
+    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+    
+    " refer to doc to add more commands
+endfunction
+
+augroup MyLspSettings
+    au!
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+" ##=== }}}
+" ##=== vim-lsp-settings {{{
 
 " サーバーのインストールディレクトリ
 let g:lsp_settings_servers_dir='~/.shared_cache/.vim/servers'
@@ -574,27 +582,6 @@ let g:lsp_settings_filetype_ruby = ['solargraph']
 let g:lsp_settings_filetype_typescript = ['typescript-language-server']
 let g:lsp_settings_filetype_javascript = ['typescript-language-server']
 let g:lsp_settings_filetype_typescriptreact = ['typescript-language-server']
-
-" デバッグ設定（必要な場合にコメントを解除）
-" let g:lsp_log_verbose = 1
-" let g:lsp_log_file = expand('~/.shared_cache/.vim/vim-lsp.log')
-
-augroup MyLsp
-  au!
-
-  " LSPバッファが有効になったときに実行する関数を設定
-  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
-
-" LSPバッファが有効になったときの設定
-function! s:on_lsp_buffer_enabled() abort
-  " フォーマット時のタイムアウト設定
-  let g:lsp_format_sync_timeout = 1000
-
-  " Goファイル用の自動フォーマット設定
-  " ファイル保存時にインポートの整理とコードフォーマットを実行
-  autocmd BufWritePre *.go call execute(['LspCodeActionSync source.organizeImports', 'LspDocumentFormatSync'])
-endfunction
 
 " ##=== }}}
 " ##=== QuickRun {{{
