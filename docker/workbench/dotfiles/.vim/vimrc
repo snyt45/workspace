@@ -584,6 +584,7 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
+    nmap <buffer> D <plug>(lsp-document-diagnostics)
     " LSPのポップアップウィンドウが表示されているときのみ有効にする
     nmap <expr><buffer> <c-f> popup_list()->empty() ? '<c-f>' : lsp#scroll(+4)
     nmap <expr><buffer> <c-b> popup_list()->empty() ? '<c-b>' : lsp#scroll(-4)
