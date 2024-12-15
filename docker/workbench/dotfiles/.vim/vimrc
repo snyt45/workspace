@@ -530,11 +530,19 @@ augroup END
 " ##=== }}}
 " ##=== asyncomplete {{{
 
-" 補完ポップアップの表示遅延時間（ミリ秒）
-let g:asyncomplete_popup_delay = 100
+let g:asyncomplete_auto_popup = 0
 
-" 補完メニューが表示されている場合は次の候補を選択、そうでなければTabを入力
-imap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
 " 補完メニューが表示されている場合は前の候補を選択、そうでなければShift+Tabを入力
 imap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 " 補完メニューが表示されている場合は補完を確定、そうでなければ改行
