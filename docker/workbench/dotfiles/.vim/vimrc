@@ -559,7 +559,7 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> K <plug>(lsp-hover)
     " LSPのポップアップウィンドウが表示されているときのみ有効にする
     nmap <expr><buffer> <c-f> popup_list()->empty() ? '<c-f>' : lsp#scroll(+4)
-    nmap <expr><buffer> <c-d> popup_list()->empty() ? '<c-d>' : lsp#scroll(-4)
+    nmap <expr><buffer> <c-b> popup_list()->empty() ? '<c-b>' : lsp#scroll(-4)
 
     let g:lsp_format_sync_timeout = 1000
     autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
