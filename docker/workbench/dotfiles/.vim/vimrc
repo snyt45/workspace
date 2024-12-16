@@ -133,6 +133,8 @@ nnoremap <C-]> g<C-]>
 " ファイルパスをコピー
 nnoremap <leader>c :CopyGitPath<cr>
 
+" rg で grep する
+command! -nargs=1 Grep call <SID>grep(<q-args>)
 " セッションの復元コマンド
 command! RestoreSession :source ~/.shared_cache/.vim/.session
 " セッションの保存コマンド
@@ -152,6 +154,10 @@ augroup MyCtagsAutoUpdate
   au!
   autocmd BufWritePost * call s:ExecuteCtags()
 augroup END
+
+function! s:grep(word) abort
+  cexpr system(printf('rg --vimgrep "%s"', a:word)) | cw
+endfunction
 
 " タグファイルの自動更新
 function! s:ExecuteCtags() abort
