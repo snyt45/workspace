@@ -132,6 +132,8 @@ nnoremap <leader>w :call <SID>ToggleQuickFix()<cr>
 nnoremap <C-]> g<C-]>
 " ファイルパスをコピー
 nnoremap <leader>c :CopyGitPath<cr>
+" カレントファイルのgit checkoutを実行
+nnoremap <Leader>gc :call <SID>GitCheckoutFile()<CR>
 " カレントファイルのgit checkout --patchを実行
 nnoremap <Leader>gp :call <SID>GitCheckoutPatch()<CR>
 
@@ -256,6 +258,12 @@ function! s:OpenImplementationFile()
   else
     echo "Implementation file not found: " . l:impl_file
   endif
+endfunction
+
+function! s:GitCheckoutFile() abort
+  let l:target_file = expand('%')
+  call system('git checkout -- ' . l:target_file)
+  edit!
 endfunction
 
 function! s:GitCheckoutPatch() abort
