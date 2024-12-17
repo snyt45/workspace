@@ -309,9 +309,38 @@ function! s:GitAddCurrentFile()
   echo "Added: " . file
 endfunction
 
+function! s:GitResetCurrentFile()
+  " カーソル行のテキストを取得
+  let line = term_getline('', line('.'))
+  " ファイルパスを抽出 (git status -s の出力形式: XY filename)
+  let file = substitute(line, '^\(..\)\s\+', '', '')
+
+  " git reset を実行
+  let output = system('git reset HEAD ' . shellescape(file))
+
+  " エラーチェック
+  if v:shell_error
+      echohl ErrorMsg
+      echo "Git reset failed: " . output
+      echohl None
+      return
+  endif
+
+  " バッファを更新
+  call term_start('git status -s', {
+      \ 'term_name': 'git-status',
+      \ 'curwin': 1,
+      \ 'term_finish': 'open',
+      \ 'exit_cb': function('s:set_filetype_git_status')
+      \ })
+
+  echo "Reset: " . file
+endfunction
+
 augroup MyGitStatusMapping
     autocmd!
     autocmd FileType git-status nnoremap <buffer> a :call <SID>GitAddCurrentFile()<CR>
+    autocmd FileType git-status nnoremap <buffer> u :call <SID>GitResetCurrentFile()<CR>
 augroup END
 
 function! s:GitCheckoutFile() abort
