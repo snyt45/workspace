@@ -132,6 +132,8 @@ nnoremap <leader>w :call <SID>ToggleQuickFix()<cr>
 nnoremap <C-]> g<C-]>
 " ファイルパスをコピー
 nnoremap <leader>c :CopyGitPath<cr>
+" git statusを表示
+nnoremap <leader>gs :call <SID>GitStatusBuffer()<CR>
 " カレントファイルのgit checkoutを実行
 nnoremap <Leader>gc :call <SID>GitCheckoutFile()<CR>
 " カレントファイルのgit checkout --patchを実行
@@ -259,6 +261,58 @@ function! s:OpenImplementationFile()
     echo "Implementation file not found: " . l:impl_file
   endif
 endfunction
+
+function! s:set_filetype_git_status(job, status)
+  setlocal filetype=git-status
+endfunction
+
+function! s:GitStatusBuffer()
+  " 新しいバッファを作成
+  10new
+
+  " ターミナルジョブを開始
+  call term_start('git status -s', {
+      \ 'term_name': 'git-status',
+      \ 'term_rows': 10,
+      \ 'curwin': 1,
+      \ 'term_finish': 'open',
+      \ 'exit_cb': function('s:set_filetype_git_status')
+      \ })
+endfunction
+
+function! s:GitAddCurrentFile()
+  " カーソル行のテキストを取得
+  let line = term_getline('', line('.'))
+  " ファイルパスを抽出 (git status -s の出力形式: XY filename)
+  let file = substitute(line, '^\(..\)\s\+', '', '')
+
+  " git add を実行
+  let output = system('git add ' . shellescape(file))
+
+  " エラーチェック
+  if v:shell_error
+      echohl ErrorMsg
+      echo "Git add failed: " . output
+      echohl None
+      return
+  endif
+
+  " バッファを更新
+  call term_start('git status -s', {
+      \ 'term_name': 'git-status',
+      \ 'term_rows': 10,
+      \ 'curwin': 1,
+      \ 'term_finish': 'open',
+      \ 'exit_cb': function('s:set_filetype_git_status')
+      \ })
+
+  echo "Added: " . file
+endfunction
+
+augroup MyGitStatusMapping
+    autocmd!
+    autocmd FileType git-status nnoremap <buffer> a :call <SID>GitAddCurrentFile()<CR>
+augroup END
 
 function! s:GitCheckoutFile() abort
   let l:target_file = expand('%')
