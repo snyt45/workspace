@@ -290,8 +290,9 @@ function! s:GitStatusBuffer()
   " 新しいバッファを作成
   10new
 
+  let l:cmd = 'git -c color.status=always status -s | sort -k2b'
   " ターミナルジョブを開始
-  call term_start('git status -s', {
+  call term_start(['/bin/sh', '-c', l:cmd], {
       \ 'term_name': 'git-status',
       \ 'term_rows': 10,
       \ 'curwin': 1,
@@ -317,8 +318,9 @@ function! s:GitAddCurrentFile()
       return
   endif
 
-  " バッファを更新
-  call term_start('git status -s', {
+  let l:cmd = 'git -c color.status=always status -s | sort -k2b'
+  " ターミナルジョブを開始
+  call term_start(['/bin/sh', '-c', l:cmd], {
       \ 'term_name': 'git-status',
       \ 'term_rows': 10,
       \ 'curwin': 1,
@@ -346,8 +348,9 @@ function! s:GitResetCurrentFile()
       return
   endif
 
-  " バッファを更新
-  call term_start('git status -s', {
+  let l:cmd = 'git -c color.status=always status -s | sort -k2b'
+  " ターミナルジョブを開始
+  call term_start(['/bin/sh', '-c', l:cmd], {
       \ 'term_name': 'git-status',
       \ 'curwin': 1,
       \ 'term_finish': 'open',
