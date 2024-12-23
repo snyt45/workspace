@@ -132,6 +132,8 @@ nnoremap <leader>w :call <SID>ToggleQuickFix()<cr>
 nnoremap <C-]> g<C-]>
 " ファイルパスをコピー
 nnoremap <leader>c :CopyGitPath<cr>
+" grep
+nnoremap <leader>gg :Grep<space>
 " git statusを表示
 nnoremap <leader>gs :call <SID>GitStatusBuffer()<CR>
 " カレントファイルのgit checkoutを実行
