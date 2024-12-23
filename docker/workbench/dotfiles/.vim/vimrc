@@ -34,8 +34,9 @@ set wildmenu wildoptions=pum
 " ファイル名補完で大文字小文字を区別しない
 set wildignorecase
 
-" 行番号を相対的に表示
+" 行番号を相対表示 + 絶対表示
 set relativenumber
+set number
 
 " スワップファイルを作成しない
 set noswapfile
