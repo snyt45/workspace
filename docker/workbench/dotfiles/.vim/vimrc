@@ -126,6 +126,8 @@ nnoremap q <silent>
 nnoremap <silent> cn :cn<CR>
 " quickfixの前のエラーへ移動
 nnoremap <silent> cp :cp<CR>
+" 絶対行と相対行をトグル
+nnoremap <silent> <Leader>n :call <SID>ToggleRelativenumber()<cr>
 " Quickfixウィンドウの表示切り替え
 nnoremap <leader>w :call <SID>ToggleQuickFix()<cr>
 " タグジャンプ時に複数候補がある場合はリスト表示
@@ -198,6 +200,16 @@ function! s:ExecuteCtags() abort
         \ shellescape(l:tag_path))
   
   call system(l:cmd)
+endfunction
+
+" 絶対行と相対行をトグル
+function! s:ToggleRelativenumber() abort
+  if &relativenumber == 1
+     set norelativenumber
+     set number
+  else
+     set relativenumber
+  endif
 endfunction
 
 " Quickfixウィンドウの表示切り替え関数
