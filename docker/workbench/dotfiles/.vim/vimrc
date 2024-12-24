@@ -246,10 +246,6 @@ function! s:OpenImplementationFile()
   endif
 endfunction
 
-function! s:set_filetype_git_status(job, status)
-  setlocal filetype=git-status
-endfunction
-
 " ##=== }}}
 " ##=== キーマッピング・コマンド（Git） {{{
 
@@ -358,6 +354,10 @@ function! s:GitResetCurrentFile()
       \ })
 
   echo "Reset: " . file
+endfunction
+
+function! s:set_filetype_git_status(job, status)
+  setlocal filetype=git-status
 endfunction
 
 augroup MyGitStatusMapping
