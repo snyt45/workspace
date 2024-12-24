@@ -293,7 +293,9 @@ function! s:GitStatusBuffer()
       \ 'term_rows': 10,
       \ 'curwin': 1,
       \ 'term_finish': 'open',
-      \ 'exit_cb': function('s:set_filetype_git_status')
+      \ 'exit_cb': {job, status -> [
+          \ s:set_filetype_git_status()
+      \ ]}
       \ })
 endfunction
 
@@ -314,14 +316,17 @@ function! s:GitAddCurrentFile()
       return
   endif
 
+  let l:cursor_pos = getcurpos()
   let l:cmd = 'git -c color.status=always status -s | sort -k2b'
   " ターミナルジョブを開始
   call term_start(['/bin/sh', '-c', l:cmd], {
       \ 'term_name': 'git-status',
-      \ 'term_rows': 10,
       \ 'curwin': 1,
       \ 'term_finish': 'open',
-      \ 'exit_cb': function('s:set_filetype_git_status')
+      \ 'exit_cb': {job, status -> [
+          \ s:set_filetype_git_status(),
+          \ s:restore_cursor(l:cursor_pos)
+      \ ]}
       \ })
 
   echo "Added: " . file
@@ -344,20 +349,29 @@ function! s:GitResetCurrentFile()
       return
   endif
 
+  let l:cursor_pos = getcurpos()
   let l:cmd = 'git -c color.status=always status -s | sort -k2b'
   " ターミナルジョブを開始
   call term_start(['/bin/sh', '-c', l:cmd], {
       \ 'term_name': 'git-status',
       \ 'curwin': 1,
       \ 'term_finish': 'open',
-      \ 'exit_cb': function('s:set_filetype_git_status')
+      \ 'exit_cb': {job, status -> [
+          \ s:set_filetype_git_status(),
+          \ s:restore_cursor(l:cursor_pos)
+      \ ]}
       \ })
 
   echo "Reset: " . file
 endfunction
 
-function! s:set_filetype_git_status(job, status)
+function! s:set_filetype_git_status()
   setlocal filetype=git-status
+endfunction
+
+function! s:restore_cursor(cursor_pos)
+ call term_wait('', 50)
+ call setpos('.', a:cursor_pos)
 endfunction
 
 augroup MyGitStatusMapping
