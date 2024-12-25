@@ -251,6 +251,8 @@ endfunction
 
 " git statusを表示
 nnoremap <leader>gs :call <SID>GitStatusBuffer()<CR>
+" カレントファイルのgit add --patchを実行
+nnoremap <Leader>ga :call <SID>GitAddPatch()<CR>
 " カレントファイルのgit checkout --patchを実行
 nnoremap <Leader>gp :call <SID>GitCheckoutPatch()<CR>
 
@@ -411,6 +413,20 @@ augroup MyGitStatusMapping
     autocmd FileType git-status nnoremap <buffer> u :call <SID>GitResetCurrentFile()<CR>
     autocmd FileType git-status nnoremap <buffer> d :call <SID>GitCheckoutCurrentFile()<CR>
 augroup END
+
+function! s:GitAddPatch() abort
+ let l:current_winnr = winnr()
+ let l:target_file = expand('%')
+
+ call term_start('git add --patch ' . l:target_file, #{
+   \ term_finish: 'close',
+   \ term_rows: 15,
+   \ exit_cb: {-> [
+   \   execute('bd! %'),
+   \   execute(l:current_winnr . 'wincmd w | edit!')
+   \ ]}
+ \})
+endfunction
 
 function! s:GitCheckoutPatch() abort
  let l:current_winnr = winnr()
