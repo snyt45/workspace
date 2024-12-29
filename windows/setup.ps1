@@ -48,6 +48,7 @@ winget install DeepL.DeepL
 winget install Dropbox.Dropbox
 winget install SlackTechnologies.Slack
 winget install Zoom.Zoom
+winget install RoamResearch.RoamResearch
 
 echo "ソフトウェアのインストールが完了しました。"
 
