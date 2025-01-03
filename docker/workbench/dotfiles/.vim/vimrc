@@ -141,6 +141,8 @@ nnoremap <C-]> g<C-]>
 nnoremap <leader>c :CopyGitPath<cr>
 " grep
 nnoremap <leader>gg :Grep<space>
+" 現在のファイルのディレクトリを展開する
+cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " rg で grep する
 command! -nargs=1 Grep call <SID>grep(<q-args>)
