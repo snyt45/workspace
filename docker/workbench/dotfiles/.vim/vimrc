@@ -566,27 +566,6 @@ let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
 
 " ##=== }}}
-" ##=== ctrlp {{{
-
-" あいまい検索機能の設定
-let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
-" 起動キーマッピング
-let g:ctrlp_map = '<leader><leader>'
-" Gitリポジトリ内のファイル一覧を取得するコマンド
-let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
-
-" バッファリストの表示
-nnoremap <leader>b :CtrlPBuffer<cr>
-" タグリストの表示
-nnoremap <leader>t :CtrlPTag<cr>
-" 現在のファイルのタグ一覧
-nnoremap <leader>f :CtrlPBufTag<cr>
-" Quickfixリストの表示
-nnoremap <leader>q :CtrlPQuickfix<cr>
-" 最近使用したファイルの一覧
-nnoremap <leader>m :CtrlPMRUFiles<cr>
-
-" ##=== }}}
 " ##=== ctrlp-launcher {{{
 
 " ランチャー設定ファイルの場所を指定
