@@ -239,14 +239,10 @@ endfunction
 " ##=== }}}
 " ##=== キーマッピング・コマンド（quickfix） {{{
 
-" quickfixの次のエラーへ移動
-nnoremap <silent> cn :cn<CR>
-" quickfixの前のエラーへ移動
-nnoremap <silent> cp :cp<CR>
-" Quickfixウィンドウの表示切り替え
+nnoremap <silent> [q :cprevious<CR>
+nnoremap <silent> ]q :cnext<CR>
 nnoremap <leader>w :call <SID>ToggleQuickFix()<cr>
 
-" Quickfixウィンドウの表示切り替え関数
 function! s:ToggleQuickFix()
   if empty(filter(getwininfo(), 'v:val.quickfix'))
     copen
