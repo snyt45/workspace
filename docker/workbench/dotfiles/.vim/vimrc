@@ -133,14 +133,8 @@ nnoremap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 nnoremap <leader>v :e $MYVIMRC<CR>
 " qキーを無効化
 nnoremap q <silent>
-" quickfixの次のエラーへ移動
-nnoremap <silent> cn :cn<CR>
-" quickfixの前のエラーへ移動
-nnoremap <silent> cp :cp<CR>
 " 絶対行と相対行をトグル
 nnoremap <silent> <Leader>n :call <SID>ToggleRelativenumber()<cr>
-" Quickfixウィンドウの表示切り替え
-nnoremap <leader>w :call <SID>ToggleQuickFix()<cr>
 " タグジャンプ時に複数候補がある場合はリスト表示
 nnoremap <C-]> g<C-]>
 " ファイルパスをコピー
@@ -210,15 +204,6 @@ function! s:ToggleRelativenumber() abort
   endif
 endfunction
 
-" Quickfixウィンドウの表示切り替え関数
-function! s:ToggleQuickFix()
-  if empty(filter(getwininfo(), 'v:val.quickfix'))
-    copen
-  else
-    cclose
-  endif
-endfunction
-
 " Specファイルを開く関数
 function! s:OpenSpecFile()
   " 現在のファイルパスを取得
@@ -248,6 +233,25 @@ function! s:OpenImplementationFile()
     execute 'edit ' . l:impl_file
   else
     echo "Implementation file not found: " . l:impl_file
+  endif
+endfunction
+
+" ##=== }}}
+" ##=== キーマッピング・コマンド（quickfix） {{{
+
+" quickfixの次のエラーへ移動
+nnoremap <silent> cn :cn<CR>
+" quickfixの前のエラーへ移動
+nnoremap <silent> cp :cp<CR>
+" Quickfixウィンドウの表示切り替え
+nnoremap <leader>w :call <SID>ToggleQuickFix()<cr>
+
+" Quickfixウィンドウの表示切り替え関数
+function! s:ToggleQuickFix()
+  if empty(filter(getwininfo(), 'v:val.quickfix'))
+    copen
+  else
+    cclose
   endif
 endfunction
 
