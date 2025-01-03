@@ -114,6 +114,11 @@ set wildignore+=*.zip,*.tar.gz
 " タグファイルの検索パス（カレントディレクトリから親ディレクトリに向かって検索）
 set tags=.tags;$HOME
 
+" augroup MyCtagsAutoUpdate
+"   au!
+"   autocmd BufWritePost * call s:ExecuteCtags()
+" augroup END
+
 " ##=== }}}
 " ##=== キーマッピング・コマンド（一般） {{{
 
@@ -154,11 +159,6 @@ command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git re
 command! OpenSpec :call s:OpenSpecFile()
 " 実装ファイルを開くコマンド
 command! OpenImplementation :call s:OpenImplementationFile()
-
-augroup MyCtagsAutoUpdate
-  au!
-  autocmd BufWritePost * call s:ExecuteCtags()
-augroup END
 
 function! s:grep(word) abort
   cexpr system(printf('rg --vimgrep "%s"', a:word)) | cw
