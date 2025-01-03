@@ -237,6 +237,14 @@ function! s:OpenImplementationFile()
 endfunction
 
 " ##=== }}}
+" ##=== キーマッピング・コマンド（buffer） {{{
+
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [B :bfirst<CR>
+nnoremap <silent> ]B :blast<CR>
+
+" ##=== }}}
 " ##=== キーマッピング・コマンド（quickfix） {{{
 
 nnoremap <silent> [q :cprevious<CR>
