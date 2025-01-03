@@ -38,6 +38,9 @@ set wildignorecase
 set relativenumber
 set number
 
+" バッファが編集中でも他のバッファに切り替えられるようにする
+set hidden
+
 " スワップファイルを作成しない
 set noswapfile
 
