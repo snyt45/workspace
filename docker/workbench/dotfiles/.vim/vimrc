@@ -102,7 +102,7 @@ endif
 " ##=== 検索パス {{{
 
 " 検索パスの設定
-set path+=api/.,api/app/**,api/bin/**,api/config/**,api/db/**,api/gen/**,api/lib/**,api/spec/**
+set path+=**
 set path+=frontend/.,frontend/src/**,frontend/tests/**
 
 " 検索から除外するパターン
