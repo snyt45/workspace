@@ -117,6 +117,8 @@ set tags=.tags;$HOME
 " ##=== }}}
 " ##=== キーマッピング・コマンド（一般） {{{
 
+" f検索の逆方向マッピングを <Leader>キー と競合しないようにする
+noremap g, ,
 " 検索ハイライトを消去
 nnoremap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
 " vimrcを開く
