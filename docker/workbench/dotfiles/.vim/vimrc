@@ -56,6 +56,12 @@ set mouse=a
 " デフォルトシェルの設定
 set shell=bash
 
+" rg があれば使う
+if executable('rg')
+  set grepprg=rg\ --vimgrep
+  set grepformat=%f:%l:%c:%m
+endif
+
 augroup MyVimBasic
   au!
 
@@ -139,13 +145,9 @@ nnoremap <silent> <Leader>n :call <SID>ToggleRelativenumber()<cr>
 nnoremap <C-]> g<C-]>
 " ファイルパスをコピー
 nnoremap <leader>c :CopyGitPath<cr>
-" grep
-nnoremap <leader>gg :Grep<space>
 " 現在のファイルのディレクトリを展開する
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
-" rg で grep する
-command! -nargs=1 Grep call <SID>grep(<q-args>)
 " セッションの復元コマンド
 command! RestoreSession :source ~/.shared_cache/.vim/.session
 " セッションの保存コマンド
@@ -158,10 +160,6 @@ command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git re
 command! OpenSpec :call s:OpenSpecFile()
 " 実装ファイルを開くコマンド
 command! OpenImplementation :call s:OpenImplementationFile()
-
-function! s:grep(word) abort
-  cexpr system(printf('rg --vimgrep "%s"', a:word)) | cw
-endfunction
 
 " タグファイルの自動更新
 function! s:ExecuteCtags() abort
@@ -261,6 +259,9 @@ function! s:ToggleQuickFix()
     cclose
   endif
 endfunction
+
+" grep後にquickfix画面を開く
+au QuickfixCmdPost make,grep,grepadd,vimgrep copen
 
 " ##=== }}}
 " ##=== キーマッピング・コマンド（Git） {{{
