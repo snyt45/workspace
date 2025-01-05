@@ -108,6 +108,11 @@ RUN ["/bin/bash", "-l", "-c", "volta install npm"]
 RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*') && \
     curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" && \
     sudo tar xf lazygit.tar.gz -C /usr/local/bin lazygit
+# diff-so-fancy
+RUN DIFF_SO_FANCY_VERSION=$(curl -s https://api.github.com/repos/so-fancy/diff-so-fancy/releases/latest | grep -Po '"tag_name": "v\K[^"]*') && \
+    curl -L -o diff-so-fancy "https://github.com/so-fancy/diff-so-fancy/releases/download/v${DIFF_SO_FANCY_VERSION}/diff-so-fancy" && \
+    sudo mv diff-so-fancy /usr/local/bin/diff-so-fancy && \
+    sudo chmod +x /usr/local/bin/diff-so-fancy
 # delta
 RUN sudo wget https://github.com/dandavison/delta/releases/download/0.14.0/delta-0.14.0-x86_64-unknown-linux-musl.tar.gz && \
     sudo tar -zxvf delta-0.14.0-x86_64-unknown-linux-musl.tar.gz && \
