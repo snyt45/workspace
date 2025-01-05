@@ -6,6 +6,11 @@
 [alias]
         a = add
         ap = add --patch
+        staged = diff --staged
+        unstage = reset -q HEAD --
+        discard = checkout --
+        undo = "!git reset --soft HEAD~; git reset"
+        redo = "!git commit --amend --date=now"
         bc = "!git branch -a | grep -v HEAD | fzf | sed -e 's/.* //' -e 's#remotes/[^/]*/##' | xargs git checkout"
         s = status
         ss = status -s
