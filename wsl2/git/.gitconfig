@@ -6,11 +6,20 @@
 [alias]
         a = add
         ap = add --patch
-        bc = "!git branch | fzf | cut -c3- | xargs git checkout"
+        bc = "!git branch -a | grep -v HEAD | fzf | sed -e 's/.* //' -e 's#remotes/[^/]*/##' | xargs git checkout"
         s = status
         ss = status -s
         l = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -20
         ll = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s"
         ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
+        fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs git commit --fixup"
+        rework = "!git rebase -i --autosquash $(git merge-base ${1:-develop} HEAD)"
+        d = "!f() { \
+            commit=$(git log --oneline | fzf | cut -d' ' -f1); \
+            if [ -n \"$commit\" ]; then \
+                GIT_SEQUENCE_EDITOR='sed -i -e \"s/^pick $commit/drop $commit/\"' \
+                git rebase -i --autostash --keep-empty --no-autosquash --rebase-merges $commit^; \
+            fi \
+        }; f"
 [rebase]
         autosquash = true
