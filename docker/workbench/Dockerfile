@@ -77,7 +77,9 @@ RUN sudo apt-get update && \
       lldb \
       universal-ctags \
       gh \
-      jq
+      jq \
+      python3-venv \
+      python3-pip
 
 # vim
 RUN sudo apt-get update && \
@@ -117,6 +119,11 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN ["/bin/bash", "-l", "-c", "rustup component add rustfmt"]
 # rust-analyzer
 RUN ["/bin/bash", "-l", "-c", "rustup component add rust-analyzer"]
+# atcoder
+RUN ["/bin/bash", "-l", "-c", "python3 -m venv ~/py_envs && \
+    . ~/py_envs/bin/activate && \
+    pip3 install setuptools && \
+    pip3 install online-judge-tools"]
 # 業務系：できれば依存したくない
 # aws cli
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
