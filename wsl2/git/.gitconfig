@@ -4,6 +4,8 @@
 [core]
         editor = vim
 [alias]
+        a = add
+        ap = add --patch
         bc = "!git branch | fzf | cut -c3- | xargs git checkout"
         s = status
         ss = status -s
