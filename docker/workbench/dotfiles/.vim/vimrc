@@ -109,8 +109,24 @@ endif
 " ##=== 検索パス {{{
 
 " 検索パスの設定
-set path+=**
-set path+=frontend/.,frontend/src/**,frontend/tests/**
+set path=.
+set path+=.github/.
+set path+=scripts/.
+
+set path+=api/.
+set path+=api/.docker/**
+set path+=api/.ecschedule/**
+set path+=api/app/**
+set path+=api/bin/**
+set path+=api/config/**
+set path+=api/db/**
+set path+=api/gen/**
+set path+=api/lib/**
+set path+=api/spec/**
+
+set path+=frontend/.
+set path+=frontend/src/**
+set path+=frontend/tests/**
 
 " 検索から除外するパターン
 set wildignore+=**/node_modules/**,**/tmp/**,**/dist/**,**/build/**,**/.git/**
