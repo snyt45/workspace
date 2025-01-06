@@ -268,6 +268,7 @@ let g:mru_favorite_file = expand('~/.shared_cache/.vim/mru_favorite.txt')
 command! MRU call s:MRU()
 command! MRUAdd call s:MRUAdd()
 command! MRUEdit execute 'edit' g:mru_favorite_file
+command! MRUArgs execute 'args `cat ' . g:mru_favorite_file . '`'
 
 function! s:MRU()
   enew
@@ -310,6 +311,7 @@ endfunction
 nnoremap <Leader>m :MRU<CR>
 nnoremap <Leader>ma :MRUAdd<CR>
 nnoremap <Leader>me :MRUEdit<CR>
+nnoremap <Leader>mm :MRUArgs<CR>
 
 " ##=== }}}
 " ##=== キーマッピング・コマンド（quickfix） {{{
