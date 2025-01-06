@@ -260,7 +260,56 @@ nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
-nnoremap <Leader>m :bro old<CR>
+
+" ##=== }}}
+" ##=== キーマッピング・コマンド（MRU） {{{
+let g:mru_favorite_file = expand('~/.shared_cache/.vim/mru_favorite.txt')
+
+command! MRU call s:MRU()
+command! MRUAdd call s:MRUAdd()
+command! MRUEdit execute 'edit' g:mru_favorite_file
+
+function! s:MRU()
+  enew
+  setl buftype=nofile
+  setl nomodifiable
+
+  let files = []
+
+  if filereadable(g:mru_favorite_file)
+    let files = readfile(g:mru_favorite_file)
+  endif
+
+  setl modifiable
+  silent %delete _
+  call setline(1, files)
+  setl nomodifiable
+
+  silent file [MRU-readonly]
+  nnoremap <buffer> <CR> :let fname=getline('.') \| bdelete \| execute 'edit ' . fname<CR>
+endfunction
+
+function! s:MRUAdd()
+  let current_file = expand('%:p')
+
+  if !filereadable(g:mru_favorite_file)
+    call writefile([], g:mru_favorite_file)
+  endif
+
+  let favorites = readfile(g:mru_favorite_file)
+
+  if index(favorites, current_file) == -1
+    call add(favorites, current_file)
+    call writefile(favorites, g:mru_favorite_file)
+    echo "Added to favorites: " . current_file
+  else
+    echo "Already in favorites: " . current_file
+  endif
+endfunction
+
+nnoremap <Leader>m :MRU<CR>
+nnoremap <Leader>ma :MRUAdd<CR>
+nnoremap <Leader>me :MRUEdit<CR>
 
 " ##=== }}}
 " ##=== キーマッピング・コマンド（quickfix） {{{
