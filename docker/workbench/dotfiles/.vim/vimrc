@@ -717,7 +717,7 @@ function! s:GetNetrwPath() abort
    
    " ディレクトリの場合はディレクトリパスのみを返す
    " ファイルの場合はディレクトリパスとファイル名を結合
-   return l:filename =~ '/$' ? l:dirpath : l:dirpath . '/' . l:filename
+  return l:filename =~ '/$' ? l:dirpath : l:dirpath . l:filename
 endfunction
 
 " エンターキー押下時の処理
