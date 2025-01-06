@@ -263,50 +263,66 @@ nnoremap <silent> ]B :blast<CR>
 
 " ##=== }}}
 " ##=== キーマッピング・コマンド（MRU） {{{
-let g:mru_favorite_file = expand('~/.shared_cache/.vim/mru_favorite.txt')
+let g:mru_config_dir = expand('~/.shared_cache/.vim/mru/')
 
-command! MRU call s:MRU()
-command! MRUAdd call s:MRUAdd()
-command! MRUEdit execute 'edit' g:mru_favorite_file
-command! MRUArgs execute 'args `cat ' . g:mru_favorite_file . '`'
+function! s:GetProjectConfigFile()
+  let git_dir = finddir('.git', '.;')
+  if !empty(git_dir)
+    let full_path = fnamemodify(git_dir, ':p')
+    let full_path = substitute(full_path, '/$', '', '')
+    let project_path = fnamemodify(full_path, ':h')
+    let project_name = fnamemodify(project_path, ':t')
+    return g:mru_config_dir . project_name . '.txt'
+  endif
+  return g:mru_config_dir . 'default.txt'
+endfunction
 
 function! s:MRU()
   enew
   setl buftype=nofile
   setl nomodifiable
-
   let files = []
 
-  if filereadable(g:mru_favorite_file)
-    let files = readfile(g:mru_favorite_file)
+  let config_file = s:GetProjectConfigFile()
+  if filereadable(config_file)
+    let files = readfile(config_file)
   endif
 
   setl modifiable
   silent %delete _
   call setline(1, files)
   setl nomodifiable
-
   silent file [MRU-readonly]
   nnoremap <buffer> <CR> :let fname=getline('.') \| bdelete \| execute 'edit ' . fname<CR>
 endfunction
 
 function! s:MRUAdd()
   let current_file = expand('%:p')
+  let config_file = s:GetProjectConfigFile()
 
-  if !filereadable(g:mru_favorite_file)
-    call writefile([], g:mru_favorite_file)
+  if !isdirectory(g:mru_config_dir)
+    call mkdir(g:mru_config_dir, 'p')
   endif
 
-  let favorites = readfile(g:mru_favorite_file)
+  if !filereadable(config_file)
+    call writefile([], config_file)
+  endif
+
+  let favorites = readfile(config_file)
 
   if index(favorites, current_file) == -1
     call add(favorites, current_file)
-    call writefile(favorites, g:mru_favorite_file)
+    call writefile(favorites, config_file)
     echo "Added to favorites: " . current_file
   else
     echo "Already in favorites: " . current_file
   endif
 endfunction
+
+command! MRU call s:MRU()
+command! MRUAdd call s:MRUAdd()
+command! MRUEdit execute 'edit' s:GetProjectConfigFile()
+command! MRUArgs execute 'args' join(readfile(s:GetProjectConfigFile()), ' ')
 
 nnoremap <Leader>m :MRU<CR>
 nnoremap <Leader>ma :MRUAdd<CR>
