@@ -30,6 +30,7 @@ set foldlevel=99
 
 " 補完メニューを改善
 set wildmenu wildoptions=pum
+set wildmode=longest:full,full
 
 " ファイル名補完で大文字小文字を区別しない
 set wildignorecase
