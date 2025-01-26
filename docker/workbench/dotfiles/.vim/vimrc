@@ -862,8 +862,7 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <expr><buffer> <c-b> popup_list()->empty() ? '<c-b>' : lsp#scroll(-4)
 
     let g:lsp_format_sync_timeout = 1000
-    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
-    autocmd! BufWritePre *.go call execute('LspCodeActionSync source.organizeImports')
+    autocmd! BufWritePre *.go LspDocumentFormatSync | LspCodeActionSync source.organizeImports
     
     " refer to doc to add more commands
 endfunction
