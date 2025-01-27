@@ -564,7 +564,7 @@ call plug#begin('~/.shared_cache/.vim/plugged')
     " Lightline用のGitブランチ表示
     Plug 'itchyny/vim-gitbranch'
   " f強化
-  Plug 'rhysd/clever-f.vim'
+  Plug 'unblevable/quick-scope'
   " ファイルファインダー
   Plug 'ctrlpvim/ctrlp.vim'
     " あいまい検索機能の強化
