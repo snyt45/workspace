@@ -79,7 +79,8 @@ RUN sudo apt-get update && \
       gh \
       jq \
       python3-venv \
-      python3-pip
+      python3-pip \
+      hugo
 
 # vim
 RUN sudo apt-get update && \
