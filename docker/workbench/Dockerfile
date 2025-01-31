@@ -79,8 +79,7 @@ RUN sudo apt-get update && \
       gh \
       jq \
       python3-venv \
-      python3-pip \
-      hugo
+      python3-pip
 
 # vim
 RUN sudo apt-get update && \
@@ -130,6 +129,8 @@ RUN ["/bin/bash", "-l", "-c", "python3 -m venv ~/py_envs && \
     . ~/py_envs/bin/activate && \
     pip3 install setuptools && \
     pip3 install online-judge-tools"]
+# hugo
+RUN ["/bin/bash", "-l", "-c", "go install github.com/gohugoio/hugo@latest"]
 # 業務系：できれば依存したくない
 # aws cli
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
