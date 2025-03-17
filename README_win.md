@@ -45,6 +45,13 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 
 ### 手動インストール
 
+#### Ankerwork
+AnkerのWEBカメラ「Anker PowerConf C300」のアプリ。
+
+Windowsを選択してダウンロードする。
+
+https://us.ankerwork.com/pages/download-software
+
 #### Google日本語入力
 winget経由だとデフォルト設定ができない
 
@@ -57,24 +64,10 @@ SlimBlade Proトラックボールのアプリ。
 
 https://www.kensington.com/ja-jp/p/%E8%A3%BD%E5%93%81/%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB/%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF%E3%83%9C%E3%83%BC%E3%83%AB/slimblade-pro%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF%E3%83%9C%E3%83%BC%E3%83%AB3/
 
-#### Ankerwork
-AnkerのWEBカメラ「Anker PowerConf C300」のアプリ。
-
-Windowsを選択してダウンロードする。
-
-https://us.ankerwork.com/pages/download-software
-
 #### Tana
 公式ホームページから直接ダウンロードする。
 
 https://tana.inc/
-
-#### LibreOffice（任意）
-エクセルを使うときに必要。
-
-```
-$ winget install TheDocumentFoundation.LibreOffice
-```
 
 #### CubePDF（任意）
 PDFにパスワードをかける際に必要。
@@ -83,10 +76,12 @@ PDFにパスワードをかける際に必要。
 $ winget install CubeSoft.CubePDF
 ```
 
-#### XPPen Deco mini7（任意）
-ペンタブを使うときに必要なアプリ。
+#### LibreOffice（任意）
+エクセルを使うときに必要。
 
-https://www.xp-pen.jp/download-530.html
+```
+$ winget install TheDocumentFoundation.LibreOffice
+```
 
 #### Metaquest Remote Desktop（任意）
 メタクエスト3とWindowsでリモートデスクトップ機能を使う場合にはPCにもアプリのインストールが必要。
@@ -94,6 +89,11 @@ https://www.xp-pen.jp/download-530.html
 参考URL：https://note.com/sigmode21/n/na4018cb9c262
 
 ダウンロードリンク：https://apps.microsoft.com/detail/9pcnzpd0zw44?hl=ja-jp&gl=JP&ocid=pdpshare
+
+#### XPPen Deco mini7（任意）
+ペンタブを使うときに必要なアプリ。
+
+https://www.xp-pen.jp/download-530.html
 
 ### ソフトウェアの設定
 #### 壁紙

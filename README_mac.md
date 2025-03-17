@@ -56,6 +56,13 @@ cd $HOME/.dotfiles/mac
 ```
 
 ### 手動インストール
+#### Ankerwork
+AnkerのWEBカメラ「Anker PowerConf C300」のアプリ。
+
+Windowsを選択してダウンロードする。
+
+https://us.ankerwork.com/pages/download-software
+
 #### KensingtonWorks
 SlimBlade Proトラックボールのアプリ。
 
@@ -82,6 +89,9 @@ https://tana.inc/
 - 環境設定 > ショートカットキー1
   - 起動ショートカット
     - [Command] and [Tab]
+
+#### Ankerwork
+- 解像度を「720P」、画角とフレームを「78°」にする
 
 #### Dropbox
 - ファイルの同期方法を選択する > ファイルを`ローカル`に設定する
