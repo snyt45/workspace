@@ -1,23 +1,27 @@
-# windows用の構築手順
+# windows 用の構築手順
+
 ## 前提条件
 
 - Windows 11 Home
 - Ubuntu 24.04 on WSL2
 
 ## 1. リストア手順
+
 ### リセット手順
-1. 設定（`Win + I`） > システム > 回復 > このPCをリセット
+
+1. 設定（`Win + I`） > システム > 回復 > この PC をリセット
 2. すべて削除する
 3. ローカル再インストール
 4. 次へ
 5. リセット
 
 ### リセット後
+
 - Windows11 でオフライン環境でセットアップする
   - 参考：https://tanweb.net/2023/01/21/51703/
 - 設定（`Win + I`） > `Windows Update`で更新があれば更新を行う。
 
-## 2. Windowsの環境構築
+## 2. Windows の環境構築
 
 ### Windows 用のセットアップスクリプトを実行する
 
@@ -46,37 +50,43 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 ### 手動インストール
 
 #### Ankerwork
-AnkerのWEBカメラ「Anker PowerConf C300」のアプリ。
 
-Windowsを選択してダウンロードする。
+Anker の WEB カメラ「Anker PowerConf C300」のアプリ。
+
+Windows を選択してダウンロードする。
 
 https://us.ankerwork.com/pages/download-software
 
-#### Google日本語入力
-winget経由だとデフォルト設定ができない
+#### Google 日本語入力
+
+winget 経由だとデフォルト設定ができない
 
 https://www.google.co.jp/ime/
 
 #### KensingtonWorks
-SlimBlade Proトラックボールのアプリ。
+
+SlimBlade Pro トラックボールのアプリ。
 
 ページ下部の「マニュアル＆サポート」の「Kensington Konnect Trackballs for Windows 1.0.0」からダウンロードする。
 
 https://www.kensington.com/ja-jp/p/%E8%A3%BD%E5%93%81/%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB/%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF%E3%83%9C%E3%83%BC%E3%83%AB/slimblade-pro%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF%E3%83%9C%E3%83%BC%E3%83%AB3/
 
 #### Tana
+
 公式ホームページから直接ダウンロードする。
 
 https://tana.inc/
 
 #### CubePDF（任意）
-PDFにパスワードをかける際に必要。
+
+PDF にパスワードをかける際に必要。
 
 ```
 $ winget install CubeSoft.CubePDF
 ```
 
 #### LibreOffice（任意）
+
 エクセルを使うときに必要。
 
 ```
@@ -84,48 +94,57 @@ $ winget install TheDocumentFoundation.LibreOffice
 ```
 
 #### Metaquest Remote Desktop（任意）
-メタクエスト3とWindowsでリモートデスクトップ機能を使う場合にはPCにもアプリのインストールが必要。
 
-参考URL：https://note.com/sigmode21/n/na4018cb9c262
+メタクエスト 3 と Windows でリモートデスクトップ機能を使う場合には PC にもアプリのインストールが必要。
+
+参考 URL：https://note.com/sigmode21/n/na4018cb9c262
 
 ダウンロードリンク：https://apps.microsoft.com/detail/9pcnzpd0zw44?hl=ja-jp&gl=JP&ocid=pdpshare
 
 #### XPPen Deco mini7（任意）
+
 ペンタブを使うときに必要なアプリ。
 
 https://www.xp-pen.jp/download-530.html
 
 ### ソフトウェアの設定
+
 #### 壁紙
 
 - 設定（`Win + I`）を開く > 個人用設定 > テーマ > ダークテーマ
 
 #### Ankerwork
+
 - 解像度を「720P」、画角とフレームを「78°」にする
 
 #### Dropbox
+
 - ファイルの同期方法を選択する > ファイルを`ローカル`に設定する
-- PCをバックアップしないで続ける
+- PC をバックアップしないで続ける
 
 #### Google Chrome
+
 - 規定のアプリに設定
 - 各アカウントでサインイン
 - 設定 > プライバシーとセキュリティ > 広告プライバシー > 広告のトピック > OFF
 
-#### Google日本語入力
+#### Google 日本語入力
 
-- 右下のIMEアイコンを右クリック > プロパティ > 一般
+- 右下の IME アイコンを右クリック > プロパティ > 一般
   - スペースの入力
     - 半角
 
 #### PowerToys
+
 - FancyZones
   - 各ディスプレイごとに`Win + Shift + @`で設定
 
 #### Slack
+
 - 各アカウントでサインイン
 
 #### shareX
+
 - ホットキーの設定
   - 領域をキャプチャ：Shift + F1
   - 独自領域の動画キャプチャを開始/停止：Shift + F2
@@ -139,7 +158,7 @@ https://www.xp-pen.jp/download-530.html
 
 #### SlimBlade Pro
 
-- KensingtonWorksで設定する
+- KensingtonWorks で設定する
   - ボタン
     - 左上
       - バック
@@ -150,10 +169,12 @@ https://www.xp-pen.jp/download-530.html
       - 加速を有効にする、デフォルトの速度+2
 
 #### Visual Studio Code
+
 - 左下のアカウントマークからバックアップ&設定同期を行う。
-  - 設定同期後、VSCodeを再起動する
+  - 設定同期後、VSCode を再起動する
 
 #### Zoom
+
 - 設定 > ビデオ
   - ミーティングに参加する際、ビデオをオフにする
 - 設定 > オーディオ
@@ -161,9 +182,9 @@ https://www.xp-pen.jp/download-530.html
 - 設定 > 背景とエフェクト
   - ぼかしに設定
 
-## 3. WSL2の環境構築
+## 3. WSL2 の環境構築
 
-### WSLを最新にアップデートして、Ubuntuをインストールする
+### WSL を最新にアップデートして、Ubuntu をインストールする
 
 WSL を更新する。
 
@@ -177,22 +198,24 @@ Ubuntu をインストールする。
 wsl --install -d Ubuntu-24.04
 ```
 
-### WSL2構築前に行う設定
+### WSL2 構築前に行う設定
 
 #### Docker Desktop
-- 設定 > Resources > WSL INTEGRATION > Ubuntuをオン > Apply & Restart
-- WSLで`docker -v`が使えることを確認
+
+- 設定 > Resources > WSL INTEGRATION > Ubuntu をオン > Apply & Restart
+- WSL で`docker -v`が使えることを確認
 
 #### フォントのインストール
+
 [GitHub > yuru7/HackGen > Release](https://github.com/yuru7/HackGen/releases/latest) より、`HackGen_NF_vx.x.x.zip` をダウンロードの上、展開し `HackGenConsoleNF-Regular.ttf` をインストールする。
 
 #### Windows Terminal
 
-- Windows Terminalの設定を行う。
+- Windows Terminal の設定を行う。
   - 設定 > 操作(カーソル)
-    - 「選択範囲をクリップボードに自動でコピーする」をONにする
+    - 「選択範囲をクリップボードに自動でコピーする」を ON にする
   - 設定 > 操作(キーボード)
-    - 貼り付けの`Ctrl + V`を削除する ※Vimのキーバインドと被るため
+    - 貼り付けの`Ctrl + V`を削除する ※Vim のキーバインドと被るため
   - プロファイル：規定値
     - 外観
       - テキスト
@@ -223,12 +246,12 @@ wsl --install -d Ubuntu-24.04
     - gruvbox
       - https://windowsterminalthemes.dev/?theme=Gruvbox%20Dark
     - 手順
-      1. Gruvbox Darkを選択して「Get theme」してコピー
-      2. Windows Terminal > 設定 > JSONファイルを開く > shemesに追加する
-        - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2Fyuta_sano%2FSjYZvSjZLB.png?alt=media&token=107c48b8-f3e6-402c-9281-869a81882e6d)
+      1. Gruvbox Dark を選択して「Get theme」してコピー
+      2. Windows Terminal > 設定 > JSON ファイルを開く > shemes に追加する
+      - ![](https://firebasestorage.googleapis.com/v0/b/firescript-577a2.appspot.com/o/imgs%2Fapp%2Fyuta_sano%2FSjYZvSjZLB.png?alt=media&token=107c48b8-f3e6-402c-9281-869a81882e6d)
       3. プロファイル > 規定値 > 外観 > 配色を「Gruvbox Dark」に変更する
 
-### WSL2のセットアップ
+### WSL2 のセットアップ
 
 ```
 git clone https://github.com/snyt45/workspace.git ~/.dotfiles
@@ -261,30 +284,33 @@ cat /etc/resolv.conf
 
 ## トラブルシューティング
 
-### WSL2の調子が悪いときにインストールしなおす
+### WSL2 の調子が悪いときにインストールしなおす
+
 - `wsl --unregister Ubuntu-24.04`
-- Windows Terminalのプロファイルから該当のプロファイルを削除する
+- Windows Terminal のプロファイルから該当のプロファイルを削除する
 - `wsl --install -d Ubuntu-24.04`
   - 該当のプロファイルが出てこない場合
     - 設定 > 該当のプロファイル > ドロップダウンからプロファイルを非表示にする を OFF にする
-- 「WSL2構築前に行う設定」の手順を実施する
+- 「WSL2 構築前に行う設定」の手順を実施する
 
-### WSL2で apt-get update するときに一時接続エラーになる
+### WSL2 で apt-get update するときに一時接続エラーになる
+
 - /etc/wsl.conf の [network] の設定を削除 -> wsl --shutdown
 
-### wingetを実行するとエラーが出る
+### winget を実行するとエラーが出る
+
 https://teratail.com/questions/bnuj82z2oh7cso
 
-- `Win + I` > システム > システムの詳細設定 > 詳細設定 > 環境変数 > Pathの編集 > `%LOCALAPPDATA%\Microsoft\WindowsApps`を追加
+- `Win + I` > システム > システムの詳細設定 > 詳細設定 > 環境変数 > Path の編集 > `%LOCALAPPDATA%\Microsoft\WindowsApps`を追加
 
-### WSL上で`code .`コマンドが存在しない
+### WSL 上で`code .`コマンドが存在しない
 
 再インストールし直す
 
 - `winget uninstall Microsoft.VisualStudioCode`
 - `winget install Microsoft.VisualStudioCode`
 
-### WSL2とのクリップボード連携がうまく動かない
+### WSL2 とのクリップボード連携がうまく動かない
 
 ```
 # cronの起動確認

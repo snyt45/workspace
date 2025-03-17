@@ -1,0 +1,33 @@
+[user]
+        name = yuta.sano
+        email = snyt45@gmail.com
+[core]
+        editor = vim
+[pager]
+        diff = diff-so-fancy | less --tabs=4 -RFX
+        show = diff-so-fancy | less --tabs=4 -RFX
+[alias]
+        a = add
+        ap = add --patch
+        staged = diff --staged
+        unstage = reset -q HEAD --
+        discard = checkout --
+        undo = "!git reset --soft HEAD~; git reset"
+        redo = "!git commit --amend --date=now"
+        bc = "!git branch -a | grep -v HEAD | fzf | sed -e 's/.* //' -e 's#remotes/[^/]*/##' | xargs git checkout"
+        s = status
+        ss = status -s
+        l = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -20
+        ll = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s"
+        ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
+        fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs git commit --fixup"
+        rework = "!git rebase -i --autosquash $(git merge-base ${1:-develop} HEAD)"
+        d = "!f() { \
+            commit=$(git log --oneline | fzf | cut -d' ' -f1); \
+            if [ -n \"$commit\" ]; then \
+                GIT_SEQUENCE_EDITOR='sed -i -e \"s/^pick $commit/drop $commit/\"' \
+                git rebase -i --autostash --keep-empty --no-autosquash --rebase-merges $commit^; \
+            fi \
+        }; f"
+[rebase]
+        autosquash = true

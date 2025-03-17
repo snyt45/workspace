@@ -4,6 +4,30 @@
       "complex_modifications": {
         "rules": [
           {
+            "description": "ESCキーを押したら英数キー+ESCを送信",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "escape",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "japanese_eisuu"
+                  },
+                  {
+                    "key_code": "escape"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
             "description": "英数キー + a/e/n/m を Home/End/BS/Del に割り当て",
             "manipulators": [
               {
@@ -420,21 +444,21 @@
             },
             {
               "from": {
-                "key_code": "left_control"
-              },
-              "to": [
-                {
-                  "key_code": "left_command"
-                }
-              ]
-            },
-            {
-              "from": {
                 "key_code": "left_alt"
               },
               "to": [
                 {
                   "key_code": "left_option"
+                }
+              ]
+            },
+            {
+              "from": {
+                "key_code": "left_control"
+              },
+              "to": [
+                {
+                  "key_code": "left_command"
                 }
               ]
             }
