@@ -38,6 +38,7 @@ git clone https://github.com/snyt45/workspace.git $HOME/.dotfiles
 Windows ホスト用の設定とツール郡のインストールを行う。
 
 ```
+cd $HOME/.dotfiles/windows
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 .\setup.ps1
 ```
@@ -99,30 +100,8 @@ https://www.xp-pen.jp/download-530.html
 
 - 設定（`Win + I`）を開く > 個人用設定 > テーマ > ダークテーマ
 
-#### Google日本語入力
-
-- 右下のIMEアイコンを右クリック > プロパティ > 一般
-  - スペースの入力
-    - 半角
-
-#### SlimBlade Pro
-
-- KensingtonWorksで設定する
-  - ボタン
-    - 左上
-      - バック
-    - 右上
-      - フォワード
-  - ポインター
-    - デフォルトの速度
-      - 加速を有効にする、デフォルトの速度+2
-
 #### Ankerwork
 - 解像度を「720P」、画角とフレームを「78°」にする
-
-#### PowerToys
-- FancyZones
-  - 各ディスプレイごとに`Win + Shift + @`で設定
 
 #### Dropbox
 - ファイルの同期方法を選択する > ファイルを`ローカル`に設定する
@@ -133,13 +112,18 @@ https://www.xp-pen.jp/download-530.html
 - 各アカウントでサインイン
 - 設定 > プライバシーとセキュリティ > 広告プライバシー > 広告のトピック > OFF
 
-#### Zoom
-- 設定 > ビデオ
-  - ミーティングに参加する際、ビデオをオフにする
-- 設定 > オーディオ
-  - ミーティングの参加時にマイクをミュートに設定
-- 設定 > 背景とエフェクト
-  - ぼかしに設定
+#### Google日本語入力
+
+- 右下のIMEアイコンを右クリック > プロパティ > 一般
+  - スペースの入力
+    - 半角
+
+#### PowerToys
+- FancyZones
+  - 各ディスプレイごとに`Win + Shift + @`で設定
+
+#### Slack
+- 各アカウントでサインイン
 
 #### shareX
 - ホットキーの設定
@@ -153,12 +137,29 @@ https://www.xp-pen.jp/download-530.html
     - 画像をファイルに保存
 - アプリの設定 > 高度な設定 > Upload > DisableUpload を True にする
 
-#### Slack
-- 各アカウントでサインイン
+#### SlimBlade Pro
+
+- KensingtonWorksで設定する
+  - ボタン
+    - 左上
+      - バック
+    - 右上
+      - フォワード
+  - ポインター
+    - デフォルトの速度
+      - 加速を有効にする、デフォルトの速度+2
 
 #### Visual Studio Code
 - 左下のアカウントマークからバックアップ&設定同期を行う。
   - 設定同期後、VSCodeを再起動する
+
+#### Zoom
+- 設定 > ビデオ
+  - ミーティングに参加する際、ビデオをオフにする
+- 設定 > オーディオ
+  - ミーティングの参加時にマイクをミュートに設定
+- 設定 > 背景とエフェクト
+  - ぼかしに設定
 
 ## 3. WSL2の環境構築
 

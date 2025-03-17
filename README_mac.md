@@ -1,0 +1,150 @@
+# mac用の構築手順
+## 前提条件
+
+- MacBookPro(M4)
+- macOS Sequoia 15系
+
+## 1. リストア手順
+
+1. システム環境設定 > 一般 > 転送またはリセット > すべてのコンテンツと設定を消去
+2. Macをアクティブ化するためにWi-Fiを選択し、再起動をクリックします。
+3. 再起動後、セットアップアシスタントに従ってMacをセットアップしてください。
+
+## 2. Macの環境構築
+
+Mac ホスト用のセットアップを行うため、Homebrew をインストールする。
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+インストール後に、PATHを設定する。
+
+```
+echo >> /Users/snyt45/.zprofile
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/snyt45/.zprofile
+
+# カレントシェルで有効にする
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+Mac ホスト用のセットアップを行うため、Git をインストールする。
+
+```
+brew install git
+git config --global user.name "yuta.sano"
+git config --global user.email "snyt45@gmail.com"
+```
+
+Intel用に作られたアプリをAppleシリコンを搭載したMacでも動かすためにRosettaが必要。
+
+```
+sudo softwareupdate --install-rosetta
+```
+
+Mac ホスト用のセットアップを行うため、リポジトリをクローンする。
+
+```
+git clone https://github.com/snyt45/workspace.git $HOME/.dotfiles
+```
+
+Mac ホスト用の設定とツール群のインストールを行う。
+
+```
+cd $HOME/.dotfiles/mac
+.\setup.sh
+```
+
+### 手動インストール
+#### KensingtonWorks
+SlimBlade Proトラックボールのアプリ。
+
+ページ下部の「マニュアル＆サポート」の「Kensington Konnect Trackballs for Mac 1.0.0」からダウンロードする。
+
+https://www.kensington.com/ja-jp/p/%E8%A3%BD%E5%93%81/%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB/%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF%E3%83%9C%E3%83%BC%E3%83%AB/slimblade-pro%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF%E3%83%9C%E3%83%BC%E3%83%AB3/
+
+#### Tana
+公式ホームページから直接ダウンロードする。
+
+https://tana.inc/
+
+### ソフトウェアの設定
+#### メニューバーにサウンドを表示する
+- システム環境設定 > コントロールセンター > サウンド > メニューバーに表示
+
+#### ファンクションキーを有効にする
+- システム環境設定 > キーボード > キーボードショートカット > ファンクションキー > F1,F2などのキーを標準のファンクションキーとして使用
+
+#### Mission Control
+- システム環境設定 > デスクトップとDock > Mission Control > ウィンドウをアプリケーションごとにグループ化
+
+#### Alt Tab
+- 環境設定 > ショートカットキー1
+  - 起動ショートカット
+    - [Command] and [Tab]
+
+#### Dropbox
+- ファイルの同期方法を選択する > ファイルを`ローカル`に設定する
+- PCをバックアップしないで続ける
+
+#### Google Chrome
+- 規定のアプリに設定
+- 各アカウントでサインイン
+- 設定 > プライバシーとセキュリティ > 広告プライバシー > 広告のトピック > OFF
+
+#### Google日本語入力
+- システム環境設定 > キーボード > 入力ソース > 編集
+  - 「+」ボタンで日本語の入力ソースを追加
+    - カタカナ（Google）
+    - ひらがな（Google）
+    - 全角英数（Google）
+    - 半角カナ（Google）
+  - 「+」ボタンで英語の入力ソースを追加
+    - 英数（Google）
+  - 「-」ボタンでデフォルトの日本語の入力ソースを削除
+- 右上のIMEアイコンをクリック > 環境設定 > 一般
+  - スペースの入力
+    - 半角
+
+参考URL：https://zenn.dev/kanazawa/articles/83d56e6f12bd4c
+
+#### Scroll Reverser
+- Scroll Reverserを起動する
+- スクロール
+  - アクセシビリティのアクセスを有効にする
+  - Scroll Reverserを動作させるにチェックを入れる
+    - スクロール方向
+      - 縦方向を逆にする にチェック。それ以外はオフ。
+    - スクロールデバイス
+      - マウスを逆にする にチェック。それ以外はオフ。
+- アプリ
+  - ログイン時に開始にチェックを入れる
+
+参考URL：https://qiita.com/kapioz/items/54acca6126e43456a835
+
+#### Slack
+- 各アカウントでサインイン
+
+#### SlimBlade Pro
+
+- KensingtonWorksで設定する
+  - ボタン
+    - 左上
+      - バック
+    - 右上
+      - フォワード
+  - ポインター
+    - デフォルトの速度
+      - 加速を有効にする、デフォルトの速度+2
+
+#### Visual Studio Code
+- 左下のアカウントマークからバックアップ&設定同期を行う。
+  - 設定同期後、VSCodeを再起動する
+
+#### Zoom
+- 設定 > ビデオ
+  - ミーティングに参加する際、ビデオをオフにする
+- 設定 > オーディオ
+  - ミーティングの参加時にマイクをミュートに設定
+- 設定 > 背景とエフェクト
+  - ぼかしに設定
