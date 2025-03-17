@@ -13,6 +13,13 @@
 
 ## 2. Mac の環境構築
 
+homebrew をインストールする。
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
 Mac ホスト用のセットアップを行うため、Git をインストールする。
 
 ```

@@ -35,19 +35,6 @@ else
     echo "Intel Macのため、Rosettaのインストールは不要です"
 fi
 
-# Homebrewインストールチェックと実行
-if ! command -v brew &> /dev/null; then
-    echo "Homebrewをインストールしています..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    # 現在のシェルで有効化
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-
-    echo "Homebrewのインストールが完了しました"
-else
-    echo "Homebrewは既にインストールされています"
-fi
-
 # install
 brew install iterm2
 brew install google-chrome
