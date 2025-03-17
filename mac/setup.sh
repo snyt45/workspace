@@ -19,6 +19,8 @@ defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
 # Mission Control
 # システム環境設定 > デスクトップとDock > Mission Control > ウィンドウをアプリケーションごとにグループ化
 defaults write com.apple.dock expose-group-apps -bool true
+# タイル表示されたウィンドウ間の隙間をオフにする
+defaults write com.apple.WindowManager StandardGap -int 0
 
 # Intel用アプリのためにRosettaをインストール
 echo "Rosettaをインストール中..."
