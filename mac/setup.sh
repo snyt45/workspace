@@ -18,10 +18,10 @@ defaults write com.apple.controlcenter "NSStatusItem Preferred Position Sound" -
 defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
 # キーリピートの反応速度を最大にする
 # 設定 > キーボード > キーのリピート速度（最速）
-defaults write NSGlobalDomain KeyRepeat -int 1.5
+defaults write NSGlobalDomain KeyRepeat -int 2
 # キーリピート開始までの時間を最短にする
 # 設定 > キーボード > リピート入力認識までの時間（最短）
-defaults write NSGlobalDomain InitialKeyRepeat -int 11
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
 # Mission Control
 # システム環境設定 > デスクトップとDock > Mission Control > ウィンドウをアプリケーションごとにグループ化
 defaults write com.apple.dock expose-group-apps -bool true
