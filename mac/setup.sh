@@ -52,6 +52,7 @@ brew install slack
 brew install zoom
 brew install zoxide
 brew install --cask alt-tab
+brew install --cask deepl
 brew install --cask docker
 brew install --cask dropbox
 brew install --cask kap
