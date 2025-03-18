@@ -418,7 +418,7 @@
               },
               "to": [
                 {
-                  "key_code": "vk_none"
+                  "key_code": "left_control"
                 }
               ]
             },
