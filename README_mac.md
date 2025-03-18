@@ -78,6 +78,8 @@ https://tana.inc/
 
 ### ソフトウェアの設定
 
+※★ はセットアップ時の優先度
+
 #### Alt Tab（★）
 
 - 環境設定 > ショートカットキー 1
@@ -93,7 +95,7 @@ https://tana.inc/
 - ファイルの同期方法を選択する > ファイルを`ローカル`に設定する
 - PC をバックアップしないで続ける
 
-#### Karabiner Elements（★）
+#### Karabiner Elements（★★）
 
 - 起動する
 
@@ -103,7 +105,7 @@ https://tana.inc/
 - 各アカウントでサインイン
 - 設定 > プライバシーとセキュリティ > 広告プライバシー > 広告のトピック > OFF
 
-#### Google 日本語入力（★）
+#### Google 日本語入力（★★）
 
 - システム環境設定 > キーボード > 入力ソース > 編集
   - 「+」ボタンで日本語の入力ソースを追加
@@ -124,7 +126,7 @@ https://tana.inc/
 
 - 起動する
 
-#### Scroll Reverser（★）
+#### Scroll Reverser（★★）
 
 - Scroll Reverser を起動する
 - スクロール
@@ -143,7 +145,7 @@ https://tana.inc/
 
 - 各アカウントでサインイン
 
-#### SlimBlade Pro（★）
+#### SlimBlade Pro（★★）
 
 - KensingtonWorks で設定する
   - ボタン
