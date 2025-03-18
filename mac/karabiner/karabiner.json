@@ -28,7 +28,7 @@
             ]
           },
           {
-            "description": "英数キー + a/e/n/m を Home/End/BS/Del に割り当て",
+            "description": "英数キー + a/e/n/m を 行頭/行末/BS/Del に割り当て",
             "manipulators": [
               {
                 "conditions": [
@@ -48,7 +48,10 @@
                 },
                 "to": [
                   {
-                    "key_code": "home"
+                    "key_code": "left_arrow",
+                    "modifiers": [
+                      "command"
+                    ]
                   }
                 ],
                 "type": "basic"
@@ -71,7 +74,10 @@
                 },
                 "to": [
                   {
-                    "key_code": "end"
+                    "key_code": "right_arrow",
+                    "modifiers": [
+                      "command"
+                    ]
                   }
                 ],
                 "type": "basic"
