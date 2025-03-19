@@ -32,8 +32,9 @@ set foldlevel=99
 set wildmenu wildoptions=pum
 set wildmode=longest:full,full
 
+" NOTE: Macで有効にするとNetrwのディレクトリ表示が正しく動作しなくなるのでコメントアウト
 " ファイル名補完で大文字小文字を区別しない
-set wildignorecase
+" set wildignorecase
 
 " 行番号を相対表示 + 絶対表示
 set relativenumber
