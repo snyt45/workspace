@@ -75,7 +75,6 @@ sudo ln -snfv ~/.dotfiles/wsl2/script/clip.sh ~/
 success "Clipboard Done."
 
 title "Open Command"
-[ -p ~/chrome ] && echo already exists the pipe for chrome || mkfifo ~/chrome
 chmod +x ./script/clip.sh
 sudo ln -snfv ~/.dotfiles/wsl2/script/clip.sh ~/
 success "Open Command Done."

@@ -19,10 +19,6 @@ export _ZO_DATA_DIR="$HOME/.shared_cache/zoxide/"
 export VOLTA_HOME="$HOME/.shared_cache/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 
-# rbenv
-if command -v rbenv &> /dev/null; then eval "$(rbenv init -)"; fi;
-export RBENV_VERSION=3.1.2
-
 # fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 HISTCONTROL=erasedups # 重複したコマンドは保存しない
@@ -31,6 +27,7 @@ export FZF_DEFAULT_OPTS='--layout=reverse'
 # golang
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/usr/local/go/bin
 
 # rust
 if [ -f "$HOME/.cargo/env" ]; then . "$HOME/.cargo/env"; fi;
@@ -41,123 +38,8 @@ export PATH="$PATH:$HOME/.tfenv/bin"
 # gh
 export GH_CONFIG_DIR="$HOME/.shared_cache/gh"
 
-# deno
-. "$HOME/.deno/env"
-
 # atcoder
-. ~/py_envs/bin/activate
-
-########################################################################################################################
-# カスタムコマンド
-########################################################################################################################
-# history検索(C-r)
-function _history_search() {
-    local regex_remove_numbers='s/^[[:space:]]*[0-9]\+[[:space:]]*//'
-    local regex_remove_spaces='s/^[[:space:]]*//'
-    local selected=$(history | sed -e $regex_remove_numbers -e $regex_remove_spaces | sort -u | fzf --query "$READLINE_LINE")
-    if [[ -n "$selected" ]]; then
-        READLINE_LINE="$selected"
-        READLINE_POINT=${#selected}
-    fi
-}
-bind -x '"\C-r": _history_search'
-
-# 選択したブランチに移動(gbc)
-function gbc() {
-    local regex_remove_spaces='s/.* //'
-    local regex_remove_remote_origin='s#remotes/[^/]*/##'
-    local branches=$(git branch --all | grep -v HEAD)
-    local selected=$(echo "$branches" | fzf | sed -e "$regex_remove_spaces" -e "$regex_remove_remote_origin")
-    if [[ -n "$selected" ]]; then
-        git checkout $selected
-    fi
-}
-
-# 選択したファイルをaddする(gadd)
-function gadd() {
-    local delta_cmd="delta --side-by-side --line-numbers -w ${FZF_PREVIEW_COLUMNS:-$COLUMNS}"
-    local preview='
-      status=$(echo {} | cut -c 1-2);
-      file=$(echo {} | awk '\''{print $2}'\'');
-      case $status in
-        "A "*|"M "*)
-          git diff --color --staged $file
-          ;;
-        " A"*|" M"*)
-          git diff --color $file
-          ;;
-        "D "*)
-          git diff --color --staged -- $file
-          ;;
-        " D"*)
-          git diff --color -- $file
-          ;;
-        "??"*)
-          git diff --color --no-index /dev/null $file
-          ;;
-      esac'
-    local add_or_unstage='
-      file=$(echo {} | awk '\''{print $2}'\'');
-      if git diff --name-only --cached | grep -q $file; then
-        git reset HEAD $file
-      else
-        git add $file
-      fi'
-    local reset='
-      status=$(echo {} | cut -c 1-2);
-      file=$(echo {} | awk '\''{print $2}'\'');
-      case $status in
-        "??")
-          rm -f $file
-          ;;
-        *)
-          git checkout -- $file
-          ;;
-      esac'
-    git status -s |
-    fzf -m --ansi \
-        --header="Space: add or unstage, Enter: open vim, C-d: reset, C-u: to page down, C-i: to page up" \
-        --preview="$preview | $delta_cmd" \
-        --preview-window=up,60% \
-        --bind "space:execute-silent($add_or_unstage)+reload(git status -s)" \
-        --bind "enter:become(vim {2})" \
-        --bind "ctrl-d:execute-silent($reset)+reload(git status -s)" \
-        --bind=ctrl-u:preview-down,ctrl-i:preview-up
-}
-
-# git logを表示する(gl)
-function gl() {
-  local log_line_to_hash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
-  local preview_commit="$log_line_to_hash | xargs -I % sh -c 'git show --color=always --stat --patch --no-prefix % | delta'"
-  local open_vim="$log_line_to_hash | xargs -I % sh -c 'git show --stat --patch --no-prefix %' | vim -"
-  local copy_commit_hash="$log_line_to_hash | clip -i"
-  git log --color --pretty="%C(auto)%h%d %s %C(#C0C0C0)%C(bold)%cr" |
-  fzf --ansi \
-      --header="Enter: vim to git show, C-y: yank commit hash" \
-      --preview "$preview_commit" \
-      --preview-window=up,60% \
-      --bind "enter:execute($open_vim)" \
-      --bind "ctrl-y:execute-silent($copy_commit_hash)+abort"
-}
-
-# git fixupを行う(gfixup)
-function gfixup() {
-  if git diff --cached --quiet; then
-    echo "No changes added to commit"
-    return 1
-  fi
-
-  local commit_hash
-  commit_hash=$(git log -n 30 --oneline | fzf --ansi --preview "echo {} | awk '{print \$1}' | xargs -I % git show --color=always --stat --patch --no-prefix %" | awk '{print $1}')
-
-  # fzfで選択したコミットハッシュに対してgit commit --fixupを実行し、git rebase -i --autosquashを実行してくださいというメッセージを表示して終了する
-  if [ -n "$commit_hash" ]; then
-    git commit --fixup "$commit_hash"
-    echo "Please run 'git rebase -i --autosquash'"
-  else
-    echo "No commit selected"
-  fi
-}
+. /opt/py_envs/bin/activate
 
 ########################################################################################################################
 # alias

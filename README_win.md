@@ -282,6 +282,10 @@ ps -ae
 cat /etc/resolv.conf
 ```
 
+### workspace を構築する
+
+https://github.com/snyt45/workspace/tree/main/docker
+
 ## トラブルシューティング
 
 ### WSL2 の調子が悪いときにインストールしなおす

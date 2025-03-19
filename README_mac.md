@@ -170,3 +170,18 @@ https://tana.inc/
   - ミーティングの参加時にマイクをミュートに設定
 - 設定 > 背景とエフェクト
   - ぼかしに設定
+
+## 3. Mac の開発環境構築
+
+### iterm2 の設定
+
+- ビープ音の設定
+  - Preferences > Profiles > Terminal の中の Notification > Silence bell を on
+  - Preferences > Profiles > Terminal の中の Notification > Show bell icon in tabs を off
+- フォントの設定
+  - [GitHub > yuru7/HackGen > Release](https://github.com/yuru7/HackGen/releases/latest) より、`HackGen_NF_vx.x.x.zip` をダウンロードの上、展開し `HackGenConsoleNF-Regular.ttf` をインストールする。
+  - Preferences > Profiles > Text > Font を `HackGen Console NF`にし、フォントサイズを 14 にする
+
+### workspace を構築する
+
+https://github.com/snyt45/workspace/tree/main/docker

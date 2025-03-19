@@ -15,49 +15,33 @@ export USER
 export HOME
 
 ifeq ($(TGT), $(WORKBENCH))
-	## docker build時のオプション
-	# 引数 ローカルのuidを渡す
-	buildopt= --build-arg local_uid=$(shell id -u ${USER})
-	# 引数 ローカルのgidを渡す
-	buildopt+= --build-arg local_gid=$(shell id -g ${USER})
-	# 引数 ローカルのhomeを渡す
-	buildopt+= --build-arg local_home=$(HOME)
-	# 引数 ローカルのwhoamiを渡す
-	buildopt+= --build-arg local_whoami=$(shell whoami)
-	# 引数 ローカルのDockerのgidを渡す
-	buildopt+= --build-arg local_docker_gid=$(shell getent group docker | awk -F: '{print $$3}')
+	ifeq ($(shell uname), Darwin)
+		useropt= -e LOCAL_UID=$(shell id -u ${USER}) -e LOCAL_GID=$(shell id -g ${USER}) -e LOCAL_HOME=$(HOME) -e LOCAL_WHOAMI=$(shell whoami) -e LOCAL_DOCKER_GID=""
+	else
+		useropt= -e LOCAL_UID=$(shell id -u ${USER}) -e LOCAL_GID=$(shell id -g ${USER}) -e LOCAL_HOME=$(HOME) -e LOCAL_WHOAMI=$(shell whoami) -e LOCAL_DOCKER_GID=$(shell getent group docker | awk  -F: '{print $$3}')
+	endif
 
-	## docker run時のオプション
-	# 環境変数 ローカルのwhoamiを渡す
-	runopt= -e LOCAL_WHOAMI=$(shell whoami)
-	# マウントオプション work
-	runopt+= --mount type=bind,src=$(HOME)/work,dst=$(HOME)/work
-	# マウントオプション shared_cache
-	runopt+= --mount type=bind,src=$(HOME)/.shared_cache,dst=$(HOME)/.shared_cache
-	# マウントオプション docker socket
-	runopt+= --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock
-	# マウントオプション ssh
-	runopt+= --mount type=bind,src=$(HOME)/.ssh,dst=$(HOME)/.ssh
-	# マウントオプション gitconfig
-	runopt+= --mount type=bind,src=$(HOME)/.gitconfig,dst=$(HOME)/.gitconfig
-	# マウントオプション clip
-	runopt+= --mount type=bind,src=$(HOME)/clip,dst=$(HOME)/clip
-	# マウントオプション chrome
-	runopt+= --mount type=bind,src=$(HOME)/chrome,dst=$(HOME)/chrome
-	# DockerでC++デバッグを有効にする
-	# see: https://stackoverflow.com/questions/70108775/gdb-exits-immediately-process-finished-with-exit-code-1-or-lldb-a-packet-ret/70108776#70108776
-	runopt+= --cap-add=SYS_PTRACE --security-opt seccomp=unconfined
+	useropt+= --mount type=bind,src=$(HOME)/work,dst=$(HOME)/work
+	useropt+= --mount type=bind,src=$(HOME)/.shared_cache,dst=$(HOME)/.shared_cache
+	useropt+= --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock
+	useropt+= --mount type=bind,src=$(HOME)/.ssh,dst=$(HOME)/.ssh
+	useropt+= --mount type=bind,src=$(HOME)/.gitconfig,dst=$(HOME)/.gitconfig
+
+	ifeq ($(shell uname), Linux)
+		useropt+= --mount type=bind,src=$(HOME)/clip,dst=$(HOME)/clip
+	endif
+
+	ifneq ($(PORT), )
+		useropt+= -p 0.0.0.0:$(PORT):$(PORT)
+	endif
+	ifneq ($(NOCACHE), )
+		useropt+= --no-cache
+	endif
 endif
 ifeq ($(TGT), $(PLAYWRIGHT))
-	runopt= -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix
+	useropt= -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix
 	# マウントオプション work
-	runopt+= --mount type=bind,src=$(HOME)/work,dst=$(HOME)/work
-endif
-ifneq ($(PORT), )
-	portopt= -p 0.0.0.0:$(PORT):$(PORT)
-endif
-ifneq ($(NOCACHE), )
-	buildopt+= --no-cache
+	useropt+= --mount type=bind,src=$(HOME)/work,dst=$(HOME)/work
 endif
 
 .PHONY: all
@@ -78,7 +62,7 @@ ifneq ($(shell docker ps -aq -f name="$(TGT)"), )
 	@exit 1
 endif
 ifeq ($(shell docker ps -aq -f name="$(TGT)"), )
-	docker image build $(buildopt) -t $(USER)/$(TGT) $(TGT)/.
+	docker image build -t $(USER)/$(TGT) $(TGT)/.
 endif
 
 .PHONY: start
@@ -92,7 +76,7 @@ ifeq ($(shell docker images -aq "$(USER)/$(TGT)"), )
 endif
 # targetと同じコンテナ名が存在しない場合
 ifeq ($(shell docker ps -aq -f name="$(TGT)"), )
-	docker container run -itd --rm --name $(TGT) $(runopt) $(portopt) $(USER)/$(TGT)
+	docker container run -it --rm --name $(TGT) $(useropt) $(USER)/$(TGT)
 	sleep 1
 endif
 
