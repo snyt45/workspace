@@ -70,13 +70,13 @@ mkdir -p "$HOME/.shared_cache/"
 
 # Gitの設定
 if [ -f "$DOTFILES_DIR/git/.gitconfig" ]; then
-    ln -sf "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+    cp "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
 fi
 
 # SSHの設定
 mkdir -p "$HOME/.ssh"
 if [ -f "$DOTFILES_DIR/ssh/config" ]; then
-    ln -sf "$DOTFILES_DIR/ssh/config" "$HOME/.ssh/config"
+    cp "$DOTFILES_DIR/ssh/config" "$HOME/.ssh/config"
 fi
 
 # Karabiner-Elements設定
