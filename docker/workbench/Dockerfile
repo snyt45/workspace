@@ -20,8 +20,7 @@ RUN apt-get update && \
     --enable-multibyte \
     --prefix=/usr/local && \
     make && \
-    make install && \
-    ln -sf /usr/local/bin/vim /usr/local/bin/vi
+    make install
 
 FROM builder AS go_builder
 RUN wget https://go.dev/dl/go$(curl -s https://raw.githubusercontent.com/hinoshiba/dockerfiles/master/version/golang/strict).linux-$(dpkg --print-architecture).tar.gz && \
@@ -107,8 +106,9 @@ RUN apt-get update && \
       gh \
       jq
 
-COPY --from=vim_builder /usr/local/bin/vim /usr/local/bin/vim
+COPY --from=vim_builder /usr/local /usr/local
 COPY --from=vim_builder /usr/local/share/vim /usr/local/share/vim
+RUN ln -sf /usr/local/bin/vim /usr/local/bin/vi
 
 COPY --from=go_builder /root/go /root/go
 COPY --from=go_builder /usr/local/go /usr/local/go
