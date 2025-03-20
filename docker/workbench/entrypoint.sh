@@ -21,7 +21,7 @@ echo "Starting with UID : $USER_ID, GID: $GROUP_ID"
 test -z "${LOCAL_DOCKER_GID}" || groupmod -g "${LOCAL_DOCKER_GID}" docker
 useradd -u $USER_ID -o -m ${LOCAL_WHOAMI}
 # Windowsの場合はホスト側のユーザーのGIDに合わせる
-test -z "${LOCAL_DOCKER_GID}" || groupmod -g $GROUP_ID ${LOCAL_WHOAMI}
+test -z "${LOCAL_DOCKER_GID}" || groupmod -g $GROUP_ID -o ${LOCAL_WHOAMI}
 passwd -d ${LOCAL_WHOAMI}
 usermod -L ${LOCAL_WHOAMI}
 gpasswd -a ${LOCAL_WHOAMI} docker
