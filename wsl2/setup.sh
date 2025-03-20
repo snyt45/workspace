@@ -2,86 +2,36 @@
 
 set -eu
 
-COLOR_GRAY="\033[1;38;5;243m"
-COLOR_BLUE="\033[1;34m"
-COLOR_GREEN="\033[1;32m"
-COLOR_RED="\033[1;31m"
-COLOR_PURPLE="\033[1;35m"
-COLOR_YELLOW="\033[1;33m"
-COLOR_NONE="\033[0m"
-
-title() {
-  echo -e "${COLOR_PURPLE}$1${COLOR_NONE}"
-  echo -e "${COLOR_GRAY}==============================${COLOR_NONE}"
-}
-
-error() {
-  echo -e "${COLOR_RED}Error: ${COLOR_NONE}$1"
-  exit 1
-}
-
-warning() {
-  echo -e "${COLOR_YELLOW}Warning: ${COLOR_NONE}$1"
-}
-
-info() {
-  echo -e "${COLOR_BLUE}Info: ${COLOR_NONE}$1"
-}
-
-success() {
-  echo -e "${COLOR_GREEN}$1${COLOR_NONE}"
-}
-
-title "Tool Install"
+# install
 sudo apt-get update -yqq
 sudo apt-get upgrade -yqq
 sudo apt install -yqq \
   make \
   git \
   zoxide \
-  fzf
-success "Tool Install Done."
+  fzf \
+  socat
 
-title "WSL2 Setting"
-sudo ln -snfv ~/.dotfiles/wsl2/wsl/wsl.conf /etc/
-sudo ln -snfv ~/.dotfiles/wsl2/wsl/resolv.conf /etc/
-success "WSL2 Setting Done."
+DOTFILES_DIR="$HOME/.dotfiles/wsl2"
 
-title "Bash Setting"
-sudo ln -snfv ~/.dotfiles/wsl2/bash/.bashrc ~/
-sudo ln -snfv ~/.dotfiles/wsl2/bash/.bashrc_local ~/
-
-success "Bash Setting Done."
-
-title "Git Setting"
-sudo cp ~/.dotfiles/wsl2/git/.gitconfig ~/.gitconfig
-success "Git Setting Done."
-
-title "Shared Setting"
 # 作業データ共有用のディレクトリ
-mkdir -p ~/work/
+mkdir -p "$HOME/work/"
 # 作業用コンテナで作業時のキャッシュを残すためのディレクトリ
-mkdir -p ~/.shared_cache/
-# Git 認証用の SSH 鍵を置くディレクトリ
-mkdir -p ~/.ssh/
-sudo cp ~/.dotfiles/wsl2/ssh/config ~/.ssh/config
-info "ssh鍵はコピーして適切なパーミッションを設定してください"
-success "Shared Setting Done."
+mkdir -p "$HOME/.shared_cache/"
 
-title "Clipboard"
-[ -p ~/clip ] && echo already exists the pipe for clip || mkfifo ~/clip
-chmod +x ./script/clip.sh
-sudo ln -snfv ~/.dotfiles/wsl2/script/clip.sh ~/
-success "Clipboard Done."
+# Gitの設定
+cp "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
 
-title "Open Command"
-chmod +x ./script/clip.sh
-sudo ln -snfv ~/.dotfiles/wsl2/script/clip.sh ~/
-success "Open Command Done."
+# SSHの設定
+mkdir -p "$HOME/.ssh"
+cp "$DOTFILES_DIR/ssh/config" "$HOME/.ssh/config"
 
-title "Crontab"
-crontab ~/.dotfiles/wsl2/cron/cron.conf
-success "Crontab Done."
+# WSLの設定
+sudo ln -snfv "$DOTFILES_DIR/wsl/wsl.conf" /etc/
+sudo ln -snfv "$DOTFILES_DIR/wsl/resolv.conf" /etc/
 
-info "wsl --shutdownでWSL2を再起動してください。"
-success "Setup Done."
+# bashの設定
+sudo ln -snfv "$DOTFILES_DIR/bash/.bashrc" ~/
+sudo ln -snfv "$DOTFILES_DIR/bash/.bashrc_local" ~/
+
+echo "セットアップが完了しました。再起動してください。"

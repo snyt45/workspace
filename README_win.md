@@ -270,13 +270,10 @@ chmod 600 <SSH key>
 ssh -T git@<user name>
 ```
 
-WSL と cron の設定を反映させるために再起動する。
+WSL の設定を反映させるために再起動する。
 
 ```
 wsl --shutdown
-
-# cronの設定確認: systemdがPID=1で起動していること
-ps -ae
 
 # resolv.confの設定が反映されていること
 cat /etc/resolv.conf
@@ -313,23 +310,3 @@ https://teratail.com/questions/bnuj82z2oh7cso
 
 - `winget uninstall Microsoft.VisualStudioCode`
 - `winget install Microsoft.VisualStudioCode`
-
-### WSL2 とのクリップボード連携がうまく動かない
-
-```
-# cronの起動確認
-service cron status
-
-# cronを再起動
-sudo service cron restart
-
-# ログ確認
-cat /var/log/cron.log
-
-# clip.shに実行権限が付与されているか確認
-ls -al ~/.dotfiles/wsl2/script
-chmod +x ~/.dotfiles/wsl2/script/clip.sh
-
-# reboot
-wsl --shutdown
-```
