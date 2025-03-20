@@ -126,6 +126,18 @@ https://tana.inc/
 
 - 起動する
 
+#### Rectangle
+
+- Mac の設定を無効化する
+- ショートカットキーの設定
+  - 左半分：Command + Shift + H
+  - 右半分：Command + Shift + L
+  - 左上：Command + Shift + U
+  - 右上：Command + Shift + I
+  - 左下：Command + Shift + J
+  - 右下：Command + Shift + K
+  - 最大化：Command + Shift + Enter
+
 #### Scroll Reverser（★★）
 
 - Scroll Reverser を起動する
