@@ -79,6 +79,12 @@ if [ -f "$DOTFILES_DIR/ssh/config" ]; then
     cp "$DOTFILES_DIR/ssh/config" "$HOME/.ssh/config"
 fi
 
+# Vimの設定
+if [ -f "$DOTFILES_DIR/vim/.vimrc" ]; then
+  ln -sf "$DOTFILES_DIR/vim/.vimrc" "$HOME/.vimrc"
+fi
+
+
 # Karabiner-Elements設定
 mkdir -p "$HOME/.config/karabiner"
 if [ -f "$DOTFILES_DIR/karabiner/karabiner.json" ]; then
