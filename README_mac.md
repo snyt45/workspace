@@ -58,7 +58,7 @@ ssh -T git@<user name>
 
 Anker の WEB カメラ「Anker PowerConf C300」のアプリ。
 
-Windows を選択してダウンロードする。
+Mac を選択してダウンロードする。
 
 https://us.ankerwork.com/pages/download-software
 
@@ -89,6 +89,11 @@ https://tana.inc/
 #### Ankerwork
 
 - 解像度を「720P」、画角とフレームを「78°」にする
+
+#### Docker Desktop for Mac
+
+- 起動する
+- Settings > General > Start Docker Desktop when you sign in your computer を on
 
 #### Dropbox
 
@@ -126,7 +131,7 @@ https://tana.inc/
 
 - 起動する
 
-#### Rectangle
+#### Rectangle(★)
 
 - Mac の設定を無効化する
 - ショートカットキーの設定
@@ -137,6 +142,7 @@ https://tana.inc/
   - 左下：Command + Shift + J
   - 右下：Command + Shift + K
   - 最大化：Command + Shift + Enter
+- ログイン時に起動を on
 
 #### Scroll Reverser（★★）
 
