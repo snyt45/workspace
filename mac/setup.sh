@@ -44,7 +44,7 @@ else
 fi
 
 # install
-brew install iterm2
+brew install warp
 brew install google-chrome
 brew install google-japanese-ime
 brew install visual-studio-code

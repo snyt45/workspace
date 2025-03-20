@@ -173,14 +173,15 @@ https://tana.inc/
 
 ## 3. Mac の開発環境構築
 
-### iterm2 の設定
+### Warp の設定
 
-- ビープ音の設定
-  - Preferences > Profiles > Terminal の中の Notification > Silence bell を on
-  - Preferences > Profiles > Terminal の中の Notification > Show bell icon in tabs を off
+- テーマの設定
+  - https://terminal-themes.com/ より `GruvboxDark` をダウンロードする
+  - `mkdir -p $HOME/.warp/themes/` する
+  - `mv /Users/snyt45/Downloads/GruvboxDark.yaml $HOME/.warp/themes/` する
 - フォントの設定
   - [GitHub > yuru7/HackGen > Release](https://github.com/yuru7/HackGen/releases/latest) より、`HackGen_NF_vx.x.x.zip` をダウンロードの上、展開し `HackGenConsoleNF-Regular.ttf` をインストールする。
-  - Preferences > Profiles > Text > Font を `HackGen Console NF`にし、フォントサイズを 14 にする
+  - Settings > Appearance > Text > Terminal font を `HackGen Console NF`にする
 
 ### workspace を構築する
 
