@@ -276,6 +276,7 @@ WSL の設定を反映させるために再起動する。
 wsl --shutdown
 
 # resolv.confの設定が反映されていること
+# nameserver 8.8.8.8 であることを確認
 cat /etc/resolv.conf
 ```
 
