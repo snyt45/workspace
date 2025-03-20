@@ -70,30 +70,20 @@ mkdir -p "$HOME/work/"
 mkdir -p "$HOME/.shared_cache/"
 
 # Gitの設定
-if [ -f "$DOTFILES_DIR/git/.gitconfig" ]; then
-    cp "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
-fi
+cp "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
 
 # SSHの設定
 mkdir -p "$HOME/.ssh"
-if [ -f "$DOTFILES_DIR/ssh/config" ]; then
-    cp "$DOTFILES_DIR/ssh/config" "$HOME/.ssh/config"
-fi
+cp "$DOTFILES_DIR/ssh/config" "$HOME/.ssh/config"
 
 # Vimの設定
-if [ -f "$DOTFILES_DIR/vim/.vimrc" ]; then
-  ln -sf "$DOTFILES_DIR/vim/.vimrc" "$HOME/.vimrc"
-fi
+ln -sf "$DOTFILES_DIR/vim/.vimrc" "$HOME/.vimrc"
 
 # Karabiner-Elements設定
 mkdir -p "$HOME/.config/karabiner"
-if [ -f "$DOTFILES_DIR/karabiner/karabiner.json" ]; then
-    ln -sf "$DOTFILES_DIR/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
-fi
+ln -sf "$DOTFILES_DIR/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
 
 # Zshの設定
-if [ -f "$DOTFILES_DIR/zsh/.zshrc" ]; then
-    ln -sf "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
-fi
+ln -sf "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
 
 echo "セットアップが完了しました。再起動してください。"
