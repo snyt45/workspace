@@ -6,3 +6,5 @@ if [[ $(command -v socat > /dev/null; echo $?) == 0 ]]; then
     echo "Starting clipboard relay..."
     (socat tcp-listen:8121,fork,bind=0.0.0.0 EXEC:'pbcopy' &) > /dev/null 2>&1
 fi
+
+alias g='git'
