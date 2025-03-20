@@ -7,7 +7,6 @@ PLAYWRIGHT=playwright
 # makeコマンドの引数
 TGT=$(target)
 PORT=${port}
-NOCACHE=${nocache}
 
 ## env
 # ローカルの環境変数をimport
@@ -27,15 +26,8 @@ ifeq ($(TGT), $(WORKBENCH))
 	useropt+= --mount type=bind,src=$(HOME)/.ssh,dst=$(HOME)/.ssh
 	useropt+= --mount type=bind,src=$(HOME)/.gitconfig,dst=$(HOME)/.gitconfig
 
-	ifeq ($(shell uname), Linux)
-		useropt+= --mount type=bind,src=$(HOME)/clip,dst=$(HOME)/clip
-	endif
-
 	ifneq ($(PORT), )
 		useropt+= -p 0.0.0.0:$(PORT):$(PORT)
-	endif
-	ifneq ($(NOCACHE), )
-		useropt+= --no-cache
 	endif
 endif
 ifeq ($(TGT), $(PLAYWRIGHT))

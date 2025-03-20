@@ -104,7 +104,8 @@ RUN apt-get update && \
       lldb \
       universal-ctags \
       gh \
-      jq
+      jq \
+      socat
 
 COPY --from=vim_builder /usr/local /usr/local
 COPY --from=vim_builder /usr/local/share/vim /usr/local/share/vim

@@ -51,6 +51,7 @@ brew install visual-studio-code
 brew install slack
 brew install zoom
 brew install zoxide
+brew install socat
 brew install --cask alt-tab
 brew install --cask deepl
 brew install --cask docker
@@ -83,7 +84,6 @@ fi
 if [ -f "$DOTFILES_DIR/vim/.vimrc" ]; then
   ln -sf "$DOTFILES_DIR/vim/.vimrc" "$HOME/.vimrc"
 fi
-
 
 # Karabiner-Elements設定
 mkdir -p "$HOME/.config/karabiner"
