@@ -26,7 +26,7 @@ FROM builder AS go_builder
 RUN wget https://go.dev/dl/go$(curl -s https://raw.githubusercontent.com/hinoshiba/dockerfiles/master/version/golang/strict).linux-$(dpkg --print-architecture).tar.gz && \
     rm -rf /usr/local/go && tar xzf go$(curl -s https://raw.githubusercontent.com/hinoshiba/dockerfiles/master/version/golang/strict).linux-$(dpkg --print-architecture).tar.gz -C /usr/local && \
     export PATH="${PATH}:/usr/local/go/bin" && \
-    go install github.com/gohugoio/hugo@latest
+    CGO_ENABLED=1 go install -tags extended github.com/gohugoio/hugo@latest
 
 FROM builder AS rust_builder
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
