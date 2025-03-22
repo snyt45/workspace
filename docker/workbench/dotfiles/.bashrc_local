@@ -47,3 +47,18 @@ export GH_CONFIG_DIR="$HOME/.shared_cache/gh"
 alias lz="lazygit"
 alias dt="git difftool --tool=vimdiff"
 alias g="git"
+
+########################################################################################################################
+# カスタムコマンド
+########################################################################################################################
+# history検索(C-r)
+function _history_search() {
+    local regex_remove_numbers='s/^[[:space:]]*[0-9]\+[[:space:]]*//'
+    local regex_remove_spaces='s/^[[:space:]]*//'
+    local selected=$(history | sed -e $regex_remove_numbers -e $regex_remove_spaces | sort -u | fzf --query "$READLINE_LINE")
+    if [[ -n "$selected" ]]; then
+        READLINE_LINE="$selected"
+        READLINE_POINT=${#selected}
+    fi
+}
+bind -x '"\C-r": _history_search'
