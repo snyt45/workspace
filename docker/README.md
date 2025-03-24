@@ -24,6 +24,9 @@ cd ~/.dotfiles/docker
 
 ```
 make build target="workbench"
+
+# Build with --no-cache option
+make build target=workbench nocache="true"
 ```
 
 作業用コンテナを起動

@@ -7,6 +7,7 @@ PLAYWRIGHT=playwright
 # makeコマンドの引数
 TGT=$(target)
 PORT=${port}
+NOCACHE=${nocache}
 
 ## env
 # ローカルの環境変数をimport
@@ -53,7 +54,9 @@ ifneq ($(shell docker ps -aq -f name="$(TGT)"), )
 	@echo "既に同じコンテナが存在します。必ず最新の設定が反映されたコンテナを使うようにするため、コンテナを削除してからbuildを行ってください。"
 	@exit 1
 endif
-ifeq ($(shell docker ps -aq -f name="$(TGT)"), )
+ifeq ($(NOCACHE), true)
+	docker image build --no-cache -t $(USER)/$(TGT) $(TGT)/.
+else
 	docker image build -t $(USER)/$(TGT) $(TGT)/.
 endif
 
