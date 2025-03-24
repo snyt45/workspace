@@ -9,6 +9,8 @@ TGT=$(target)
 PORT=${port}
 NOCACHE=${nocache}
 
+comma := ,
+
 ## env
 # ローカルの環境変数をimport
 export USER
@@ -28,7 +30,12 @@ ifeq ($(TGT), $(WORKBENCH))
 	useropt+= --mount type=bind,src=$(HOME)/.gitconfig,dst=$(HOME)/.gitconfig
 
 	ifneq ($(PORT), )
-		useropt+= -p 0.0.0.0:$(PORT):$(PORT)
+		# カンマで区切られたポートリストを処理
+		# PORT=8080,3000,5000 のような入力を想定
+		PORTS = $(subst $(comma), ,$(PORT))
+		# 各ポートに対して -p オプションを展開
+		PORT_OPTS = $(foreach p,$(PORTS),-p 0.0.0.0:$(p):$(p))
+		useropt+= $(PORT_OPTS)
 	endif
 endif
 ifeq ($(TGT), $(PLAYWRIGHT))

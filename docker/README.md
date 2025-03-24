@@ -23,25 +23,28 @@ cd ~/.dotfiles/docker
 作業コンテナのイメージをビルド
 
 ```
-make build target="workbench"
+make build target=workbench
 
 # Build with --no-cache option
-make build target=workbench nocache="true"
+make build target=workbench nocache=true
 ```
 
 作業用コンテナを起動
 
 ```
-make target="workbench"
+make target=workbench
 
 # 開放portを指定
-make target="workbench" port=3030
+make target=workbench port=3030
+
+# 複数ポート指定
+make start target=workbench port=8080,3000,5000
 ```
 
 作業用コンテナのイメージを削除
 
 ```
-make clean target="workbench"
+make clean target=workbench
 ```
 
 全ての docker image を削除
