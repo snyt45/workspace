@@ -131,6 +131,10 @@ https://tana.inc/
 
 - 起動する
 
+#### Raycast
+
+- [ホットキーの設定を行う](https://github.com/snyt45/workspace/wiki/Win%EF%BC%8FMac-%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88%E3%82%AD%E3%83%BC#raycast)
+
 #### Rectangle(★)
 
 - Mac の設定を無効化する
@@ -188,10 +192,6 @@ https://tana.inc/
   - ミーティングの参加時にマイクをミュートに設定
 - 設定 > 背景とエフェクト
   - ぼかしに設定
-
-#### テキストエディット
-
-- 設定 > 標準テキストに設定する
 
 ## 3. Mac の開発環境構築
 
