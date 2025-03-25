@@ -40,6 +40,10 @@ mv /root/go /home/${LOCAL_WHOAMI}/go && chown -R ${LOCAL_WHOAMI}:${LOCAL_WHOAMI}
 mv /root/.cargo /home/${LOCAL_WHOAMI}/.cargo && chown -R ${LOCAL_WHOAMI}:${LOCAL_WHOAMI} /home/${LOCAL_WHOAMI}/.cargo
 mv /root/.rustup /home/${LOCAL_WHOAMI}/.rustup && chown -R ${LOCAL_WHOAMI}:${LOCAL_WHOAMI} /home/${LOCAL_WHOAMI}/.rustup
 
+mv /root/.asdf /home/${LOCAL_WHOAMI}/.asdf && chown -R ${LOCAL_WHOAMI}:${LOCAL_WHOAMI} /home/${LOCAL_WHOAMI}/.asdf
+# pipインストールしたコマンドのシバン行がrootのパスを指しているため修正
+sed -i '1s|^#!/root/.asdf/installs/python/3.9.7/bin/python3|#!/Users/snyt45/.asdf/installs/python/3.9.7/bin/python3|' /home/${LOCAL_WHOAMI}/.asdf/installs/python/3.9.7/bin/oj
+
 mv /root/.volta /home/${LOCAL_WHOAMI}/.volta && chown -R ${LOCAL_WHOAMI}:${LOCAL_WHOAMI} /home/${LOCAL_WHOAMI}/.volta
 
 mv /opt/tfenv /home/${LOCAL_WHOAMI}/.tfenv && chown -R ${LOCAL_WHOAMI}:${LOCAL_WHOAMI} /home/${LOCAL_WHOAMI}/.tfenv

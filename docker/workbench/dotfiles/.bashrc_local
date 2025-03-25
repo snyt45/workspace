@@ -15,6 +15,14 @@ if command -v starship &> /dev/null; then eval "$(starship init bash)"; fi;
 if command -v zoxide &> /dev/null; then eval "$(zoxide init bash)"; fi;
 export _ZO_DATA_DIR="$HOME/.shared_cache/zoxide/"
 
+# asdf
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+# なぜか、asdfのpythonがlibを読み込めないため、明示的に指定
+export LD_LIBRARY_PATH="$HOME/.asdf/installs/python/2.7.18/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$HOME/.asdf/installs/python/3.9.7/lib:$LD_LIBRARY_PATH"
+asdf set python 3.9.7
+asdf reshim python
+
 # volta
 export VOLTA_HOME="$HOME/.shared_cache/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
@@ -37,9 +45,6 @@ export PATH="$PATH:$HOME/.tfenv/bin"
 
 # gh
 export GH_CONFIG_DIR="$HOME/.shared_cache/gh"
-
-# atcoder
-. /opt/py_envs/bin/activate
 
 ########################################################################################################################
 # alias

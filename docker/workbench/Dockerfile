@@ -34,13 +34,41 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
     rustup component add rustfmt && \
     rustup component add rust-analyzer
 
-FROM builder AS python_builder
-RUN apt-get update && apt-get install -y python3-venv python3-pip
+# asdfのビルドはgoが必要
+FROM go_builder AS asdf_builder
+ENV PATH="/usr/local/go/bin:${PATH}"
+# python用の依存関係
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  curl \
+  libbz2-dev \
+  libffi-dev \
+  liblzma-dev \
+  libncursesw5-dev \
+  libreadline-dev \
+  libsqlite3-dev \
+  libssl-dev \
+  libxml2-dev \
+  libxmlsec1-dev \
+  tk-dev \
+  xz-utils \
+  zlib1g-dev
+
+# asdf
+RUN git clone https://github.com/asdf-vm/asdf.git /root/asdf --branch v0.16.0 && \
+    cd /root/asdf && \
+    make && \
+    cp /root/asdf/asdf /usr/local/bin/asdf
+
+# python
+RUN asdf plugin add python && \
+    asdf install python 2.7.18 && \
+    asdf install python 3.9.7
+
 # atcoder環境
-RUN python3 -m venv /opt/py_envs && \
-    . /opt/py_envs/bin/activate && \
-    pip3 install setuptools && \
-    pip3 install online-judge-tools
+ENV PATH="/root/.asdf/shims:/root/.asdf/bin:${PATH}"
+RUN asdf set python 3.9.7 && \
+    python3 -m pip install online-judge-tools
 
 FROM builder AS node_builder
 # volta
@@ -117,7 +145,8 @@ COPY --from=go_builder /usr/local/go /usr/local/go
 COPY --from=rust_builder /root/.cargo /root/.cargo
 COPY --from=rust_builder /root/.rustup /root/.rustup
 
-COPY --from=python_builder /opt/py_envs /opt/py_envs
+COPY --from=asdf_builder /root/.asdf /root/.asdf
+COPY --from=asdf_builder /usr/local/bin/asdf /usr/local/bin/asdf
 
 COPY --from=node_builder /root/.volta /root/.volta
 
