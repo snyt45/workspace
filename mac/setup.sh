@@ -53,6 +53,7 @@ brew install google-japanese-ime
 brew install visual-studio-code
 brew install ripgrep
 brew install slack
+brew install tmux
 brew install zoom
 brew install zoxide
 brew install socat
@@ -98,6 +99,9 @@ cp "$DOTFILES_DIR/ssh/config" "$HOME/.ssh/config"
 
 # Vimの設定
 ln -sf "$DOTFILES_DIR/.vimrc" "$HOME/.vimrc"
+
+# Tmuxの設定
+ln -sf "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
 
 # Karabiner-Elements設定
 mkdir -p "$HOME/.config/karabiner"
