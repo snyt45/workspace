@@ -46,6 +46,7 @@ fi
 # install
 brew install asdf
 brew install diff-so-fancy
+brew install fzf
 brew install warp
 brew install google-chrome
 brew install google-japanese-ime
