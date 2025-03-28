@@ -191,6 +191,8 @@ https://tana.inc/
 - フォントの設定
   - [GitHub > yuru7/HackGen > Release](https://github.com/yuru7/HackGen/releases/latest) より、`HackGen_NF_vx.x.x.zip` をダウンロードの上、展開し `HackGenConsoleNF-Regular.ttf` をインストールする。
   - Settings > Appearance > Text > Terminal font を `HackGen Console NF`にする
+- プロンプトの設定
+  - Settings > Appearance > Prompt > Shell prompt を選択
 
 ### workspace を構築する
 

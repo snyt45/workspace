@@ -53,6 +53,7 @@ brew install slack
 brew install zoom
 brew install zoxide
 brew install socat
+brew install starship
 brew install --cask alt-tab
 brew install --cask deepl
 brew install --cask docker

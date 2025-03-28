@@ -1,5 +1,6 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
 eval "$(zoxide init zsh)"
+eval "$(starship init zsh)"
 
 if [[ $(command -v socat > /dev/null; echo $?) == 0 ]]; then
     # Start up the socat forwarder to clip.exe
