@@ -61,7 +61,6 @@ brew install --cask gather
 brew install --cask kap
 brew install --cask karabiner-elements
 brew install --cask raycast
-brew install --cask rectangle
 brew install --cask scroll-reverser
 brew install --cask tableplus
 
