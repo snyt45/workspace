@@ -51,6 +51,7 @@ brew install warp
 brew install google-chrome
 brew install google-japanese-ime
 brew install visual-studio-code
+brew install ripgrep
 brew install slack
 brew install zoom
 brew install zoxide
