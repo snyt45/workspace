@@ -110,4 +110,8 @@ ln -sf "$DOTFILES_DIR/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
 # Zshの設定
 ln -sf "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 
+# bin
+mkdir -p "$HOME/bin"
+ln -sf "$DOTFILES_DIR/bin/ide" "$HOME/bin/"
+
 echo "セットアップが完了しました。再起動してください。"

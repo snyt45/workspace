@@ -10,6 +10,9 @@ fi
 
 alias g='git'
 
+# bin
+export PATH="$HOME/bin:$PATH"
+
 # asdf
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
