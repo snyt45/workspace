@@ -76,10 +76,6 @@ https://www.kensington.com/ja-jp/p/%E8%A3%BD%E5%93%81/%E3%82%B3%E3%83%B3%E3%83%8
 
 https://tana.inc/
 
-### Mac の設定
-
-- システム環境設定 > キーボード > キーボードショートカット > キーボード > 次のウィンドウを操作対象対象にする に Controle + F1 を割当。（重複するキーボードアクセスのオン/オフを無効にする）
-
 ### ソフトウェアの設定
 
 ※★ はセットアップ時の優先度
@@ -138,19 +134,6 @@ https://tana.inc/
 #### Raycast
 
 - [ホットキーの設定を行う](https://github.com/snyt45/workspace/wiki/Win%EF%BC%8FMac-%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88%E3%82%AD%E3%83%BC#raycast)
-
-#### Rectangle(★)
-
-- Mac の設定を無効化する
-- ショートカットキーの設定
-  - 左半分：Command + Shift + H
-  - 右半分：Command + Shift + L
-  - 左上：Command + Shift + U
-  - 右上：Command + Shift + I
-  - 左下：Command + Shift + J
-  - 右下：Command + Shift + K
-  - 最大化：Command + Shift + Enter
-- ログイン時に起動を on
 
 #### Scroll Reverser（★★）
 
