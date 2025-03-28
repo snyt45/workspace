@@ -98,7 +98,12 @@ mkdir -p "$HOME/.ssh"
 cp "$DOTFILES_DIR/ssh/config" "$HOME/.ssh/config"
 
 # Vimの設定
-ln -sf "$DOTFILES_DIR/.vimrc" "$HOME/.vimrc"
+mkdir -p "$HOME/.vim"
+mkdir -p "$HOME/.vim/autoload/"
+curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+mkdir -p "$HOME/.vim/config/"
+ln -sf "$DOTFILES_DIR/.vim/vimrc" "$HOME/.vim/"
+ln -sf "$DOTFILES_DIR/.vim/config/.ctrlp-launcher" "$HOME/.vim/config/"
 
 # Tmuxの設定
 ln -sf "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"

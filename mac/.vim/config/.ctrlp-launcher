@@ -1,0 +1,9 @@
+# [タイトル(空白含んでOK)] [タブ文字(複数可能] [実行するコマンド]
+BufferDiff	:windo diffthis
+ClearBufferDiff	:diffoff!
+MakeTags	:MakeTags
+OpenSpec	:OpenSpec
+OpenImplementation	:OpenImplementation
+SaveSession	:SaveSession
+RestoreSession	:RestoreSession
+ShowPullRequest	ShowPullRequest
