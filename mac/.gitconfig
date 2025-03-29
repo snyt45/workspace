@@ -3,12 +3,25 @@
         email = snyt45@gmail.com
 [core]
         editor = vim
+[column]
+        ui = auto
+[branch]
+	sort = -committerdate
+[column]
+        ui = auto
+[commit]
+        verbose = true
+[diff]
+        algorithm = histogram
 [pager]
         diff = diff-so-fancy | less --tabs=4 -RFX
         show = diff-so-fancy | less --tabs=4 -RFX
 [alias]
+        aliases = !git config --get-regexp alias | sed 's/^alias.//g' | sed 's/ / = /1'
         a = add
         ap = add --patch
+        b = branch
+        ch = checkout
         staged = diff --staged
         unstage = reset -q HEAD --
         discard = checkout --
@@ -21,7 +34,6 @@
         ll = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s"
         ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
         fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs git commit --fixup"
-        rework = "!git rebase -i --autosquash $(git merge-base ${1:-develop} HEAD)"
         d = "!f() { \
             commit=$(git log --oneline | fzf | cut -d' ' -f1); \
             if [ -n \"$commit\" ]; then \
