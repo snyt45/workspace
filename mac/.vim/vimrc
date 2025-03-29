@@ -64,6 +64,9 @@ if executable('rg')
   set grepformat=%f:%l:%c:%m
 endif
 
+" クリップボードの設定
+set clipboard+=unnamed
+
 augroup MyVimBasic
   au!
 
