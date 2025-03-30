@@ -13,6 +13,9 @@ alias g='git'
 # bin
 export PATH="$HOME/bin:$PATH"
 
+# fzf
+export FZF_DEFAULT_OPTS="--ansi -e --prompt='QUERY> ' --layout=reverse --border=rounded --height 100%"
+
 # asdf
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
