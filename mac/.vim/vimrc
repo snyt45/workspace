@@ -183,10 +183,6 @@ nnoremap <leader>c :CopyGitPath<cr>
 " 現在のファイルのディレクトリを展開する
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
-" セッションの復元コマンド
-command! RestoreSession :source ~/.shared_cache/.vim/.session
-" セッションの保存コマンド
-command! SaveSession    :mksession! ~/.shared_cache/.vim/.session
 " タグファイル生成コマンド
 command! MakeTags call s:ExecuteCtags()
 " ファイルパスをコピー
