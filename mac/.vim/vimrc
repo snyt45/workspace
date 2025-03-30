@@ -54,6 +54,10 @@ set noundofile
 " マウス操作を有効化
 set mouse=a
 
+" 正規表現エンジンを最新のものに設定
+" macでTSファイルを開くとハングするのを防ぐため
+set re=0
+
 " デフォルトシェルの設定
 set shell=zsh
 
