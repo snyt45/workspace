@@ -294,6 +294,16 @@ function! s:ToggleQuickFix()
   endif
 endfunction
 
+nnoremap lz :call <SID>ToggleLocationList()<cr>
+
+function! s:ToggleLocationList()
+  if empty(filter(getwininfo(), 'v:val.loclist'))
+    lopen
+  else
+    lclose
+  endif
+endfunction
+
 " grep後にquickfix画面を開く
 au QuickfixCmdPost make,grep,grepadd,vimgrep copen
 " ##=== }}}
