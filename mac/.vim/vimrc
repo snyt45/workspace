@@ -89,7 +89,7 @@ augroup MyVimBasic
   au!
 
   " ヤンクをクリップボードに送信
-  autocmd TextYankPost * :call system('clip -i', @")
+  autocmd TextYankPost * :call system('pbcopy', @")
 augroup END
 
 augroup MyFileType
@@ -185,7 +185,7 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 " タグファイル生成コマンド
 command! MakeTags call s:ExecuteCtags()
 " ファイルパスをコピー
-command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git rev-parse --show-toplevel')), '', '') | echo @" | call system('clip -i', @")
+command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git rev-parse --show-toplevel')), '', '') | echo @" | call system('pbcopy', @")
 " 対応するspecファイルを開くコマンド
 command! OpenSpec :call s:OpenSpecFile()
 " 実装ファイルを開くコマンド
