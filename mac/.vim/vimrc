@@ -280,74 +280,6 @@ nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
 
 " ##=== }}}
-" ##=== キーマッピング・コマンド（MRU） {{{
-let g:mru_config_dir = expand('~/.shared_cache/.vim/mru/')
-
-function! s:GetProjectConfigFile()
-  let git_dir = finddir('.git', '.;')
-  if !empty(git_dir)
-    let full_path = fnamemodify(git_dir, ':p')
-    let full_path = substitute(full_path, '/$', '', '')
-    let project_path = fnamemodify(full_path, ':h')
-    let project_name = fnamemodify(project_path, ':t')
-    return g:mru_config_dir . project_name . '.txt'
-  endif
-  return g:mru_config_dir . 'default.txt'
-endfunction
-
-function! s:MRU()
-  enew
-  setl buftype=nofile
-  setl nomodifiable
-  let files = []
-
-  let config_file = s:GetProjectConfigFile()
-  if filereadable(config_file)
-    let files = readfile(config_file)
-  endif
-
-  setl modifiable
-  silent %delete _
-  call setline(1, files)
-  setl nomodifiable
-  silent file [MRU-readonly]
-  nnoremap <buffer> <CR> :let fname=getline('.') \| bdelete \| execute 'edit ' . fname<CR>
-endfunction
-
-function! s:MRUAdd()
-  let current_file = expand('%:p')
-  let config_file = s:GetProjectConfigFile()
-
-  if !isdirectory(g:mru_config_dir)
-    call mkdir(g:mru_config_dir, 'p')
-  endif
-
-  if !filereadable(config_file)
-    call writefile([], config_file)
-  endif
-
-  let favorites = readfile(config_file)
-
-  if index(favorites, current_file) == -1
-    call add(favorites, current_file)
-    call writefile(favorites, config_file)
-    echo "Added to favorites: " . current_file
-  else
-    echo "Already in favorites: " . current_file
-  endif
-endfunction
-
-command! MRU call s:MRU()
-command! MRUAdd call s:MRUAdd()
-command! MRUEdit execute 'edit' s:GetProjectConfigFile()
-command! MRUArgs execute 'args' join(readfile(s:GetProjectConfigFile()), ' ')
-
-nnoremap <Leader>m :MRU<CR>
-nnoremap <Leader>ma :MRUAdd<CR>
-nnoremap <Leader>me :MRUEdit<CR>
-nnoremap <Leader>mm :MRUArgs<CR>
-
-" ##=== }}}
 " ##=== キーマッピング・コマンド（quickfix） {{{
 
 nnoremap <silent> [q :cprevious<CR>
@@ -563,6 +495,9 @@ call plug#begin('~/.shared_cache/.vim/plugged')
     Plug 'mattn/ctrlp-matchfuzzy'
     " コマンドランチャー機能
     Plug 'mattn/ctrlp-launcher'
+    " MRU
+    Plug 'lambdalisue/vim-mr'
+    Plug 'tsuyoshicho/ctrlp-mr.vim'
   " Git差分表示
   Plug 'airblade/vim-gitgutter'
   " コメントアウト
@@ -655,6 +590,8 @@ let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
 let g:ctrlp_map = '<leader><leader>'
 " Gitリポジトリ内のファイル一覧を取得するコマンド
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+let g:ctrlp_extensions = get(g:, 'ctrlp_extensions', [])
+        \ + ['mr/mru', 'mr/mrw', 'mr/mrr']
 
 " バッファリストの表示
 nnoremap <leader>b :CtrlPBuffer<cr>
@@ -664,8 +601,12 @@ nnoremap <leader>t :CtrlPTag<cr>
 nnoremap <leader>f :CtrlPBufTag<cr>
 " Quickfixリストの表示
 nnoremap <leader>q :CtrlPQuickfix<cr>
-" 最近使用したファイルの一覧
-nnoremap <leader>m :CtrlPMRUFiles<cr>
+" 最近使用したファイルの一覧(vim-mr)
+nnoremap <leader>m :CtrlPMRMru<cr>
+" 最近書き込んだファイルの一覧(vim-mr)
+nnoremap <leader>w :CtrlPMRMrw<cr>
+" 最近使用したGitリポジトリの一覧(vim-mr)
+" nnoremap <leader>r :CtrlPMRMrr<cr>
 
 " ##=== }}}
 " ##=== ctrlp-launcher {{{
