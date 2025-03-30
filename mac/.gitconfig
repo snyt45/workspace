@@ -41,5 +41,24 @@
                 git rebase -i --autostash --keep-empty --no-autosquash --rebase-merges $commit^; \
             fi \
         }; f"
+        ls = "!f() { \
+            hash=$(git l --color=always | \
+                  fzf --ansi --preview 'echo {} | grep -o \"[0-9a-f]\\{7\\}\" | xargs git show --color=always' \
+                  --preview-window=right:60%:wrap | \
+                  grep -o \"[0-9a-f]\\{7\\}\"); \
+            if [ -n \"$hash\" ]; then \
+                git show --color=always $hash; \
+            fi \
+        }; f"
+        lls = "!f() { \
+            hash=$(git ll --color=always | \
+                  fzf --ansi --preview 'echo {} | grep -o \"[0-9a-f]\\{7\\}\" | xargs git show --color=always' \
+                  --preview-window=right:60%:wrap | \
+                  grep -o \"[0-9a-f]\\{7\\}\"); \
+            if [ -n \"$hash\" ]; then \
+                git show --color=always $hash; \
+            fi \
+        }; f"
+
 [rebase]
         autosquash = true
