@@ -131,7 +131,7 @@
             ]
           },
           {
-            "description": "英数キー + u/i で単語単位移動 (Shift併用で選択しながら移動)",
+            "description": "英数キー + u/i で単語単位移動",
             "manipulators": [
               {
                 "from": {
@@ -176,36 +176,6 @@
                 "from": {
                   "key_code": "u",
                   "modifiers": {
-                    "mandatory": [
-                      "shift"
-                    ],
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "left_arrow",
-                    "modifiers": [
-                      "left_option",
-                      "shift"
-                    ]
-                  }
-                ],
-                "type": "basic"
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "eisuu_pressed",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "u",
-                  "modifiers": {
                     "optional": [
                       "any"
                     ]
@@ -216,36 +186,6 @@
                     "key_code": "left_arrow",
                     "modifiers": [
                       "left_option"
-                    ]
-                  }
-                ],
-                "type": "basic"
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "eisuu_pressed",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "from": {
-                  "key_code": "i",
-                  "modifiers": {
-                    "mandatory": [
-                      "shift"
-                    ],
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "right_arrow",
-                    "modifiers": [
-                      "left_option",
-                      "shift"
                     ]
                   }
                 ],
