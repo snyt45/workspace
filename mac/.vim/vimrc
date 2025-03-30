@@ -36,8 +36,7 @@ set wildmode=longest:full,full
 " ファイル名補完で大文字小文字を区別しない
 " set wildignorecase
 
-" 行番号を相対表示 + 絶対表示
-set relativenumber
+" 行番号を絶対表示
 set number
 
 " バッファが編集中でも他のバッファに切り替えられるようにする
