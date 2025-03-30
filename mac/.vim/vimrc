@@ -284,7 +284,7 @@ nnoremap <silent> ]B :blast<CR>
 
 nnoremap <silent> [q :cprevious<CR>
 nnoremap <silent> ]q :cnext<CR>
-nnoremap <leader>w :call <SID>ToggleQuickFix()<cr>
+nnoremap cz :call <SID>ToggleQuickFix()<cr>
 
 function! s:ToggleQuickFix()
   if empty(filter(getwininfo(), 'v:val.quickfix'))
