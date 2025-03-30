@@ -64,6 +64,25 @@ if executable('rg')
   set grepformat=%f:%l:%c:%m
 endif
 
+" インデントがずれるを防ぐ
+" see: https://qiita.com/ryoff/items/ad34584e41425362453e
+if &term =~ "xterm" || &term =~ "screen" || &term =~ "tmux" || &term =~ "iterm" || &term =~ "dtterm"
+    let &t_SI .= "\e[?2004h"
+    let &t_EI .= "\e[?2004l"
+    let &pastetoggle = "\e[201~"
+    
+    function! XTermPasteBegin(ret)
+        set paste
+        return a:ret
+    endfunction
+    
+    map <expr> <Esc>[200~ XTermPasteBegin("i")
+    imap <expr> <Esc>[200~ XTermPasteBegin("")
+    vmap <expr> <Esc>[200~ XTermPasteBegin("c")
+    cmap <Esc>[200~ <nop>
+    cmap <Esc>[201~ <nop>
+endif
+
 " クリップボードの設定
 set clipboard+=unnamed
 
