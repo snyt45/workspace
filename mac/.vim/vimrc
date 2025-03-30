@@ -446,6 +446,16 @@ nnoremap <leader>w :CtrlPMRMrw<cr>
 " 最近使用したGitリポジトリの一覧(vim-mr)
 " nnoremap <leader>r :CtrlPMRMrr<cr>
 
+function! ResetMrHistory()
+  call delete(expand(g:mr#mru#filename))
+  call delete(expand(g:mr#mrw#filename))
+  call delete(expand(g:mr#mrr#filename))
+  call delete(expand(g:mr#mrd#filename))
+  echo "All MR history has been reset!"
+endfunction
+
+command! MRReset call ResetMrHistory()
+
 " ##=== }}}
 " ##=== ctrlp-launcher {{{
 

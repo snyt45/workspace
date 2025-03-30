@@ -4,6 +4,4 @@ ClearBufferDiff	:diffoff!
 MakeTags	:MakeTags
 OpenSpec	:OpenSpec
 OpenImplementation	:OpenImplementation
-SaveSession	:SaveSession
-RestoreSession	:RestoreSession
-ShowPullRequest	ShowPullRequest
+ResetMrHistory	:MRReset
