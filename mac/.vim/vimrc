@@ -56,7 +56,7 @@ set noundofile
 set mouse=a
 
 " デフォルトシェルの設定
-set shell=bash
+set shell=zsh
 
 " rg があれば使う
 if executable('rg')
