@@ -47,6 +47,7 @@ fi
 brew install asdf
 brew install diff-so-fancy
 brew install fzf
+brew install hugo
 brew install warp
 brew install google-chrome
 brew install google-japanese-ime
@@ -82,6 +83,9 @@ asdf install ruby 2.7.2
 # python
 asdf plugin add python
 asdf install python 2.7.18
+# golang
+asdf plugin add golang
+asdf install golang 1.24.2
 
 DOTFILES_DIR="$HOME/.dotfiles/mac"
 
