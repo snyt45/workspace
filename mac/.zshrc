@@ -12,10 +12,6 @@ alias g='git'
 
 # bin
 export PATH="$HOME/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-
-# man
-export PATH="$HOME/.local/man:$PATH"
 
 # fzf
 export FZF_DEFAULT_OPTS="--ansi -e --prompt='QUERY> ' --layout=reverse --border=rounded --height 100%"

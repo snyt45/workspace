@@ -117,10 +117,6 @@ ln -sf "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
 mkdir -p "$HOME/.config/karabiner"
 ln -sf "$DOTFILES_DIR/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
 
-# yabai + skhdの設定
-ln -sf "$DOTFILES_DIR/.yabairc" "$HOME/.yabairc"
-ln -sf "$DOTFILES_DIR/.skhdrc" "$HOME/.skhdrc"
-
 # Zshの設定
 ln -sf "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 
