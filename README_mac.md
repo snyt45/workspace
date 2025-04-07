@@ -80,6 +80,11 @@ https://tana.inc/
 
 ※★ はセットアップ時の優先度
 
+#### Mac の設定
+
+- アクセシビリティ > ディスプレイ > 視差効果を減らす
+- [ホットキーの設定を行う](https://github.com/snyt45/workspace/wiki/Keyboad-Shortcut)
+
 #### Alt Tab（★）
 
 - 環境設定 > ショートカットキー 1
@@ -133,7 +138,7 @@ https://tana.inc/
 
 #### Raycast
 
-- [ホットキーの設定を行う](https://github.com/snyt45/workspace/wiki/Win%EF%BC%8FMac-%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88%E3%82%AD%E3%83%BC#raycast)
+- [ホットキーの設定を行う](https://github.com/snyt45/workspace/wiki/Keyboad-Shortcut)
 
 #### Scroll Reverser（★★）
 
@@ -170,6 +175,35 @@ https://tana.inc/
 
 - 左下のアカウントマークからバックアップ&設定同期を行う。
   - 設定同期後、VSCode を再起動する
+
+#### yabai + skhd
+
+yabai
+
+```sh
+# install
+mkdir -p ~/.local/bin && mkdir -p ~/.local/man
+curl -L https://raw.githubusercontent.com/koekeishiya/yabai/master/scripts/install.sh | sh /dev/stdin ~/.local/bin ~/.local/man
+
+# start
+yabai --start-service
+
+# add script
+echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(which yabai) | cut -d " " -f 1) $(which yabai) --load-sa" | sudo tee /private/etc/sudoers.d/yabai
+
+# window を仮想デスクトップに送ったりするために以下の設定を行う必要がある。
+# https://github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection
+```
+
+skhd
+
+```sh
+git clone https://github.com/koekeishiya/skhd ~/
+cd ~/skhd
+make install
+mv ~/skhd/bin/skhd ~/.local/bin/
+skhd --start-service
+```
 
 #### Zoom
 
