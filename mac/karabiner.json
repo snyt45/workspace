@@ -4,6 +4,46 @@
       "complex_modifications": {
         "rules": [
           {
+            "description": "Change ¥ to Alt+¥",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "international3"
+                },
+                "to": [
+                  {
+                    "key_code": "international3",
+                    "modifiers": [
+                      "option"
+                    ]
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
+            "description": "Change Alt+¥ to ¥",
+            "manipulators": [
+              {
+                "from": {
+                  "key_code": "international3",
+                  "modifiers": {
+                    "mandatory": [
+                      "option"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "international3"
+                  }
+                ],
+                "type": "basic"
+              }
+            ]
+          },
+          {
             "description": "ESCキーを押したら英数キー+ESCを送信",
             "manipulators": [
               {
