@@ -37,7 +37,7 @@ setopt HIST_REDUCE_BLANKS     # 余分な空白を削除してから履歴に追
 # history検索(C-r)
 function history-search-fzf() {
     local selected
-    selected=$(fc -l 1 | sed 's/^[ ]*[0-9]\+[ ]*//' | sort -u | fzf --query "$BUFFER")
+    selected=$(fc -l 1 | sed -E 's/^[[:space:]]*[0-9]+[[:space:]]+//' | sort -u | fzf --query "$BUFFER")
     if [[ -n "$selected" ]]; then
         BUFFER="$selected"
         CURSOR=${#BUFFER}
