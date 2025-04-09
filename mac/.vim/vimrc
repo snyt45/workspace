@@ -327,6 +327,9 @@ call plug#begin('~/.shared_cache/.vim/plugged')
     Plug 'itchyny/vim-gitbranch'
   " f強化
   Plug 'unblevable/quick-scope'
+  " fzf
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  Plug 'junegunn/fzf.vim'
   " ファイルファインダー
   Plug 'ctrlpvim/ctrlp.vim'
     " あいまい検索機能の強化
@@ -419,6 +422,12 @@ let g:indent_guides_start_level = 2
 
 " ガイドラインの幅を1文字分に設定
 let g:indent_guides_guide_size = 1
+
+" ##=== }}}
+" ##=== fzf.vim {{{
+
+" 全文検索
+nnoremap <leader>r :Rg<cr>
 
 " ##=== }}}
 " ##=== ctrlp {{{
