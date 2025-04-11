@@ -284,7 +284,7 @@ nnoremap <silent> <Leader>d :bdelete<CR>
 
 nnoremap <silent> [q :cprevious<CR>
 nnoremap <silent> ]q :cnext<CR>
-nnoremap cz :call <SID>ToggleQuickFix()<cr>
+nnoremap <leader>q :call <SID>ToggleQuickFix()<cr>
 
 function! s:ToggleQuickFix()
   if empty(filter(getwininfo(), 'v:val.quickfix'))
@@ -294,7 +294,7 @@ function! s:ToggleQuickFix()
   endif
 endfunction
 
-nnoremap lz :call <SID>ToggleLocationList()<cr>
+nnoremap <leader>l :call <SID>ToggleLocationList()<cr>
 
 function! s:ToggleLocationList()
   if empty(filter(getwininfo(), 'v:val.loclist'))
@@ -427,7 +427,7 @@ let g:indent_guides_guide_size = 1
 " 全文検索
 nnoremap <leader>r :Rg<cr>
 " 行検索
-nnoremap <leader>l :BLines<cr>
+" nnoremap <leader>l :BLines<cr>
 
 " ##=== }}}
 " ##=== ctrlp {{{
@@ -447,7 +447,7 @@ nnoremap <leader>t :CtrlPTag<cr>
 " 現在のファイルのタグ一覧
 nnoremap <leader>f :CtrlPBufTag<cr>
 " Quickfixリストの表示
-nnoremap <leader>q :CtrlPQuickfix<cr>
+" nnoremap <leader>q :CtrlPQuickfix<cr>
 " 最近使用したファイルの一覧(vim-mr)
 nnoremap <leader>m :CtrlPMRMru<cr>
 " 最近書き込んだファイルの一覧(vim-mr)
