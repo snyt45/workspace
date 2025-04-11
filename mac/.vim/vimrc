@@ -428,6 +428,8 @@ let g:indent_guides_guide_size = 1
 
 " 全文検索
 nnoremap <leader>r :Rg<cr>
+" 行検索
+nnoremap <leader>l :BLines<cr>
 
 " ##=== }}}
 " ##=== ctrlp {{{
