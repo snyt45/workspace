@@ -107,7 +107,7 @@ augroup MyFileType
         \ endif
 
   " インデント設定（2スペース）
-  autocmd FileType ruby,typescript,javascript,typescriptreact,vim,yaml,yml,json,css
+  autocmd FileType ruby,typescript,javascript,javascriptreact,typescriptreact,vim,yaml,yml,json,css
         \ setlocal expandtab shiftwidth=2 softtabstop=2
 
   " Go言語のみタブインデント
@@ -691,9 +691,17 @@ augroup END
 let g:lsp_settings_servers_dir='~/.shared_cache/.vim/servers'
 
 let g:lsp_settings_filetype_ruby = ['solargraph']
-let g:lsp_settings_filetype_typescript = ['typescript-language-server']
-let g:lsp_settings_filetype_javascript = ['typescript-language-server']
-let g:lsp_settings_filetype_typescriptreact = ['typescript-language-server']
+let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'efm-langserver']
+let g:lsp_settings_filetype_javascript = ['typescript-language-server', 'efm-langserver']
+let g:lsp_settings_filetype_typescriptreact = ['typescript-language-server', 'efm-langserver']
+
+let g:lsp_settings = {
+\ 'efm-langserver': {
+\   'disabled': v:false
+\ }
+\ }
+
+autocmd BufWritePre *.js,*.ts,*.tsx call execute('LspDocumentFormatSync --server=efm-langserver')
 
 " ##=== }}}
 " ##=== QuickRun {{{

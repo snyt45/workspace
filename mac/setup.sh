@@ -110,6 +110,10 @@ mkdir -p "$HOME/.vim/config/"
 ln -sf "$DOTFILES_DIR/.vim/vimrc" "$HOME/.vim/"
 ln -sf "$DOTFILES_DIR/.vim/config/.ctrlp-launcher" "$HOME/.vim/config/"
 
+# efm-langserverの設定
+mkdir -p "$HOME/.config/efm-langserver"
+ln -sf "$DOTFILES_DIR/efm-langserver/config.yaml" "$HOME/.config/efm-langserver/config.yaml"
+
 # Tmuxの設定
 ln -sf "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
 
