@@ -42,6 +42,8 @@ sudo make install
 
 cd ${CURRENT_DIR}
 
+sudo ln -s /usr/local/bin/vim /usr/local/bin/vi
+
 vim --version
 
 # }}}
