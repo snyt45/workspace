@@ -325,8 +325,6 @@ call plug#begin('~/.shared_cache/.vim/plugged')
     Plug 'shinchu/lightline-gruvbox.vim'
     " Lightline用のGitブランチ表示
     Plug 'itchyny/vim-gitbranch'
-  " f強化
-  Plug 'unblevable/quick-scope'
   " fzf
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
