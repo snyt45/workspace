@@ -355,6 +355,8 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   Plug 'nathanaelkane/vim-indent-guides'
   " 変数に色をつける
   Plug 't9md/vim-quickhl'
+  " マークを使いやすくする
+  Plug 'kshenoy/vim-signature'
 call plug#end()
 
 " 未インストールのプラグインを自動インストール
@@ -726,4 +728,31 @@ xmap <Space>h <Plug>(quickhl-manual-this)
 nmap <Space>H <Plug>(quickhl-manual-reset)
 xmap <Space>H <Plug>(quickhl-manual-reset)
 
+" ##=== }}}
+" ##=== vim-signature {{{
+" `A でマークAに移動する（これは標準）
+let g:SignatureMap = {
+  \ 'Leader'             :  "m",
+  \ 'PlaceNextMark'      :  "m,",
+  \ 'ToggleMarkAtLine'   :  "m.",
+  \ 'PurgeMarksAtLine'   :  "m-",
+  \ 'DeleteMark'         :  "dm",
+  \ 'PurgeMarks'         :  "m<Space>",
+  \ 'PurgeMarkers'       :  "m<BS>",
+  \ 'GotoNextLineAlpha'  :  "']",
+  \ 'GotoPrevLineAlpha'  :  "'[",
+  \ 'GotoNextSpotAlpha'  :  "`]",
+  \ 'GotoPrevSpotAlpha'  :  "`[",
+  \ 'GotoNextLineByPos'  :  "]'",
+  \ 'GotoPrevLineByPos'  :  "['",
+  \ 'GotoNextSpotByPos'  :  "]`",
+  \ 'GotoPrevSpotByPos'  :  "[`",
+  \ 'GotoNextMarker'     :  "]-",
+  \ 'GotoPrevMarker'     :  "[-",
+  \ 'GotoNextMarkerAny'  :  "]=",
+  \ 'GotoPrevMarkerAny'  :  "[=",
+  \ 'ListBufferMarks'    :  "m/",
+  \ 'ListBufferMarkers'  :  "m?"
+  \ }
+let g:SignatureIncludeMarks = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 " ##=== }}}
