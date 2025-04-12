@@ -138,10 +138,6 @@ https://tana.inc/
 
 参考 URL：https://zenn.dev/kanazawa/articles/83d56e6f12bd4c
 
-#### kap
-
-- 起動する
-
 #### Raycast
 
 - [ホットキーの設定を行う](https://github.com/snyt45/workspace/wiki/Win%EF%BC%8FMac-%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88%E3%82%AD%E3%83%BC#raycast)

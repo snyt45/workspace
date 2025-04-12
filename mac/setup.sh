@@ -65,7 +65,6 @@ brew install --cask docker
 brew install --cask dropbox
 brew install --cask flux
 brew install --cask gather
-brew install --cask kap
 brew install --cask karabiner-elements
 brew install --cask raycast
 brew install --cask scroll-reverser
