@@ -62,6 +62,12 @@ Mac を選択してダウンロードする。
 
 https://us.ankerwork.com/pages/download-software
 
+#### CleanShot X
+
+ダウンロードページでライセンスキーを入力してインストールする
+
+https://licenses.cleanshot.com/download/cleanshotx
+
 #### KensingtonWorks
 
 SlimBlade Pro トラックボールのアプリ。
@@ -89,6 +95,11 @@ https://tana.inc/
 #### Ankerwork
 
 - 解像度を「720P」、画角とフレームを「78°」にする
+
+#### CleanShot X
+
+- 最初の流れに沿ってMac側のスクリーンショット系のショートカットキーを全て無効にする
+- Settings > General > Startup を ON にする
 
 #### Docker Desktop for Mac
 
