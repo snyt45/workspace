@@ -223,7 +223,7 @@
                 },
                 "to": [
                   {
-                    "key_code": "b",
+                    "key_code": "left_arrow",
                     "modifiers": [
                       "left_option"
                     ]
@@ -249,7 +249,7 @@
                 },
                 "to": [
                   {
-                    "key_code": "f",
+                    "key_code": "right_arrow",
                     "modifiers": [
                       "left_option"
                     ]
