@@ -13,6 +13,7 @@ alias g='git'
 # bin
 export PATH="/usr/local/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/work/toypo-terraform/bin:$PATH"
 
 # fzf
 export FZF_DEFAULT_OPTS="--ansi -e --prompt='QUERY> ' --layout=reverse --border=rounded --height 100%"
