@@ -89,12 +89,12 @@ endif
 " クリップボードの設定
 set clipboard+=unnamed
 
-augroup MyVimBasic
-  au!
-
-  " ヤンクをクリップボードに送信
-  autocmd TextYankPost * :call system('pbcopy', @")
-augroup END
+" augroup MyVimBasic
+"   au!
+" 
+"   " ヤンクをクリップボードに送信
+"   autocmd TextYankPost * :call system('pbcopy', @")
+" augroup END
 
 augroup MyFileType
   au!
