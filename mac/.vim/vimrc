@@ -271,6 +271,16 @@ function! s:OpenImplementationFile()
 endfunction
 
 " ##=== }}}
+" ##=== キーマッピング・コマンド（タブ） {{{
+
+nnoremap <C-n> :tabnew<CR>
+nnoremap <C-q> :tabclose<CR>
+nnoremap <C-l> :tabmove +1<CR> 
+nnoremap <C-h> :tabmove -1<CR> 
+nnoremap <Tab> :tabnext<CR>
+nnoremap <S-Tab> :tabprevious<CR>
+
+" ##=== }}}
 " ##=== キーマッピング・コマンド（buffer） {{{
 
 nnoremap <silent> [b :bprevious<CR>
@@ -447,7 +457,7 @@ let g:ctrlp_extensions = get(g:, 'ctrlp_extensions', [])
 " バッファリストの表示
 nnoremap <leader>b :CtrlPBuffer<cr>
 " タグリストの表示
-nnoremap <leader>t :CtrlPTag<cr>
+" nnoremap <leader>t :CtrlPTag<cr>
 " 現在のファイルのタグ一覧
 nnoremap <leader>f :CtrlPBufTag<cr>
 " Quickfixリストの表示
