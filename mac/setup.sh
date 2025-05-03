@@ -60,6 +60,7 @@ brew install zoxide
 brew install socat
 brew install starship
 brew install --cask claude
+brew install --cask deepl
 brew install --cask docker
 brew install --cask dropbox
 brew install --cask flux
