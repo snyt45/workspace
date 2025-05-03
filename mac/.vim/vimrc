@@ -338,6 +338,9 @@ call plug#begin('~/.shared_cache/.vim/plugged')
   " fzf
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
+  " ファイラー
+  Plug 'lambdalisue/vim-fern'
+    Plug 'yuki-yano/fern-preview.vim'
   " ファイルファインダー
   Plug 'ctrlpvim/ctrlp.vim'
     " あいまい検索機能の強化
@@ -508,6 +511,45 @@ nnoremap <leader>e :<c-u>CtrlPLauncher<cr>
 set helplang=ja,en
 
 " ##=== }}}
+" ##=== Fern {{{
+
+noremap <silent>== :Fern . -drawer -keep -toggle<CR>
+
+function! s:fern_settings() abort
+  nmap <silent> <buffer> p     <Plug>(fern-action-preview:toggle)
+  nmap <silent> <buffer> <C-p> <Plug>(fern-action-preview:auto:toggle)
+  nmap <silent> <buffer> <C-d> <Plug>(fern-action-preview:scroll:down:half)
+  nmap <silent> <buffer> <C-u> <Plug>(fern-action-preview:scroll:up:half)
+
+  nmap <silent> <buffer> <expr> <Plug>(fern-quit-or-close-preview) fern_preview#smart_preview("\<Plug>(fern-action-preview:close)", ":q\<CR>")
+  nmap <silent> <buffer> q <Plug>(fern-quit-or-close-preview)
+endfunction
+
+augroup fern-settings
+  autocmd!
+  autocmd FileType fern call s:fern_settings()
+augroup END
+
+function! s:init_fern() abort
+  " Enterキーの挙動を変える
+  nmap <buffer><expr>
+        \ <Plug>(fern-my-open-expand-collapse)
+        \ fern#smart#leaf(
+        \   "\<Plug>(fern-action-open)",
+        \   "\<Plug>(fern-action-expand)",
+        \   "\<Plug>(fern-action-collapse)",
+        \ )
+
+  " Enterキーにカスタムマッピングを割り当て
+  nmap <buffer><nowait> <CR> <Plug>(fern-my-open-expand-collapse)
+endfunction
+
+augroup fern-custom
+  autocmd!
+  autocmd FileType fern call s:init_fern()
+augroup END
+
+" ##=== }}}
 " ##=== netrw {{{
 
 " ツリー表示形式を標準に設定
@@ -517,96 +559,8 @@ let g:netrw_banner = 0
 " プレビューウィンドウのサイズ
 let g:netrw_winsize = 25
 
-" == でnetrwをトグル表示
-noremap <silent>== :call <SID>ToggleNetrw()<CR>
-
-augroup MyNetrw
-   au!
-   autocmd FileType netrw call s:set_netrw_mappings()
-augroup END
-
-" Netrwの表示状態管理用フラグ
-let g:NetrwIsOpen = 0
-
-" Netrwをトグルで表示/非表示する関数
-function! s:ToggleNetrw() abort
-   if g:NetrwIsOpen
-       " 開いている場合は閉じる
-       let i = bufnr("$")
-       while (i >= 1)
-           if (getbufvar(i, "&filetype") == "netrw")
-               silent exe "bwipeout " . i
-           endif
-           let i-=1
-       endwhile
-       let g:NetrwIsOpen = 0
-   else
-       " 閉じている場合は開く
-       let g:NetrwIsOpen = 1
-       silent Vex
-   endif
-endfunction
-
-" ファイルパス取得関数
-function! s:GetNetrwPath() abort
-   " 現在のディレクトリツリーのパスを取得
-   let l:dirpath = netrw#Call('NetrwTreePath', w:netrw_treetop)
-   " カーソル位置のアイテム名を取得
-   let l:filename = netrw#Call('NetrwGetWord')
-   
-   " ディレクトリの場合はディレクトリパスのみを返す
-   " ファイルの場合はディレクトリパスとファイル名を結合
-  return l:filename =~ '/$' ? l:dirpath : l:dirpath . l:filename
-endfunction
-
-" エンターキー押下時の処理
-function! s:HandleEnter() abort
-   let l:path = s:GetNetrwPath()
-
-   if isdirectory(l:path)
-       " ディレクトリの場合は標準のnetrw操作を実行
-       execute "normal \<Plug>NetrwLocalBrowseCheck"
-       return
-   endif
-
-   " ファイルの場合は指定ウィンドウで開く
-   call s:OpenFileInSharedWindow('edit')
-endfunction
-
-" ファイルを開く処理
-function! s:OpenFileInSharedWindow(mode) abort
-   let l:path = s:GetNetrwPath()
-   " 前回のウィンドウ番号を取得
-   let l:prevwin = winnr('#')
-
-   " ウィンドウが存在しない場合は新規作成
-   if l:prevwin == 0
-       vertical rightbelow new
-       vertical resize 80
-   else
-       " 既存のウィンドウを使用
-       execute l:prevwin . 'wincmd w'
-   endif
-
-   " ファイルを開く
-   execute 'edit ' . fnameescape(l:path)
-
-   " プレビューモードの場合はnetrwに戻る
-   if a:mode ==# 'preview'
-       wincmd p
-   endif
-endfunction
-
-" キーマッピングの設定
-function! s:set_netrw_mappings() abort
-   if !exists('g:loaded_netrwPlugin')
-       return
-   endif
-   " プレビュー表示用のマッピング
-   nmap <buffer> p :call <SID>OpenFileInSharedWindow('preview')<CR>
-   " エンターキーの動作設定
-   nmap <buffer> <CR> :call <SID>HandleEnter()<CR>
-endfunction
+" netrwをトグル表示
+" noremap <silent>== :Lexplore<CR>
 
 " ##=== }}}
 " ##=== gitgutter {{{
