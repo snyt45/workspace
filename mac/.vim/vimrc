@@ -273,12 +273,12 @@ endfunction
 " ##=== }}}
 " ##=== キーマッピング・コマンド（タブ） {{{
 
-nnoremap <C-n> :tabnew<CR>
-nnoremap <C-q> :tabclose<CR>
-nnoremap <C-l> :tabmove +1<CR> 
-nnoremap <C-h> :tabmove -1<CR> 
-nnoremap <Tab> :tabnext<CR>
-nnoremap <S-Tab> :tabprevious<CR>
+" nnoremap <C-n> :tabnew<CR>
+" nnoremap <C-q> :tabclose<CR>
+" nnoremap <C-l> :tabmove +1<CR> 
+" nnoremap <C-h> :tabmove -1<CR> 
+" nnoremap <Tab> :tabnext<CR>
+" nnoremap <S-Tab> :tabprevious<CR>
 
 " ##=== }}}
 " ##=== キーマッピング・コマンド（buffer） {{{
@@ -348,7 +348,9 @@ call plug#begin('~/.shared_cache/.vim/plugged')
     Plug 'lambdalisue/vim-mr'
     Plug 'tsuyoshicho/ctrlp-mr.vim'
     " タブ
-    Plug 'DavidEGx/ctrlp-smarttabs'
+    " Plug 'DavidEGx/ctrlp-smarttabs'
+  " バッファをタブのように扱う
+  Plug 'fholgado/minibufexpl.vim'
   " Git差分表示
   Plug 'airblade/vim-gitgutter'
   " コメントアウト
@@ -446,6 +448,13 @@ nnoremap <leader>r :Rg<cr>
 " nnoremap <leader>l :BLines<cr>
 
 " ##=== }}}
+" ##=== minibufexpl {{{
+
+nmap <Leader>t :MBEFocus<CR> " MBEウィンドウにフォーカスし、hjklで移動できるようになる
+nmap <C-n> :MBEbn<CR>
+nmap <C-p> :MBEbp<CR>
+
+" ##=== }}}
 " ##=== ctrlp {{{
 " あいまい検索機能の設定
 let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
@@ -471,7 +480,7 @@ nnoremap <leader>w :CtrlPMRMrw<cr>
 " 最近使用したGitリポジトリの一覧(vim-mr)
 " nnoremap <leader>r :CtrlPMRMrr<cr>
 " タブ一覧(smarttabs)
-nnoremap <leader>t :CtrlPSmartTabs<cr>
+" nnoremap <leader>t :CtrlPSmartTabs<cr>
 
 function! ResetMrHistory()
   call delete(expand(g:mr#mru#filename))
