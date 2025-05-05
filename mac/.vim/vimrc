@@ -352,6 +352,8 @@ call plug#begin('~/.shared_cache/.vim/plugged')
     Plug 'tsuyoshicho/ctrlp-mr.vim'
   " ウィンドウを選んでさっと開く
   Plug 't9md/vim-choosewin'
+  " ウィンドウのサイズをさっと変える
+  Plug 'simeji/winresizer'
   " Git差分表示
   Plug 'airblade/vim-gitgutter'
   " コメントアウト
