@@ -273,12 +273,12 @@ endfunction
 " ##=== }}}
 " ##=== キーマッピング・コマンド（タブ） {{{
 
-" nnoremap <C-n> :tabnew<CR>
-" nnoremap <C-q> :tabclose<CR>
-" nnoremap <C-l> :tabmove +1<CR> 
-" nnoremap <C-h> :tabmove -1<CR> 
-" nnoremap <Tab> :tabnext<CR>
-" nnoremap <S-Tab> :tabprevious<CR>
+nnoremap <C-n> :tabnew<CR>
+nnoremap <C-q> :tabclose<CR>
+nnoremap <C-l> :tabmove +1<CR> 
+nnoremap <C-h> :tabmove -1<CR> 
+nnoremap <Tab> :tabnext<CR>
+nnoremap <S-Tab> :tabprevious<CR>
 
 " ##=== }}}
 " ##=== キーマッピング・コマンド（buffer） {{{
@@ -350,10 +350,8 @@ call plug#begin('~/.shared_cache/.vim/plugged')
     " MRU
     Plug 'lambdalisue/vim-mr'
     Plug 'tsuyoshicho/ctrlp-mr.vim'
-    " タブ
-    " Plug 'DavidEGx/ctrlp-smarttabs'
-  " バッファをタブのように扱う
-  Plug 'fholgado/minibufexpl.vim'
+  " ウィンドウを選んでさっと開く
+  Plug 't9md/vim-choosewin'
   " Git差分表示
   Plug 'airblade/vim-gitgutter'
   " コメントアウト
@@ -451,13 +449,6 @@ nnoremap <leader>r :Rg<cr>
 " nnoremap <leader>l :BLines<cr>
 
 " ##=== }}}
-" ##=== minibufexpl {{{
-
-nmap <Leader>t :MBEFocus<CR> " MBEウィンドウにフォーカスし、hjklで移動できるようになる
-nmap <C-n> :MBEbn<CR>
-nmap <C-p> :MBEbp<CR>
-
-" ##=== }}}
 " ##=== ctrlp {{{
 " あいまい検索機能の設定
 let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
@@ -513,7 +504,7 @@ set helplang=ja,en
 " ##=== }}}
 " ##=== Fern {{{
 
-noremap <silent>== :Fern . -drawer -keep -toggle<CR>
+noremap <silent>== :Fern . -reveal=% -drawer -toggle<CR>
 
 function! s:fern_settings() abort
   nmap <silent> <buffer> p     <Plug>(fern-action-preview:toggle)
@@ -528,25 +519,6 @@ endfunction
 augroup fern-settings
   autocmd!
   autocmd FileType fern call s:fern_settings()
-augroup END
-
-function! s:init_fern() abort
-  " Enterキーの挙動を変える
-  nmap <buffer><expr>
-        \ <Plug>(fern-my-open-expand-collapse)
-        \ fern#smart#leaf(
-        \   "\<Plug>(fern-action-open)",
-        \   "\<Plug>(fern-action-expand)",
-        \   "\<Plug>(fern-action-collapse)",
-        \ )
-
-  " Enterキーにカスタムマッピングを割り当て
-  nmap <buffer><nowait> <CR> <Plug>(fern-my-open-expand-collapse)
-endfunction
-
-augroup fern-custom
-  autocmd!
-  autocmd FileType fern call s:init_fern()
 augroup END
 
 " ##=== }}}
@@ -732,4 +704,9 @@ let g:SignatureMap = {
   \ 'ListBufferMarkers'  :  "m?"
   \ }
 let g:SignatureIncludeMarks = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+" ##=== }}}
+" ##=== vim-choosewin {{{
+let g:choosewin_overlay_enable = 1
+
+nmap  -  <Plug>(choosewin)
 " ##=== }}}
