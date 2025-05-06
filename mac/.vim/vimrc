@@ -613,16 +613,27 @@ function! s:on_lsp_buffer_enabled() abort
     setlocal omnifunc=lsp#complete
     setlocal signcolumn=yes
     if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    " カーソル位置の変数やメソッドの定義場所にジャンプ
     nmap <buffer> gd <plug>(lsp-definition)
+    " 現在開いているファイル内のシンボル（関数、変数、クラスなど）を検索
     nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    " ワークスペース全体（プロジェクト全体）でシンボルを検索します
     nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    " カーソル位置の要素の参照箇所をすべて検索
     nmap <buffer> gr <plug>(lsp-references)
+    " インターフェースや抽象メソッドの実装を検索
     nmap <buffer> gi <plug>(lsp-implementation)
+    " 変数の型定義にジャンプ
     nmap <buffer> gt <plug>(lsp-type-definition)
+    " シンボルの名前を一括変更
     nmap <buffer> <leader>rn <plug>(lsp-rename)
+    " 前の診断（エラーや警告）に移動
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    " 次の診断（エラーや警告）に移動
     nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+    " カーソル位置の要素について詳細情報を表示
     nmap <buffer> K <plug>(lsp-hover)
+    " 診断実行
     nmap <buffer> D <plug>(lsp-document-diagnostics)
     " LSPのポップアップウィンドウが表示されているときのみ有効にする
     nmap <expr><buffer> <c-f> popup_list()->empty() ? '<c-f>' : lsp#scroll(+4)
