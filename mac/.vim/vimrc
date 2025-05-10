@@ -506,6 +506,10 @@ set helplang=ja,en
 " ##=== }}}
 " ##=== Fern {{{
 
+" ファイル名が長いときにポップアップされて表示がずれるのを防ぐ
+let g:fern#disable_drawer_hover_popup = 1
+
+
 noremap <silent>== :Fern . -reveal=% -drawer -toggle<CR>
 
 function! s:fern_settings() abort
