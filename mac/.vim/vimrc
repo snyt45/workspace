@@ -626,7 +626,7 @@ function! s:on_lsp_buffer_enabled() abort
     " 変数の型定義にジャンプ
     nmap <buffer> gt <plug>(lsp-type-definition)
     " シンボルの名前を一括変更
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    " nmap <buffer> <leader>rn <plug>(lsp-rename)
     " 前の診断（エラーや警告）に移動
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
     " 次の診断（エラーや警告）に移動
