@@ -1,25 +1,17 @@
 #!/bin/bash
 
-# 右側に20%の幅でペインを作成
-tmux split-window -h -l 20%
-
-# 左上ペインを選択
-tmux select-pane -t 0
-
-# 左側を上下に分割（下側20%）
 tmux split-window -v -l 20%
-
-# 下側ペインを水平分割（右側66%）
 tmux split-window -h -l 66%
-
-# さらに右側を分割（右側50%）
+tmux split-window -h -l 50%
+tmux select-pane -t 0
+tmux split-window -v -l 30%
+tmux split-window -h -l 66%
 tmux split-window -h -l 50%
 
 # Starshipのプロンプト初期化を待ってからクリア
-sleep 0.5
-for i in {0..4}; do
+sleep 0.2
+for i in {0..6}; do
     tmux select-pane -t $i 2>/dev/null && tmux send-keys C-l
 done
 
-# 最初のペインを選択
 tmux select-pane -t 0
