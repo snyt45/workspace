@@ -1,4 +1,0 @@
-Host github-snyt45
-    HostName github.com
-    User yuta.sano
-    IdentityFile ~/.ssh/snyt45

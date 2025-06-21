@@ -10,35 +10,42 @@ mkdir -p "$HOME/work/"
 mkdir -p "$HOME/.shared_cache/"
 
 # Gitの設定
-cp "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
-git config --global user.name "yuta.sano"
-git config --global user.email "snyt45@gmail.com"
-
-# SSHの設定
-mkdir -p "$HOME/.ssh"
-cp "$DOTFILES_DIR/ssh/config" "$HOME/.ssh/config"
+if [ -f "$DOTFILES_DIR/git/.gitconfig" ]; then
+    ln -sf "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+fi
 
 # Vimの設定
-mkdir -p "$HOME/.vim"
+if [ -f "$DOTFILES_DIR/vim/.vimrc" ]; then
+    ln -sf "$DOTFILES_DIR/vim/.vimrc" "$HOME/.vimrc"
+fi
 mkdir -p "$HOME/.vim/autoload/"
-curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
+    curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
 mkdir -p "$HOME/.vim/config/"
-ln -sf "$DOTFILES_DIR/.vim/vimrc" "$HOME/.vim/"
-ln -sf "$DOTFILES_DIR/.vim/config/.ctrlp-launcher" "$HOME/.vim/config/"
+if [ -f "$DOTFILES_DIR/vim/config/.ctrlp-launcher" ]; then
+    ln -sf "$DOTFILES_DIR/vim/config/.ctrlp-launcher" "$HOME/.vim/config/.ctrlp-launcher"
+fi
 
 # efm-langserverの設定
 mkdir -p "$HOME/.config/efm-langserver"
 ln -sf "$DOTFILES_DIR/efm-langserver/config.yaml" "$HOME/.config/efm-langserver/config.yaml"
 
 # Tmuxの設定
-ln -sf "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
+if [ -f "$DOTFILES_DIR/tmux/.tmux.conf" ]; then
+    ln -sf "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
+fi
 
 # Karabiner-Elements設定
 mkdir -p "$HOME/.config/karabiner"
-ln -sf "$DOTFILES_DIR/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
+if [ -f "$DOTFILES_DIR/karabiner/karabiner.json" ]; then
+    ln -sf "$DOTFILES_DIR/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
+fi
 
 # Zshの設定
-ln -sf "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
+if [ -f "$DOTFILES_DIR/zsh/.zshrc" ]; then
+    ln -sf "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
+fi
 
 # bin
 mkdir -p "$HOME/bin"

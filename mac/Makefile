@@ -18,6 +18,9 @@ help:
 	@echo "  make install-languages - Install programming languages via asdf"
 	@echo "  make link            - Create symbolic links for dotfiles"
 	@echo "  make github-auth     - Setup GitHub CLI authentication"
+	@echo ""
+	@echo "Additional Commands:"
+	@echo "  make vim        - Build Vim from source"
 
 .PHONY: macos-config
 macos-config:
@@ -42,3 +45,7 @@ link:
 .PHONY: github-auth
 github-auth:
 	@./scripts/github-auth.sh
+
+.PHONY: vim
+vim:
+	@./scripts/make-vim.sh
