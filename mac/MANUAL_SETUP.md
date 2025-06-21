@@ -128,6 +128,10 @@ SlimBlade Pro トラックボール用アプリ
 
 ### Warp
 
+#### AI 設定
+
+- Settings > AI: OFF
+
 #### テーマ設定
 
 ```sh
@@ -135,6 +139,11 @@ SlimBlade Pro トラックボール用アプリ
 mkdir -p $HOME/.warp/themes/
 mv ~/Downloads/GruvboxDark.yaml $HOME/.warp/themes/
 ```
+
+#### ウィンドウ設定
+
+- Settings > Appearance > Window Opacity: 70
+- Settings > Appearance > Window Blur: 20
 
 #### フォント設定
 

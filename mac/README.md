@@ -11,47 +11,34 @@
 2. Mac をアクティブ化するために Wi-Fi を選択し、再起動をクリックします。
 3. 再起動後、セットアップアシスタントに従って Mac をセットアップしてください。
 
-## 2. Mac の環境構築
+## 2. 必須インストール
 
-homebrew をインストールする。
+#### Homebrew
 
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-Mac ホスト用のセットアップを行うため、Git をインストールする。
+#### Git
 
 ```sh
 brew install git
-git config --global user.name "yuta.sano"
-git config --global user.email "snyt45@gmail.com"
 ```
 
-Mac ホスト用のセットアップを行うため、リポジトリをクローンする。
+## 3. リポジトリのクローン
 
 ```sh
 git clone https://github.com/snyt45/workspace.git $HOME/.dotfiles
 ```
 
-Mac ホスト用の設定とツール群のインストールを行う。
+## 4. セットアップ
 
 ```sh
 cd $HOME/.dotfiles/mac
-./setup.sh
+make setup
 ```
 
-GitHub の SSH key の設定を行う。
-
-```sh
-# `~/.ssh`にSSH keyをコピー
-# 適切なパーミッションに設定
-chmod 600 <SSH key>
-
-# 接続確認
-ssh -T git@<user name>
-```
-
-## 3. 手動セットアップ
+## 5. 手動セットアップ
 
 [手動セットアップガイド](/mac/MANUAL_SETUP.md)
