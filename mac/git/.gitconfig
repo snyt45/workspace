@@ -2,74 +2,42 @@
         name = yuta.sano
         email = snyt45@gmail.com
 [core]
-        editor = vim
+        editor = vim  # デフォルトエディタをVimに設定
 [column]
-        ui = auto
+        ui = auto  # ブランチ一覧等を列で表示
 [branch]
-	sort = -committerdate
-[column]
-        ui = auto
+        sort = -committerdate  # ブランチを最新コミット日時順でソート
 [commit]
-        verbose = true
+        verbose = true  # コミット時に変更内容を詳細表示
 [diff]
-        algorithm = histogram
+        algorithm = histogram  # 高品質なdiffアルゴリズムを使用
 [pager]
-        diff = diff-so-fancy | less --tabs=4 -RFX
-        show = diff-so-fancy | less --tabs=4 -RFX
+        diff = diff-so-fancy | less --tabs=4 -RFX  # diffを見やすく表示
+        show = diff-so-fancy | less --tabs=4 -RFX  # git showも見やすく表示
+[diff-so-fancy]
+        stripLeadingSymbols = false  # +/-記号を表示
+[rebase]
+        autosquash = true  # fixup/squashコミットを自動的に並び替え
 [alias]
-        aliases = !git config --get-regexp alias | sed 's/^alias.//g' | sed 's/ / = /1'
         a = add
         ap = add --patch
         b = branch
-        ch = checkout
         staged = diff --staged
         unstage = reset -q HEAD --
         discard = checkout --
         undo = "!git reset --soft HEAD~; git reset"
-        redo = "!git commit --amend --date=now"
         bc = "!git branch -a | grep -v HEAD | fzf | sed -e 's/.* //' -e 's#remotes/[^/]*/##' | xargs git checkout"
         s = status
         ss = status -s
-        st = "!f() { \
-            git status -s | \
-            fzf --ansi \
-                --preview=\"git diff --color=always {2}\" \
-                --preview-window=right:60%:wrap \
-                --bind=\"ctrl-a:execute-silent(git add {2})+reload(git status -s)\" \
-                --bind=\"ctrl-u:execute-silent(git restore --staged {2})+reload(git status -s)\" \
-                --bind=\"ctrl-d:execute-silent(git checkout -- {2})+reload(git status -s)\" \
-                --bind=\"enter:execute(vim {2})+abort\" \
-                --header='C-a: add, C-u: unstage, C-d: checkout (discard), Enter: edit'; \
-        }; f"
         l = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -20
-        ll = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s"
         ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
         fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs git commit --fixup"
-        d = "!f() { \
-            commit=$(git log --oneline | fzf | cut -d' ' -f1); \
-            if [ -n \"$commit\" ]; then \
-                GIT_SEQUENCE_EDITOR='sed -i -e \"s/^pick $commit/drop $commit/\"' \
-                git rebase -i --autostash --keep-empty --no-autosquash --rebase-merges $commit^; \
-            fi \
-        }; f"
         ls = "!f() { \
             hash=$(git l --color=always | \
                   fzf --ansi --preview 'echo {} | grep -o \"[0-9a-f]\\{7\\}\" | xargs git show --color=always' \
                   --preview-window=right:60%:wrap | \
                   grep -o \"[0-9a-f]\\{7\\}\"); \
             if [ -n \"$hash\" ]; then \
-                git show --color=always $hash; \
+                git show $hash; \
             fi \
         }; f"
-        lls = "!f() { \
-            hash=$(git ll --color=always | \
-                  fzf --ansi --preview 'echo {} | grep -o \"[0-9a-f]\\{7\\}\" | xargs git show --color=always' \
-                  --preview-window=right:60%:wrap | \
-                  grep -o \"[0-9a-f]\\{7\\}\"); \
-            if [ -n \"$hash\" ]; then \
-                git show --color=always $hash; \
-            fi \
-        }; f"
-
-[rebase]
-        autosquash = true
