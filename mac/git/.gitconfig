@@ -12,10 +12,9 @@
 [diff]
         algorithm = histogram  # 高品質なdiffアルゴリズムを使用
 [pager]
-        diff = diff-so-fancy | less --tabs=4 -RFX  # diffを見やすく表示
-        show = diff-so-fancy | less --tabs=4 -RFX  # git showも見やすく表示
-[diff-so-fancy]
-        stripLeadingSymbols = false  # +/-記号を表示
+        log = diff-highlight | less
+        show = diff-highlight | less
+        diff = diff-highlight | less
 [rebase]
         autosquash = true  # fixup/squashコミットを自動的に並び替え
 [alias]

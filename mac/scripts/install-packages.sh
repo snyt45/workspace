@@ -3,7 +3,6 @@
 echo "Homebrewパッケージとアプリケーションをインストール中..."
 
 brew install asdf
-brew install diff-so-fancy
 brew install fzf
 brew install gh
 brew install hugo

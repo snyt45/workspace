@@ -51,4 +51,14 @@ fi
 mkdir -p "$HOME/bin"
 ln -sf "$DOTFILES_DIR/bin/ide" "$HOME/bin/"
 
+# git-jumpのシンボリックリンクを作成
+if [ -f "/opt/homebrew/share/git-core/contrib/git-jump/git-jump" ]; then
+    ln -sf /opt/homebrew/share/git-core/contrib/git-jump/git-jump /opt/homebrew/bin/git-jump
+fi
+
+# diff-highlightのシンボリックリンクを作成
+if [ -f "/opt/homebrew/share/git-core/contrib/diff-highlight/diff-highlight" ]; then
+    ln -sf /opt/homebrew/share/git-core/contrib/diff-highlight/diff-highlight /opt/homebrew/bin/diff-highlight
+fi
+
 echo "✅ dotfilesのシンボリックリンク作成が完了しました"
