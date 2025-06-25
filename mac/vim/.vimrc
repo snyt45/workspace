@@ -1,731 +1,358 @@
-" #=== Vim基本設定
-" ##=== 一般設定 {{{
+vim9script
 
-" リーダーキーの設定
-let mapleader = ","
+# ==============================================================================
+# Display
+# ==============================================================================
 
-" ファイルタイプの検出、プラグインとインデントを有効化
-filetype plugin indent on
+# Show line numbers
+# set number
 
-" 検索結果をハイライト表示
-set hlsearch
+# Highlight current line
+set cursorline
 
-" 検索時に大文字小文字を区別しない
-set ignorecase
+# ==============================================================================
+# Clipboard
+# ==============================================================================
 
-" 検索パターンに大文字を含む場合は大文字小文字を区別
-set smartcase
+# Use system clipboard
+set clipboard=unnamed
 
-" インクリメンタルサーチを有効化（検索文字入力時に随時検索）
+# ==============================================================================
+# Search
+# ==============================================================================
+
+# Enable incremental search
 set incsearch
 
-" 矩形選択時の仮想編集を有効化
-set virtualedit=block
+# Highlight all matches
+set hlsearch
 
-" インデントに基づいて折りたたみを行う
-set foldmethod=indent
+# Ignore case in search patterns
+set ignorecase
 
-" デフォルトですべての折りたたみを開く
-set foldlevel=99
+# Enable smart case search
+set smartcase
 
-" 補完メニューを改善
-set wildmenu wildoptions=pum
-set wildmode=longest:full,full
+# ==============================================================================
+# Mouse Support
+# ==============================================================================
 
-" NOTE: Macで有効にするとNetrwのディレクトリ表示が正しく動作しなくなるのでコメントアウト
-" ファイル名補完で大文字小文字を区別しない
-" set wildignorecase
-
-" 行番号を絶対表示
-set number
-
-" バッファが編集中でも他のバッファに切り替えられるようにする
-set hidden
-
-" スワップファイルを作成しない
-set noswapfile
-
-" バックアップファイルを作成しない
-set nobackup
-
-" アンドゥファイルを作成しない
-set noundofile
-
-" マウス操作を有効化
+# Enable mouse in all modes
 set mouse=a
 
-" 正規表現エンジンを最新のものに設定
-" macでTSファイルを開くとハングするのを防ぐため
-set re=0
+# ==============================================================================
+# File Management
+# ==============================================================================
 
-" デフォルトシェルの設定
-set shell=zsh
+# Auto reload file when changed externally
+set autoread
 
-" rg があれば使う
-if executable('rg')
-  set grepprg=rg\ --vimgrep
-  set grepformat=%f:%l:%c:%m
-endif
-
-" インデントがずれるを防ぐ
-" see: https://qiita.com/ryoff/items/ad34584e41425362453e
-if &term =~ "xterm" || &term =~ "screen" || &term =~ "tmux" || &term =~ "iterm" || &term =~ "dtterm"
-    let &t_SI .= "\e[?2004h"
-    let &t_EI .= "\e[?2004l"
-    let &pastetoggle = "\e[201~"
-    
-    function! XTermPasteBegin(ret)
-        set paste
-        return a:ret
-    endfunction
-    
-    map <expr> <Esc>[200~ XTermPasteBegin("i")
-    imap <expr> <Esc>[200~ XTermPasteBegin("")
-    vmap <expr> <Esc>[200~ XTermPasteBegin("c")
-    cmap <Esc>[200~ <nop>
-    cmap <Esc>[201~ <nop>
-endif
-
-" クリップボードの設定
-set clipboard+=unnamed
-
-" augroup MyVimBasic
-"   au!
-" 
-"   " ヤンクをクリップボードに送信
-"   autocmd TextYankPost * :call system('pbcopy', @")
-" augroup END
-
-augroup MyFileType
-  au!
-
-  " vimrc編集時のみmarkerベースの折りたたみを有効化
-  autocmd FileType vim
-        \ if expand('%:t') ==# 'vimrc' |
-        \   setlocal foldmethod=marker |
-        \   setlocal foldlevel=0 |
-        \ endif
-
-  " インデント設定（2スペース）
-  autocmd FileType ruby,typescript,javascript,javascriptreact,typescriptreact,vim,yaml,yml,json,css
-        \ setlocal expandtab shiftwidth=2 softtabstop=2
-
-  " Go言語のみタブインデント
-  autocmd FileType go setlocal noexpandtab shiftwidth=4 softtabstop=4 tabstop=4
-
-  " TypeScript React用のパス設定
-  autocmd FileType typescriptreact :setl path+=/features/**
-  autocmd FileType typescriptreact :setl includeexpr=substitute(v:fname,'^/','','')
+# Check for file changes when focus returns
+augroup AutoReload
+  autocmd!
+  autocmd FocusGained,BufEnter * checktime
+  
+  autocmd WinLeave * if &buftype == 'terminal' | 
+    \ silent! GitGutterAll | 
+    \ endif
 augroup END
 
-" ##=== }}}
-" ##=== カーソル設定 {{{
+set noswapfile  # Disable swap files
+set nobackup    # Disable backup files
+set noundofile  # Disable undo files
 
-" Vimの起動時のカーソル設定
-if has('vim_starting')
-  " 挿入モード時: 非点滅の縦棒カーソル
-  let &t_SI .= "\e[6 q"
-  " ノーマルモード時: 非点滅のブロックカーソル
-  let &t_EI .= "\e[2 q"
-  " 置換モード時: 非点滅の下線カーソル
-  let &t_SR .= "\e[4 q"
-endif
+# ==============================================================================
+# File Search Configuration
+# ==============================================================================
 
-" ##=== }}}
-" ##=== 検索パス {{{
+# Search path - current directory and subdirectories
+set path=**
 
-" 検索パスの設定
-set path=.
-set path+=.github/.
-set path+=app/**
-set path+=bin/**
-set path+=config/**
-set path+=db/**
-set path+=lib/**
-set path+=spec/**
-set path+=scripts/**
+# Ignore patterns for file search
+set wildignore+=**/node_modules/**
+set wildignore+=**/.git/**
+set wildignore+=**/vendor/**
+set wildignore+=**/coverage/**
+set wildignore+=**/.next/**
+set wildignore+=**/dist/**
+set wildignore+=**/build/**
+set wildignore+=**/Pods/**
 
-set path+=frontend/.
-set path+=frontend/src/**
-set path+=frontend/tests/**
+# Enable auto completion menu after pressing TAB.
+set wildmenu
+# Enable popup menu for command-line completion
+set wildoptions=pum
 
-" 検索から除外するパターン
-set wildignore+=**/node_modules/**,**/tmp/**,**/dist/**,**/build/**,**/.git/**
-set wildignore+=*.log,*.tmp
-set wildignore+=*.png,*.jpg,*.gif,*.pdf
-set wildignore+=*.zip,*.tar.gz
+# ===============================================================================
+# Folding
+# ==============================================================================
 
-" ##=== }}}
-" ##=== ctags {{{
+# Enable folding
+set foldmethod=indent
 
-" タグファイルの検索パス（カレントディレクトリから親ディレクトリに向かって検索）
-set tags=.tags;$HOME
+# Set fold level to 99 to open all folds by default
+set foldlevel=99
 
-" augroup MyCtagsAutoUpdate
-"   au!
-"   autocmd BufWritePost * call s:ExecuteCtags()
-" augroup END
+# ==============================================================================
+# Tab Management
+# ==============================================================================
 
-" ##=== }}}
-" ##=== キーマッピング・コマンド（一般） {{{
+# Disable horizontal tab line
+set showtabline=0
 
-" f検索の逆方向マッピングを <Leader>キー と競合しないようにする
-noremap g, ,
-" 検索ハイライトを消去
-nnoremap <silent> <Esc><Esc> :<C-u>nohlsearch<CR><Esc>
-" vimrcを開く
-nnoremap <leader>v :e $MYVIMRC<CR>
-" qキーを無効化
-nnoremap q <silent>
-" 絶対行と相対行をトグル
-nnoremap <silent> <Leader>n :call <SID>ToggleRelativenumber()<cr>
-" タグジャンプ時に複数候補がある場合はリスト表示
-nnoremap <C-]> g<C-]>
-" ファイルパスをコピー
-nnoremap <leader>c :CopyGitPath<cr>
-" 現在のファイルのディレクトリを展開する
-cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
+# Always show tabpanel
+set showtabpanel=2
 
-" タグファイル生成コマンド
-command! MakeTags call s:ExecuteCtags()
-" ファイルパスをコピー
-command! CopyGitPath :let @"='.' . substitute(expand('%:p'), trim(system('git rev-parse --show-toplevel')), '', '') | echo @" | call system('pbcopy', @")
-" 対応するspecファイルを開くコマンド
-command! OpenSpec :call s:OpenSpecFile()
-" 実装ファイルを開くコマンド
-command! OpenImplementation :call s:OpenImplementationFile()
+# Display tab panel on the right side with vertical separator
+set tabpanelopt=align:right,vert
 
-" タグファイルの自動更新
-function! s:ExecuteCtags() abort
-  let l:tag_name = '.tags'
-  " プロジェクトのルートディレクトリを特定
-  let l:git_dir = system('git rev-parse --show-toplevel 2>/dev/null')
-  if v:shell_error == 0
-    " Gitリポジトリ内の場合はそのルートディレクトリを使用
-    let l:project_root = substitute(l:git_dir, '\n$', '', '')
-  else
-    " Gitリポジトリでない場合はカレントディレクトリを使用
-    let l:project_root = getcwd()
-  endif
+# Customize tab panel to show only filename
+set tabpanel=%t
 
-  " タグファイルのフルパスを構築
-  let l:tag_path = l:project_root . '/' . l:tag_name
+# ==============================================================================
+# Plugin Manager
+# ==============================================================================
 
-  let l:ctags_options = join([
-        \ '--exclude=node_modules',
-        \ '--exclude=.git',
-        \ '--exclude=*.css',
-        \ '--exclude=*.json',
-        \ '-R',
-        \ '-f'
-        \ ], ' ')
-
-  let l:cmd = printf('cd %s && ctags %s %s >/dev/null 2>&1 &',
-        \ shellescape(l:project_root),
-        \ l:ctags_options,
-        \ shellescape(l:tag_path))
-  
-  call system(l:cmd)
-endfunction
-
-" 絶対行と相対行をトグル
-function! s:ToggleRelativenumber() abort
-  if &relativenumber == 1
-     set norelativenumber
-     set number
-  else
-     set relativenumber
-  endif
-endfunction
-
-" Specファイルを開く関数
-function! s:OpenSpecFile()
-  " 現在のファイルパスを取得
-  let l:current_file = expand('%:p')
-  " app/ を spec/ に置換し、末尾に _spec を追加
-  let l:spec_file = substitute(l:current_file, '/app/', '/spec/', '')
-  let l:spec_file = substitute(l:spec_file, '\.rb$', '_spec.rb', '')
-
-  " ファイルが存在するか確認して開く
-  if filereadable(l:spec_file)
-    execute 'edit ' . l:spec_file
-  else
-    echo "Spec file not found: " . l:spec_file
-  endif
-endfunction
-
-" 実装ファイルを開く関数
-function! s:OpenImplementationFile()
-  " 現在のファイルパスを取得
-  let l:current_file = expand('%:p')
-  " spec/ を app/ に置換し、_spec.rb を .rb に変更
-  let l:impl_file = substitute(l:current_file, '/spec/', '/app/', '')
-  let l:impl_file = substitute(l:impl_file, '_spec\.rb$', '.rb', '')
-
-  " ファイルが存在するか確認して開く
-  if filereadable(l:impl_file)
-    execute 'edit ' . l:impl_file
-  else
-    echo "Implementation file not found: " . l:impl_file
-  endif
-endfunction
-
-" ##=== }}}
-" ##=== キーマッピング・コマンド（タブ） {{{
-
-nnoremap <C-n> :tabnew<CR>
-nnoremap <C-q> :tabclose<CR>
-nnoremap <C-l> :tabmove +1<CR> 
-nnoremap <C-h> :tabmove -1<CR> 
-nnoremap <Tab> :tabnext<CR>
-nnoremap <S-Tab> :tabprevious<CR>
-
-" ##=== }}}
-" ##=== キーマッピング・コマンド（buffer） {{{
-
-nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> ]b :bnext<CR>
-nnoremap <silent> [B :bfirst<CR>
-nnoremap <silent> ]B :blast<CR>
-nnoremap <silent> <Leader>d :bdelete<CR>
-
-" ##=== }}}
-" ##=== キーマッピング・コマンド（quickfix） {{{
-
-nnoremap <silent> [q :cprevious<CR>
-nnoremap <silent> ]q :cnext<CR>
-nnoremap <leader>q :call <SID>ToggleQuickFix()<cr>
-
-function! s:ToggleQuickFix()
-  if empty(filter(getwininfo(), 'v:val.quickfix'))
-    copen
-  else
-    cclose
-  endif
-endfunction
-
-nnoremap <leader>l :call <SID>ToggleLocationList()<cr>
-
-function! s:ToggleLocationList()
-  if empty(filter(getwininfo(), 'v:val.loclist'))
-    lopen
-  else
-    lclose
-  endif
-endfunction
-
-" grep後にquickfix画面を開く
-au QuickfixCmdPost make,grep,grepadd,vimgrep copen
-" ##=== }}}
-" #=== プラグイン設定
-" ##=== プラグインマネージャー {{{
-
-if has('syntax') && has('eval')
-  packadd! matchit
-end
-
-call plug#begin('~/.shared_cache/.vim/plugged')
-  " 日本語ヘルプ
-  Plug 'vim-jp/vimdoc-ja'
-  " カラースキーム
-  Plug 'morhetz/gruvbox'
-  " ステータスライン
-  Plug 'itchyny/lightline.vim'
-    " Lightline用のGruvboxテーマ
-    Plug 'shinchu/lightline-gruvbox.vim'
-    " Lightline用のGitブランチ表示
-    Plug 'itchyny/vim-gitbranch'
-  " fzf
-  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-  Plug 'junegunn/fzf.vim'
-  " ファイラー
-  Plug 'lambdalisue/vim-fern'
-    Plug 'yuki-yano/fern-preview.vim'
-  " ファイルファインダー
-  Plug 'ctrlpvim/ctrlp.vim'
-    " あいまい検索機能の強化
-    Plug 'mattn/ctrlp-matchfuzzy'
-    " コマンドランチャー機能
-    Plug 'mattn/ctrlp-launcher'
-    " MRU
-    Plug 'lambdalisue/vim-mr'
-    Plug 'tsuyoshicho/ctrlp-mr.vim'
-  " ウィンドウを選んでさっと開く
-  Plug 't9md/vim-choosewin'
-  " ウィンドウのサイズをさっと変える
-  Plug 'simeji/winresizer'
-  " Git差分表示
-  Plug 'airblade/vim-gitgutter'
-  " コメントアウト
-  Plug 'tyru/caw.vim'
-  " LSPクライアント
-  Plug 'prabirshrestha/vim-lsp'
-  " LSP設定管理
-  Plug 'mattn/vim-lsp-settings'
-  " 非同期補完
-  Plug 'prabirshrestha/asyncomplete.vim'
-  " LSPによる補完
-  Plug 'prabirshrestha/asyncomplete-lsp.vim'
-  " コード実行
-  Plug 'thinca/vim-quickrun'
-  " インデントガイド
-  Plug 'nathanaelkane/vim-indent-guides'
-  " 変数に色をつける
-  Plug 't9md/vim-quickhl'
-  " マークを使いやすくする
-  Plug 'kshenoy/vim-signature'
+call plug#begin('~/.vim/plugged')
+Plug 'vim-jp/vimdoc-ja'
+Plug 'morhetz/gruvbox'
+Plug 'github/copilot.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'tyru/caw.vim'
+# vim-plug enables: filetype plugin indent on, syntax enable
 call plug#end()
 
-" 未インストールのプラグインを自動インストール
-augroup MyVimPlug
-  au!
+# ==============================================================================
+# Color Scheme
+# ==============================================================================
 
-  autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-    \| PlugInstall --sync | source $MYVIMRC
-  \| endif
-augroup END
-
-" ##=== }}}
-" ##=== カラースキーム設定 {{{
-
-" ダークモードを使用
-set background=dark
-" gruvboxカラースキームを適用
-colorscheme gruvbox
-
-" ##=== }}}
-" ##=== lightline.vim {{{
-
-" 常にステータスラインを表示
-set laststatus=2
-
-" GUIでない場合は256色を有効化
-if !has('gui_running')
-  set t_Co=256
+# Enable true color support if available
+if has('termguicolors')
+  set termguicolors
 endif
 
-" Lightlineの詳細設定
-let g:lightline = {
-  \ 'colorscheme': 'gruvbox',
-  \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ],
-  \             [ 'gitbranch', 'readonly', 'filename', 'modified' ],
-  \           ],
-  \   'right': [
-  \     ['lineinfo'],
-  \     ['percent'],
-  \     ['fileformat', 'fileencoding', 'filetype', 'winbufnr']
-  \   ]
-  \ },
-  \ 'inactive': {
-  \   'right': [ [ 'lineinfo' ],
-  \              [ 'percent' ],
-  \              [ 'winbufnr' ] ]
-  \ },
-  \ 'component_function': {
-  \   'gitbranch': 'gitbranch#name',
-  \ },
-  \ 'component': {
-  \   'winbufnr': 'win:%{winnr()} buf:%n'
-  \ },
-  \ }
+# Set gruvbox color scheme
+colorscheme gruvbox
 
-" ##=== }}}
-" ##=== vim-indent-guides {{{
+# Optional: set dark or light background
+set background=dark
 
-" Vim起動時にインデントガイドを有効化
-let g:indent_guides_enable_on_vim_startup = 1
+# Make background transparent
+highlight Normal guibg=NONE ctermbg=NONE
+highlight NonText guibg=NONE ctermbg=NONE
+highlight LineNr guibg=NONE ctermbg=NONE
+highlight SignColumn guibg=NONE ctermbg=NONE
+highlight EndOfBuffer guibg=NONE ctermbg=NONE
 
-" インデントガイドを表示し始めるレベル (2から開始)
-let g:indent_guides_start_level = 2
+# Make tabpanel transparent
+highlight TabPanel guibg=NONE ctermbg=NONE
+highlight TabPanelSel guibg=NONE ctermbg=NONE
+highlight TabPanelFill guibg=NONE ctermbg=NONE
+highlight VertSplit guibg=NONE ctermbg=NONE
 
-" ガイドラインの幅を1文字分に設定
-let g:indent_guides_guide_size = 1
+# Customize tab panel colors
+highlight TabPanelSel guifg=#ebdbb2 guibg=#504945 ctermbg=237
+highlight TabPanel guifg=#928374 guibg=NONE ctermbg=NONE
 
-" ##=== }}}
-" ##=== fzf.vim {{{
+# ==============================================================================
+# Configuration - GitGutter
+# ==============================================================================
 
-" 全文検索
-nnoremap <leader>r :Rg<cr>
-" 行検索
-" nnoremap <leader>l :BLines<cr>
+# Update sign column every quarter second
+set updatetime=100
 
-" ##=== }}}
-" ##=== ctrlp {{{
-" あいまい検索機能の設定
-let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
-" 起動キーマッピング
-let g:ctrlp_map = '<leader><leader>'
-" Gitリポジトリ内のファイル一覧を取得するコマンド
-let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
-let g:ctrlp_extensions = get(g:, 'ctrlp_extensions', [])
-        \ + ['mr/mru', 'mr/mrw', 'mr/mrr']
+g:gitgutter_map_keys = 0
+g:gitgutter_preview_win_floating = 1
 
-" バッファリストの表示
-nnoremap <leader>b :CtrlPBuffer<cr>
-" タグリストの表示
-" nnoremap <leader>t :CtrlPTag<cr>
-" 現在のファイルのタグ一覧
-nnoremap <leader>f :CtrlPBufTag<cr>
-" Quickfixリストの表示
-" nnoremap <leader>q :CtrlPQuickfix<cr>
-" 最近使用したファイルの一覧(vim-mr)
-nnoremap <leader>m :CtrlPMRMru<cr>
-" 最近書き込んだファイルの一覧(vim-mr)
-nnoremap <leader>w :CtrlPMRMrw<cr>
-" 最近使用したGitリポジトリの一覧(vim-mr)
-" nnoremap <leader>r :CtrlPMRMrr<cr>
-" タブ一覧(smarttabs)
-" nnoremap <leader>t :CtrlPSmartTabs<cr>
+g:gitgutter_sign_added = '+'
+g:gitgutter_sign_modified = '>'
+g:gitgutter_sign_removed = '-'
+g:gitgutter_sign_removed_first_line = '^'
+g:gitgutter_sign_modified_removed = '<'
 
-function! ResetMrHistory()
-  call delete(expand(g:mr#mru#filename))
-  call delete(expand(g:mr#mrw#filename))
-  call delete(expand(g:mr#mrr#filename))
-  call delete(expand(g:mr#mrd#filename))
-  echo "All MR history has been reset!"
-endfunction
+# Highlight GitGutter signs with transparent background
+highlight SignColumn guibg=NONE ctermbg=NONE
+highlight GitGutterAdd guibg=NONE ctermbg=NONE
+highlight GitGutterChange guibg=NONE ctermbg=NONE
+highlight GitGutterDelete guibg=NONE ctermbg=NONE
 
-command! MRReset call ResetMrHistory()
+# ==============================================================================
+# Key mapping - General
+#
+# - map leader is ,
+# ==============================================================================
 
-" ##=== }}}
-" ##=== ctrlp-launcher {{{
+g:mapleader = ","
 
-" ランチャー設定ファイルの場所を指定
-let g:ctrlp_launcher_file = '~/.vim/config/.ctrlp-launcher'
+# Disable recording
+nnoremap q <Nop>
 
-" 起動キーマッピング
-nnoremap <leader>e :<c-u>CtrlPLauncher<cr>
+# Clear search highlight
+nnoremap <Esc><Esc> :nohlsearch<CR>
 
-" ##=== }}}
-" ##=== vimdoc-ja {{{
+# ===============================================================================
+# Key mapping - Buffers
+# ==============================================================================
 
-" ヘルプの言語優先順位を設定（日本語を優先）
-set helplang=ja,en
+nnoremap <leader>b :ls<CR>:b<Space>
 
-" ##=== }}}
-" ##=== Fern {{{
+# ===============================================================================
+# Key mapping - Tabs
+# ==============================================================================
 
-" ファイル名が長いときにポップアップされて表示がずれるのを防ぐ
-let g:fern#disable_drawer_hover_popup = 1
+def TabPanelToggle()
+    if &showtabpanel == 0
+        set showtabpanel=2  # never hide
+    else
+        set showtabpanel=0  # hide tab panel
+    endif
+enddef
 
-noremap <silent>== :Fern . -reveal=% -drawer -toggle<CR>
+command! Ttoggle TabPanelToggle()
+nnoremap <leader>tt :Ttoggle<CR>
 
-function! s:fern_settings() abort
-  nmap <silent> <buffer> p     <Plug>(fern-action-preview:toggle)
-  nmap <silent> <buffer> <C-p> <Plug>(fern-action-preview:auto:toggle)
-  nmap <silent> <buffer> <C-d> <Plug>(fern-action-preview:scroll:down:half)
-  nmap <silent> <buffer> <C-u> <Plug>(fern-action-preview:scroll:up:half)
+nnoremap tj :tabmove +1<CR>
+nnoremap tk :tabmove -1<CR>
 
-  nmap <silent> <buffer> <expr> <Plug>(fern-quit-or-close-preview) fern_preview#smart_preview("\<Plug>(fern-action-preview:close)", ":q\<CR>")
-  nmap <silent> <buffer> q <Plug>(fern-quit-or-close-preview)
+# ==============================================================================
+# Key mapping - Quickfix
+# ==============================================================================
 
-  nmap <buffer> - <Nop>
-  nmap <buffer> - <Plug>(choosewin)
-endfunction
+def QuickfixToggle()
+    if empty(filter(getwininfo(), (_, val) => val.quickfix))
+        vert copen
+        setlocal nowrap
+        vertical resize 40
+    else
+        cclose
+    endif
+enddef
 
-augroup fern-settings
-  autocmd!
-  autocmd FileType fern call s:fern_settings()
-augroup END
+command! Qtoggle QuickfixToggle()
+nnoremap <leader>qq :Qtoggle<CR>
 
-" ##=== }}}
-" ##=== netrw {{{
+# ==============================================================================
+# Key mapping - Window
+# ==============================================================================
 
-" ツリー表示形式を標準に設定
-let g:netrw_liststyle = 3
-" バナーを非表示
-let g:netrw_banner = 0
-" プレビューウィンドウのサイズ
-let g:netrw_winsize = 25
+nnoremap <C-h> :vertical resize -10<CR>
+nnoremap <C-l> :vertical resize +10<CR>
+nnoremap <C-k> :resize -5<CR>
+nnoremap <C-j> :resize +5<CR>
 
-" netrwをトグル表示
-" noremap <silent>== :Lexplore<CR>
+# ==============================================================================
+# Key mapping - Copy File Path
+# ==============================================================================
 
-" ##=== }}}
-" ##=== gitgutter {{{
+def CopyFilePath()
+    @* = expand('%:.')
+    echo 'Copied: ' .. expand('%:.')
+enddef
 
-" 差分更新の間隔を短く設定
-set updatetime=50
+nnoremap <leader>cp <scriptcmd>CopyFilePath()<CR>
 
-" 追加行のサイン
-let g:gitgutter_sign_added = '+'
-" 変更行のサイン
-let g:gitgutter_sign_modified = '>'
-" 削除行のサイン
-let g:gitgutter_sign_removed = '-'
-" 最初の行が削除された場合のサイン
-let g:gitgutter_sign_removed_first_line = '^'
-" 変更して削除された行のサイン
-let g:gitgutter_sign_modified_removed = '<'
+# ==============================================================================
+# Key mapping - GitGutter
+# =============================================================================
 
-augroup MyGitGutter
-  au!
+# Jump between hunks
+nmap gn <Plug>(GitGutterNextHunk)
+nmap gp <Plug>(GitGutterPrevHunk)
 
-  " サイン列の背景色を削除
-  autocmd VimEnter,ColorScheme * highlight SignColumn guibg=NONE ctermbg=NONE
-  " 追加行の色設定
-  autocmd VimEnter,ColorScheme * highlight GitGutterAdd guibg=NONE ctermbg=NONE guifg=#000900 ctermfg=2
-  " 変更行の色設定
-  autocmd VimEnter,ColorScheme * highlight GitGutterChange guibg=NONE ctermbg=NONE guifg=#bbbb00 ctermfg=3
-  " 削除行の色設定
-  autocmd VimEnter,ColorScheme * highlight GitGutterDelete guibg=NONE ctermbg=NONE guifg=#ff2222 ctermfg=1
-augroup END
+# Hunk-add and hunk-revert for chunk staging
+nmap gha <Plug>(GitGutterStageHunk)
+nmap ghu <Plug>(GitGutterUndoHunk)
+nmap ghp <Plug>(GitGutterPreviewHunk)
 
-" ##=== }}}
-" ##=== asyncomplete {{{
+# ==============================================================================
+# Git Jump integration
+#
+# Usage:
+#   :Jump diff
+#   :Jump merge
+#   :Jump grep foo
+# ==============================================================================
 
-let g:asyncomplete_auto_popup = 0
+command! -bar -nargs=* Jump cexpr system('git jump --stdout ' .. <q-args>)
 
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
+nnoremap <leader>gj :Jump diff<CR>
+nnoremap <leader>gm :Jump merge<CR>
+nnoremap <leader>gg :Jump grep<Space>
 
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ asyncomplete#force_refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+# ==============================================================================
+# FZF Integration
+# ==============================================================================
 
-" 補完メニューが表示されている場合は前の候補を選択、そうでなければShift+Tabを入力
-imap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" 補完メニューが表示されている場合は補完を確定、そうでなければ改行
-imap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+def UpdateCurrentFileInOldfiles()
+    var current = expand('%:p')
+    if !empty(current) && filereadable(current)
+        var idx = index(v:oldfiles, current)
+        if idx >= 0
+            remove(v:oldfiles, idx)
+        endif
+        insert(v:oldfiles, current, 0)
+    endif
+enddef
 
-" ##=== }}}
-" ##=== vim-lsp {{{
-
-" 基本設定
-let g:lsp_use_native_client = 1
-
-" 診断表示の最小限の設定
-let g:lsp_diagnostics_enabled = 1
-let g:lsp_diagnostics_signs_enabled = 1
-let g:lsp_diagnostics_signs_insert_mode_enabled = 0
-let g:lsp_diagnostics_signs_delay = 50
-
-" 他の診断表示機能は全て無効化
-let g:lsp_diagnostics_virtual_text_enabled = 0
-let g:lsp_diagnostics_highlights_enabled = 0
-let g:lsp_diagnostics_float_cursor = 0
-let g:lsp_diagnostics_echo_cursor = 0
-let g:lsp_document_highlight_enabled = 0
-
-" コードアクション表示を無効化
-let g:lsp_document_code_action_signs_enabled = 0
-
-function! s:on_lsp_buffer_enabled() abort
-    setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    " カーソル位置の変数やメソッドの定義場所にジャンプ
-    nmap <buffer> gd <plug>(lsp-definition)
-    " 現在開いているファイル内のシンボル（関数、変数、クラスなど）を検索
-    nmap <buffer> gs <plug>(lsp-document-symbol-search)
-    " ワークスペース全体（プロジェクト全体）でシンボルを検索します
-    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-    " カーソル位置の要素の参照箇所をすべて検索
-    nmap <buffer> gr <plug>(lsp-references)
-    " インターフェースや抽象メソッドの実装を検索
-    nmap <buffer> gi <plug>(lsp-implementation)
-    " 変数の型定義にジャンプ
-    nmap <buffer> gt <plug>(lsp-type-definition)
-    " シンボルの名前を一括変更
-    " nmap <buffer> <leader>rn <plug>(lsp-rename)
-    " 前の診断（エラーや警告）に移動
-    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-    " 次の診断（エラーや警告）に移動
-    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-    " カーソル位置の要素について詳細情報を表示
-    nmap <buffer> K <plug>(lsp-hover)
-    " 診断実行
-    nmap <buffer> D <plug>(lsp-document-diagnostics)
-    " LSPのポップアップウィンドウが表示されているときのみ有効にする
-    nmap <expr><buffer> <c-f> popup_list()->empty() ? '<c-f>' : lsp#scroll(+4)
-    nmap <expr><buffer> <c-b> popup_list()->empty() ? '<c-b>' : lsp#scroll(-4)
-
-    let g:lsp_format_sync_timeout = 1000
-    autocmd! BufWritePre *.go LspDocumentFormatSync | LspCodeActionSync source.organizeImports
+def GetProjectRecentFiles(): list<string>
+    UpdateCurrentFileInOldfiles()
     
-    " refer to doc to add more commands
-endfunction
+    var gitfiles = systemlist('git ls-files')
+    var gitset = {}
+    for f in gitfiles
+        gitset[fnamemodify(f, ':p')] = f
+    endfor
 
-augroup MyLspSettings
-    au!
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
+    var recent_set = {}
+    var recent_files = []
+    
+    for f in v:oldfiles[0 : 50]
+        var fullpath = fnamemodify(f, ':p')
+        if has_key(gitset, fullpath)
+            var relative = gitset[fullpath]
+            recent_set[relative] = 1
+            add(recent_files, relative)
+            if len(recent_files) >= 10
+                break
+            endif
+        endif
+    endfor
+    
+    var result = []
+    for f in recent_files
+        add(result, "\x1b[32m" .. f .. "\x1b[0m")  # 緑色
+    endfor
+    
+    for f in gitfiles
+        if !has_key(recent_set, f)
+            add(result, f)
+        endif
+    endfor
+    
+    return result
+enddef
 
-" ##=== }}}
-" ##=== vim-lsp-settings {{{
+def GrepSink(line: string)
+    var parts = split(line, ':')
+    if len(parts) >= 2
+        execute 'e ' .. parts[0]
+        execute ':' .. parts[1]
+    endif
+enddef
 
-" サーバーのインストールディレクトリ
-let g:lsp_settings_servers_dir='~/.shared_cache/.vim/servers'
+# Files
+nnoremap <leader><leader> <scriptcmd>fzf#run({
+    \ 'source': GetProjectRecentFiles(),
+    \ 'sink': 'e',
+    \ 'options': ['--prompt', 'Files> ', '--tiebreak=index'],
+    \ 'window': {'width': 0.9, 'height': 0.6}
+    \ })<CR>
 
-let g:lsp_settings_filetype_ruby = ['solargraph']
-let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'efm-langserver']
-let g:lsp_settings_filetype_javascript = ['typescript-language-server', 'efm-langserver']
-let g:lsp_settings_filetype_typescriptreact = ['typescript-language-server', 'efm-langserver']
-
-let g:lsp_settings = {
-\ 'efm-langserver': {
-\   'disabled': v:false
-\ }
-\ }
-
-autocmd BufWritePre *.js,*.ts,*.tsx call execute('LspDocumentFormatSync --server=efm-langserver')
-
-" ##=== }}}
-" ##=== QuickRun {{{
-
-" QuickRunの基本設定
-let g:quickrun_config = {}
-
-" Go言語用の実行設定
-let g:quickrun_config['go'] = {
-    \ 'command': 'go',
-    \ 'cmdopt': 'run',
-    \ 'exec': 'go run %S'
-    \ }
-
-" ##=== }}}
-" ##=== vim-quickhl {{{
-
-nmap <Space>h <Plug>(quickhl-manual-this)
-xmap <Space>h <Plug>(quickhl-manual-this)
-nmap <Space>H <Plug>(quickhl-manual-reset)
-xmap <Space>H <Plug>(quickhl-manual-reset)
-
-" ##=== }}}
-" ##=== vim-signature {{{
-" `A でマークAに移動する（これは標準）
-let g:SignatureMap = {
-  \ 'Leader'             :  "m",
-  \ 'PlaceNextMark'      :  "m,",
-  \ 'ToggleMarkAtLine'   :  "m.",
-  \ 'PurgeMarksAtLine'   :  "m-",
-  \ 'DeleteMark'         :  "dm",
-  \ 'PurgeMarks'         :  "m<Space>",
-  \ 'PurgeMarkers'       :  "m<BS>",
-  \ 'GotoNextLineAlpha'  :  "']",
-  \ 'GotoPrevLineAlpha'  :  "'[",
-  \ 'GotoNextSpotAlpha'  :  "`]",
-  \ 'GotoPrevSpotAlpha'  :  "`[",
-  \ 'GotoNextLineByPos'  :  "]'",
-  \ 'GotoPrevLineByPos'  :  "['",
-  \ 'GotoNextSpotByPos'  :  "]`",
-  \ 'GotoPrevSpotByPos'  :  "[`",
-  \ 'GotoNextMarker'     :  "]-",
-  \ 'GotoPrevMarker'     :  "[-",
-  \ 'GotoNextMarkerAny'  :  "]=",
-  \ 'GotoPrevMarkerAny'  :  "[=",
-  \ 'ListBufferMarks'    :  "m/",
-  \ 'ListBufferMarkers'  :  "m?"
-  \ }
-let g:SignatureIncludeMarks = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-" ##=== }}}
-" ##=== vim-choosewin {{{
-let g:choosewin_overlay_enable = 1
-
-nmap  -  <Plug>(choosewin)
-" ##=== }}}
+# Rg
+nnoremap <leader>r <scriptcmd>fzf#run({
+    \ 'source': 'rg --line-number --no-heading --color=always --smart-case ""',
+    \ 'sink': funcref('GrepSink'),
+    \ 'options': ['--prompt', 'Rg> ', '--ansi', '--delimiter', ':', '--nth', '3..'],
+    \ 'window': {'width': 0.9, 'height': 0.6}
+    \ })<CR>
