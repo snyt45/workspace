@@ -156,6 +156,21 @@ highlight TabPanelSel guifg=#ebdbb2 guibg=#504945 ctermbg=237
 highlight TabPanel guifg=#928374 guibg=NONE ctermbg=NONE
 
 # ==============================================================================
+# Terminal Color
+# =============================================================================
+
+# Terminal with transparent background but proper ANSI colors
+g:terminal_ansi_colors = [
+    \ '#282828', '#cc241d', '#98971a', '#d79921',
+    \ '#458588', '#b16286', '#689d6a', '#d65d0e',
+    \ '#fb4934', '#b8bb26', '#fabd2f', '#83a598',
+    \ '#d3869b', '#8ec07c', '#fe8019', '#fbf1c7'
+    \ ]
+
+# Transparent background, but keep foreground color
+highlight Terminal guibg=NONE ctermbg=NONE guifg=#ebdbb2
+
+# ==============================================================================
 # Configuration - GitGutter
 # ==============================================================================
 
