@@ -385,6 +385,6 @@ nnoremap <leader><leader> <scriptcmd>fzf#run({
 nnoremap <leader>r <scriptcmd>fzf#run({
     \ 'source': 'rg --line-number --no-heading --color=always --smart-case ""',
     \ 'sink': funcref('GrepSink'),
-    \ 'options': ['--prompt', 'Rg> ', '--ansi', '--delimiter', ':', '--nth', '3..'],
+    \ 'options': ['--prompt', 'Rg> ', '--ansi', '--delimiter', ':'],
     \ 'window': {'width': 0.9, 'height': 0.6}
     \ })<CR>
