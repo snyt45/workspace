@@ -256,6 +256,23 @@ nnoremap <C-l> :vertical resize +10<CR>
 nnoremap <C-k> :resize -5<CR>
 nnoremap <C-j> :resize +5<CR>
 
+g:window_maximized = false
+
+def WindowMaximizeToggle()
+    if g:window_maximized
+        # 均等化
+        wincmd =
+        g:window_maximized = false
+    else
+        # 最大化
+        wincmd _
+        wincmd |
+        g:window_maximized = true
+    endif
+enddef
+
+nnoremap <leader>mm <scriptcmd>WindowMaximizeToggle()<CR>
+
 # ==============================================================================
 # Key mapping - Copy File Path
 # ==============================================================================
