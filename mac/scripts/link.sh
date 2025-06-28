@@ -13,8 +13,9 @@ if [ -f "$DOTFILES_DIR/git/.gitconfig" ]; then
 fi
 
 # Vimの設定
+mkdir -p "$HOME/.vim"
 if [ -f "$DOTFILES_DIR/vim/.vimrc" ]; then
-    ln -sf "$DOTFILES_DIR/vim/.vimrc" "$HOME/.vimrc"
+    ln -sf "$DOTFILES_DIR/vim/.vimrc" "$HOME/.vim/vimrc"
 fi
 mkdir -p "$HOME/.vim/autoload/"
 if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
