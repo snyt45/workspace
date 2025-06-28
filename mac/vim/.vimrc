@@ -308,9 +308,9 @@ nmap ghp <Plug>(GitGutterPreviewHunk)
 
 command! -bar -nargs=* Jump cexpr system('git jump --stdout ' .. <q-args>)
 
-nnoremap <leader>gj :Jump diff<CR>
-nnoremap <leader>gm :Jump merge<CR>
-nnoremap <leader>gg :Jump grep<Space>
+nnoremap <leader>jd :Jump diff<CR>
+nnoremap <leader>jm :Jump merge<CR>
+nnoremap <leader>jg :Jump grep<Space>
 
 # ==============================================================================
 # FZF Integration
