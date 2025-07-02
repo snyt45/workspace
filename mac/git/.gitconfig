@@ -18,25 +18,52 @@
 [rebase]
         autosquash = true  # fixup/squashコミットを自動的に並び替え
 [alias]
-        a = add
-        ap = add --patch
-        b = branch
-        staged = diff --staged
-        unstage = reset -q HEAD --
-        discard = checkout --
-        undo = "!git reset --soft HEAD~; git reset"
-        bc = "!git branch -a | grep -v HEAD | fzf | sed -e 's/.* //' -e 's#remotes/[^/]*/##' | xargs git checkout"
-        s = status
-        ss = status -s
-        l = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -20
-        ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
-        fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs git commit --fixup"
-        ls = "!f() { \
-            hash=$(git l --color=always | \
-                  fzf --ansi --preview 'echo {} | grep -o \"[0-9a-f]\\{7\\}\" | xargs git show --color=always' \
-                  --preview-window=right:60%:wrap | \
-                  grep -o \"[0-9a-f]\\{7\\}\"); \
-            if [ -n \"$hash\" ]; then \
-                git show $hash; \
-            fi \
-        }; f"
+    # === Basic Operations ===
+    a = add
+    ap = add --patch
+    s = status
+    ss = status -s
+    
+    # === Branch Management ===
+    b = branch
+    bc = "!git branch --sort=-committerdate | grep -v HEAD | fzf | sed -e 's/.* //' -e 's#remotes/[^/]*/##' | xargs git checkout"
+    
+    # === Diff and Staging ===
+    staged = diff --staged
+    unstage = reset -q HEAD --
+    discard = checkout --
+    d = "!git ls-files --others --modified --exclude-standard | sort -u | fzf -m --preview 'git diff --color=always {} 2>/dev/null | grep . || cat {}' | xargs -r git checkout --"
+    
+    # === Commit History ===
+    l = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -20
+    ls = "!f() { \
+        hash=$(git l --color=always | \
+              fzf --ansi --preview 'echo {} | grep -o \"[0-9a-f]\\{7\\}\" | xargs git show --color=always' \
+              --preview-window=right:60%:wrap | \
+              grep -o \"[0-9a-f]\\{7\\}\"); \
+        if [ -n \"$hash\" ]; then \
+            git show $hash; \
+        fi \
+    }; f"
+    fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs git commit --fixup"
+    undo = "!git reset --soft HEAD~; git reset"
+    
+    # === File Operations ===
+    v = "!git ls-files --others --modified --exclude-standard | sort -u | fzf -m --preview 'git diff --color=always {} 2>/dev/null | grep . || cat {}' | xargs -r -o vim"
+    
+    # === Remote Operations ===
+    ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
+    
+    # === GitHub Integration ===
+    repo = "!gh repo view --web"
+    issues = "!gh issue list --web"
+    pr = "!gh pr view --web"
+    prs = "!gh pr list | fzf | awk '{print $1}' | xargs gh pr view --web"
+    prd = "!gh pr list | fzf | awk '{print $1}' | xargs gh pr diff"
+    
+    # === CI/CD ===
+    ci = "!echo '=== Running ===' && gh run list --status in_progress && echo '\n=== Recent Failures ===' && gh run list --status failure --limit 5"
+    running = "!gh run list --status in_progress"
+    failures = "!gh run list --status failure --limit 10"
+    checks = "!gh pr checks"
+    rerun = "!gh run list --limit 20 | fzf | awk '{print $(NF-2)}' | xargs gh run rerun"
