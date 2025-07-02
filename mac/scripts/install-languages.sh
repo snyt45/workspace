@@ -11,7 +11,7 @@ corepack enable
 asdf reshim nodejs
 # ruby
 asdf plugin add ruby
-asdf install ruby 2.7.2
+asdf install ruby 3.0.7
 # python
 asdf plugin add python
 asdf install python 2.7.18
