@@ -13,6 +13,7 @@ brew install visual-studio-code
 brew install ripgrep
 brew install slack
 brew install tmux
+brew install tig
 brew install zoom
 brew install zoxide
 brew install starship
