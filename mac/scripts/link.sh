@@ -52,4 +52,15 @@ if [ -f "/opt/homebrew/share/git-core/contrib/diff-highlight/diff-highlight" ]; 
     ln -sf /opt/homebrew/share/git-core/contrib/diff-highlight/diff-highlight /opt/homebrew/bin/diff-highlight
 fi
 
+# claudeの設定
+mkdir -p "$HOME/.claude"
+if [ -f "$DOTFILES_DIR/claude/settings.json" ]; then
+    ln -sf "$DOTFILES_DIR/claude/settings.json" "$HOME/.claude/settings.json"
+fi
+
+mkdir -p "$HOME/.claude/commands"
+if [ -f "$DOTFILES_DIR/claude/commands/pr-review.md" ]; then
+    ln -sf "$DOTFILES_DIR/claude/commands/pr-review.md" "$HOME/.claude/commands/pr-review.md"
+fi
+
 echo "✅ dotfilesのシンボリックリンク作成が完了しました"
