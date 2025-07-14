@@ -206,46 +206,6 @@ def CopyFilePath()
     echo 'Copied: ' .. expand('%:.')
 enddef
 
-# Git Functions
-def GetParentBranchDiffFiles(): list<string>
-    const current_branch = trim(system('git rev-parse --abbrev-ref HEAD'))
-    
-    # 現在のブランチがmainまたはmasterの場合は空を返す
-    if current_branch == 'main' || current_branch == 'master'
-        return []
-    endif
-    
-    # git show-branchで派生元ブランチを取得
-    var parent_branch = trim(system("git show-branch 2>/dev/null | grep '*' | grep -v '" .. current_branch .. "' | head -1 | awk -F'[]~^[]' '{print $2}'"))
-    
-    # 派生元が見つからない場合、フォールバック
-    if parent_branch == ''
-        # mainまたはmasterをデフォルトとして使用
-        if trim(system('git show-ref --verify --quiet refs/heads/main && echo "exists"')) == 'exists'
-            parent_branch = 'main'
-        elseif trim(system('git show-ref --verify --quiet refs/heads/master && echo "exists"')) == 'exists'
-            parent_branch = 'master'
-        else
-            return []
-        endif
-    endif
-    
-    # 現在のブランチと親ブランチが同じ場合は空を返す
-    if current_branch == parent_branch
-        return []
-    endif
-    
-    # merge-baseを使って分岐点を見つける
-    const merge_base = trim(system('git merge-base HEAD ' .. parent_branch .. ' 2>/dev/null'))
-    
-    if merge_base == ''
-        return []
-    endif
-    
-    # 差分ファイルを取得
-    return systemlist('git diff --name-only ' .. merge_base .. '..HEAD')
-enddef
-
 def GetRecentGitFiles(oldfiles_limit: number = 50, result_limit: number = 10): list<string>
     UpdateCurrentFileInOldfiles()
     
@@ -281,15 +241,6 @@ def GetProjectRecentFiles(): list<string>
     
     var result = []
     var added_files = {}
-    
-    # 派生元ブランチとの差分ファイルを先頭に追加（明るい緑色）
-    const diff_files = GetParentBranchDiffFiles()
-    for f in diff_files
-        if filereadable(f)
-            add(result, "\x1b[92m" .. f .. "\x1b[0m")
-            added_files[f] = 1
-        endif
-    endfor
     
     for f in recent_files
         if !has_key(added_files, f)
@@ -373,7 +324,7 @@ tnoremap <leader>mm <C-\><C-n><scriptcmd>WindowMaximizeToggle()<CR>
 # Key Mappings - Terminal
 # ==============================================================================
 
-tnoremap <ESC> <C-\><C-n>
+tnoremap <F12> <C-\><C-n>
 
 # ==============================================================================
 # Key Mappings - File Operations
@@ -397,7 +348,7 @@ nmap gp <Plug>(GitGutterPrevHunk)
 nmap gha <Plug>(GitGutterStageHunk)
 nmap ghu <Plug>(GitGutterUndoHunk)
 nmap ghp <Plug>(GitGutterPreviewHunk)
-nmap ghf <Plug>(GitGutterFold)
+nmap ghf :GitGutterFold<CR>
 
 # Git Jump
 command! -bar -nargs=* Jump cexpr system('git jump --stdout ' .. <q-args>)
@@ -422,14 +373,6 @@ nnoremap <leader>r <scriptcmd>fzf#run({
     \ 'source': 'rg --line-number --no-heading --color=always --smart-case ""',
     \ 'sink': funcref('GrepSink'),
     \ 'options': ['--prompt', 'Rg> ', '--ansi', '--delimiter', ':'],
-    \ 'window': {'width': 0.9, 'height': 0.6}
-    \ })<CR>
-
-# Diff Files (from parent branch)
-nnoremap <leader>d <scriptcmd>fzf#run({
-    \ 'source': GetParentBranchDiffFiles(),
-    \ 'sink': 'e',
-    \ 'options': ['--prompt', 'Diff> ', '--preview', 'bat --color=always --style=header,grid --line-range :300 {}'],
     \ 'window': {'width': 0.9, 'height': 0.6}
     \ })<CR>
 
@@ -829,3 +772,17 @@ g:help_popup_content = {
   \   ]
   \ }
   \}
+
+def FindWhoImports(name: string = ''): string
+  var component_name = name == '' ? expand('%:t:r') : name
+  var cmd = 'rg -n "import.*' .. component_name .. '" .'
+
+  @/ = component_name
+  set hlsearch
+
+  return system(cmd)
+enddef
+
+command! -nargs=? WhoImportsMe cgetexpr FindWhoImports(<q-args>)
+nnoremap <Leader>fi :WhoImportsMe<CR>
+nnoremap <Leader>fI :WhoImportsMe<Space>
