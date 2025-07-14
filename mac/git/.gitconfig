@@ -26,7 +26,7 @@
     
     # === Branch Management ===
     b = branch
-    bc = "!git branch --sort=-committerdate | grep -v HEAD | fzf | sed -e 's/.* //' -e 's#remotes/[^/]*/##' | xargs git checkout"
+    bc = "!git branch -a --sort=-committerdate | grep -v HEAD | fzf | sed -e 's/.* //' -e 's#remotes/[^/]*/##' | xargs git checkout"
     
     # === Diff and Staging ===
     staged = diff --staged
@@ -57,6 +57,7 @@
     # === GitHub Integration ===
     repo = "!gh repo view --web"
     issues = "!gh issue list --web"
+    me = "!gh pr list --author @me --state open | fzf | awk '{print $1}' | xargs gh pr view --web"
     pr = "!gh pr view --web"
     prs = "!gh pr list | fzf | awk '{print $1}' | xargs gh pr view --web"
     prd = "!gh pr list | fzf | awk '{print $1}' | xargs gh pr diff"
