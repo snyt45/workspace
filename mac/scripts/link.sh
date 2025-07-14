@@ -63,4 +63,13 @@ if [ -f "$DOTFILES_DIR/claude/commands/pr-review.md" ]; then
     ln -sf "$DOTFILES_DIR/claude/commands/pr-review.md" "$HOME/.claude/commands/pr-review.md"
 fi
 
+if [ -f "$DOTFILES_DIR/claude/commands/toypo-api-search.md" ]; then
+    ln -sf "$DOTFILES_DIR/claude/commands/toypo-api-search.md" "$HOME/.claude/commands/toypo-api-search.md"
+fi
+
+mkdir -p "$HOME/.claude/hooks"
+if [ -f "$DOTFILES_DIR/claude/hooks/log-session.sh" ]; then
+    ln -sf "$DOTFILES_DIR/claude/hooks/log-session.sh" "$HOME/.claude/hooks/log-session.sh"
+fi
+
 echo "✅ dotfilesのシンボリックリンク作成が完了しました"

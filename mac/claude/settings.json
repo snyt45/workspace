@@ -16,10 +16,26 @@
       "Read(*)",
       "Grep(*)",
       "Find(*)",
+      "Fetch(*)",
+      "List(*)",
+      "Search(*)",
       "Bash(grep:*)",
       "Bash(find:*)",
       "Bash(rg:*)"
     ],
     "deny": ["Bash(rm:*)"]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Glass.aiff"
+          }
+        ]
+      }
+    ]
   }
 }
