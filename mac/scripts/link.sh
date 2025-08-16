@@ -57,6 +57,9 @@ mkdir -p "$HOME/.config/yazi"
 if [ -f "$DOTFILES_DIR/yazi/init.lua" ]; then
     ln -sf "$DOTFILES_DIR/yazi/init.lua" "$HOME/.config/yazi/init.lua"
 fi
+if [ -f "$DOTFILES_DIR/yazi/yazi.toml" ]; then
+    ln -sf "$DOTFILES_DIR/yazi/yazi.toml" "$HOME/.config/yazi/yazi.toml"
+fi
 if [ -f "$DOTFILES_DIR/yazi/keymap.toml" ]; then
     ln -sf "$DOTFILES_DIR/yazi/keymap.toml" "$HOME/.config/yazi/keymap.toml"
 fi
