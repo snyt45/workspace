@@ -52,7 +52,13 @@ if [ -f "/opt/homebrew/share/git-core/contrib/diff-highlight/diff-highlight" ]; 
     ln -sf /opt/homebrew/share/git-core/contrib/diff-highlight/diff-highlight /opt/homebrew/bin/diff-highlight
 fi
 
-# claudeの設定
+# yazi
+mkdir -p "$HOME/.config/yazi"
+if [ -f "$DOTFILES_DIR/yazi/keymap.toml" ]; then
+    ln -sf "$DOTFILES_DIR/yazi/keymap.toml" "$HOME/.config/yazi/keymap.toml"
+fi
+
+# claude
 mkdir -p "$HOME/.claude"
 if [ -f "$DOTFILES_DIR/claude/settings.json" ]; then
     ln -sf "$DOTFILES_DIR/claude/settings.json" "$HOME/.claude/settings.json"

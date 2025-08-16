@@ -3,6 +3,7 @@
 echo "Homebrewパッケージとアプリケーションをインストール中..."
 
 brew install asdf
+brew instal fd
 brew install fzf
 brew install gh
 brew install hugo
@@ -14,6 +15,7 @@ brew install ripgrep
 brew install slack
 brew install tmux
 brew install tig
+brew install yazi
 brew install zoom
 brew install zoxide
 brew install starship

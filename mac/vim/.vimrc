@@ -80,6 +80,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'tyru/caw.vim'
 Plug 'iberianpig/tig-explorer.vim'
+Plug 'yukimura1227/vim-yazi'
 Plug 'snyt45/vim-help-popup'
 call plug#end()
 
@@ -141,6 +142,12 @@ g:gitgutter_sign_modified_removed = '<'
 highlight GitGutterAdd guibg=NONE ctermbg=NONE
 highlight GitGutterChange guibg=NONE ctermbg=NONE
 highlight GitGutterDelete guibg=NONE ctermbg=NONE
+
+# netrw
+g:netrw_banner = 0
+g:netrw_liststyle = 3
+g:netrw_altv = 1
+g:netrw_winsize = 85
 
 # ==============================================================================
 # Helper Functions
