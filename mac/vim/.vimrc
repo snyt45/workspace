@@ -329,8 +329,8 @@ nnoremap tk :tabmove -1<CR>
 
 nnoremap <C-h> :vertical resize -10<CR>
 nnoremap <C-l> :vertical resize +10<CR>
-nnoremap <C-k> :resize -5<CR>
-nnoremap <C-j> :resize +5<CR>
+nnoremap <C-k> :resize +5<CR>
+nnoremap <C-j> :resize -5<CR>
 
 nnoremap <leader>mm <scriptcmd>WindowMaximizeToggle()<CR>
 tnoremap <leader>mm <C-\><C-n><scriptcmd>WindowMaximizeToggle()<CR>
@@ -339,7 +339,7 @@ tnoremap <leader>mm <C-\><C-n><scriptcmd>WindowMaximizeToggle()<CR>
 # Key Mappings - Terminal
 # ==============================================================================
 
-tnoremap <F12> <C-\><C-n>
+tnoremap <F12> <C-w>N
 
 # ==============================================================================
 # Key Mappings - File Operations
@@ -455,11 +455,6 @@ g:help_popup_content = {
   \       'notes': '検索結果をファイルと行番号で表示'
   \     },
   \     {
-  \       'command': '<leader>d',
-  \       'description': '差分ファイル検索',
-  \       'notes': '親ブランチとの差分ファイルを表示'
-  \     },
-  \     {
   \       'command': '<leader>o',
   \       'description': '最近使ったファイル検索',
   \       'notes': 'Git管理下の最近使ったファイルを表示'
@@ -511,13 +506,13 @@ g:help_popup_content = {
   \     },
   \     {
   \       'command': '<C-k>',
-  \       'description': 'ウィンドウの高さを縮小',
-  \       'notes': '5行分縮小'
+  \       'description': 'ウィンドウの高さを上に拡大',
+  \       'notes': '5行分拡大'
   \     },
   \     {
   \       'command': '<C-j>',
-  \       'description': 'ウィンドウの高さを拡大',
-  \       'notes': '5行分拡大'
+  \       'description': 'ウィンドウの高さを下に縮小',
+  \       'notes': '5行分縮小'
   \     },
   \     {
   \       'command': '<leader>mm',
