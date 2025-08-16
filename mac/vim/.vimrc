@@ -301,6 +301,14 @@ imap <F1> <Nop>
 # Clear search highlight
 nnoremap <Esc><Esc> :nohlsearch<CR>
 
+# Move to Start/End of Line
+inoremap <C-a> <C-o>^
+inoremap <C-e> <C-o>$
+
+# Move to Start/End of Word
+inoremap <C-i> <C-o>w
+inoremap <C-u> <C-o>b
+
 # ==============================================================================
 # Key Mappings - Buffer Management
 # ==============================================================================
