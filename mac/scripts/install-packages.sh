@@ -19,13 +19,16 @@ brew install yazi
 brew install zoom
 brew install zoxide
 brew install starship
+brew install --cask alt-tab
 brew install --cask claude
 brew install --cask deepl
 brew install --cask docker
 brew install --cask dropbox
 brew install --cask flux
+brew install --cask inkdrop
 brew install --cask gather
 brew install --cask karabiner-elements
+brew install --cask kindle
 brew install --cask raycast
 brew install --cask scroll-reverser
 brew install --cask tableplus

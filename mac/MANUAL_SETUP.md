@@ -5,11 +5,7 @@
 
 ## 📍 システム設定
 
-### キーボードショートカット
-
-- システム環境設定 > キーボード > キーボードショートカット > Mission Control
-  - **Mission Control**: F3
-  - **アプリケーションウィンドウ**: F4
+なし
 
 ## 📦 手動インストールが必要なアプリ
 
@@ -85,6 +81,12 @@ SlimBlade Pro トラックボール用アプリ
 
 ### その他のアプリ
 
+#### Alt Tab
+
+- コントロール > ショートカット1
+  - 起動ショートカット: `Option + Tab
+  - アプリケーションからウィンドウを表示する: 稼働アプリケーション
+
 #### Ankerwork
 
 - 解像度: 720P
@@ -142,7 +144,7 @@ mv ~/Downloads/GruvboxDark.yaml $HOME/.warp/themes/
 
 #### ウィンドウ設定
 
-- Settings > Appearance > Window Opacity: 70
+- Settings > Appearance > Window Opacity: 50
 - Settings > Appearance > Window Blur: 20
 
 #### フォント設定
@@ -153,4 +155,4 @@ mv ~/Downloads/GruvboxDark.yaml $HOME/.warp/themes/
 
 #### プロンプト設定
 
-- Settings > Appearance > Prompt > Shell prompt を選択
+- Settings > Appearance > Input > Shell prompt を選択
