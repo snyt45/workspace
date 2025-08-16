@@ -58,6 +58,10 @@ if [ -f "$DOTFILES_DIR/claude/settings.json" ]; then
     ln -sf "$DOTFILES_DIR/claude/settings.json" "$HOME/.claude/settings.json"
 fi
 
+if [ -f "$DOTFILES_DIR/claude/CLAUDE.md" ]; then
+    ln -sf "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+fi
+
 mkdir -p "$HOME/.claude/commands"
 if [ -f "$DOTFILES_DIR/claude/commands/pr-review.md" ]; then
     ln -sf "$DOTFILES_DIR/claude/commands/pr-review.md" "$HOME/.claude/commands/pr-review.md"
