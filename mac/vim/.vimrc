@@ -216,18 +216,22 @@ enddef
 def GetRecentGitFiles(oldfiles_limit: number = 50, result_limit: number = 10): list<string>
     UpdateCurrentFileInOldfiles()
     
+    # git管理ファイルとuntrackedファイルの両方を取得
     var gitfiles = systemlist('git ls-files')
-    var gitset = {}
-    for f in gitfiles
-        gitset[fnamemodify(f, ':p')] = f
+    var untrackedfiles = systemlist('git ls-files --others --exclude-standard')
+    var allfiles = gitfiles + untrackedfiles
+    
+    var fileset = {}
+    for f in allfiles
+        fileset[fnamemodify(f, ':p')] = f
     endfor
 
     var recent_files = []
     
     for f in v:oldfiles[0 : oldfiles_limit]
         var fullpath = fnamemodify(f, ':p')
-        if has_key(gitset, fullpath)
-            var relative = gitset[fullpath]
+        if has_key(fileset, fullpath)
+            var relative = fileset[fullpath]
             add(recent_files, relative)
             if len(recent_files) >= result_limit
                 break
@@ -239,7 +243,11 @@ def GetRecentGitFiles(oldfiles_limit: number = 50, result_limit: number = 10): l
 enddef
 
 def GetProjectRecentFiles(): list<string>
+    # git管理ファイルとuntrackedファイルの両方を取得
     var gitfiles = systemlist('git ls-files')
+    var untrackedfiles = systemlist('git ls-files --others --exclude-standard')
+    var allfiles = gitfiles + untrackedfiles
+    
     var recent_files = GetRecentGitFiles(50, 10)
     var recent_set = {}
     for f in recent_files
@@ -249,6 +257,7 @@ def GetProjectRecentFiles(): list<string>
     var result = []
     var added_files = {}
     
+    # 最近使用したファイルを青色で追加
     for f in recent_files
         if !has_key(added_files, f)
             add(result, "\x1b[36m" .. f .. "\x1b[0m")
@@ -256,9 +265,11 @@ def GetProjectRecentFiles(): list<string>
         endif
     endfor
     
-    for f in gitfiles
+    # その他のプロジェクトファイル（git管理 + untracked）を追加
+    for f in allfiles
         if !has_key(added_files, f)
             add(result, f)
+            added_files[f] = 1
         endif
     endfor
     
