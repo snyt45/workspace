@@ -19,6 +19,11 @@ set mouse=a
 # Clipboard
 set clipboard=unnamed
 
+# Autocomplete
+if has('patch-9.1.1590')
+  set autocomplete
+endif
+
 # ==============================================================================
 # File Settings
 # ==============================================================================
@@ -319,6 +324,10 @@ inoremap <C-e> <C-o>$
 # Move to Start/End of Word
 inoremap <C-i> <C-o>w
 inoremap <C-u> <C-o>b
+
+# Vim AutoComplete
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 # ==============================================================================
 # Key Mappings - Buffer Management
