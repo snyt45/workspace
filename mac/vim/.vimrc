@@ -318,12 +318,14 @@ imap <F1> <Nop>
 nnoremap <Esc><Esc> :nohlsearch<CR>
 
 # Move to Start/End of Line
+# karabinerに依存
 inoremap <C-a> <C-o>^
 inoremap <C-e> <C-o>$
 
 # Move to Start/End of Word
-inoremap <C-i> <C-o>w
-inoremap <C-u> <C-o>b
+# karabinerに依存
+inoremap <M-Right> <C-o>w
+inoremap <M-Left> <C-o>b
 
 # Vim AutoComplete
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
