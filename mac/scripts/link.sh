@@ -74,7 +74,7 @@ if [ -f "$DOTFILES_DIR/claude/CLAUDE.md" ]; then
     ln -sf "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 fi
 
-for skill_dir in backend-patterns code-review coding-standards frontend-patterns pr-review security-review tdd-workflow toypo-api-search; do
+for skill_dir in backend-patterns frontend-patterns pr-review security-review toypo-api-search; do
     mkdir -p "$HOME/.claude/skills/$skill_dir"
     if [ -f "$DOTFILES_DIR/claude/skills/$skill_dir/SKILL.md" ]; then
         ln -sf "$DOTFILES_DIR/claude/skills/$skill_dir/SKILL.md" "$HOME/.claude/skills/$skill_dir/SKILL.md"
