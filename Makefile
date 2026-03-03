@@ -1,45 +1,42 @@
 .PHONY: setup
-setup: \
-	macos-config \
-	install-rosetta \
-	install-packages \
-	link \
-	github-auth
-	@echo "セットアップが完了しました。設定後、再起動してください。"
+setup: macos rosetta packages link auth
+	@echo "セットアップ完了。再起動してください。"
 
 .PHONY: help
 help:
-	@echo "Mac Setup Commands:"
-	@echo "  make setup           - Run all setup tasks"
-	@echo "  make macos-config    - Configure macOS system preferences"
-	@echo "  make install-rosetta - Install Rosetta 2 for Intel apps"
-	@echo "  make install-packages - Install Homebrew packages and apps"
-	@echo "  make link            - Create symbolic links for dotfiles"
-	@echo "  make github-auth     - Setup GitHub CLI authentication"
-	@echo ""
-	@echo "Additional Commands:"
-	@echo "  make vim        - Build Vim from source"
+	@echo "make setup     - 全セットアップ実行"
+	@echo "make macos     - macOS システム設定"
+	@echo "make rosetta   - Rosetta 2 インストール"
+	@echo "make packages  - Homebrew パッケージインストール"
+	@echo "make link      - シンボリックリンク作成"
+	@echo "make auth      - GitHub CLI 認証"
+	@echo "make vim       - Vim をソースからビルド"
 
-.PHONY: macos-config
-macos-config:
-	@./scripts/macos-config.sh
+.PHONY: macos
+macos:
+	@echo "[1/5] macOS システム設定..."
+	@./scripts/macos.sh
 
-.PHONY: install-rosetta
-install-rosetta:
-	@./scripts/install-rosetta.sh
+.PHONY: rosetta
+rosetta:
+	@echo "[2/5] Rosetta 2..."
+	@/usr/bin/pgrep -q oahd || softwareupdate --install-rosetta --agree-to-license
 
-.PHONY: install-packages
-install-packages:
+.PHONY: packages
+packages:
+	@echo "[3/5] Homebrew パッケージ..."
 	@brew bundle --file=Brewfile
 
 .PHONY: link
 link:
+	@echo "[4/5] シンボリックリンク..."
 	@./scripts/link.sh
 
-.PHONY: github-auth
-github-auth:
-	@./scripts/github-auth.sh
+.PHONY: auth
+auth:
+	@echo "[5/5] GitHub CLI 認証..."
+	@gh auth status 2>/dev/null || gh auth login
 
 .PHONY: vim
 vim:
-	@./scripts/make-vim.sh
+	@./scripts/vim.sh
