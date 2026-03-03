@@ -2,69 +2,21 @@
         name = yuta.sano
         email = snyt45@gmail.com
 [core]
-        editor = vim  # デフォルトエディタをVimに設定
+        editor = vim
 [column]
-        ui = auto  # ブランチ一覧等を列で表示
+        ui = auto
 [branch]
-        sort = -committerdate  # ブランチを最新コミット日時順でソート
+        sort = -committerdate
 [commit]
-        verbose = true  # コミット時に変更内容を詳細表示
+        verbose = true
 [diff]
-        algorithm = histogram  # 高品質なdiffアルゴリズムを使用
+        algorithm = histogram
 [pager]
         log = diff-highlight | less
         show = diff-highlight | less
         diff = diff-highlight | less
 [rebase]
-        autosquash = true  # fixup/squashコミットを自動的に並び替え
+        autosquash = true
 [alias]
-    # === Basic Operations ===
-    a = add
-    ap = add --patch
     s = status
-    ss = status -s
-    
-    # === Branch Management ===
-    b = branch
-    bc = "!git branch -a --sort=-committerdate | grep -v HEAD | fzf | sed -e 's/.* //' -e 's#remotes/[^/]*/##' | xargs git checkout"
-    
-    # === Diff and Staging ===
-    staged = diff --staged
-    unstage = reset -q HEAD --
-    discard = checkout --
-    d = "!git ls-files --others --modified --exclude-standard | sort -u | fzf -m --preview 'git diff --color=always {} 2>/dev/null | grep . || cat {}' | xargs -r git checkout --"
-    
-    # === Commit History ===
-    l = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -20
-    ls = "!f() { \
-        hash=$(git l --color=always | \
-              fzf --ansi --preview 'echo {} | grep -o \"[0-9a-f]\\{7\\}\" | xargs git show --color=always' \
-              --preview-window=right:60%:wrap | \
-              grep -o \"[0-9a-f]\\{7\\}\"); \
-        if [ -n \"$hash\" ]; then \
-            git show $hash; \
-        fi \
-    }; f"
-    fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs git commit --fixup"
-    undo = "!git reset --soft HEAD~; git reset"
-    
-    # === File Operations ===
-    v = "!git ls-files --others --modified --exclude-standard | sort -u | fzf -m --preview 'git diff --color=always {} 2>/dev/null | grep . || cat {}' | xargs -r -o vim"
-    
-    # === Remote Operations ===
-    ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
-    
-    # === GitHub Integration ===
-    repo = "!gh repo view --web"
-    issues = "!gh issue list --web"
-    me = "!gh pr list --author @me --state open | fzf | awk '{print $1}' | xargs gh pr view --web"
-    pr = "!gh pr view --web"
-    prs = "!gh pr list | fzf | awk '{print $1}' | xargs gh pr view --web"
-    prd = "!gh pr list | fzf | awk '{print $1}' | xargs gh pr diff"
-    
-    # === CI/CD ===
-    ci = "!echo '=== Running ===' && gh run list --status in_progress && echo '\n=== Recent Failures ===' && gh run list --status failure --limit 5"
-    running = "!gh run list --status in_progress"
-    failures = "!gh run list --status failure --limit 10"
-    checks = "!gh pr checks"
-    rerun = "!gh run list --limit 20 | fzf | awk '{print $(NF-2)}' | xargs gh run rerun"
+    l = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -50

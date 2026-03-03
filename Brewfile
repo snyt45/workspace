@@ -1,7 +1,6 @@
 # CLI ツール
 brew "asdf"
 brew "bat"
-brew "diff-so-fancy"
 brew "fd"
 brew "fzf"
 brew "gh"

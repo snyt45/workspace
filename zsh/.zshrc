@@ -46,5 +46,4 @@ if [[ -n "$TMUX" ]]; then
   bindkey '^[[1;5D' backward-word   # 前の単語へ移動
 fi
 
-# マシン固有の設定（仕事依存など、dotfiles外で管理）
-[[ -f ~/.zshrc_local ]] && source ~/.zshrc_local
+for f in ~/.zshrc.d/*.zsh(N); do source "$f"; done
