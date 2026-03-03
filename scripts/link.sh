@@ -2,7 +2,7 @@
 
 echo "dotfilesのシンボリックリンクを作成中..."
 
-DOTFILES_DIR="$HOME/.dotfiles/mac"
+DOTFILES_DIR="$HOME/.dotfiles"
 
 # 作業データ共有用のディレクトリ
 mkdir -p "$HOME/work/"
