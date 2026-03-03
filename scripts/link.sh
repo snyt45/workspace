@@ -1,36 +1,27 @@
 #!/usr/bin/env zsh
 
 DOTFILES_DIR="$HOME/.dotfiles"
+PACKAGES=(git vim tmux zsh karabiner yazi claude)
 
-link() {
-  local src="$DOTFILES_DIR/$1" dest="$2"
-  mkdir -p "${dest:h}"
-  if [[ -d "$src" ]]; then
-    ln -sfn "$src" "$dest"
-  elif [[ -f "$src" ]]; then
+stow_package() {
+  local pkg="$DOTFILES_DIR/$1"
+  find "$pkg" -type f -not -name '.DS_Store' -not -name '*.swp' | while read -r src; do
+    local rel="${src#$pkg/}"
+    local dest="$HOME/$rel"
+    mkdir -p "${dest:h}"
     ln -sf "$src" "$dest"
-  fi
+  done
 }
 
 echo "dotfilesのシンボリックリンクを作成中..."
 
 mkdir -p "$HOME/work" "$HOME/bin"
 
-# 設定ファイル
-link git/.gitconfig          "$HOME/.gitconfig"
-link vim/.vimrc              "$HOME/.vim/vimrc"
-link tmux/.tmux.conf         "$HOME/.tmux.conf"
-link zsh/.zshrc              "$HOME/.zshrc"
-link claude/settings.json    "$HOME/.claude/settings.json"
-link claude/CLAUDE.md        "$HOME/.claude/CLAUDE.md"
+for pkg in $PACKAGES; do
+  stow_package "$pkg"
+done
 
-# ディレクトリごとリンク
-link karabiner      "$HOME/.config/karabiner"
-link yazi           "$HOME/.config/yazi"
-link claude/skills  "$HOME/.claude/skills"
-link claude/rules   "$HOME/.claude/rules"
-
-# bin
+# bin（パッケージ化しない）
 ln -sf "$DOTFILES_DIR/bin/ide" "$HOME/bin/"
 
 # vim-plug
