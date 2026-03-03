@@ -41,4 +41,5 @@ make setup
 
 ## 5. 手動セットアップ
 
-[手動セットアップガイド](MANUAL_SETUP.md)
+- [手動セットアップガイド](docs/manual-setup.md)
+- [asdf セットアップ](docs/asdf-setup.md)

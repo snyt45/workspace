@@ -18,6 +18,10 @@
   "feedbackSurveyState": {
     "lastShownTime": 1754364589827
   },
+  "attribution": {
+    "commit": "Created by author with Claude Code",
+    "pr": "このPRはClaude Codeを活用して作成しました"
+  },
   "permissions": {
     "allow": [
       "Glob",
