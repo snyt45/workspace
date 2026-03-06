@@ -40,6 +40,7 @@ bindkey '^R' history-search-fzf
 # tmuxでもキーを動作させる
 if [[ -n "$TMUX" ]]; then
   bindkey -e
+  bindkey '^R' history-search-fzf
   bindkey '^[[1~' beginning-of-line # 行頭
   bindkey '^[[4~' end-of-line       # 行末
   bindkey '^[[1;5C' forward-word    # 次の単語へ移動
