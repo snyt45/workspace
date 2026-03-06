@@ -88,6 +88,10 @@
       "Bash(shutdown:*)",
       "Bash(reboot:*)"
     ],
+    "additionalDirectories": [
+      "~/.claude",
+      "~/work"
+    ],
     "ask": [
       "Bash(git push:*)",
       "Bash(git pull:*)",
