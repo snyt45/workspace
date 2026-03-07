@@ -3,6 +3,8 @@ eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 
 alias g='git'
+alias v='nvim'
+alias vd='nvim +CodeDiff'
 
 export EDITOR=nvim
 

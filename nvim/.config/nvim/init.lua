@@ -77,6 +77,15 @@ map("i", "<C-a>", "<Home>")
 -- 英数+e → Ctrl+E → 行末移動
 map("i", "<C-e>", "<End>")
 
+-- バッファを閉じる
+map("n", "<leader>x", "<cmd>bdelete<cr>")
+
+-- ターミナルを下に分割して開く
+map("n", "<leader>t", "<cmd>belowright split | terminal<cr>")
+
+-- ターミナルモードからノーマルモードに戻る
+map("t", "jj", "<C-\\><C-n>")
+
 -- ファイルパスコピー
 map("n", "<leader>c", function()
   local path = vim.fn.expand("%:.")
@@ -97,7 +106,9 @@ require("lazy").setup({
     "ellisonleao/gruvbox.nvim",
     priority = 1000,
     config = function()
-      require("gruvbox").setup({})
+      require("gruvbox").setup({
+        transparent_mode = true,
+      })
       vim.cmd.colorscheme("gruvbox")
     end,
   },
@@ -153,7 +164,6 @@ require("lazy").setup({
       })
       vim.keymap.set("n", "]b", "<cmd>BufferLineCycleNext<cr>")
       vim.keymap.set("n", "[b", "<cmd>BufferLineCyclePrev<cr>")
-      vim.keymap.set("n", "<leader>x", "<cmd>bdelete<cr>")
     end,
   },
 
@@ -192,6 +202,7 @@ require("lazy").setup({
       vim.keymap.set("n", "<leader>r", builtin.live_grep)
       vim.keymap.set("n", "<leader>b", builtin.buffers)
       vim.keymap.set("n", "<leader>o", builtin.oldfiles)
+      vim.keymap.set("n", "<leader>gs", builtin.git_status)
     end,
   },
 
