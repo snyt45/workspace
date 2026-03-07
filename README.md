@@ -5,6 +5,19 @@
 - MacBookPro(M4)
 - macOS Sequoia 15 系
 
+## 構成
+
+| レイヤー | ツール |
+|----------|--------|
+| ターミナル | cmux |
+| エディタ(CLI) | Neovim |
+| エディタ(GUI) | VSCode |
+| Git UI | codediff + gitsigns |
+| シェル | zsh + starship |
+| 検索 | fzf, ripgrep, fd |
+| バージョン管理 | mise |
+| キーリマッパー | karabiner |
+
 ## 1. リストア手順
 
 1. システム環境設定 > 一般 > 転送またはリセット > すべてのコンテンツと設定を消去
@@ -20,10 +33,10 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-#### Git
+#### Git + mise
 
 ```sh
-brew install git
+brew install git mise
 ```
 
 ## 3. リポジトリのクローン
@@ -36,10 +49,13 @@ git clone https://github.com/snyt45/workspace.git $HOME/.dotfiles
 
 ```sh
 cd $HOME/.dotfiles
-make setup
+mise trust
+mise run setup
 ```
 
 ## 5. 手動セットアップ
 
 - [手動セットアップガイド](docs/manual-setup.md)
-- [asdf セットアップ](docs/asdf-setup.md)
+- [チートシート](docs/cheatsheet.md)
+
+

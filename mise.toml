@@ -1,0 +1,36 @@
+[tasks.setup]
+description = "全セットアップ実行"
+depends = ["macos", "rosetta", "packages", "link", "skills", "mcp", "auth"]
+run = 'echo "セットアップ完了。再起動してください。"'
+
+[tasks.macos]
+description = "macOS システム設定"
+run = './scripts/macos.sh'
+
+[tasks.rosetta]
+description = "Rosetta 2 インストール"
+run = '/usr/bin/pgrep -q oahd || softwareupdate --install-rosetta --agree-to-license'
+
+[tasks.packages]
+description = "Homebrew パッケージインストール"
+run = 'brew bundle --file=Brewfile'
+
+[tasks.link]
+description = "シンボリックリンク作成"
+run = './scripts/link.sh'
+
+[tasks.skills]
+description = "Claude Code スキルインストール"
+run = './scripts/skills.sh'
+
+[tasks.mcp]
+description = "Claude Code MCPサーバ設定"
+run = './scripts/mcp.sh'
+
+[tasks.auth]
+description = "GitHub CLI 認証"
+run = 'gh auth status 2>/dev/null || gh auth login'
+
+[tasks.vim]
+description = "Vim をソースからビルド"
+run = './scripts/vim.sh'

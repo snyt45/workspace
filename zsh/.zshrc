@@ -4,7 +4,7 @@ eval "$(starship init zsh)"
 
 alias g='git'
 
-export EDITOR=vim
+export EDITOR=nvim
 
 # bin
 export PATH="/usr/local/bin:$PATH"
@@ -13,8 +13,7 @@ export PATH="$HOME/bin:$PATH"
 # fzf
 export FZF_DEFAULT_OPTS="--ansi -e --prompt='QUERY> ' --layout=reverse --border=rounded --height 100%"
 
-# asdf
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+eval "$(mise activate zsh)"
 
 # 履歴の重複を避ける
 setopt HIST_IGNORE_ALL_DUPS   # 同じコマンドを履歴に残さない
@@ -36,15 +35,8 @@ function history-search-fzf() {
 zle -N history-search-fzf
 bindkey '^R' history-search-fzf
 
-# karabinerに依存
-# tmuxでもキーを動作させる
-if [[ -n "$TMUX" ]]; then
-  bindkey -e
-  bindkey '^R' history-search-fzf
-  bindkey '^[[1~' beginning-of-line # 行頭
-  bindkey '^[[4~' end-of-line       # 行末
-  bindkey '^[[1;5C' forward-word    # 次の単語へ移動
-  bindkey '^[[1;5D' backward-word   # 前の単語へ移動
-fi
+
+# zsh-autosuggestions
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 for f in ~/.zshrc.d/*.zsh(N); do source "$f"; done

@@ -11,13 +11,12 @@
 ## 開発環境
 
 - OS: macOS (Apple Silicon)
-- エディタ: Vim 9（メイン）、VSCode（サブ）
-- ターミナル: Warp + tmux (prefix: Ctrl+t)
+- エディタ: Neovim（メイン）、VSCode（サブ）
+- ターミナル: cmux
 - シェル: zsh + starship
-- ファイルマネージャ: yazi
 - 検索: fzf, ripgrep (rg), fd
 - Git: gh, tig
-- パッケージ管理: Homebrew, asdf
+- パッケージ管理: Homebrew, mise
 
 ## コーディング原則
 

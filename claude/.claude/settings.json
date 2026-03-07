@@ -71,8 +71,8 @@
       "Bash(npx:*)",
       "Bash(brew list:*)",
       "Bash(brew info:*)",
-      "Bash(asdf list:*)",
-      "Bash(asdf current:*)"
+      "Bash(mise ls:*)",
+      "Bash(mise current:*)"
     ],
     "deny": [
       "Read(**/.env)",
@@ -88,10 +88,6 @@
       "Bash(shutdown:*)",
       "Bash(reboot:*)"
     ],
-    "additionalDirectories": [
-      "~/.claude",
-      "~/work"
-    ],
     "ask": [
       "Bash(git push:*)",
       "Bash(git pull:*)",
@@ -105,6 +101,10 @@
       "Bash(pnpm install:*)",
       "Bash(brew install:*)",
       "Bash(brew uninstall:*)"
+    ],
+    "additionalDirectories": [
+      "~/.claude",
+      "~/work"
     ]
   },
   "enabledPlugins": {

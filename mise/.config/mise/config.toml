@@ -1,0 +1,5 @@
+[tools]
+node = "18"
+
+[settings]
+http_timeout = "120"
