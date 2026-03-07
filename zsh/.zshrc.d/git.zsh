@@ -8,7 +8,7 @@ gbc() {
 # fzf でコミットを選んで show
 gls() {
   local hash
-  hash=$(git log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -50 --color=always |
+  hash=$(git l --color=always |
     fzf --ansi --preview 'echo {} | grep -o "[0-9a-f]\{7\}" | xargs git show --color=always' \
       --preview-window=right:60%:wrap |
     grep -o "[0-9a-f]\{7\}")

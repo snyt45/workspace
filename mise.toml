@@ -30,7 +30,3 @@ run = './scripts/mcp.sh'
 [tasks.auth]
 description = "GitHub CLI 認証"
 run = 'gh auth status 2>/dev/null || gh auth login'
-
-[tasks.vim]
-description = "Vim をソースからビルド"
-run = './scripts/vim.sh'

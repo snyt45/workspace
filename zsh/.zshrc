@@ -9,7 +9,6 @@ alias vd='nvim +CodeDiff'
 export EDITOR=nvim
 
 # bin
-export PATH="/usr/local/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
 
 # fzf
@@ -39,6 +38,6 @@ bindkey '^R' history-search-fzf
 
 
 # zsh-autosuggestions
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+[ -s /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 for f in ~/.zshrc.d/*.zsh(N); do source "$f"; done
