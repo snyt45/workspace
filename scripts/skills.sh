@@ -15,4 +15,7 @@ if [[ ! -d "$SKILLS_DIR/rails-audit-thoughtbot" ]]; then
   git clone --quiet https://github.com/thoughtbot/rails-audit-thoughtbot.git "$SKILLS_DIR/rails-audit-thoughtbot"
 fi
 
+# 既存スキルを最新に更新
+npx -y skills update -a claude-code -g -y
+
 echo "Claude Code スキルインストール完了"
