@@ -77,6 +77,12 @@ map("i", "<C-a>", "<Home>")
 -- 英数+e → Ctrl+E → 行末移動
 map("i", "<C-e>", "<End>")
 
+-- C-h/j/k/l でウィンドウ間を直接移動（C-w 不要）
+map("n", "<C-h>", "<C-w>h")
+map("n", "<C-j>", "<C-w>j")
+map("n", "<C-k>", "<C-w>k")
+map("n", "<C-l>", "<C-w>l")
+
 -- バッファを閉じる
 map("n", "<leader>x", "<cmd>bdelete<cr>")
 

@@ -5,6 +5,7 @@ eval "$(starship init zsh)"
 alias g='git'
 alias v='nvim'
 alias vd='nvim +CodeDiff'
+alias vdh='nvim +"CodeDiff history"'
 
 export EDITOR=nvim
 
