@@ -1,5 +1,3 @@
-tap "manaflow-ai/cmux"
-
 # CLI ツール
 brew "bat"
 brew "fd"
