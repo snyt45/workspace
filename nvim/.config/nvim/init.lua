@@ -322,17 +322,15 @@ require("lazy").setup({
   },
 
   -- =============================================
-  -- Markdownプレビュー: markdown-preview.nvim
-  -- ブラウザでリアルタイムプレビュー
-  -- <leader>mp でトグル
+  -- Markdownプレビュー: live-preview.nvim
+  -- ブラウザでライブプレビュー（リロードしても維持）
+  -- <leader>m でトグル
   -- =============================================
   {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    ft = { "markdown" },
-    build = "cd app && bash install.sh",
+    "brianhuster/live-preview.nvim",
+    cmd = { "LivePreview", "StopPreview" },
     keys = {
-      { "<leader>m", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview" },
+      { "<leader>m", "<cmd>LivePreview start<cr>", desc = "Live Preview" },
     },
   },
 
