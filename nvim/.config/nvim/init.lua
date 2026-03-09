@@ -97,6 +97,18 @@ map("n", "<leader>x", function()
   end
 end)
 
+-- quickfix操作
+map("n", "]q", "<cmd>cnext<cr>")
+map("n", "[q", "<cmd>cprev<cr>")
+map("n", "<leader>q", function()
+  local wins = vim.fn.getqflist({ winid = 0 }).winid
+  if wins ~= 0 then
+    vim.cmd("cclose")
+  else
+    vim.cmd("copen")
+  end
+end)
+
 -- ターミナルを下に分割して開く
 map("n", "<leader>t", "<cmd>belowright split | terminal<cr>")
 
