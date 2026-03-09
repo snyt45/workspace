@@ -83,8 +83,19 @@ map("n", "<C-j>", "<C-w>j")
 map("n", "<C-k>", "<C-w>k")
 map("n", "<C-l>", "<C-w>l")
 
--- バッファを閉じる
-map("n", "<leader>x", "<cmd>bdelete<cr>")
+-- バッファを閉じる（ウィンドウレイアウトを維持）
+map("n", "<leader>x", function()
+  local buf = vim.api.nvim_get_current_buf()
+  local listed = vim.fn.getbufinfo({ buflisted = 1 })
+  -- 他にリスト済みバッファがあれば切り替えてから削除
+  if #listed > 1 then
+    vim.cmd("bprevious")
+  end
+  -- 元のバッファがまだ存在していれば削除
+  if vim.api.nvim_buf_is_valid(buf) then
+    vim.cmd("bdelete " .. buf)
+  end
+end)
 
 -- ターミナルを下に分割して開く
 map("n", "<leader>t", "<cmd>belowright split | terminal<cr>")
