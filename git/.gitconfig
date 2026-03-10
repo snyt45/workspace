@@ -21,3 +21,5 @@
     s = status
     l = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -50
     ps = push
+[push]
+	autoSetupRemote = true
