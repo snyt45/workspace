@@ -18,13 +18,15 @@
 | バージョン管理 | mise |
 | キーリマッパー | karabiner |
 
-## 1. リストア手順
+## セットアップ
+
+### 1. リストア手順
 
 1. システム環境設定 > 一般 > 転送またはリセット > すべてのコンテンツと設定を消去
 2. Mac をアクティブ化するために Wi-Fi を選択し、再起動をクリックします。
 3. 再起動後、セットアップアシスタントに従って Mac をセットアップしてください。
 
-## 2. 必須インストール
+### 2. 必須インストール
 
 #### Homebrew
 
@@ -39,13 +41,13 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 brew install git mise
 ```
 
-## 3. リポジトリのクローン
+### 3. リポジトリのクローン
 
 ```sh
 git clone https://github.com/snyt45/workspace.git $HOME/.dotfiles
 ```
 
-## 4. セットアップ
+### 4. セットアップ
 
 ```sh
 cd $HOME/.dotfiles
@@ -53,9 +55,15 @@ mise trust
 mise run setup
 ```
 
-## 5. 手動セットアップ
+### 5. 手動セットアップ
 
 - [手動セットアップガイド](docs/manual-setup.md)
 - [チートシート](docs/cheatsheet.md)
 
+## メンテナンス
 
+### パッケージの一括アップデート
+
+```sh
+brew upgrade
+```
