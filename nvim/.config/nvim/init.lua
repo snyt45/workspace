@@ -177,6 +177,7 @@ require("lazy").setup({
         },
       })
       vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>")
+      vim.keymap.set("n", "<leader>E", "<cmd>Neotree reveal<cr>")
     end,
   },
 
