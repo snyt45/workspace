@@ -1,5 +1,13 @@
 # dotfilesリポジトリ固有ルール
 
+## コマンド
+
+- `mise run setup` - 全セットアップ実行（初回セットアップ時）
+- `mise run link` - シンボリックリンク作成
+- `mise run packages` - Homebrewパッケージインストール
+- `mise run skills` - Claude Codeスキルインストール
+- `mise run plugins` - Claude Codeプラグインインストール
+
 ## ドキュメント自動更新
 
 設定ファイルを変更したら、関連するドキュメントも更新する。指示がなくても行う。

@@ -1,5 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "ENABLE_LSP_TOOL": "1"
+  },
   "attribution": {
     "commit": "Created by author with Claude Code",
     "pr": "このPRはClaude Codeを活用して作成しました"
@@ -110,7 +113,8 @@
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": true,
     "superpowers@superpowers-marketplace": true,
-    "ruby-lsp@claude-plugins-official": true
+    "ruby-lsp@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "superpowers-marketplace": {
@@ -119,9 +123,6 @@
         "repo": "obra/superpowers-marketplace"
       }
     }
-  },
-  "env": {
-    "ENABLE_LSP_TOOL": "1"
   },
   "language": "ja",
   "alwaysThinkingEnabled": true,
