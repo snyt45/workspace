@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# fzf でブランチを選んで checkout
+
+branch=$(git branch -a --sort=-committerdate \
+  | grep -v HEAD \
+  | fzf \
+  | sed -e 's/.* //' -e 's#remotes/[^/]*/##')
+
+[[ -n "$branch" ]] && git checkout "$branch"

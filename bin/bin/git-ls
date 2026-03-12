@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# fzf でコミットを選んで show (プレビュー付き)
+
+hash=$(git l --color=always \
+  | fzf --ansi \
+      --preview 'echo {} | grep -o "[0-9a-f]\{7\}" | xargs git show --color=always' \
+      --preview-window=right:60%:wrap \
+  | grep -o "[0-9a-f]\{7\}")
+
+[[ -n "$hash" ]] && git show "$hash"

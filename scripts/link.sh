@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 DOTFILES_DIR="$HOME/.dotfiles"
-PACKAGES=(git nvim zsh karabiner claude mise ghostty)
+PACKAGES=(bin git nvim zsh karabiner claude mise ghostty)
 
 ok=0
 ng=0

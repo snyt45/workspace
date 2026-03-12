@@ -271,9 +271,10 @@ telescope内の操作:
 |----------|------|
 | `g s` | git status |
 | `g l` | ログ (50件、カラー付き) |
-| `gbc` | fzfでブランチを選んでcheckout |
-| `gls` | fzfでコミットを選んでshow (プレビュー付き) |
-| `gfixup` | fzfでコミットを選んでfixupコミット作成 |
+| `g bc` | fzfでブランチを選んでcheckout |
+| `g ls` | fzfでコミットを選んでshow (プレビュー付き) |
+| `g fixup` | fzfでコミットを選んでfixupコミット作成 |
+| `g aicommit` | AIでコミットメッセージ自動生成 (Claude Code CLI) |
 
 
 ## karabiner キーマップ

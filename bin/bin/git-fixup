@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# fzf でコミットを選んで fixup コミット作成
+
+hash=$(git log -n 50 --pretty=format:'%h %s' --no-merges \
+  | fzf \
+  | cut -c -7)
+
+[[ -n "$hash" ]] && git commit --fixup "$hash"
