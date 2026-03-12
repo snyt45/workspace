@@ -2,6 +2,6 @@
 # Claude Code CLI でコミットメッセージを自動生成
 
 COMMITMSG=$(claude --no-session-persistence --print \
-  'Generate ONLY a one-line Git commit message in English using imperative mood. The message should summarize what was changed and why, based strictly on the contents of `git diff --cached`. DO NOT add an explanation or a body. Output ONLY the commit summary line.')
+  '`git diff --cached` の内容に基づいて、Gitコミットメッセージを1行だけ日本語で生成してください。何を変更したかを簡潔にまとめてください。説明や本文は不要です。コミットメッセージの1行だけを出力してください。')
 
 git commit -m "$COMMITMSG" -e
