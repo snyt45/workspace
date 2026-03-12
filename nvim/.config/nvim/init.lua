@@ -56,6 +56,10 @@ vim.opt.foldlevel = 99          -- デフォルトで全て展開
 -- 行番号
 vim.opt.number = true
 
+-- ウィンドウ分割方向
+vim.opt.splitright = true          -- 縦分割は右に開く
+vim.opt.splitbelow = true          -- 横分割は下に開く
+
 -- ==========================================================================
 -- キーマップ (プラグイン非依存)
 -- ==========================================================================
@@ -110,7 +114,7 @@ map("n", "<leader>q", function()
 end)
 
 -- ターミナルを下に分割して開く
-map("n", "<leader>t", "<cmd>belowright split | terminal<cr>")
+map("n", "<leader>t", "<cmd>split | terminal<cr>")
 
 -- ターミナルモードからノーマルモードに戻る
 map("t", "jj", "<C-\\><C-n>")
