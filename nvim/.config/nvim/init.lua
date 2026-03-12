@@ -119,6 +119,9 @@ map("n", "<leader>t", "<cmd>split | terminal<cr>")
 -- ターミナルモードからノーマルモードに戻る
 map("t", "jj", "<C-\\><C-n>")
 
+-- Markdownプレビュー (mo)
+map("n", "<leader>m", "<cmd>!mo %<cr>")
+
 -- ファイルパスコピー
 map("n", "<leader>c", function()
   local path = vim.fn.expand("%:.")
@@ -355,19 +358,6 @@ require("lazy").setup({
         ensure_installed = { "ts_ls", "ruby_lsp", "lua_ls" },
       })
     end,
-  },
-
-  -- =============================================
-  -- Markdownプレビュー: live-preview.nvim
-  -- ブラウザでライブプレビュー（リロードしても維持）
-  -- <leader>m でトグル
-  -- =============================================
-  {
-    "brianhuster/live-preview.nvim",
-    cmd = { "LivePreview", "StopPreview" },
-    keys = {
-      { "<leader>m", "<cmd>LivePreview start<cr>", desc = "Live Preview" },
-    },
   },
 
 })

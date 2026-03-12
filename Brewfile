@@ -1,3 +1,6 @@
+# タップ
+tap "k1LoW/tap"
+
 # CLI ツール
 brew "bat"
 brew "fd"
@@ -6,6 +9,7 @@ brew "gh"
 brew "hugo"
 brew "lazygit"
 brew "mise"
+brew "mo"
 brew "neovim"
 brew "nvm"
 brew "ripgrep"
