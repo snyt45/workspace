@@ -108,9 +108,9 @@
     ]
   },
   "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": true,
     "example-skills@anthropic-agent-skills": true,
-    "superpowers@superpowers-marketplace": true
+    "superpowers@superpowers-marketplace": true,
+    "ruby-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "superpowers-marketplace": {
@@ -119,6 +119,9 @@
         "repo": "obra/superpowers-marketplace"
       }
     }
+  },
+  "env": {
+    "ENABLE_LSP_TOOL": "1"
   },
   "language": "ja",
   "alwaysThinkingEnabled": true,

@@ -1,6 +1,6 @@
 [tasks.setup]
 description = "全セットアップ実行"
-depends = ["macos", "rosetta", "packages", "link", "skills", "mcp", "auth"]
+depends = ["macos", "rosetta", "packages", "link", "skills", "plugins", "mcp", "auth"]
 run = 'echo "セットアップ完了。再起動してください。"'
 
 [tasks.macos]
@@ -22,6 +22,10 @@ run = './scripts/link.sh'
 [tasks.skills]
 description = "Claude Code スキルインストール"
 run = './scripts/skills.sh'
+
+[tasks.plugins]
+description = "Claude Code プラグインインストール"
+run = './scripts/plugins.sh'
 
 [tasks.mcp]
 description = "Claude Code MCPサーバ設定"
