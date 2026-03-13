@@ -15,6 +15,7 @@ brew "nvm"
 brew "ripgrep"
 brew "starship"
 brew "zoxide"
+brew "tmux"
 brew "zsh-autosuggestions"
 
 # アプリケーション
@@ -34,4 +35,5 @@ cask "slack"
 cask "tableplus"
 cask "visual-studio-code"
 cask "cmux"
+cask "warp"
 cask "zoom"

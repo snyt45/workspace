@@ -128,4 +128,31 @@ SlimBlade Pro トラックボール用アプリ
 
 ## 🖥️ 開発環境
 
-なし
+### Warp
+
+#### AI 設定
+
+- Settings > AI: OFF
+
+#### テーマ設定
+
+```sh
+# GruvboxDarkテーマをダウンロード（https://terminal-themes.com/）
+mkdir -p $HOME/.warp/themes/
+mv ~/Downloads/GruvboxDark.yaml $HOME/.warp/themes/
+```
+
+#### ウィンドウ設定
+
+- Settings > Appearance > Window Opacity: 50
+- Settings > Appearance > Window Blur: 20
+
+#### フォント設定
+
+- [HackGen](https://github.com/yuru7/HackGen/releases/latest)から`HackGen_NF_vx.x.x.zip`をダウンロード
+- `HackGenConsoleNF-Regular.ttf`をインストール
+- Settings > Appearance > Text > Terminal font: `HackGen Console NF`
+
+#### プロンプト設定
+
+- Settings > Appearance > Input > Shell prompt を選択
