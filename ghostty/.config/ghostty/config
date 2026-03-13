@@ -1,3 +1,10 @@
+# フォント
+font-family = HackGen Console
+font-size = 14
+
+# テーマ
+theme = Gruvbox Dark
+
 # ペイン移動
 keybind = alt+h=goto_split:left
 keybind = alt+j=goto_split:down
