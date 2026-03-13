@@ -9,6 +9,12 @@
 
 ## 📦 手動インストールが必要なアプリ
 
+### Amphetamine
+
+スリープ防止アプリ（Mac App Store限定）
+
+- **ダウンロード**: Mac App Store で「Amphetamine」を検索してインストール
+
 ### Ankerwork
 
 Anker PowerConf C300 Web カメラ用アプリ
