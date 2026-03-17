@@ -169,6 +169,9 @@ require("lazy").setup({
     config = function()
       require("neo-tree").setup({
         filesystem = {
+          follow_current_file = {
+            enabled = true,       -- バッファ切替時にツリーを自動追従
+          },
           filtered_items = {
             visible = true,       -- 隠しファイル表示
             hide_dotfiles = false,
@@ -180,7 +183,6 @@ require("lazy").setup({
         },
       })
       vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>")
-      vim.keymap.set("n", "<leader>E", "<cmd>Neotree reveal<cr>")
     end,
   },
 
