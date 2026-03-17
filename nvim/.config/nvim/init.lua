@@ -177,6 +177,18 @@ require("lazy").setup({
             hide_dotfiles = false,
             hide_gitignored = false,
           },
+          window = {
+            mappings = {
+              ["/"] = function(state)
+                local node = state.tree:get_node()
+                local path = node.type == "directory" and node:get_id() or vim.fn.fnamemodify(node:get_id(), ":h")
+                require("telescope.builtin").live_grep({
+                  search_dirs = { path },
+                  additional_args = { "--hidden" },
+                })
+              end,
+            },
+          },
         },
         window = {
           width = 30,
