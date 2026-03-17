@@ -133,8 +133,8 @@
   },
   "language": "ja",
   "alwaysThinkingEnabled": true,
+  "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754364589827
-  },
-  "voiceEnabled": true
+  }
 }

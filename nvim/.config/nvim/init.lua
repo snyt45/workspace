@@ -283,7 +283,6 @@ require("lazy").setup({
 			"hrsh7th/cmp-nvim-lsp", -- LSPの補完ソース
 			"hrsh7th/cmp-buffer", -- バッファ内の単語
 			"hrsh7th/cmp-path", -- ファイルパス
-			"zbirenbaum/copilot-cmp", -- Copilot補完ソース
 		},
 		config = function()
 			local cmp = require("cmp")
@@ -295,7 +294,6 @@ require("lazy").setup({
 					["<C-Space>"] = cmp.mapping.complete(),
 				}),
 				sources = cmp.config.sources({
-					{ name = "copilot" },
 					{ name = "nvim_lsp" },
 					{ name = "buffer" },
 					{ name = "path" },
@@ -361,8 +359,8 @@ require("lazy").setup({
 	},
 
 	-- =============================================
-	-- Copilot: copilot.lua + copilot-cmp
-	-- インライン補完は無効にしてnvim-cmpに統合
+	-- Copilot: copilot.lua
+	-- インライン補完（バッファ上にゴースト表示）
 	-- =============================================
 	{
 		"zbirenbaum/copilot.lua",
@@ -370,17 +368,20 @@ require("lazy").setup({
 		event = "InsertEnter",
 		config = function()
 			require("copilot").setup({
-				suggestion = { enabled = false },
+				suggestion = {
+					enabled = true,
+					auto_trigger = true,
+					keymap = {
+						accept = "<C-y>",
+						accept_word = "<M-Right>",
+						next = "<M-]>",
+						prev = "<M-[>",
+						dismiss = "<C-]>",
+					},
+				},
 				panel = { enabled = false },
 				filetypes = { ["*"] = true },
 			})
-		end,
-	},
-	{
-		"zbirenbaum/copilot-cmp",
-		dependencies = { "zbirenbaum/copilot.lua" },
-		config = function()
-			require("copilot_cmp").setup()
 		end,
 	},
 
