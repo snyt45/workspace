@@ -187,26 +187,29 @@ require("lazy").setup({
   },
 
   -- =============================================
-  -- バッファタブ: bufferline.nvim
-  -- 上部にバッファをタブ風に表示
-  -- VSCodeのタブバーと同じ感覚
+  -- harpoon2: 作業中ファイルへの高速ジャンプ
+  -- <leader>a で登録、<leader>1-4 で一発ジャンプ
   -- =============================================
   {
-    "akinsho/bufferline.nvim",
-    version = "*",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("bufferline").setup({
-        options = {
-          offsets = {
-            { filetype = "neo-tree", text = "Explorer", text_align = "center" },
-          },
-          show_buffer_close_icons = false,
-          show_close_icon = false,
+      local harpoon = require("harpoon")
+      harpoon:setup({
+        settings = {
+          save_on_toggle = true,
+          sync_on_ui_close = true,
         },
       })
-      vim.keymap.set("n", "]b", "<cmd>BufferLineCycleNext<cr>")
-      vim.keymap.set("n", "[b", "<cmd>BufferLineCyclePrev<cr>")
+
+      vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+      vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+      vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end)
+      vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end)
+      vim.keymap.set("n", "<leader>3", function() harpoon:list():select(3) end)
+      vim.keymap.set("n", "<leader>4", function() harpoon:list():select(4) end)
     end,
   },
 
