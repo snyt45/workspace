@@ -1,5 +1,5 @@
 [tools]
-node = "18"
+node = "22"
 
 [settings]
 http_timeout = "120"
