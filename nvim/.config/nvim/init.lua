@@ -182,7 +182,7 @@ require("lazy").setup({
 							["/"] = function(state)
 								local node = state.tree:get_node()
 								local path = node.type == "directory" and node:get_id() or
-								vim.fn.fnamemodify(node:get_id(), ":h")
+								    vim.fn.fnamemodify(node:get_id(), ":h")
 								require("telescope.builtin").live_grep({
 									search_dirs = { path },
 									additional_args = { "--hidden" },
@@ -235,7 +235,6 @@ require("lazy").setup({
 	-- =============================================
 	{
 		"nvim-telescope/telescope.nvim",
-		branch = "0.1.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			-- C実装のソーター。検索が高速になる
@@ -386,63 +385,37 @@ require("lazy").setup({
 	},
 
 	-- =============================================
-	-- CopilotChat: チャット機能
-	-- ビジュアル選択 → ,cc でチャット
-	-- ,ccp でTelescopeからアクション選択
+	-- codecompanion.nvim: AIアシスト (Chat + Inline編集)
+	-- ,cc でチャット、,ccp でアクション選択
+	-- ビジュアル選択 → :CodeCompanion <指示> でインライン編集
 	-- =============================================
 	{
-		"CopilotC-Nvim/CopilotChat.nvim",
+		"olimorris/codecompanion.nvim",
 		dependencies = {
-			{ "zbirenbaum/copilot.lua" },
-			{ "nvim-lua/plenary.nvim" },
+			"nvim-lua/plenary.nvim",
+			"nvim-treesitter/nvim-treesitter",
 		},
-		build = "make tiktoken",
 		config = function()
-			require("CopilotChat").setup({
-				language = "ja",           -- 回答を日本語で返す
-				resources = { "buffer" },  -- 常に現在のバッファをコンテキストに含める
-				prompts = {
-					Explain = {
-						prompt = "選択したコードの説明を日本語で書いてください",
-						mapping = "<leader>ce",
-					},
-					Review = {
-						prompt = "コードを日本語でレビューしてください",
-						mapping = "<leader>cr",
-					},
-					Fix = {
-						prompt = "このコードには問題があります。バグを修正したコードを表示してください",
-						mapping = "<leader>cf",
-					},
-					Optimize = {
-						prompt = "選択したコードを最適化してください",
-						mapping = "<leader>co",
-					},
-					Tests = {
-						prompt = "ユニットテストを書いてください",
-						mapping = "<leader>ct",
-					},
-					Commit = {
-						mapping = "<leader>cco",
-						resources = { "gitdiff:staged" },
+			require("codecompanion").setup({
+				language = "Japanese",
+				interactions = {
+					chat = { adapter = "copilot" },
+					inline = { adapter = "copilot" },
+					cmd = { adapter = "copilot" },
+				},
+				display = {
+					chat = {
+						window = {
+							layout = "vertical",
+							width = 0.4,
+						},
 					},
 				},
 			})
+			vim.keymap.set({ "n", "v" }, "<leader>cc", "<cmd>CodeCompanionChat Toggle<cr>")
+			vim.keymap.set({ "n", "v" }, "<leader>ccp", "<cmd>CodeCompanionActions<cr>")
+			vim.keymap.set("v", "ga", "<cmd>CodeCompanionChat Add<cr>")
 		end,
-		keys = {
-			{
-				"<leader>cc",
-				function() require("CopilotChat").toggle() end,
-				mode = { "n", "v" },
-				desc = "CopilotChat - Toggle",
-			},
-			{
-				"<leader>ccp",
-				function() require("CopilotChat").select_prompt() end,
-				mode = { "n", "v" },
-				desc = "CopilotChat - Prompt actions",
-			},
-		},
 	},
 
 	-- =============================================
