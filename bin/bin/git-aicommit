@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 # Claude Code CLI でコミットメッセージを自動生成
 
-COMMITMSG=$(claude --no-session-persistence --print \
-  '`git diff --cached` の内容に基づいて、Gitコミットメッセージを1行だけ日本語で生成してください。何を変更したかを簡潔にまとめてください。説明や本文は不要です。コミットメッセージの1行だけを出力してください。')
+TMPFILE=$(mktemp)
+trap 'rm -f "$TMPFILE"' EXIT
+
+claude --no-session-persistence --print --model claude-haiku-4-5-20251001 \
+  '`git diff --cached` の内容に基づいて、Gitコミットメッセージを1行だけ日本語で生成してください。何を変更したかを簡潔にまとめてください。説明や本文は不要です。コミットメッセージの1行だけを出力してください。' \
+  > "$TMPFILE" 2>/dev/null
+
+COMMITMSG=$(cat "$TMPFILE")
+
+if [ -z "$COMMITMSG" ]; then
+  echo "コミットメッセージの生成に失敗しました"
+  exit 1
+fi
 
 git commit -m "$COMMITMSG" -e
