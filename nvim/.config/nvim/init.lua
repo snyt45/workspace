@@ -119,8 +119,68 @@ map("n", "<leader>t", "<cmd>split | terminal<cr>")
 -- ターミナルモードからノーマルモードに戻る
 map("t", "jj", "<C-\\><C-n>")
 
--- Markdownプレビュー (mo)
-map("n", "<leader>m", "<cmd>!mo %<cr>")
+-- Markdownプレビュー (mo) - ブラウザ自動起動
+map("n", "<leader>m", function()
+	local file = vim.fn.shellescape(vim.fn.expand("%"))
+	local output = vim.fn.system("mo " .. file .. " 2>&1")
+	local url = output:match("(http://[^%s]+)")
+	if url then
+		vim.fn.jobstart({ "open", url })
+	end
+end)
+
+-- キーマップヘルプ (g?) - Telescopeでファジー検索・実行
+map("n", "g?", function()
+	local items = {
+		-- ファイル
+		{ cmd = "Neotree toggle", label = ",e   ファイルツリー" },
+		{ cmd = "Telescope find_files", label = ",,   ファイル検索" },
+		{ cmd = "Telescope live_grep", label = ",r   grep検索" },
+		{ cmd = "Telescope buffers", label = ",b   バッファ一覧" },
+		{ cmd = "Telescope oldfiles", label = ",o   最近のファイル" },
+		{ label = ",x   バッファを閉じる" },
+		{ label = ",c   ファイルパスコピー" },
+		{ label = ",m   Markdownプレビュー" },
+		-- Harpoon
+		{ label = ",a   Harpoon追加" },
+		{ label = ",h   Harpoonメニュー" },
+		{ label = ",1-4 Harpoonジャンプ" },
+		-- Git
+		{ cmd = "CodeDiff", label = ",gg  CodeDiff" },
+		{ cmd = "Telescope git_status", label = ",gs  git status" },
+		{ label = "gn   次のhunk" },
+		{ label = "gp   前のhunk" },
+		{ label = "gha  hunkをstage" },
+		{ label = "ghu  hunkをreset" },
+		{ label = "ghp  hunkをプレビュー" },
+		-- LSP
+		{ label = "gd   定義ジャンプ" },
+		{ label = "gr   参照一覧" },
+		{ label = "K    ホバー" },
+		{ label = ",rn  リネーム" },
+		{ label = ",ca  コードアクション" },
+		{ label = "gy   型定義" },
+		{ label = "gl   diagnostic" },
+		-- AI
+		{ cmd = "CodeCompanionChat Toggle", label = ",cc  AIチャット" },
+		{ cmd = "CodeCompanionActions", label = ",ccp AIアクション" },
+		{ label = "ga   チャットに追加 (visual)" },
+		-- その他
+		{ label = "gcc  コメントトグル" },
+		{ label = ",t   ターミナル" },
+		{ label = ",q   quickfixトグル" },
+		{ label = "]q   次のquickfix" },
+		{ label = "[q   前のquickfix" },
+	}
+	vim.ui.select(items, {
+		prompt = "キーマップ",
+		format_item = function(item) return item.label end,
+	}, function(choice)
+		if choice and choice.cmd then
+			vim.cmd(choice.cmd)
+		end
+	end)
+end)
 
 -- ファイルパスコピー
 map("n", "<leader>c", function()
