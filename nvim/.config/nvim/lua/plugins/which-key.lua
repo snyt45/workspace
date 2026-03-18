@@ -21,7 +21,6 @@ return {
 		})
 		wk.add({
 			{ "<leader>g", group = "Git" },
-			{ "<leader>c", group = "Code" },
 			{ "gh", group = "Hunk" },
 		})
 	end,
