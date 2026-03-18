@@ -193,6 +193,10 @@ require("lazy").setup({
 				},
 				window = {
 					width = 30,
+					mappings = {
+						["gf"] = function() vim.cmd("Neotree focus filesystem left") end,
+						["gs"] = function() vim.cmd("Neotree focus git_status left") end,
+					},
 				},
 			})
 			vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>")
@@ -367,11 +371,12 @@ require("lazy").setup({
 		event = "InsertEnter",
 		config = function()
 			require("copilot").setup({
+				copilot_node_command = vim.fn.expand("~/.local/share/mise/installs/node/22.22.1/bin/node"),
 				suggestion = {
 					enabled = true,
 					auto_trigger = true,
 					keymap = {
-						accept = "<C-y>",
+						accept = "<Right>",
 						accept_word = "<M-Right>",
 						next = "<M-]>",
 						prev = "<M-[>",
@@ -393,7 +398,6 @@ require("lazy").setup({
 		"olimorris/codecompanion.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
 		},
 		config = function()
 			require("codecompanion").setup({
@@ -404,6 +408,11 @@ require("lazy").setup({
 					cmd = { adapter = "copilot" },
 				},
 				display = {
+					action_palette = {
+						opts = {
+							show_preset_prompts = false,
+						},
+					},
 					chat = {
 						window = {
 							layout = "vertical",
