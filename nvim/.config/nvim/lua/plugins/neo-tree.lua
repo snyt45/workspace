@@ -8,7 +8,10 @@ return {
 	},
 	config = function()
 		require("neo-tree").setup({
+			close_if_last_window = true,
+			popup_border_style = "rounded",
 			filesystem = {
+				use_libuv_file_watcher = true,
 				follow_current_file = {
 					enabled = true,
 				},
@@ -33,8 +36,14 @@ return {
 			},
 			window = {
 				width = 30,
+				mappings = {
+					["l"] = "open",
+					["h"] = "close_node",
+				},
 			},
 		})
 		vim.keymap.set("n", "<leader>e", "<cmd>Neotree focus<cr>", { desc = "ファイルツリー" })
+		vim.keymap.set("n", "<leader>b", "<cmd>Neotree float buffers<cr>", { desc = "バッファ一覧" })
+		vim.keymap.set("n", "<leader>gs", "<cmd>Neotree float git_status<cr>", { desc = "Git status" })
 	end,
 }

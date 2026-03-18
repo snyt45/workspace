@@ -85,17 +85,8 @@ map("n", "<C-j>", "<C-w>j")
 map("n", "<C-k>", "<C-w>k")
 map("n", "<C-l>", "<C-w>l")
 
--- バッファを閉じる（ウィンドウレイアウトを維持）
-map("n", "<leader>x", function()
-	local buf = vim.api.nvim_get_current_buf()
-	local listed = vim.fn.getbufinfo({ buflisted = 1 })
-	if #listed > 1 then
-		vim.cmd("bprevious")
-	end
-	if vim.api.nvim_buf_is_valid(buf) then
-		vim.cmd("bdelete " .. buf)
-	end
-end, { desc = "バッファを閉じる" })
+-- バッファを閉じる
+map("n", "<leader>x", "<cmd>bdelete<cr>", { desc = "バッファを閉じる" })
 
 -- quickfix操作
 map("n", "]q", "<cmd>cnext<cr>", { desc = "次のquickfix" })

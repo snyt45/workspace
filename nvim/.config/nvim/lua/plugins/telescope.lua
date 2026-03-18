@@ -11,7 +11,18 @@ return {
 		telescope.setup({
 			defaults = {
 				layout_strategy = "vertical",
-				layout_config = { height = 0.9, width = 0.9 },
+				layout_config = {
+					height = 0.9,
+					width = 0.9,
+					prompt_position = "top",
+					preview_height = 0.5,
+				},
+				sorting_strategy = "ascending",
+				borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+				prompt_prefix = "  ",
+				selection_caret = " ",
+				entry_prefix = "  ",
+				results_title = false,
 				mappings = {
 					i = { ["<Esc>"] = actions.close },
 				},
@@ -28,8 +39,6 @@ return {
 		local builtin = require("telescope.builtin")
 		vim.keymap.set("n", "<leader><leader>", builtin.find_files, { desc = "ファイル検索" })
 		vim.keymap.set("n", "<leader>r", builtin.live_grep, { desc = "grep検索" })
-		vim.keymap.set("n", "<leader>b", builtin.buffers, { desc = "バッファ一覧" })
 		vim.keymap.set("n", "<leader>o", builtin.oldfiles, { desc = "最近のファイル" })
-		vim.keymap.set("n", "<leader>gs", builtin.git_status, { desc = "git status" })
 	end,
 }
