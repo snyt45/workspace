@@ -31,13 +31,23 @@ return {
 				find_files = {
 					hidden = true,
 				},
+				live_grep = {
+					additional_args = { "--hidden", "--glob", "!.git/", "--trim" },
+				},
 			},
 		})
 		telescope.load_extension("fzf")
 		telescope.load_extension("ui-select")
 
 		local builtin = require("telescope.builtin")
-		vim.keymap.set("n", "<leader><leader>", builtin.find_files, { desc = "ファイル検索" })
+
+		-- gitリポジトリ内ではgit_files、外ではfind_filesにフォールバック
+		vim.keymap.set("n", "<leader><leader>", function()
+			local ok = pcall(builtin.git_files, { show_untracked = true })
+			if not ok then
+				builtin.find_files()
+			end
+		end, { desc = "ファイル検索" })
 		vim.keymap.set("n", "<leader>r", builtin.live_grep, { desc = "grep検索" })
 		vim.keymap.set("n", "<leader>o", builtin.oldfiles, { desc = "最近のファイル" })
 	end,
