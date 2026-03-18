@@ -9,7 +9,7 @@
 
 | レイヤー | ツール |
 |----------|--------|
-| ターミナル | cmux |
+| ターミナル | Warp |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
 | Git UI | codediff + gitsigns |
