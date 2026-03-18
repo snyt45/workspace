@@ -33,12 +33,8 @@ return {
 			},
 			window = {
 				width = 30,
-				mappings = {
-					["gf"] = function() vim.cmd("Neotree focus filesystem left") end,
-					["gs"] = function() vim.cmd("Neotree focus git_status left") end,
-				},
 			},
 		})
-		vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>", { desc = "ファイルツリー" })
+		vim.keymap.set("n", "<leader>e", "<cmd>Neotree focus<cr>", { desc = "ファイルツリー" })
 	end,
 }
