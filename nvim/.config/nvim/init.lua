@@ -73,7 +73,7 @@ map("n", "q", "<Nop>")
 map({ "n", "i" }, "<F1>", "<Nop>")
 
 -- 検索ハイライト解除
-map("n", "<Esc><Esc>", ":nohlsearch<CR>", { desc = "which_key_ignore" })
+map("n", "<Esc><Esc>", ":nohlsearch<CR>")
 
 -- インサートモード: Karabiner英数+a/eに対応
 map("i", "<C-a>", "<Home>")
@@ -124,9 +124,6 @@ map("n", "<leader>m", function()
 		vim.fn.jobstart({ "open", url })
 	end
 end, { desc = "Markdownプレビュー" })
-
--- キーマップヘルプ (g?)
-map("n", "g?", function() require("which-key").show() end, { desc = "キーマップヘルプ" })
 
 -- ファイルパスコピー
 map("n", "<leader>c", function()
