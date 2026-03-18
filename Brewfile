@@ -2,7 +2,6 @@
 tap "k1LoW/tap"
 
 # CLI ツール
-brew "bat"
 brew "fd"
 brew "fzf"
 brew "gh"
