@@ -3,5 +3,6 @@ return {
 	cmd = "CodeDiff",
 	keys = {
 		{ "<leader>gg", "<cmd>CodeDiff<cr>", desc = "CodeDiff" },
+		{ "<leader>gh", "<cmd>CodeDiff history<cr>", desc = "CodeDiff履歴" },
 	},
 }
