@@ -9,7 +9,7 @@
 
 | レイヤー | ツール |
 |----------|--------|
-| ターミナル | Warp |
+| ターミナル | Warp + tmux |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
 | Git UI | codediff + gitsigns |
@@ -67,3 +67,24 @@ mise run setup
 ```sh
 brew upgrade
 ```
+
+## dotfilesセットアップ
+
+| コマンド | 説明 |
+|----------|------|
+| `mise run setup` | 全セットアップ実行 |
+| `mise run packages` | Homebrewパッケージインストール |
+| `mise run link` | シンボリックリンク作成 |
+| `mise run skills` | Claude Codeスキルインストール |
+| `mise run mcp` | Claude Code MCPサーバ設定 |
+| `mise run auth` | GitHub CLI認証 |
+| `mise tasks` | タスク一覧表示 |
+
+## mise (ランタイムバージョン管理)
+
+| コマンド | 説明 |
+|----------|------|
+| `mise install` | .tool-versionsに従ってランタイムインストール |
+| `mise use node@20` | Node.js 20を使用 |
+| `mise ls` | インストール済みランタイム一覧 |
+| `mise run <task>` | タスク実行 |
