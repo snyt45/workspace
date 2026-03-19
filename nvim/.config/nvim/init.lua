@@ -40,7 +40,7 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.autoread = true -- 外部変更を自動読み込み
 
 -- ペイン切り替え時にファイル変更を検知してリロード
-vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold" }, {
+vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "FocusGained" }, {
 	command = "checktime",
 })
 
