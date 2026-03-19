@@ -123,6 +123,16 @@ map("n", "<leader>c", function()
 	print("Copied: " .. path)
 end, { desc = "ファイルパスコピー" })
 
+-- ファイルパス + 選択コードをマークダウン形式でコピー
+map("v", "<leader>cc", function()
+	local path = vim.fn.expand("%:.")
+	vim.cmd('normal! "vy')
+	local selected_text = vim.fn.getreg("v")
+	local formatted = "@" .. path .. "\n\n```\n" .. selected_text .. "\n```"
+	vim.fn.setreg("+", formatted)
+	print("Copied: @" .. path .. " with selected text")
+end, { desc = "ファイルパス+コードコピー" })
+
 -- ==========================================================================
 -- プラグイン (lua/plugins/ 配下のファイルを自動読み込み)
 -- ==========================================================================
