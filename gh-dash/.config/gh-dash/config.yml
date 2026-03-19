@@ -1,6 +1,12 @@
+repoPaths:
+  snyt45/*: ~/work/*
+  toypo/*: ~/work/*
+
 prSections:
   - title: My PRs
     filters: is:open author:@me
+  - title: Open PRs
+    filters: is:open
   - title: Review Requested
     filters: is:open review-requested:@me
   - title: Involved
@@ -15,16 +21,16 @@ issuesSections:
 keybindings:
   prs:
     - key: d
-      command: >-
+      command: |-
         tmux new-window -c {{.RepoPath}} '
-          tmux rename-window "{{.RepoName}}#{{.PrNumber}}" &&
+          tmux rename-window {{.RepoName}}#{{.PrNumber}} &&
           gh pr checkout {{.PrNumber}} &&
-          nvim -c "CodeDiff origin/$(gh pr view {{.PrNumber}} --json baseRefName -q .baseRefName)"
+          nvim -c ":CodeDiff origin/{{.BaseRefName}}"
         '
     - key: C
-      command: >-
+      command: |-
         tmux new-window -c {{.RepoPath}} '
-          tmux rename-window "{{.RepoName}}#{{.PrNumber}}" &&
+          tmux rename-window {{.RepoName}}#{{.PrNumber}} &&
           gh pr checkout {{.PrNumber}} &&
-          nvim -c "Octo pr edit {{.PrNumber}}"
+          nvim -c ":Octo pr edit {{.PrNumber}}"
         '
