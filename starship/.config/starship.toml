@@ -1,0 +1,5 @@
+format = '${env_var.TMUX}$all'
+
+[env_var.TMUX]
+format = '[ 󰓩 ]($style) '
+style = 'dimmed green'
