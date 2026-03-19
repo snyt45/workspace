@@ -13,6 +13,7 @@
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
 | Git UI | codediff + gitsigns |
+| PRレビュー | gh-dash + octo.nvim |
 | シェル | zsh + starship |
 | 検索 | fzf, ripgrep, fd |
 | バージョン管理 | mise |
@@ -78,6 +79,7 @@ brew upgrade
 | `mise run skills` | Claude Codeスキルインストール |
 | `mise run mcp` | Claude Code MCPサーバ設定 |
 | `mise run auth` | GitHub CLI認証 |
+| `mise run gh-extensions` | GitHub CLI拡張インストール |
 | `mise tasks` | タスク一覧表示 |
 
 ## mise (ランタイムバージョン管理)

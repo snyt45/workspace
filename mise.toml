@@ -1,6 +1,6 @@
 [tasks.setup]
 description = "全セットアップ実行"
-depends = ["macos", "rosetta", "packages", "link", "skills", "plugins", "mcp", "auth"]
+depends = ["macos", "rosetta", "packages", "link", "skills", "plugins", "mcp", "auth", "gh-extensions"]
 run = 'echo "セットアップ完了。再起動してください。"'
 
 [tasks.macos]
@@ -30,6 +30,10 @@ run = './scripts/plugins.sh'
 [tasks.mcp]
 description = "Claude Code MCPサーバ設定"
 run = './scripts/mcp.sh'
+
+[tasks.gh-extensions]
+description = "GitHub CLI 拡張インストール"
+run = 'gh extension list | grep -q dlvhdr/gh-dash || gh extension install dlvhdr/gh-dash'
 
 [tasks.auth]
 description = "GitHub CLI 認証"

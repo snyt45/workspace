@@ -17,6 +17,10 @@
 | `vdh` | nvim +"CodeDiff history" (コミット履歴付きで起動) |
 
 
+## ターミナルの使い分け
+
+基本はtmux。Warpはsshでセッション維持したい場合や、大量のログをブロック単位でコピーしたいときに使う。
+
 ## Warp
 
 | キー | 説明 |
@@ -129,8 +133,8 @@ leader = `,`
 
 | キー | 説明 |
 |------|------|
-| `gn` | 次の変更箇所へ |
-| `gp` | 前の変更箇所へ |
+| `]c` | 次の変更箇所へ |
+| `[c` | 前の変更箇所へ |
 | `gha` | 変更をステージング |
 | `ghu` | ステージング取り消し |
 | `ghr` | 変更をリセット |
@@ -160,6 +164,42 @@ Neovim内から起動:
 | `i` | リスト/ツリー表示の切り替え |
 | `t` | サイドバイサイド/インラインの切り替え |
 | `g?` | キーマップヘルプ表示 |
+
+### GitHub PR/Issue (octo.nvim)
+
+| キー/コマンド | 説明 |
+|---------------|------|
+| `,gp` | GitHub PR一覧 |
+| `,gi` | GitHub Issue一覧 |
+| `:Octo` | アクション一覧 (コマンド検索) |
+| `Enter` | PR/Issueバッファ内でアクション一覧 |
+
+PRレビューの流れ:
+
+1. `,gp` でPR選択 → PRバッファが開く
+2. diff確認: `:Octo pr checkout` → `,gg` (codediffで差分を見る)
+3. コメント: `:Octo review start` → `\ca` / `\sa` → `:Octo review submit`
+
+レビュー操作 (localleader = `\`):
+
+| キー/コマンド | 説明 |
+|---------------|------|
+| `:Octo review start` | レビュー開始 |
+| `:Octo review resume` | レビュー再開 |
+| `:Octo review submit` | レビュー送信 (C-a:承認, C-m:コメント, C-r:変更要求) |
+| `:Octo review discard` | レビュー破棄 |
+| `\ca` | レビューコメント追加 (ビジュアルモードで範囲選択可) |
+| `\sa` | suggest changes (ビジュアルモードで範囲選択可) |
+| `]t` / `[t` | 次/前のスレッドへ |
+| `\rt` | スレッド解決 |
+
+PR操作:
+
+| キー/コマンド | 説明 |
+|---------------|------|
+| `:Octo pr checkout` | ブランチをチェックアウト |
+| `:Octo pr browser` | ブラウザで開く |
+| `:Octo pr merge` | マージ (squash) |
 
 ### quickfix
 
@@ -193,6 +233,21 @@ Neovim内から起動:
 |----------|------|
 | `:Mason` | LSPサーバ管理 |
 | `:ConformInfo` | フォーマッタ設定の確認 |
+
+
+## PRレビュー (gh-dash)
+
+| コマンド/キー | 説明 |
+|---------------|------|
+| `gh dash` | ダッシュボード起動 |
+| `d` | PR選択 → codediff で差分表示 (tmux新ウィンドウ) |
+| `C` | PR選択 → octo.nvim でレビュー (tmux新ウィンドウ) |
+
+レビューの流れ:
+
+1. `gh dash` → Review Requested でPRを選ぶ
+2. `d` で差分を確認 (codediff)。Neovim閉じるとdashに戻る
+3. `C` でレビューコメント/approve (octo.nvim)
 
 
 ## Git (コマンドライン)

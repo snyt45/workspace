@@ -11,8 +11,8 @@ return {
 			},
 			on_attach = function(bufnr)
 				local gs = package.loaded.gitsigns
-				vim.keymap.set("n", "gn", gs.next_hunk, { buffer = bufnr, desc = "次のhunk" })
-				vim.keymap.set("n", "gp", gs.prev_hunk, { buffer = bufnr, desc = "前のhunk" })
+				vim.keymap.set("n", "]c", gs.next_hunk, { buffer = bufnr, desc = "次のhunk" })
+				vim.keymap.set("n", "[c", gs.prev_hunk, { buffer = bufnr, desc = "前のhunk" })
 				vim.keymap.set("n", "gha", gs.stage_hunk, { buffer = bufnr, desc = "hunkをstage" })
 				vim.keymap.set("n", "ghu", gs.undo_stage_hunk, { buffer = bufnr, desc = "hunkをunstage" })
 				vim.keymap.set("n", "ghr", gs.reset_hunk, { buffer = bufnr, desc = "hunkをreset" })
