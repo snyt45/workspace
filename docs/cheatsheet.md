@@ -165,13 +165,6 @@ Neovim内から起動:
 | `t` | サイドバイサイド/インラインの切り替え |
 | `g?` | キーマップヘルプ表示 |
 
-### GitHub Issue (octo.nvim)
-
-| キー/コマンド | 説明 |
-|---------------|------|
-| `,gi` | GitHub Issue一覧 |
-| `:Octo` | アクション一覧 (コマンド検索) |
-
 ### quickfix
 
 | キー | 説明 |
@@ -228,21 +221,16 @@ gh-dash 操作:
 | `?` | ヘルプ |
 | `q` | 終了 |
 
-octo.nvim レビュー操作 (localleader = `\`):
+octo.nvim 操作:
 
 | キー/コマンド | 説明 |
 |---------------|------|
-| `:Octo` | アクション一覧 |
+| `Enter` | アクション一覧 (PRバッファ内で) |
+| `:Octo` | コマンド一覧 (タブ補完可) |
 | `:Octo review start` | レビュー開始 |
-| `:Octo review resume` | レビュー再開 |
+| `:Octo review resume` | 中断したレビューを再開 |
 | `:Octo review submit` | レビュー送信 (C-a:承認, C-m:コメント, C-r:変更要求) |
-| `:Octo review discard` | レビュー破棄 |
-| `\ca` | レビューコメント追加 (ビジュアルモードで範囲選択可) |
-| `\sa` | suggest changes (ビジュアルモードで範囲選択可) |
-| `]t` / `[t` | 次/前のスレッドへ |
-| `\rt` | スレッド解決 |
 | `:Octo pr merge` | マージ (squash) |
-| `:Octo pr browser` | ブラウザで開く |
 
 Neovim内から直接開く場合:
 
