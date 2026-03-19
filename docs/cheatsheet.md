@@ -245,6 +245,7 @@ Neovim内から直接開く場合:
 | コマンド | 説明 |
 |----------|------|
 | `g s` | git status |
+| `g ds` | git diff --staged (ステージ済みの差分表示) |
 | `g l` | ログ (50件、カラー付き) |
 | `g bc` | fzfでブランチを選んでcheckout |
 | `g ls` | fzfでコミットを選んでshow (プレビュー付き) |
