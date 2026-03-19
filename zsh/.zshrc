@@ -15,6 +15,8 @@ export PATH="$HOME/bin:$PATH"
 # fzf
 export FZF_DEFAULT_OPTS="--ansi -e --prompt='QUERY> ' --layout=reverse --border=rounded --height 100%"
 
+# mise shims: エディタやLSP等の非インタラクティブなツールがmise管理のランタイムを参照できるようにする
+export PATH="$HOME/.local/share/mise/shims:$PATH"
 eval "$(mise activate zsh)"
 
 # 履歴の重複を避ける
