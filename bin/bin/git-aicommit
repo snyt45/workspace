@@ -1,18 +1,59 @@
 #!/usr/bin/env bash
-# Claude Code CLI でコミットメッセージを自動生成
+# Anthropic API でコミットメッセージを自動生成
 
-TMPFILE=$(mktemp)
-trap 'rm -f "$TMPFILE"' EXIT
+set -euo pipefail
 
-claude --no-session-persistence --print --model claude-haiku-4-5-20251001 \
-  '`git diff --cached` の内容に基づいて、Gitコミットメッセージを1行だけ日本語で生成してください。何を変更したかを簡潔にまとめてください。説明や本文は不要です。コミットメッセージの1行だけを出力してください。' \
-  > "$TMPFILE" 2>/dev/null
+# APIキー取得: 1Password CLI → フォールバックでClaude Code CLI
+if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+    ANTHROPIC_API_KEY=$(op read "op://Personal/anthropic_api_key_aicommit/credential" 2>/dev/null) || true
+    export ANTHROPIC_API_KEY
+fi
 
-COMMITMSG=$(cat "$TMPFILE")
+# APIキーがなければClaude Code CLIにフォールバック
+if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+    DIFF=$(git diff --cached)
+    if [ -z "$DIFF" ]; then
+        echo "ステージされた変更がありません"
+        exit 1
+    fi
+    COMMITMSG=$(claude --no-session-persistence --print --model claude-haiku-4-5-20251001 \
+        '`git diff --cached` の内容に基づいてコミットメッセージを1行だけ日本語で生成。メッセージのみ出力。' 2>/dev/null)
+    if [ -z "$COMMITMSG" ]; then
+        echo "コミットメッセージの生成に失敗しました"
+        exit 1
+    fi
+    git commit -m "$COMMITMSG" -e
+    exit 0
+fi
 
-if [ -z "$COMMITMSG" ]; then
-  echo "コミットメッセージの生成に失敗しました"
-  exit 1
+DIFF=$(git diff --cached)
+
+if [ -z "$DIFF" ]; then
+    echo "ステージされた変更がありません"
+    exit 1
+fi
+
+# diffが大きすぎる場合は先頭を切り詰める（APIトークン節約）
+DIFF=$(echo "$DIFF" | head -300)
+
+COMMITMSG=$(curl -s https://api.anthropic.com/v1/messages \
+    -H "content-type: application/json" \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
+    -d "$(jq -n \
+        --arg diff "$DIFF" \
+        '{
+            model: "claude-haiku-4-5-20251001",
+            max_tokens: 100,
+            messages: [{
+                role: "user",
+                content: ("以下のgit diffに基づいてコミットメッセージを1行だけ日本語で生成。メッセージのみ出力。\n\n" + $diff)
+            }]
+        }')" | jq -r '.content[0].text')
+
+if [ -z "$COMMITMSG" ] || [ "$COMMITMSG" = "null" ]; then
+    echo "コミットメッセージの生成に失敗しました"
+    exit 1
 fi
 
 git commit -m "$COMMITMSG" -e

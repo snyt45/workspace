@@ -18,6 +18,8 @@ brew "tmux"
 brew "zsh-autosuggestions"
 
 # アプリケーション
+cask "1password"
+cask "1password-cli"
 cask "alt-tab"
 cask "claude"
 cask "claude-code"

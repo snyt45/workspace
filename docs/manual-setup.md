@@ -132,6 +132,37 @@ SlimBlade Pro トラックボール用アプリ
 - オーディオ: ミーティング参加時にマイクをミュート
 - 背景とエフェクト: ぼかしに設定
 
+#### 1Password + 1Password CLI
+
+APIキー等のシークレットを1Password経由で管理する。gitリポジトリにシークレットを含めず、Touch IDで認証して取得する仕組み。
+
+1. 1Passwordアプリを開いてアカウントにログイン
+2. Settings > Developer > 「Integrate with 1Password CLI」にチェック
+3. CLIの動作確認: `op --version`
+
+シークレットの登録:
+
+1. 1Passwordアプリで新しいアイテムを作成（カテゴリ: APIクレデンシャル）
+2. アイテム名はスネークケース（例: `anthropic_api_key_aicommit`）
+3. 「認証情報」フィールドにAPIキーを保存
+
+シークレット参照URIの確認:
+
+```sh
+# アイテム一覧
+op item list | grep -i anthropic
+
+# フィールド確認
+op item get "anthropic_api_key_aicommit" --format json | jq '.fields[] | {label, type}'
+
+# 値の取得（Touch ID認証が求められる）
+op read "op://Personal/anthropic_api_key_aicommit/credential"
+```
+
+参照URIは `op://Vault名/アイテム名/フィールド名` の形式。URIはシークレットではないのでgitにコミットして問題ない。
+
+.zshrcでは遅延読み込みで設定済み。初回使用時にTouch IDで認証される。
+
 ## 🖥️ 開発環境
 
 ### Warp

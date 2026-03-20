@@ -17,6 +17,7 @@
 | シェル | zsh + starship |
 | 検索 | fzf, ripgrep, fd |
 | バージョン管理 | mise |
+| シークレット管理 | 1Password CLI |
 | キーリマッパー | karabiner |
 
 ## セットアップ
