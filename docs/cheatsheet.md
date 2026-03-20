@@ -31,6 +31,26 @@
 | `Cmd+W` | タブを閉じる |
 | `Ctrl+[` / `Ctrl+]` | タブ移動 |
 | `Cmd+[` / `Cmd+]` | ペイン移動 |
+| `Cmd+Enter` | Warp上でチャットを開始 |
+
+### Claude Code通知
+
+Warpのネイティブ通知でClaude Codeの完了を受け取れる。tmux経由の通知は非対応。
+
+セットアップ:
+
+1. Warp設定 > Features > Notifications を有効にする (Mac側の通知設定も必要)
+2. Claude Codeで以下を実行:
+   - `/plugin marketplace add warpdotdev/claude-code-warp`
+   - `/plugin install warp@claude-code-warp`
+
+### 活用Tips
+
+| 機能 | 説明 |
+|------|------|
+| Toolsペイン | エクスプローラーでファイルを確認・Warp上で開ける |
+| チャット一覧 | 過去にWarpで実行したチャット履歴にアクセス |
+| Warp Drive > Rules | ルールを追加して回答の言語やスタイルを指定 |
 
 
 ## tmux
