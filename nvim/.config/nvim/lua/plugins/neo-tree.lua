@@ -43,7 +43,5 @@ return {
 			},
 		})
 		vim.keymap.set("n", "<leader>e", "<cmd>Neotree focus<cr>", { desc = "ファイルツリー" })
-		vim.keymap.set("n", "<leader>b", "<cmd>Neotree float buffers<cr>", { desc = "バッファ一覧" })
-		vim.keymap.set("n", "<leader>gs", "<cmd>Neotree float git_status<cr>", { desc = "Git status" })
 	end,
 }
