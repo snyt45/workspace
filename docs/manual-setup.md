@@ -174,9 +174,9 @@ op read "op://Personal/anthropic_api_key_aicommit/credential"
 #### テーマ設定
 
 ```sh
-# GruvboxDarkテーマをダウンロード（https://terminal-themes.com/）
+# Catppuccin Mochaテーマをダウンロード（https://github.com/catppuccin/warp）
 mkdir -p $HOME/.warp/themes/
-mv ~/Downloads/GruvboxDark.yaml $HOME/.warp/themes/
+curl -sL https://raw.githubusercontent.com/catppuccin/warp/main/themes/catppuccin_mocha.yml -o $HOME/.warp/themes/catppuccin_mocha.yml
 ```
 
 #### ウィンドウ設定
