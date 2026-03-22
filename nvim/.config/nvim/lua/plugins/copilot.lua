@@ -10,7 +10,7 @@ return {
 				enabled = true,
 				auto_trigger = true,
 				keymap = {
-					accept = "<Right>",
+					accept = false,
 					accept_word = "<C-l>",
 					next = "<C-j>",
 					prev = "<C-k>",
@@ -20,5 +20,14 @@ return {
 			panel = { enabled = false },
 			filetypes = { ["*"] = true },
 		})
+
+		vim.keymap.set("i", "<Right>", function()
+			local suggestion = require("copilot.suggestion")
+			if suggestion.is_visible() then
+				suggestion.accept()
+			else
+				return "<Right>"
+			end
+		end, { expr = true })
 	end,
 }
