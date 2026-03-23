@@ -138,6 +138,10 @@
       }
     }
   },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.py"
+  },
   "language": "ja",
   "alwaysThinkingEnabled": true,
   "voiceEnabled": true,
