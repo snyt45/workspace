@@ -1,17 +1,42 @@
 #!/bin/bash
 
-tmux split-window -v -l 20%
-tmux split-window -h -l 66%
-tmux split-window -h -l 50%
-tmux select-pane -t 0
-tmux split-window -v -l 30%
-tmux split-window -h -l 66%
-tmux split-window -h -l 50%
+layout="${1:-claude}"
+
+case "$layout" in
+  claude)
+    # 右にClaudeペイン(30%)
+    tmux split-window -h -l 30%
+    # 左ペインに戻って水平分割(下段25%)
+    tmux select-pane -t 0
+    tmux split-window -v -l 25%
+    # 下段を左右分割
+    tmux split-window -h -l 50%
+    # エディタペインにフォーカス
+    tmux select-pane -t 0
+    ;;
+  grid)
+    tmux split-window -v -l 20%
+    tmux split-window -h -l 66%
+    tmux split-window -h -l 50%
+    tmux select-pane -t 0
+    tmux split-window -v -l 30%
+    tmux split-window -h -l 66%
+    tmux split-window -h -l 50%
+    tmux select-pane -t 0
+    ;;
+  *)
+    echo "Usage: ide [claude|grid]"
+    echo "  claude - エディタ + Claude + ターミナル2つ (default)"
+    echo "  grid   - 7ペイン構成"
+    exit 1
+    ;;
+esac
 
 # Starshipのプロンプト初期化を待ってからクリア
 sleep 0.2
-for i in {0..6}; do
-    tmux select-pane -t $i 2>/dev/null && tmux send-keys C-l
+pane_count=$(tmux list-panes | wc -l)
+for i in $(seq 0 $((pane_count - 1))); do
+    tmux select-pane -t "$i" 2>/dev/null && tmux send-keys C-l
 done
 
 tmux select-pane -t 0
