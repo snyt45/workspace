@@ -15,7 +15,7 @@ return {
 			harpoon:list():add()
 			vim.notify("Harpoon: added " .. vim.fn.expand("%:."), vim.log.levels.INFO)
 		end, { desc = "Harpoon追加" })
-		vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Harpoonメニュー" })
+		vim.keymap.set("n", "<leader>f", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Harpoonメニュー" })
 
 		vim.keymap.set("n", "<leader>1", function() harpoon:list():select(1) end, { desc = "Harpoon 1" })
 		vim.keymap.set("n", "<leader>2", function() harpoon:list():select(2) end, { desc = "Harpoon 2" })
