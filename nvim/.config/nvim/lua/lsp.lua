@@ -33,6 +33,17 @@ vim.lsp.config.lua_ls = {
 }
 vim.lsp.enable("lua_ls")
 
+-- diagnostic表示設定
+vim.diagnostic.config({
+	virtual_text = {
+		prefix = "●",
+	},
+	signs = true,
+	underline = true,
+	update_in_insert = false,
+	severity_sort = true,
+})
+
 -- LSP共通キーマップ (LSPがアタッチされたバッファでのみ有効)
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
