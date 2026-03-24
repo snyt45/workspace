@@ -137,6 +137,7 @@ telescope プレビュー操作:
 | `gl` | diagnosticをフロート表示 |
 | `,rn` | リネーム |
 | `,ca` | コードアクション |
+| `,cs` | ソースアクション (import整理等) |
 
 ### 補完 (nvim-cmp)
 
