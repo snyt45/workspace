@@ -42,6 +42,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = buf, desc = "ホバー" })
 		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { buffer = buf, desc = "リネーム" })
 		vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = buf, desc = "コードアクション" })
+		vim.keymap.set("n", "<leader>cs", function()
+			vim.lsp.buf.code_action({ context = { only = { "source" } } })
+		end, { buffer = buf, desc = "ソースアクション (import整理等)" })
 		vim.keymap.set("n", "gy", vim.lsp.buf.type_definition, { buffer = buf, desc = "型定義" })
 		vim.keymap.set("n", "gl", vim.diagnostic.open_float, { buffer = buf, desc = "diagnostic" })
 	end,
