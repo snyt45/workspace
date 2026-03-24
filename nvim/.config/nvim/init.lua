@@ -120,7 +120,7 @@ end, { desc = "Markdownプレビュー" })
 map("n", "<leader>c", function()
 	local path = vim.fn.expand("%:.")
 	vim.fn.setreg("+", path)
-	print("Copied: " .. path)
+	vim.notify("Copied: " .. path, vim.log.levels.INFO)
 end, { desc = "ファイルパスコピー" })
 
 -- ファイルパス + 選択コードをマークダウン形式でコピー
@@ -130,7 +130,7 @@ map("v", "<leader>cc", function()
 	local selected_text = vim.fn.getreg("v")
 	local formatted = "@" .. path .. "\n\n```\n" .. selected_text .. "\n```"
 	vim.fn.setreg("+", formatted)
-	print("Copied: @" .. path .. " with selected text")
+	vim.notify("Copied: @" .. path .. " with selected text", vim.log.levels.INFO)
 end, { desc = "ファイルパス+コードコピー" })
 
 -- ==========================================================================
