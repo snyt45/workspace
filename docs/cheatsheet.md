@@ -139,6 +139,15 @@ telescope プレビュー操作:
 | `,ca` | コードアクション |
 | `,cs` | ソースアクション (import整理等) |
 
+### diagnostic AI解説 (wtf.nvim)
+
+| キー | 説明 |
+|------|------|
+| `,wd` | diagnosticをAIで解説 (日本語) |
+| `,wf` | diagnosticをAIで修正提案 |
+| `,ws` | diagnosticをGoogle検索 |
+| `,wh` | AIチャット履歴をquickfixに表示 |
+
 ### 補完 (nvim-cmp)
 
 | キー | 説明 |

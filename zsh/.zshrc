@@ -46,7 +46,7 @@ bindkey '^R' history-search-fzf
 # 1Password CLI経由でシークレットを遅延読み込み（初回参照時にTouch IDで認証）
 function ensure_anthropic_api_key() {
     if [ -z "$ANTHROPIC_API_KEY" ]; then
-        export ANTHROPIC_API_KEY=$(op read "op://Personal/anthropic_api_key_aicommit/credential")
+        export ANTHROPIC_API_KEY=$(op read "op://Development/anthropic/credential")
     fi
 }
 

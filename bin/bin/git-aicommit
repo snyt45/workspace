@@ -5,7 +5,7 @@ set -euo pipefail
 
 # APIキー取得: 1Password CLI → フォールバックでClaude Code CLI
 if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
-    ANTHROPIC_API_KEY=$(op read "op://Personal/anthropic_api_key_aicommit/credential" 2>/dev/null) || true
+    ANTHROPIC_API_KEY=$(op read "op://Development/anthropic/credential" 2>/dev/null) || true
     export ANTHROPIC_API_KEY
 fi
 
