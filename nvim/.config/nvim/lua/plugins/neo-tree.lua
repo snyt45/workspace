@@ -22,7 +22,7 @@ return {
 				},
 				window = {
 					mappings = {
-						["/"] = function(state)
+						["F"] = function(state)
 							local node = state.tree:get_node()
 							local path = node.type == "directory" and node:get_id() or
 							    vim.fn.fnamemodify(node:get_id(), ":h")
