@@ -8,6 +8,7 @@ alias vd='nvim +CodeDiff'
 alias vdh='nvim +"CodeDiff history"'
 
 export EDITOR=nvim
+export CLAUDE_CODE_NO_FLICKER=1
 
 # bin
 export PATH="$HOME/bin:$PATH"
