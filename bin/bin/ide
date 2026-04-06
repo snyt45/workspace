@@ -1,44 +1,106 @@
 #!/bin/bash
 
-layout="${1:-claude}"
+show_preview() {
+  case "$1" in
+    default*)
+      cat <<'EOF'
+┌─────────────────────────────┐
+│           editor            │
+├─────────┬─────────┬─────────┤
+│ term 1  │ term 2  │ term 3  │
+└─────────┴─────────┴─────────┘
 
-case "$layout" in
-  claude)
-    # 右にClaudeペイン(30%)
-    tmux split-window -h -l 30%
-    # 左ペインに戻って水平分割(下段25%)
-    tmux select-pane -t 0
-    tmux split-window -v -l 25%
-    # 下段を横並び4ペイン均等
-    tmux split-window -h -l 75%
-    tmux split-window -h -l 66%
-    tmux split-window -h -l 50%
-    # エディタペインにフォーカス
-    tmux select-pane -t 0
-    ;;
-  grid)
-    tmux split-window -v -l 20%
-    tmux split-window -h -l 66%
-    tmux split-window -h -l 50%
-    tmux select-pane -t 0
-    tmux split-window -v -l 30%
-    tmux split-window -h -l 66%
-    tmux split-window -h -l 50%
-    tmux select-pane -t 0
-    ;;
-  *)
-    echo "Usage: ide [claude|grid]"
-    echo "  claude - エディタ + Claude + ターミナル2つ (default)"
-    echo "  grid   - 7ペイン構成"
-    exit 1
-    ;;
-esac
+EOF
+      ;;
+    full*)
+      cat <<'EOF'
+┌─────────────────────────────┐
+│           editor            │
+├─────────┬─────────┬─────────┤
+│ term 1  │ term 2  │ term 3  │
+├─────────┼─────────┼─────────┤
+│ term 4  │ term 5  │ term 6  │
+└─────────┴─────────┴─────────┘
 
-# Starshipのプロンプト初期化を待ってからクリア
-sleep 0.2
-pane_count=$(tmux list-panes | wc -l)
-for i in $(seq 0 $((pane_count - 1))); do
+EOF
+      ;;
+  esac
+}
+
+apply_layout() {
+  case "$1" in
+    default)
+      # 下段（25%）を作成
+      tmux split-window -v -l 25%
+      # 下段を3分割
+      tmux split-window -h -l 66%
+      tmux split-window -h -l 50%
+      # エディタにフォーカス
+      tmux select-pane -t 0
+      ;;
+    full)
+      # 3行目（下25%）を作成
+      tmux split-window -v -l 25%
+      # 3行目を3分割
+      tmux split-window -h -l 66%
+      tmux split-window -h -l 50%
+      # 1行目に戻って2行目（残りの下33%）を作成
+      tmux select-pane -t 0
+      tmux split-window -v -l 33%
+      # 2行目を3分割
+      tmux split-window -h -l 66%
+      tmux split-window -h -l 50%
+      # エディタにフォーカス
+      tmux select-pane -t 0
+      ;;
+  esac
+
+  # Starshipのプロンプト初期化を待ってからクリア
+  sleep 0.2
+  pane_count=$(tmux list-panes | wc -l)
+  for i in $(seq 0 $((pane_count - 1))); do
     tmux select-pane -t "$i" 2>/dev/null && tmux send-keys C-l
-done
+  done
+  tmux select-pane -t 0
+}
 
-tmux select-pane -t 0
+# --preview モードの場合（fzfから呼ばれる）
+if [[ "$1" == "--preview" ]]; then
+  show_preview "$2"
+  exit 0
+fi
+
+# 引数があればそのまま実行
+if [[ -n "$1" ]]; then
+  case "$1" in
+    default|full)
+      apply_layout "$1"
+      exit 0
+      ;;
+    *)
+      echo "Unknown layout: $1"
+      exit 1
+      ;;
+  esac
+fi
+
+# fzfで選択
+layouts="default	2行構成（editor + terminal×3）
+full	3行構成（editor + terminal×6）"
+
+selected=$(echo "$layouts" | fzf \
+  --height=40% \
+  --layout=reverse \
+  --delimiter=$'\t' \
+  --with-nth=1.. \
+  --preview="$0 --preview {1}" \
+  --preview-window=right:40% \
+  --header="レイアウトを選択" \
+  --no-info)
+
+if [[ -z "$selected" ]]; then
+  exit 0
+fi
+
+layout=$(echo "$selected" | cut -f1)
+apply_layout "$layout"
