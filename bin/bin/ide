@@ -85,8 +85,8 @@ if [[ -n "$1" ]]; then
 fi
 
 # fzfで選択
-layouts="default	2行構成（editor + terminal×3）
-full	3行構成（editor + terminal×6）"
+layouts="default
+full"
 
 selected=$(echo "$layouts" | fzf \
   --height=40% \
