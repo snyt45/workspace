@@ -57,6 +57,13 @@ local commands = {
 		end,
 	},
 	{
+		name = "[Octo] PRレビュー再開",
+		cmd = "Octo review resume",
+		execute = function()
+			vim.cmd("Octo review resume")
+		end,
+	},
+	{
 		name = "[Octo] Issue一覧",
 		cmd = "Octo issue list",
 		execute = function()
