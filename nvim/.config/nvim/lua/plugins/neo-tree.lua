@@ -42,6 +42,6 @@ return {
 				},
 			},
 		})
-		vim.keymap.set("n", "<leader>e", "<cmd>Neotree focus<cr>", { desc = "ファイルツリー" })
+		vim.keymap.set("n", "<leader>e", "<cmd>Neotree focus<cr>", { desc = "[NeoTree] ファイルツリー" })
 	end,
 }

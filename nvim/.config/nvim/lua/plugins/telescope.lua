@@ -22,7 +22,7 @@ return {
 				sorting_strategy = "ascending",
 				borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
 				prompt_prefix = "  ",
-				selection_caret = " ",
+				selection_caret = "  ",
 				entry_prefix = "  ",
 				results_title = false,
 				mappings = {
@@ -68,10 +68,10 @@ return {
 			if not ok then
 				builtin.find_files()
 			end
-		end, { desc = "ファイル検索" })
-		vim.keymap.set("n", "<leader>r", builtin.live_grep, { desc = "grep検索" })
-		vim.keymap.set("n", "<leader>o", builtin.oldfiles, { desc = "最近のファイル" })
-		vim.keymap.set("n", "<leader>b", builtin.buffers, { desc = "バッファ一覧" })
-		vim.keymap.set("n", "<leader>gs", builtin.git_status, { desc = "Git status" })
+		end, { desc = "[Telescope] ファイル検索" })
+		vim.keymap.set("n", "<leader>r", builtin.live_grep, { desc = "[Telescope] grep検索" })
+		vim.keymap.set("n", "<leader>o", builtin.oldfiles, { desc = "[Telescope] 最近のファイル" })
+		vim.keymap.set("n", "<leader>b", builtin.buffers, { desc = "[Telescope] バッファ一覧" })
+		vim.keymap.set("n", "<leader>gs", builtin.git_status, { desc = "[Telescope] Git status" })
 	end,
 }

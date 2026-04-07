@@ -3,8 +3,8 @@ return {
 	cmd = "Octo",
 	event = { { event = "BufReadCmd", pattern = "octo://*" } },
 	keys = {
-		{ "<leader>gp", "<cmd>Octo pr list<cr>", desc = "GitHub PR一覧" },
-		{ "<leader>gi", "<cmd>Octo issue list<cr>", desc = "GitHub Issue一覧" },
+		{ "<leader>gp", "<cmd>Octo pr list<cr>", desc = "[Octo] PR一覧" },
+		{ "<leader>gi", "<cmd>Octo issue list<cr>", desc = "[Octo] Issue一覧" },
 	},
 	dependencies = {
 		"nvim-lua/plenary.nvim",
