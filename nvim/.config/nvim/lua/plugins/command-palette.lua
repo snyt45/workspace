@@ -86,9 +86,14 @@ local commands = {
 	},
 	{
 		name = "[GrugFar] quickfixのファイル内で検索・置換",
-		cmd = "GrugFar { paths = <qflist> }",
+		cmd = "GrugFar { search = <last_search>, paths = <qflist> }",
 		execute = function()
-			require("grug-far").open({ prefills = { paths = "<qflist>" } })
+			require("grug-far").open({
+				prefills = {
+					search = vim.g.last_lsp_search or "",
+					paths = "<qflist>",
+				},
+			})
 		end,
 	},
 	{
