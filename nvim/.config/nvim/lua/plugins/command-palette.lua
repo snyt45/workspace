@@ -11,6 +11,17 @@ local commands = {
 		end,
 	},
 	{
+		name = "[GitSigns] 差分マークの基準を変更",
+		cmd = "Gitsigns change_base <branch>",
+		execute = function()
+			vim.ui.input({ prompt = "Base branch: ", default = "origin/main" }, function(branch)
+				if branch then
+					require("gitsigns").change_base(branch, true)
+				end
+			end)
+		end,
+	},
+	{
 		name = "[CodeDiff] 全変更ファイルをベースブランチと比較",
 		cmd = "CodeDiff <branch>",
 		execute = function()
