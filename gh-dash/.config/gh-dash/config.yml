@@ -22,13 +22,11 @@ keybindings:
   prs:
     - key: d
       command: |-
-        tmux split-window -h -c {{.RepoPath}} '
-          gh pr checkout {{.PrNumber}} &&
-          nvim -c ":CodeDiff origin/{{.BaseRefName}}"
-        '
+        cd {{.RepoPath}} &&
+        gh pr checkout {{.PrNumber}} &&
+        nvim -c ":CodeDiff origin/{{.BaseRefName}}"
     - key: C
       command: |-
-        tmux split-window -h -c {{.RepoPath}} '
-          gh pr checkout {{.PrNumber}} &&
-          nvim -c ":Octo pr edit {{.PrNumber}}"
-        '
+        cd {{.RepoPath}} &&
+        gh pr checkout {{.PrNumber}} &&
+        nvim -c ":Octo pr edit {{.PrNumber}}"
