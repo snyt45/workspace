@@ -10,6 +10,7 @@ return {
 				return {
 					LineNr = { fg = colors.overlay0 },
 					CursorLineNr = { fg = colors.lavender },
+					CursorLine = { bg = colors.surface1 },
 				}
 			end,
 		})
