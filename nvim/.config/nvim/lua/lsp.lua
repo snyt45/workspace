@@ -61,5 +61,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end, { buffer = buf, desc = "[LSP] ソースアクション (import整理等)" })
 		vim.keymap.set("n", "gy", vim.lsp.buf.type_definition, { buffer = buf, desc = "[LSP] 型定義" })
 		vim.keymap.set("n", "gl", vim.diagnostic.open_float, { buffer = buf, desc = "[LSP] diagnostic" })
+		vim.keymap.set("n", "<leader>ll", function()
+			for _, client in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+				local config = client.config
+				client:stop()
+				vim.defer_fn(function()
+					vim.lsp.start(config)
+				end, 500)
+			end
+		end, { buffer = buf, desc = "[LSP] 再起動" })
 	end,
 })

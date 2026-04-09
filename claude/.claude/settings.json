@@ -142,6 +142,7 @@
     "type": "command",
     "command": "~/.claude/statusline.py"
   },
+  "effortLevel": "high",
   "language": "ja",
   "alwaysThinkingEnabled": true,
   "voiceEnabled": true,
