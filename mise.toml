@@ -13,7 +13,10 @@ run = '/usr/bin/pgrep -q oahd || softwareupdate --install-rosetta --agree-to-lic
 
 [tasks.packages]
 description = "Homebrew パッケージインストール"
-run = 'brew bundle --file=Brewfile'
+run = '''
+brew bundle --file=Brewfile
+./scripts/install.sh
+'''
 
 [tasks.link]
 description = "シンボリックリンク作成"
