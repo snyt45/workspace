@@ -43,7 +43,8 @@ Prefix = `C-t`
 |------|------|
 | `Prefix-v` | 垂直分割 |
 | `Prefix-s` | 水平分割 |
-| `Prefix-h/j/k/l` | ペイン移動 |
+| `C-h/j/k/l` | ペイン移動（Neovim/tmuxシームレス） |
+| `Prefix-h/j/k/l` | ペイン移動（Prefix付き） |
 | `Prefix-t` | ズーム |
 | `Prefix-q` | ペイン閉じる |
 | `Prefix-d` | デタッチ |
