@@ -44,9 +44,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorMoved", "FocusGai
 	command = "checktime",
 })
 
-
-
-
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undofile = true -- undoを永続化
