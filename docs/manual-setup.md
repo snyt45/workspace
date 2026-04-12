@@ -165,31 +165,11 @@ op read "op://Development/anthropic/credential"
 
 ## 🖥️ 開発環境
 
-### Warp
+### Ghostty
 
-#### AI 設定
-
-- Settings > AI: OFF
-
-#### テーマ設定
-
-```sh
-# Catppuccin Mochaテーマをダウンロード（https://github.com/catppuccin/warp）
-mkdir -p $HOME/.warp/themes/
-curl -sL https://raw.githubusercontent.com/catppuccin/warp/main/themes/catppuccin_mocha.yml -o $HOME/.warp/themes/catppuccin_mocha.yml
-```
-
-#### ウィンドウ設定
-
-- Settings > Appearance > Window Opacity: 50
-- Settings > Appearance > Window Blur: 20
+設定ファイルは dotfiles で管理（`ghostty/.config/ghostty/config`）。`mise run link` でシンボリックリンクが作成される。
 
 #### フォント設定
 
 - [HackGen](https://github.com/yuru7/HackGen/releases/latest)から`HackGen_NF_vx.x.x.zip`をダウンロード
 - `HackGenConsoleNF-Regular.ttf`をインストール
-- Settings > Appearance > Text > Terminal font: `HackGen Console NF`
-
-#### プロンプト設定
-
-- Settings > Appearance > Input > Shell prompt を選択

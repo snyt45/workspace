@@ -8,7 +8,7 @@
 
 | キー/コマンド | 説明 |
 |---------------|------|
-| `Ctrl+r` | 履歴検索 (fzf)。Warpでは独自の検索が優先される |
+| `Ctrl+r` | 履歴検索 (fzf) |
 | `z <dir>` | ディレクトリ移動 (zoxide。過去の移動先を学習) |
 | `zi` | インタラクティブにディレクトリ選択 |
 | `g` | git のエイリアス |
@@ -17,11 +17,7 @@
 | `vdh` | nvim +"CodeDiff history" (コミット履歴付きで起動) |
 
 
-## ターミナルの使い分け
-
-基本はtmux。Warpはsshでセッション維持したい場合や、大量のログをブロック単位でコピーしたいときに使う。
-
-## Warp
+## Ghostty
 
 | キー | 説明 |
 |------|------|
@@ -29,28 +25,12 @@
 | `Cmd+Shift+D` | 水平分割 |
 | `Cmd+T` | 新規タブ |
 | `Cmd+W` | タブを閉じる |
-| `Ctrl+[` / `Ctrl+]` | タブ移動 |
 | `Cmd+[` / `Cmd+]` | ペイン移動 |
-| `Cmd+Enter` | Warp上でチャットを開始 |
+| `Cmd+Shift+[` / `Cmd+Shift+]` | タブ移動 |
 
 ### Claude Code通知
 
-Warpのネイティブ通知でClaude Codeの完了を受け取れる。tmux経由の通知は非対応。
-
-セットアップ:
-
-1. Warp設定 > Features > Notifications を有効にする (Mac側の通知設定も必要)
-2. Claude Codeで以下を実行:
-   - `/plugin marketplace add warpdotdev/claude-code-warp`
-   - `/plugin install warp@claude-code-warp`
-
-### 活用Tips
-
-| 機能 | 説明 |
-|------|------|
-| Toolsペイン | エクスプローラーでファイルを確認・Warp上で開ける |
-| チャット一覧 | 過去にWarpで実行したチャット履歴にアクセス |
-| Warp Drive > Rules | ルールを追加して回答の言語やスタイルを指定 |
+settings.jsonのhooksで、Claude Codeのレスポンス完了時にmacOS通知を飛ばす。Ghostty/tmuxどちらでも動作する。
 
 
 ## tmux

@@ -12,7 +12,7 @@
 
 - OS: macOS (Apple Silicon)
 - エディタ: Neovim（メイン）、VSCode（サブ）
-- ターミナル: Warp
+- ターミナル: Ghostty
 - シェル: zsh + starship
 - 検索: fzf, ripgrep (rg), fd
 - Git: gh, tig

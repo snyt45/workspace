@@ -1,0 +1,9 @@
+theme = Catppuccin Mocha
+font-family = HackGen Console NF
+font-size = 14
+background-opacity = 0.5
+background-blur-radius = 20
+scrollback-limit = 100000
+unfocused-split-opacity = 1
+window-decoration = true
+macos-titlebar-style = tabs
