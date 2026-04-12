@@ -82,6 +82,13 @@ local commands = {
 		end,
 	},
 	{
+		name = "[Tmux] セッション切り替え",
+		cmd = "TmuxSwitch",
+		execute = function()
+			vim.cmd("TmuxSwitch")
+		end,
+	},
+	{
 		name = "[Conform] 自動フォーマットを無効化",
 		cmd = "ConformDisable",
 		execute = function()
