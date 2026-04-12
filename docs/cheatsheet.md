@@ -47,6 +47,21 @@ Prefix = `C-t`
 | `Prefix-t` | ズーム |
 | `Prefix-q` | ペイン閉じる |
 | `Prefix-d` | デタッチ |
+| `Prefix-e` | 全ペイン同時入力 ON |
+| `Prefix-E` | 全ペイン同時入力 OFF |
+
+### ide コマンド (レイアウト)
+
+| コマンド | 説明 |
+|----------|------|
+| `ide` | fzfでレイアウト選択 |
+| `ide ai-single` | NeoVim + エージェント1つ + ターミナル (エージェント選択) |
+| `ide ai-single c` | NeoVim + OpenCode + ターミナル |
+| `ide ai-single cx` | NeoVim + Claude Code + ターミナル |
+| `ide ai-dual` | NeoVim + OpenCode + Claude Code + ターミナル |
+| `ide dev` | エディタ + ターミナル3つ |
+| `ide dev-full` | エディタ + ターミナル6つ |
+| `ide pair` | NeoVim 2つ横並び + ターミナル |
 
 
 ## Neovim

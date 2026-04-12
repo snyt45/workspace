@@ -2,17 +2,36 @@
 
 show_preview() {
   case "$1" in
-    default*)
+    ai-single*)
       cat <<'EOF'
-┌─────────────────────────────┐
-│           editor            │
-├─────────┬─────────┬─────────┤
-│ term 1  │ term 2  │ term 3  │
-└─────────┴─────────┴─────────┘
+┌───────────────────┬─────────┐
+│                   │         │
+│                   │ c / cx  │
+│      editor       │         │
+│                   │         │
+├───────────────────┴─────────┤
+│           terminal          │
+└─────────────────────────────┘
+  左70%              右30%
 
 EOF
       ;;
-    full*)
+    ai-dual*)
+      cat <<'EOF'
+┌───────────────────┬─────────┐
+│                   │    c    │
+│                   │(OpenCode)│
+│      editor       ├─────────┤
+│                   │   cx    │
+│                   │(Claude) │
+├───────────────────┴─────────┤
+│           terminal          │
+└─────────────────────────────┘
+  左70%              右30%
+
+EOF
+      ;;
+    dev-full*)
       cat <<'EOF'
 ┌─────────────────────────────┐
 │           editor            │
@@ -24,12 +43,55 @@ EOF
 
 EOF
       ;;
+    dev*)
+      cat <<'EOF'
+┌─────────────────────────────┐
+│           editor            │
+├─────────┬─────────┬─────────┤
+│ term 1  │ term 2  │ term 3  │
+└─────────┴─────────┴─────────┘
+
+EOF
+      ;;
+    pair*)
+      cat <<'EOF'
+┌──────────────┬──────────────┐
+│              │              │
+│   editor 1   │   editor 2   │
+│              │              │
+├──────────────┴──────────────┤
+│           terminal          │
+└─────────────────────────────┘
+  左50%            右50%
+
+EOF
+      ;;
   esac
+}
+
+select_agent() {
+  local agents="c	opencode
+cx	claude --enable-auto-mode"
+
+  local selected
+  selected=$(echo "$agents" | fzf \
+    --height=20% \
+    --layout=reverse \
+    --delimiter=$'\t' \
+    --with-nth=1.. \
+    --header="エージェントを選択" \
+    --no-info)
+
+  if [[ -z "$selected" ]]; then
+    return 1
+  fi
+
+  echo "$selected" | cut -f1
 }
 
 apply_layout() {
   case "$1" in
-    default)
+    dev)
       # 下段（25%）を作成
       tmux split-window -v -l 25%
       # 下段を3分割
@@ -38,7 +100,7 @@ apply_layout() {
       # エディタにフォーカス
       tmux select-pane -t 0
       ;;
-    full)
+    dev-full)
       # 3行目（下25%）を作成
       tmux split-window -v -l 25%
       # 3行目を3分割
@@ -52,6 +114,54 @@ apply_layout() {
       tmux split-window -h -l 50%
       # エディタにフォーカス
       tmux select-pane -t 0
+      ;;
+    ai-dual)
+      local editor_pane="$TMUX_PANE"
+      # 下段（15%）を作成
+      tmux split-window -v -l 15%
+      # エディタペインの右30%を分割してAIペインを作成
+      local ai_pane
+      ai_pane=$(tmux split-window -h -l 30% -t "$editor_pane" -P -F '#{pane_id}')
+      # AIペインを縦分割してClaude Code用ペインを作成
+      local cx_pane
+      cx_pane=$(tmux split-window -v -t "$ai_pane" -P -F '#{pane_id}')
+      # 各ペインでコマンドを起動
+      tmux send-keys -t "$ai_pane" "c" C-m
+      tmux send-keys -t "$cx_pane" "cx" C-m
+      tmux send-keys -t "$editor_pane" "$EDITOR ." C-m
+      # エディタにフォーカス
+      tmux select-pane -t "$editor_pane"
+      ;;
+    ai-single)
+      local agent="$2"
+      if [[ -z "$agent" ]]; then
+        agent=$(select_agent)
+        [[ -z "$agent" ]] && return 0
+      fi
+      local editor_pane="$TMUX_PANE"
+      # 下段（15%）を作成
+      tmux split-window -v -l 15%
+      # エディタペインの右30%を分割してAIペインを作成
+      local ai_pane
+      ai_pane=$(tmux split-window -h -l 30% -t "$editor_pane" -P -F '#{pane_id}')
+      # AIペインでエージェントを起動
+      tmux send-keys -t "$ai_pane" "$agent" C-m
+      tmux send-keys -t "$editor_pane" "$EDITOR ." C-m
+      # エディタにフォーカス
+      tmux select-pane -t "$editor_pane"
+      ;;
+    pair)
+      local editor_pane="$TMUX_PANE"
+      # 下段（15%）を作成
+      tmux split-window -v -l 15%
+      # エディタペインを左右50%で分割
+      local right_pane
+      right_pane=$(tmux split-window -h -l 50% -t "$editor_pane" -P -F '#{pane_id}')
+      # 両方でエディタを起動
+      tmux send-keys -t "$editor_pane" "$EDITOR ." C-m
+      tmux send-keys -t "$right_pane" "$EDITOR ." C-m
+      # 左にフォーカス
+      tmux select-pane -t "$editor_pane"
       ;;
   esac
 
@@ -73,8 +183,12 @@ fi
 # 引数があればそのまま実行
 if [[ -n "$1" ]]; then
   case "$1" in
-    default|full)
+    dev|dev-full|ai-dual|pair)
       apply_layout "$1"
+      exit 0
+      ;;
+    ai-single)
+      apply_layout "$1" "$2"
       exit 0
       ;;
     *)
@@ -85,8 +199,11 @@ if [[ -n "$1" ]]; then
 fi
 
 # fzfで選択
-layouts="default
-full"
+layouts="ai-single
+ai-dual
+dev
+dev-full
+pair"
 
 selected=$(echo "$layouts" | fzf \
   --height=40% \
