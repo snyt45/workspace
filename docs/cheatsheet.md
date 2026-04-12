@@ -121,7 +121,7 @@ leader = `,`
 | `,o` | 最近使ったファイル (カレントディレクトリのみ) |
 | `,b` | バッファ一覧 |
 | `,gs` | Git status |
-| `,ms` | tmuxセッション切り替え |
+| `:TmuxSwitch` | tmuxセッション切り替え |
 
 telescope プレビュー操作:
 
