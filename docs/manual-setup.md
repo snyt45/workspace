@@ -163,6 +163,16 @@ op read "op://Development/anthropic/credential"
 
 .zshrcでは遅延読み込みで設定済み。初回使用時にTouch IDで認証される。
 
+#### OpenCode
+
+AIコーディングエージェント。複数モデル（Kimi K2.5、Claude、Gemini等）をターミナルで切り替えて使える。
+
+1. OpenCodeを起動: `opencode`
+2. TUIで `/connect` を実行
+3. プロバイダーを選択（OpenCode Zen推奨）
+4. APIキーを貼り付け
+5. `/models` でモデルを選択（例: Kimi K2.5）
+
 ## 🖥️ 開発環境
 
 ### Ghostty

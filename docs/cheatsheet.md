@@ -15,6 +15,8 @@
 | `v` | nvim のエイリアス |
 | `vd` | nvim +CodeDiff (diffビュー付きで起動) |
 | `vdh` | nvim +"CodeDiff history" (コミット履歴付きで起動) |
+| `c` | opencode (AIコーディングエージェント) |
+| `cx` | claude --enable-auto-mode (Claude Code自動モード) |
 
 
 ## Ghostty

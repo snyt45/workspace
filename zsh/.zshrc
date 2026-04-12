@@ -6,6 +6,8 @@ alias g='git'
 alias v='nvim'
 alias vd='nvim +CodeDiff'
 alias vdh='nvim +"CodeDiff history"'
+alias c='opencode'
+alias cx='claude --enable-auto-mode'
 
 export EDITOR=nvim
 export CLAUDE_CODE_NO_FLICKER=1

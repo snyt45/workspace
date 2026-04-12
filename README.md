@@ -14,6 +14,7 @@
 | エディタ(GUI) | VSCode |
 | Git UI | codediff + gitsigns |
 | PRレビュー | gh-dash + octo.nvim |
+| AIコーディング | OpenCode (`c`) + Claude Code (`cx`) |
 | シェル | zsh + starship |
 | 検索 | fzf, ripgrep, fd |
 | バージョン管理 | mise |
