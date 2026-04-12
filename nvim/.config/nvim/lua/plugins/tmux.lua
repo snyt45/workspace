@@ -42,5 +42,12 @@ return {
 			    })
 			    :find()
 		end, { desc = "[Tmux] セッション切り替え" })
+
+		vim.api.nvim_create_user_command("TmuxDetach", function()
+			vim.fn.system("tmux detach-client")
+			if vim.v.shell_error ~= 0 then
+				vim.notify("デタッチに失敗しました", vim.log.levels.ERROR)
+			end
+		end, { desc = "[Tmux] デタッチ" })
 	end,
 }

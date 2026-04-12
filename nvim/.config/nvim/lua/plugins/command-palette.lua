@@ -89,6 +89,13 @@ local commands = {
 		end,
 	},
 	{
+		name = "[Tmux] デタッチ",
+		cmd = "TmuxDetach",
+		execute = function()
+			vim.cmd("TmuxDetach")
+		end,
+	},
+	{
 		name = "[Conform] 自動フォーマットを無効化",
 		cmd = "ConformDisable",
 		execute = function()

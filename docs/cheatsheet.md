@@ -122,6 +122,7 @@ leader = `,`
 | `,b` | バッファ一覧 |
 | `,gs` | Git status |
 | `:TmuxSwitch` | tmuxセッション切り替え |
+| `:TmuxDetach` | tmuxデタッチ |
 
 telescope プレビュー操作:
 
