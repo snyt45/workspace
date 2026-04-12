@@ -148,6 +148,7 @@
       }
     ]
   },
+  "disabledMcpjsonServers": ["figma"],
   "effortLevel": "high",
   "language": "ja",
   "alwaysThinkingEnabled": true,
