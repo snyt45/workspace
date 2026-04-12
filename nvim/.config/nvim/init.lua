@@ -144,3 +144,4 @@ require("lazy").setup("plugins")
 -- ==========================================================================
 
 require("lsp")
+require("command-palette")
