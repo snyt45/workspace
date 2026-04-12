@@ -1,6 +1,7 @@
 return {
-	"nvim-telescope/telescope.nvim",
-	init = function()
+	"tmux",
+	virtual = true,
+	config = function()
 		vim.api.nvim_create_user_command("TmuxSwitch", function()
 			local output = vim.fn.system("tmux ls -F '#{session_name}'")
 			if vim.v.shell_error ~= 0 then
