@@ -33,6 +33,9 @@ return {
 								local selection = action_state.get_selected_entry()
 								if selection then
 									vim.fn.system("tmux switch-client -t " .. vim.fn.shellescape(selection[1]))
+									if vim.v.shell_error ~= 0 then
+										vim.notify("セッション切り替えに失敗しました", vim.log.levels.ERROR)
+									end
 								end
 							end)
 							return true
