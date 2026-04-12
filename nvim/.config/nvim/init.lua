@@ -85,11 +85,11 @@ map("n", "<C-k>", "<C-w>k")
 map("n", "<C-l>", "<C-w>l")
 
 -- バッファを閉じる
-map("n", "<leader>x", "<cmd>bdelete<cr>", { desc = "[General] バッファを閉じる" })
+map("n", "<leader>x", "<cmd>bdelete<cr>", { desc = "[Buffer] バッファを閉じる" })
 
 -- quickfix操作
-map("n", "]q", "<cmd>cnext<cr>", { desc = "[Nav] 次のquickfix" })
-map("n", "[q", "<cmd>cprev<cr>", { desc = "[Nav] 前のquickfix" })
+map("n", "]q", "<cmd>cnext<cr>", { desc = "[Quickfix] 次のquickfix" })
+map("n", "[q", "<cmd>cprev<cr>", { desc = "[Quickfix] 前のquickfix" })
 map("n", "<leader>q", function()
 	local wins = vim.fn.getqflist({ winid = 0 }).winid
 	if wins ~= 0 then
@@ -97,11 +97,11 @@ map("n", "<leader>q", function()
 	else
 		vim.cmd("copen")
 	end
-end, { desc = "[Nav] quickfixトグル" })
-map("n", "<leader>Q", "<cmd>cexpr []<cr>", { desc = "[Nav] quickfixクリア" })
+end, { desc = "[Quickfix] quickfixトグル" })
+map("n", "<leader>Q", "<cmd>cexpr []<cr>", { desc = "[Quickfix] quickfixクリア" })
 
 -- ターミナルを下に分割して開く
-map("n", "<leader>t", "<cmd>split | terminal<cr>", { desc = "[General] ターミナル" })
+map("n", "<leader>t", "<cmd>split | terminal<cr>", { desc = "[Terminal] ターミナル" })
 
 -- ターミナルモードからノーマルモードに戻る
 map("t", "jj", "<C-\\><C-n>")
@@ -121,7 +121,7 @@ map("n", "<leader>c", function()
 	local path = vim.fn.expand("%:.")
 	vim.fn.setreg("+", path)
 	vim.notify("Copied: " .. path, vim.log.levels.INFO)
-end, { desc = "[Code] ファイルパスコピー" })
+end, { desc = "[General] ファイルパスコピー" })
 
 -- ファイルパス + 選択コードをマークダウン形式でコピー
 map("v", "<leader>cc", function()
@@ -131,7 +131,7 @@ map("v", "<leader>cc", function()
 	local formatted = "@" .. path .. "\n\n```\n" .. selected_text .. "\n```"
 	vim.fn.setreg("+", formatted)
 	vim.notify("Copied: @" .. path .. " with selected text", vim.log.levels.INFO)
-end, { desc = "[Code] ファイルパス+コードコピー" })
+end, { desc = "[General] ファイルパス+コードコピー" })
 
 -- ==========================================================================
 -- プラグイン (lua/plugins/ 配下のファイルを自動読み込み)

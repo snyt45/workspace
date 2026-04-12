@@ -1,5 +1,30 @@
 local commands = {
 	{
+		name = "[CodeDiff] 全変更ファイルをベースブランチと比較",
+		cmd = "CodeDiff <branch>",
+		execute = function()
+			vim.ui.input({ prompt = "Base branch: ", default = "origin/main" }, function(branch)
+				if branch then
+					vim.cmd("CodeDiff " .. branch)
+				end
+			end)
+		end,
+	},
+	{
+		name = "[Conform] 自動フォーマットを無効化",
+		cmd = "ConformDisable",
+		execute = function()
+			vim.cmd("ConformDisable")
+		end,
+	},
+	{
+		name = "[Conform] 自動フォーマットを有効化",
+		cmd = "ConformEnable",
+		execute = function()
+			vim.cmd("ConformEnable")
+		end,
+	},
+	{
 		name = "[GitSigns] 現在のファイルをベースブランチと比較",
 		cmd = "Gitsigns diffthis <branch>",
 		execute = function()
@@ -22,14 +47,24 @@ local commands = {
 		end,
 	},
 	{
-		name = "[CodeDiff] 全変更ファイルをベースブランチと比較",
-		cmd = "CodeDiff <branch>",
+		name = "[Octo] Issue一覧",
+		cmd = "Octo issue list",
 		execute = function()
-			vim.ui.input({ prompt = "Base branch: ", default = "origin/main" }, function(branch)
-				if branch then
-					vim.cmd("CodeDiff " .. branch)
-				end
-			end)
+			vim.cmd("Octo issue list")
+		end,
+	},
+	{
+		name = "[Octo] PRにコメント追加",
+		cmd = "Octo comment add",
+		execute = function()
+			vim.cmd("Octo comment add")
+		end,
+	},
+	{
+		name = "[Octo] PRのdiff表示",
+		cmd = "Octo pr diff",
+		execute = function()
+			vim.cmd("Octo pr diff")
 		end,
 	},
 	{
@@ -47,27 +82,6 @@ local commands = {
 		end,
 	},
 	{
-		name = "[Octo] PRにコメント追加",
-		cmd = "Octo comment add",
-		execute = function()
-			vim.cmd("Octo comment add")
-		end,
-	},
-	{
-		name = "[Octo] PRレビュー開始",
-		cmd = "Octo review start",
-		execute = function()
-			vim.cmd("Octo review start")
-		end,
-	},
-	{
-		name = "[Octo] PRのdiff表示",
-		cmd = "Octo pr diff",
-		execute = function()
-			vim.cmd("Octo pr diff")
-		end,
-	},
-	{
 		name = "[Octo] PRレビュー再開",
 		cmd = "Octo review resume",
 		execute = function()
@@ -75,10 +89,10 @@ local commands = {
 		end,
 	},
 	{
-		name = "[Octo] Issue一覧",
-		cmd = "Octo issue list",
+		name = "[Octo] PRレビュー開始",
+		cmd = "Octo review start",
 		execute = function()
-			vim.cmd("Octo issue list")
+			vim.cmd("Octo review start")
 		end,
 	},
 	{
@@ -95,20 +109,6 @@ local commands = {
 			vim.cmd("TmuxDetach")
 		end,
 	},
-	{
-		name = "[Conform] 自動フォーマットを無効化",
-		cmd = "ConformDisable",
-		execute = function()
-			vim.cmd("ConformDisable")
-		end,
-	},
-	{
-		name = "[Conform] 自動フォーマットを有効化",
-		cmd = "ConformEnable",
-		execute = function()
-			vim.cmd("ConformEnable")
-		end,
-	},
 }
 
 local function open_keymaps()
@@ -123,18 +123,21 @@ local function open_keymaps()
 	local function collect(maps)
 		for _, map in ipairs(maps) do
 			if map.desc and map.desc:match("^%[") then
+				local group = map.desc:match("^(%[%w+%])") or ""
 				table.insert(results, {
 					lhs = map.lhs,
 					desc = map.desc,
-					display = map.lhs .. "  " .. map.desc,
-					ordinal = map.desc .. " " .. map.lhs,
+					display = string.format("%-12s %s", map.lhs, map.desc),
+					ordinal = group .. " " .. map.lhs,
 				})
 			end
 		end
 	end
 
 	collect(vim.api.nvim_get_keymap("n"))
+	collect(vim.api.nvim_get_keymap("v"))
 	collect(vim.api.nvim_buf_get_keymap(vim.api.nvim_get_current_buf(), "n"))
+	collect(vim.api.nvim_buf_get_keymap(vim.api.nvim_get_current_buf(), "v"))
 
 	table.sort(results, function(a, b)
 		return a.ordinal < b.ordinal
@@ -166,6 +169,8 @@ local function open_keymaps()
 	    })
 	    :find()
 end
+
+table.sort(commands, function(a, b) return a.name < b.name end)
 
 vim.keymap.set("n", "<leader>p", function()
 	local pickers = require("telescope.pickers")
