@@ -2,7 +2,7 @@ return {
 	"nvim-telescope/telescope.nvim",
 	keys = {
 		{
-			"<leader>ts",
+			"<leader>ms",
 			function()
 				local output = vim.fn.system("tmux ls -F '#{session_name}'")
 				if vim.v.shell_error ~= 0 then
