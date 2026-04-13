@@ -18,6 +18,11 @@ PLUGINS_CLAUDE_CODE=(
   frontend-design       # フロントエンドデザイン生成
 )
 
+# プラグイン一覧 (マーケットプレイス: claude-obsidian-marketplace)
+PLUGINS_OBSIDIAN=(
+  claude-obsidian       # Obsidian Wiki vault管理
+)
+
 installed=$(claude plugin list 2>/dev/null)
 
 for plugin in "${PLUGINS_OFFICIAL[@]}"; do
@@ -29,6 +34,17 @@ done
 for plugin in "${PLUGINS_CLAUDE_CODE[@]}"; do
   if ! echo "$installed" | grep -q "$plugin@claude-code-plugins"; then
     claude plugin install "$plugin@claude-code-plugins"
+  fi
+done
+
+# claude-obsidian-marketplace (要: marketplace add が先)
+marketplaces=$(claude plugin marketplace list 2>/dev/null)
+if ! echo "$marketplaces" | grep -q "claude-obsidian-marketplace"; then
+  claude plugin marketplace add AgriciDaniel/claude-obsidian
+fi
+for plugin in "${PLUGINS_OBSIDIAN[@]}"; do
+  if ! echo "$installed" | grep -q "$plugin@claude-obsidian-marketplace"; then
+    claude plugin install "$plugin@claude-obsidian-marketplace"
   fi
 done
 
