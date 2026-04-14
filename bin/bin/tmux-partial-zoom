@@ -1,0 +1,24 @@
+#!/bin/bash
+# tmux-partial-zoom: 縦方向のみペインを最大化するトグル
+# 通常のzoom (resize-pane -Z) と違い、横のレイアウトはそのまま。
+# ai-dualレイアウトで右カラムの片方だけ最大化したい時に使う。
+
+pane_id=$(tmux display-message -p '#{pane_id}')
+key="${pane_id//%/}"
+
+state_var="PZOOM_${key}"
+height_var="PZOOM_H_${key}"
+
+is_zoomed=$(tmux show-environment -g "$state_var" 2>/dev/null | cut -d= -f2)
+
+if [[ "$is_zoomed" == "1" ]]; then
+  old_height=$(tmux show-environment -g "$height_var" 2>/dev/null | cut -d= -f2)
+  if [[ -n "$old_height" ]]; then
+    tmux resize-pane -y "$old_height"
+  fi
+  tmux set-environment -g "$state_var" "0"
+else
+  tmux set-environment -g "$height_var" "$(tmux display-message -p '#{pane_height}')"
+  tmux set-environment -g "$state_var" "1"
+  tmux resize-pane -y 1000
+fi

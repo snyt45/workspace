@@ -45,7 +45,8 @@ Prefix = `C-t`
 | `Prefix-s` | 水平分割 |
 | `C-h/j/k/l` | ペイン移動（Neovim/tmuxシームレス） |
 | `Prefix-h/j/k/l` | ペイン移動（Prefix付き） |
-| `Prefix-t` | ズーム |
+| `Prefix-t` | ズーム（全画面） |
+| `Prefix-T` | 部分ズーム（縦方向のみ。横レイアウト維持） |
 | `Prefix-q` | ペイン閉じる |
 | `Prefix-d` | デタッチ |
 | `Prefix-e` | 全ペイン同時入力 ON |
