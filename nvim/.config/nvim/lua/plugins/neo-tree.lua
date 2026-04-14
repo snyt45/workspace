@@ -20,16 +20,6 @@ return {
 					hide_dotfiles = false,
 					hide_gitignored = false,
 				},
-				window = {
-					mappings = {
-						["F"] = function(state)
-							local node = state.tree:get_node()
-							local path = node.type == "directory" and node:get_id() or
-							    vim.fn.fnamemodify(node:get_id(), ":h")
-							require("fff").live_grep({ cwd = path })
-						end,
-					},
-				},
 			},
 			window = {
 				width = 30,
