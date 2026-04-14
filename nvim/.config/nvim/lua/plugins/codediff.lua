@@ -12,5 +12,12 @@ return {
 		diff = {
 			layout = "inline",
 		},
+		keymaps = {
+			view = {
+				stage_hunk = "<leader>gs",
+				unstage_hunk = "<leader>gu",
+				discard_hunk = "<leader>gr",
+			},
+		},
 	},
 }
