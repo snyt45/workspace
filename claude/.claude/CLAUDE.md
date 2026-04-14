@@ -1,48 +1,10 @@
-# 汎用設定（全プロジェクト共通）
+## Wiki Knowledge Base
+Path: ~/work/claude-obsidian
 
-## 応答スタイル
+When you need context not already in this project:
+1. Read wiki/hot.md first (recent context cache)
+2. If not enough, read wiki/index.md
+3. If you need domain details, read the relevant domain sub-index
+4. Only then drill into specific wiki pages
 
-- 日本語で応答すること
-- 簡潔で要点を押さえた回答をする
-- 絵文字は使わない（明示的に要求された場合を除く）
-- 不明瞭な指示があった場合、推測せず確認する
-- 大きな変更の前に計画を提示し承認を得る
-
-## 開発環境
-
-- OS: macOS (Apple Silicon)
-- エディタ: Neovim（メイン）、VSCode（サブ）
-- ターミナル: Ghostty
-- シェル: zsh + starship
-- 検索: fzf, ripgrep (rg), fd
-- Git: gh, tig
-- パッケージ管理: Homebrew, mise
-
-## コーディング原則
-
-- シンプルさを最優先。過度な抽象化・事前設計をしない
-- 既存のコードパターンに従う。新しいパターンの導入は慎重に
-- 動くコードを小さく積み上げる
-- 不要なコメント・ドキュメント・型注釈を追加しない（変更箇所以外に手を加えない）
-- エラーハンドリングは境界（ユーザー入力、外部API）でのみ行う
-- 1回しか使わない処理のためにヘルパーやユーティリティを作らない
-
-## Git ワークフロー
-
-- コミットは明示的に依頼された場合のみ作成する
-- コミットメッセージは日本語で簡潔に書く
-- force push, reset --hard は明示的な指示がない限り使わない
-- 変更をコミットする前にdiffを確認する
-- .env、credentials等の機密ファイルはコミットしない
-
-## コードレビュー
-
-- 重大な問題にフォーカスする（セキュリティ、バグ、パフォーマンス）
-- 軽微なスタイル修正やリファクタリングは提案しない
-- 変更の意図と影響を理解してからレビューする
-
-## 技術スタック（主な開発コンテキスト）
-
-- TypeScript / React / Node.js
-- テストフレームワーク: Jest / Vitest / React Testing Library
-- パッケージマネージャ: npm / pnpm（プロジェクトに従う）
+Do NOT read the wiki for general coding questions or tasks unrelated to [domain].
