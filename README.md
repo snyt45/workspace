@@ -79,7 +79,6 @@ brew upgrade
 | `mise run packages` | Homebrewパッケージインストール |
 | `mise run link` | シンボリックリンク作成 |
 | `mise run skills` | Claude Codeスキルインストール |
-| `mise run mcp` | Claude Code MCPサーバ設定 |
 | `mise run auth` | GitHub CLI認証 |
 | `mise tasks` | タスク一覧表示 |
 
