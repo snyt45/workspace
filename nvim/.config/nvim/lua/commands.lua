@@ -1,16 +1,5 @@
 local commands = {
 	{
-		name = "[CodeDiff] 全変更ファイルをベースブランチと比較",
-		cmd = "CodeDiff <branch>",
-		execute = function()
-			vim.ui.input({ prompt = "Base branch: ", default = "origin/main" }, function(branch)
-				if branch then
-					vim.cmd("CodeDiff " .. branch)
-				end
-			end)
-		end,
-	},
-	{
 		name = "[Conform] 自動フォーマットを無効化",
 		cmd = "ConformDisable",
 		execute = function()
@@ -22,28 +11,6 @@ local commands = {
 		cmd = "ConformEnable",
 		execute = function()
 			vim.cmd("ConformEnable")
-		end,
-	},
-	{
-		name = "[GitSigns] 現在のファイルをベースブランチと比較",
-		cmd = "Gitsigns diffthis <branch>",
-		execute = function()
-			vim.ui.input({ prompt = "Base branch: ", default = "origin/main" }, function(branch)
-				if branch then
-					vim.cmd("Gitsigns diffthis " .. branch)
-				end
-			end)
-		end,
-	},
-	{
-		name = "[GitSigns] 差分マークの基準を変更",
-		cmd = "Gitsigns change_base <branch>",
-		execute = function()
-			vim.ui.input({ prompt = "Base branch: ", default = "origin/main" }, function(branch)
-				if branch then
-					require("gitsigns").change_base(branch, true)
-				end
-			end)
 		end,
 	},
 	{
@@ -93,6 +60,20 @@ local commands = {
 		cmd = "Octo review start",
 		execute = function()
 			vim.cmd("Octo review start")
+		end,
+	},
+	{
+		name = "[Review] レビューモード開始",
+		cmd = "ReviewStart [base]",
+		execute = function()
+			vim.cmd("ReviewStart")
+		end,
+	},
+	{
+		name = "[Review] レビューモード終了",
+		cmd = "ReviewEnd",
+		execute = function()
+			vim.cmd("ReviewEnd")
 		end,
 	},
 }

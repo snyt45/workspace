@@ -2,7 +2,7 @@ return {
 	"esmuellert/codediff.nvim",
 	cmd = "CodeDiff",
 	keys = {
-		{ "<leader>gg", "<cmd>CodeDiff<cr>", desc = "[CodeDiff] 差分表示" },
+		{ "<leader>gg", function() require("review").code_diff() end, desc = "[CodeDiff] 差分表示 (レビューモード時はbase差分)" },
 		{ "<leader>gh", "<cmd>CodeDiff history<cr>", desc = "[CodeDiff] 履歴" },
 	},
 	opts = {

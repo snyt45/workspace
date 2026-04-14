@@ -7,6 +7,10 @@ return {
 		},
 		sections = {
 			lualine_c = { { "filename", path = 1 } },
+			lualine_x = {
+				{ function() return require("review").status() end },
+				"encoding", "fileformat", "filetype",
+			},
 		},
 		extensions = { "neo-tree", "lazy" },
 	},

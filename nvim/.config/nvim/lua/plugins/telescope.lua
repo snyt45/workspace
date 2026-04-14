@@ -56,5 +56,7 @@ return {
 		local builtin = require("telescope.builtin")
 		vim.keymap.set("n", "<leader>o", builtin.oldfiles, { desc = "[Telescope] 最近のファイル" })
 		vim.keymap.set("n", "<leader>b", builtin.buffers, { desc = "[Telescope] バッファ一覧" })
+		vim.keymap.set("n", "<leader>gf", function() require("review").files_changed() end,
+			{ desc = "[Git] 変更ファイル一覧 (レビューモード時はbase差分)" })
 	end,
 }

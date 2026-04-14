@@ -138,6 +138,7 @@ fff.nvim 操作:
 |------|------|
 | `,o` | 最近使ったファイル (カレントディレクトリのみ) |
 | `,b` | バッファ一覧 |
+| `,gf` | 変更ファイル一覧 (off: working tree / on: `base...HEAD`) |
 
 telescope プレビュー操作:
 
@@ -214,8 +215,19 @@ Neovim内から起動:
 
 | キー | 説明 |
 |------|------|
-| `,gg` | diffビューを開く |
+| `,gg` | diffビューを開く (レビューモード時は `base...HEAD`) |
 | `,gh` | コミット履歴を開く |
+
+### レビューモード
+
+baseブランチを宣言すると、gitsigns / CodeDiff / `,gf` が同じbaseを参照するようになる。PRレビュー時に摩擦なく差分を見られる。
+
+| コマンド | 説明 |
+|----------|------|
+| `:ReviewStart [base]` | レビューモード開始 (引数省略時はtelescopeでbase選択) |
+| `:ReviewEnd` | レビューモード終了 |
+
+モードon時はlualineに `Review: <base>` と表示される。gitsignsのsign/hunk移動もbase基準に切り替わる。
 
 エクスプローラ内:
 
