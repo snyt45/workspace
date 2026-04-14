@@ -1,5 +1,19 @@
 local commands = {
 	{
+		name = "[GrugFar] カーソル下の単語で検索・置換",
+		cmd = "GrugFar (cword)",
+		execute = function()
+			require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
+		end,
+	},
+	{
+		name = "[GrugFar] 現在のディレクトリ内で検索・置換",
+		cmd = "GrugFar (dir)",
+		execute = function()
+			require("grug-far").open({ prefills = { paths = vim.fn.expand("%:p:h") } })
+		end,
+	},
+	{
 		name = "[Conform] 自動フォーマットを無効化",
 		cmd = "ConformDisable",
 		execute = function()
