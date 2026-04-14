@@ -110,9 +110,6 @@
       "~/work"
     ]
   },
-  "disabledMcpjsonServers": [
-    "figma"
-  ],
   "hooks": {
     "Stop": [
       {

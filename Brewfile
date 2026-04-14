@@ -21,6 +21,7 @@ brew "zsh-autosuggestions"
 # アプリケーション
 cask "1password"
 cask "1password-cli"
+cask "aqua-voice"
 cask "alt-tab"
 cask "claude"
 cask "claude-code"
