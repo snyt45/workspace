@@ -114,17 +114,30 @@ leader = `,`
 | `F` | ディレクトリ内をripgrep検索 |
 | `D` | ディレクトリ内でファイル検索 |
 
-### ファイル検索 (telescope)
+### ファイル検索・grep (fff.nvim)
 
 | キー | 説明 |
 |------|------|
-| `,,` | ファイル検索 |
-| `,r` | grep検索 (リアルタイム) |
+| `,,` | ファイル検索 (frecency順) |
+| `,r` | grep検索 (plain/regex/fuzzy切替: Shift+Tab) |
+| `,rw` | カーソル下の単語でgrep |
+
+fff.nvim 操作:
+
+| キー | 説明 |
+|------|------|
+| `Tab` | マルチ選択 |
+| `C-q` | 選択をquickfixに送信 |
+| `S-Tab` | grepモード切替 (plain → regex → fuzzy) |
+| `C-Up` | クエリ履歴 |
+
+### その他の検索 (telescope)
+
+| キー | 説明 |
+|------|------|
 | `,o` | 最近使ったファイル (カレントディレクトリのみ) |
 | `,b` | バッファ一覧 |
 | `,gs` | Git status |
-| `:TmuxSwitch` | tmuxセッション切り替え |
-| `:TmuxDetach` | tmuxデタッチ |
 
 telescope プレビュー操作:
 
@@ -266,27 +279,7 @@ Neovim内から起動:
 | `:ConformInfo` | フォーマッタ設定の確認 |
 
 
-## PRレビュー (gh-dash + codediff + octo.nvim)
-
-レビューの流れ:
-
-1. `gh dash` でPR一覧を開く (tmux内で実行)
-2. `d` で差分を確認 → codediff が tmux 新ウィンドウで開く。Neovim閉じると dash に戻る
-3. `C` でレビュー → octo.nvim が tmux 新ウィンドウで開く。コメント/approve/マージ
-
-gh-dash 操作:
-
-| キー | 説明 |
-|------|------|
-| `1`〜`4` | セクション切り替え (My PRs / Open PRs / Review Requested / Involved) |
-| `j` / `k` | 上下移動 |
-| `d` | codediff で差分表示 (tmux新ウィンドウ) |
-| `C` | octo.nvim でレビュー (tmux新ウィンドウ) |
-| `Enter` | PRプレビュー |
-| `b` | ブラウザで開く |
-| `s` | PR/Issue切り替え |
-| `?` | ヘルプ |
-| `q` | 終了 |
+## PRレビュー (octo.nvim)
 
 octo.nvim 操作:
 

@@ -61,15 +61,6 @@ return {
 		telescope.load_extension("ui-select")
 
 		local builtin = require("telescope.builtin")
-
-		-- gitリポジトリ内ではgit_files、外ではfind_filesにフォールバック
-		vim.keymap.set("n", "<leader><leader>", function()
-			local ok = pcall(builtin.git_files, { show_untracked = true })
-			if not ok then
-				builtin.find_files()
-			end
-		end, { desc = "[Telescope] ファイル検索" })
-		vim.keymap.set("n", "<leader>r", builtin.live_grep, { desc = "[Telescope] grep検索" })
 		vim.keymap.set("n", "<leader>o", builtin.oldfiles, { desc = "[Telescope] 最近のファイル" })
 		vim.keymap.set("n", "<leader>b", builtin.buffers, { desc = "[Telescope] バッファ一覧" })
 		vim.keymap.set("n", "<leader>gs", builtin.git_status, { desc = "[Telescope] Git status" })

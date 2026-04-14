@@ -26,10 +26,7 @@ return {
 							local node = state.tree:get_node()
 							local path = node.type == "directory" and node:get_id() or
 							    vim.fn.fnamemodify(node:get_id(), ":h")
-							require("telescope.builtin").live_grep({
-								search_dirs = { path },
-								additional_args = { "--hidden" },
-							})
+							require("fff").live_grep({ cwd = path })
 						end,
 					},
 				},

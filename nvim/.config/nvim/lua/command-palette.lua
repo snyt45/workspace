@@ -95,20 +95,6 @@ local commands = {
 			vim.cmd("Octo review start")
 		end,
 	},
-	{
-		name = "[Tmux] セッション切り替え",
-		cmd = "TmuxSwitch",
-		execute = function()
-			vim.cmd("TmuxSwitch")
-		end,
-	},
-	{
-		name = "[Tmux] デタッチ",
-		cmd = "TmuxDetach",
-		execute = function()
-			vim.cmd("TmuxDetach")
-		end,
-	},
 }
 
 local function open_keymaps()
