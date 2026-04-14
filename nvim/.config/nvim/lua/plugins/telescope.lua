@@ -30,13 +30,6 @@ return {
 				},
 			},
 			pickers = {
-				find_files = {
-					hidden = true,
-				},
-				live_grep = {
-					layout_strategy = "horizontal",
-					additional_args = { "--hidden", "--glob", "!.git/", "--trim" },
-				},
 				oldfiles = {
 					layout_strategy = "horizontal",
 					cwd_only = true,
