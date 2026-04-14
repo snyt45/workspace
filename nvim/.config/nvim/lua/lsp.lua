@@ -37,10 +37,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
 		local buf = args.buf
 		vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = buf, desc = "[LSP] 定義ジャンプ" })
-		vim.keymap.set("n", "gr", function()
-			vim.g.last_lsp_search = vim.fn.expand("<cword>")
-			vim.lsp.buf.references()
-		end, { buffer = buf, desc = "[LSP] 参照一覧" })
+		vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = buf, desc = "[LSP] 参照一覧" })
 		vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = buf, desc = "[LSP] ホバー" })
 		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { buffer = buf, desc = "[LSP] リネーム" })
 		vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = buf, desc = "[LSP] コードアクション" })
