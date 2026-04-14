@@ -144,4 +144,5 @@ require("lazy").setup("plugins")
 -- ==========================================================================
 
 require("lsp")
-require("command-palette")
+require("commands")
+require("keymaps")
