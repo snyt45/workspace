@@ -19,15 +19,16 @@ EOF
     ai-dual*)
       cat <<'EOF'
 ┌───────────────────┬─────────┐
-│                   │    c    │
-│                   │(OpenCode)│
+│                   │ c / cx  │
+│                   │ (上段)  │
 │      editor       ├─────────┤
-│                   │   cx    │
-│                   │(Claude) │
+│                   │ c / cx  │
+│                   │ (下段)  │
 ├───────────────────┴─────────┤
 │           terminal          │
 └─────────────────────────────┘
   左70%              右30%
+  上下それぞれ c / cx を選択
 
 EOF
       ;;
@@ -116,18 +117,30 @@ apply_layout() {
       tmux select-pane -t 0
       ;;
     ai-dual)
+      local top_agent="$2"
+      local bottom_agent="$3"
+      if [[ -z "$top_agent" ]]; then
+        echo "上段エージェント:"
+        top_agent=$(select_agent)
+        [[ -z "$top_agent" ]] && return 0
+      fi
+      if [[ -z "$bottom_agent" ]]; then
+        echo "下段エージェント:"
+        bottom_agent=$(select_agent)
+        [[ -z "$bottom_agent" ]] && return 0
+      fi
       local editor_pane="$TMUX_PANE"
       # 下段（15%）を作成
       tmux split-window -v -l 15%
       # エディタペインの右30%を分割してAIペインを作成
       local ai_pane
       ai_pane=$(tmux split-window -h -l 30% -t "$editor_pane" -P -F '#{pane_id}')
-      # AIペインを縦分割してClaude Code用ペインを作成
-      local cx_pane
-      cx_pane=$(tmux split-window -v -t "$ai_pane" -P -F '#{pane_id}')
+      # AIペインを縦分割して下段AIペインを作成
+      local bottom_pane
+      bottom_pane=$(tmux split-window -v -t "$ai_pane" -P -F '#{pane_id}')
       # 各ペインでコマンドを起動
-      tmux send-keys -t "$ai_pane" "c" C-m
-      tmux send-keys -t "$cx_pane" "cx" C-m
+      tmux send-keys -t "$ai_pane" "$top_agent" C-m
+      tmux send-keys -t "$bottom_pane" "$bottom_agent" C-m
       tmux send-keys -t "$editor_pane" "$EDITOR ." C-m
       # エディタにフォーカス
       tmux select-pane -t "$editor_pane"
@@ -183,12 +196,16 @@ fi
 # 引数があればそのまま実行
 if [[ -n "$1" ]]; then
   case "$1" in
-    dev|dev-full|ai-dual|pair)
+    dev|dev-full|pair)
       apply_layout "$1"
       exit 0
       ;;
     ai-single)
       apply_layout "$1" "$2"
+      exit 0
+      ;;
+    ai-dual)
+      apply_layout "$1" "$2" "$3"
       exit 0
       ;;
     *)

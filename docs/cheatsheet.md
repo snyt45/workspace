@@ -71,7 +71,9 @@ Prefix = `C-t`
 | `ide ai-single` | NeoVim + エージェント1つ + ターミナル (エージェント選択) |
 | `ide ai-single c` | NeoVim + OpenCode + ターミナル |
 | `ide ai-single cx` | NeoVim + Claude Code + ターミナル |
-| `ide ai-dual` | NeoVim + OpenCode + Claude Code + ターミナル |
+| `ide ai-dual` | NeoVim + エージェント2つ + ターミナル (各ペイン選択) |
+| `ide ai-dual c cx` | NeoVim + OpenCode(上) + Claude Code(下) + ターミナル |
+| `ide ai-dual cx cx` | NeoVim + Claude Code×2 + ターミナル |
 | `ide dev` | エディタ + ターミナル3つ |
 | `ide dev-full` | エディタ + ターミナル6つ |
 | `ide pair` | NeoVim 2つ横並び + ターミナル |
