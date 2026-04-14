@@ -18,9 +18,6 @@ fi
 # browser-use/browser-use (ブラウザ自動化CLI)
 npx -y skills add https://github.com/browser-use/browser-use --skill browser-use -a claude-code -g -y --copy
 
-# ShawnPana/smux (tmuxペイン間通信)
-npx -y skills add ShawnPana/smux -a claude-code -g -y --copy
-
 # 既存スキルを最新に更新
 npx -y skills update -a claude-code -g -y
 

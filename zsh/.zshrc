@@ -22,9 +22,6 @@ export FZF_DEFAULT_OPTS="--ansi -e --prompt='QUERY> ' --layout=reverse --border=
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 eval "$(mise activate zsh)"
 
-# smux
-export PATH="$HOME/.smux/bin:$PATH"
-
 # 履歴の重複を避ける
 setopt HIST_IGNORE_ALL_DUPS   # 同じコマンドを履歴に残さない
 setopt HIST_SAVE_NO_DUPS      # 重複するコマンドを保存しない
