@@ -9,6 +9,11 @@ return {
 		openTargetWindow = {
 			preferredLocation = "right",
 		},
+		engines = {
+			ripgrep = {
+				extraArgs = "--hidden --glob=!.git",
+			},
+		},
 	},
 	config = function(_, opts)
 		local grug = require("grug-far")
