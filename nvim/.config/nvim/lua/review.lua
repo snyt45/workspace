@@ -16,6 +16,7 @@ end
 local function start_with(base)
 	apply_base(base)
 	vim.notify("Review: " .. base)
+	vim.cmd("CodeDiff " .. base .. "...HEAD")
 end
 
 vim.api.nvim_create_user_command("ReviewStart", function(opts)
