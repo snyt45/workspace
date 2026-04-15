@@ -31,9 +31,18 @@ vim.api.nvim_create_user_command("ReviewStart", function(opts)
 			actions.select_default:replace(function(bufnr)
 				local selection = action_state.get_selected_entry()
 				actions.close(bufnr)
-				if selection and selection.value then
-					start_with(selection.value)
+				if not selection or not selection.value then return end
+				local branch = selection.value
+				local result = vim.system({ "git", "checkout", branch }):wait()
+				if result.code ~= 0 then
+					vim.notify("checkout failed: " .. (result.stderr or ""), vim.log.levels.ERROR)
+					return
 				end
+				vim.notify("Checked out: " .. branch)
+				vim.ui.input({ prompt = "Compare base: ", default = "origin/main" }, function(base)
+					if not base or base == "" then return end
+					start_with(base)
+				end)
 			end)
 			return true
 		end,
