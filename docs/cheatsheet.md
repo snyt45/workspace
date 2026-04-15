@@ -304,6 +304,25 @@ grug-farバッファ内でpaths絞り込み切替 (`<localleader>` = `\`):
 | `:ConformInfo` | フォーマッタ設定の確認 |
 
 
+## スクラッチメモ (snacks.scratch)
+
+レビューや作業中の気づきを書き留める永続メモ。cwd + branch 単位で自動保存される（PRブランチごとに別メモ）。
+
+| キー | 説明 |
+|------|------|
+| `,n` | 現在のcwd+branchのscratchを開く (markdown) |
+| `,N` | 既存scratch一覧から選択 |
+
+scratch buffer内: 通常のmarkdown編集。終了時自動保存。再度`,n`で同じ内容が開く。
+
+`,N` の一覧picker内:
+
+| キー | 動作 |
+|------|------|
+| `<CR>` | 選択したscratchを開く |
+| `<C-x>` | scratchを削除 |
+| `<C-n>` | 新規scratchを作成 |
+
 ## GitHub (snacks.gh)
 
 `,p` (コマンドパレット) から呼ぶ。`gh` CLI使用。

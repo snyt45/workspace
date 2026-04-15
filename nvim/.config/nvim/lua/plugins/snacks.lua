@@ -7,7 +7,28 @@ return {
 			sources = {
 				gh_issue = {},
 				gh_pr = {},
+				scratch = {
+					actions = {
+						scratch_delete = function(picker, item)
+							local current = item.file
+							local bufnr = vim.fn.bufnr(current)
+							if bufnr ~= -1 then
+								pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+							end
+							os.remove(current)
+							os.remove(current .. ".meta")
+							picker:refresh()
+						end,
+					},
+				},
 			},
 		},
+		scratch = {
+			ft = "markdown",
+		},
+	},
+	keys = {
+		{ "<leader>n", function() Snacks.scratch() end,        desc = "[Snacks] スクラッチメモ (cwd+branch単位)" },
+		{ "<leader>N", function() Snacks.scratch.select() end, desc = "[Snacks] スクラッチ一覧" },
 	},
 }
