@@ -303,19 +303,6 @@ grug-farバッファ内でpaths絞り込み切替 (`<localleader>` = `\`):
 | `:ConformInfo` | フォーマッタ設定の確認 |
 
 
-## PRレビュー (octo.nvim)
-
-octo.nvim 操作:
-
-| キー/コマンド | 説明 |
-|---------------|------|
-| `Enter` | アクション一覧 (PRバッファ内で) |
-| `:Octo` | コマンド一覧 (タブ補完可) |
-| `:Octo review start` | レビュー開始 |
-| `:Octo review resume` | 中断したレビューを再開 |
-| `:Octo review submit` | レビュー送信 (C-a:承認, C-m:コメント, C-r:変更要求) |
-| `:Octo pr merge` | マージ (squash) |
-
 ## Git (コマンドライン)
 
 | コマンド | 説明 |

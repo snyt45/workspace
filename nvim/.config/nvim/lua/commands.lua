@@ -28,55 +28,6 @@ local commands = {
 		end,
 	},
 	{
-		name = "[Octo] Issue一覧",
-		cmd = "Octo issue list",
-		execute = function()
-			vim.cmd("Octo issue list")
-		end,
-	},
-	{
-		name = "[Octo] PRにコメント追加",
-		cmd = "Octo comment add",
-		execute = function()
-			vim.cmd("Octo comment add")
-		end,
-	},
-	{
-		name = "[Octo] PRのdiff表示",
-		cmd = "Octo pr diff",
-		execute = function()
-			vim.cmd("Octo pr diff")
-		end,
-	},
-	{
-		name = "[Octo] PR一覧",
-		cmd = "Octo pr list",
-		execute = function()
-			vim.cmd("Octo pr list")
-		end,
-	},
-	{
-		name = "[Octo] PRをマージ",
-		cmd = "Octo pr merge squash",
-		execute = function()
-			vim.cmd("Octo pr merge squash")
-		end,
-	},
-	{
-		name = "[Octo] PRレビュー再開",
-		cmd = "Octo review resume",
-		execute = function()
-			vim.cmd("Octo review resume")
-		end,
-	},
-	{
-		name = "[Octo] PRレビュー開始",
-		cmd = "Octo review start",
-		execute = function()
-			vim.cmd("Octo review start")
-		end,
-	},
-	{
 		name = "[Review] レビューモード開始",
 		cmd = "ReviewStart [base]",
 		execute = function()
