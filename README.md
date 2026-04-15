@@ -13,7 +13,7 @@
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
 | Git UI | codediff + gitsigns |
-| PRレビュー | octo.nvim |
+| PRレビュー | snacks.nvim |
 | AIコーディング | OpenCode (`c`) + Claude Code (`cx`) |
 | シェル | zsh + starship |
 | 検索 | fzf, ripgrep, fd |

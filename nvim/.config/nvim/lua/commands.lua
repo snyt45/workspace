@@ -1,5 +1,33 @@
 local commands = {
 	{
+		name = "[Snacks] Issue一覧 (open)",
+		cmd = "Snacks.picker.gh_issue()",
+		execute = function()
+			Snacks.picker.gh_issue()
+		end,
+	},
+	{
+		name = "[Snacks] Issue一覧 (all)",
+		cmd = "Snacks.picker.gh_issue({state='all'})",
+		execute = function()
+			Snacks.picker.gh_issue({ state = "all" })
+		end,
+	},
+	{
+		name = "[Snacks] PR一覧 (open)",
+		cmd = "Snacks.picker.gh_pr()",
+		execute = function()
+			Snacks.picker.gh_pr()
+		end,
+	},
+	{
+		name = "[Snacks] PR一覧 (all)",
+		cmd = "Snacks.picker.gh_pr({state='all'})",
+		execute = function()
+			Snacks.picker.gh_pr({ state = "all" })
+		end,
+	},
+	{
 		name = "[GrugFar] カーソル下の単語で検索・置換",
 		cmd = "GrugFar (cword)",
 		execute = function()

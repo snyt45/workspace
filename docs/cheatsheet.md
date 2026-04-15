@@ -303,6 +303,19 @@ grug-farバッファ内でpaths絞り込み切替 (`<localleader>` = `\`):
 | `:ConformInfo` | フォーマッタ設定の確認 |
 
 
+## GitHub (snacks.gh)
+
+`,p` (コマンドパレット) から呼ぶ。`gh` CLI使用。
+
+| エントリ | 説明 |
+|---------|------|
+| `[Snacks] Issue一覧 (open)` | OpenなIssue一覧 → bufferで開く |
+| `[Snacks] Issue一覧 (all)` | closed含む全Issue |
+| `[Snacks] PR一覧 (open)` | OpenなPR一覧 → bufferで開く |
+| `[Snacks] PR一覧 (all)` | closed/merged含む全PR |
+
+開いたbuffer内: `<cr>`=アクションメニュー (merge/checkout/diff等), `i`=編集, `a`=コメント, `c`=close, `o`=reopen
+
 ## Git (コマンドライン)
 
 | コマンド | 説明 |
