@@ -1,6 +1,6 @@
 return {
 	"MagicDuck/grug-far.nvim",
-	cmd = { "GrugFar", "GrugFarWithin", "GrugFarFocus" },
+	cmd = { "GrugFar", "GrugFarWithin", "GrugFarFocus", "GrugFarFocusCword", "GrugFarFocusDir" },
 	keys = {
 		{ "<leader>s", "<cmd>GrugFarFocus<cr>", desc = "[GrugFar] フォーカス" },
 	},
@@ -14,9 +14,12 @@ return {
 		local grug = require("grug-far")
 		grug.setup(opts)
 
-		vim.api.nvim_create_user_command("GrugFarFocus", function()
+		local function open_or_focus(prefills)
 			pcall(vim.cmd, "Neotree close")
 			if grug.has_instance("main") then
+				if prefills then
+					grug.get_instance("main"):update_input_values(prefills, false)
+				end
 				if not grug.is_instance_open("main") then
 					grug.toggle_instance({ instanceName = "main" })
 				end
@@ -26,9 +29,23 @@ return {
 					vim.api.nvim_set_current_win(win)
 				end
 			else
-				grug.open({ instanceName = "main" })
+				local open_opts = { instanceName = "main" }
+				if prefills then open_opts.prefills = prefills end
+				grug.open(open_opts)
 			end
+		end
+
+		vim.api.nvim_create_user_command("GrugFarFocus", function()
+			open_or_focus(nil)
 		end, { desc = "[GrugFar] 開く or フォーカス移動" })
+
+		vim.api.nvim_create_user_command("GrugFarFocusCword", function()
+			open_or_focus({ search = vim.fn.expand("<cword>") })
+		end, { desc = "[GrugFar] カーソル下の単語で検索" })
+
+		vim.api.nvim_create_user_command("GrugFarFocusDir", function()
+			open_or_focus({ paths = vim.fn.expand("%:p:h") })
+		end, { desc = "[GrugFar] 現在のdirで検索" })
 
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = "grug-far",

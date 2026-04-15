@@ -29,16 +29,16 @@ local commands = {
 	},
 	{
 		name = "[GrugFar] カーソル下の単語で検索・置換",
-		cmd = "GrugFar (cword)",
+		cmd = "GrugFarFocusCword",
 		execute = function()
-			require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
+			vim.cmd("GrugFarFocusCword")
 		end,
 	},
 	{
 		name = "[GrugFar] 現在のディレクトリ内で検索・置換",
-		cmd = "GrugFar (dir)",
+		cmd = "GrugFarFocusDir",
 		execute = function()
-			require("grug-far").open({ prefills = { paths = vim.fn.expand("%:p:h") } })
+			vim.cmd("GrugFarFocusDir")
 		end,
 	},
 	{
