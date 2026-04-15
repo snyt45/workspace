@@ -29,6 +29,12 @@ return {
 				},
 			},
 		})
-		vim.keymap.set("n", "<leader>e", "<cmd>Neotree focus<cr>", { desc = "[NeoTree] ファイルツリー" })
+		vim.keymap.set("n", "<leader>e", function()
+			local ok, grug = pcall(require, "grug-far")
+			if ok and grug.has_instance("main") and grug.is_instance_open("main") then
+				grug.toggle_instance({ instanceName = "main" })
+			end
+			vim.cmd("Neotree focus")
+		end, { desc = "[NeoTree] ファイルツリー" })
 	end,
 }

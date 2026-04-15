@@ -1,24 +1,40 @@
 return {
 	"MagicDuck/grug-far.nvim",
-	cmd = { "GrugFar", "GrugFarWithin", "GrugFarToggle" },
+	cmd = { "GrugFar", "GrugFarWithin", "GrugFarFocus" },
 	keys = {
-		{ "<leader>s", "<cmd>GrugFarToggle<cr>", desc = "[GrugFar] トグル" },
+		{ "<leader>s", "<cmd>GrugFarFocus<cr>", desc = "[GrugFar] フォーカス" },
 	},
 	opts = {
 		windowCreationCommand = "topleft 60vsplit",
+		openTargetWindow = {
+			preferredLocation = "right",
+		},
 	},
 	config = function(_, opts)
-		require("grug-far").setup(opts)
+		local grug = require("grug-far")
+		grug.setup(opts)
 
-		vim.api.nvim_create_user_command("GrugFarToggle", function()
-			require("grug-far").toggle_instance({ instanceName = "main" })
-		end, { desc = "[GrugFar] トグル (検索状態を保持)" })
+		vim.api.nvim_create_user_command("GrugFarFocus", function()
+			pcall(vim.cmd, "Neotree close")
+			if grug.has_instance("main") then
+				if not grug.is_instance_open("main") then
+					grug.toggle_instance({ instanceName = "main" })
+				end
+				local inst = grug.get_instance("main")
+				local win = vim.fn.bufwinid(inst._buf)
+				if win ~= -1 then
+					vim.api.nvim_set_current_win(win)
+				end
+			else
+				grug.open({ instanceName = "main" })
+			end
+		end, { desc = "[GrugFar] 開く or フォーカス移動" })
 
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = "grug-far",
 			callback = function(ev)
 				local function set_paths(paths)
-					require("grug-far").get_instance(0):update_input_values({ paths = paths }, false)
+					grug.get_instance(0):update_input_values({ paths = paths }, false)
 				end
 				vim.keymap.set("n", "<localleader>1", function()
 					set_paths(vim.fn.fnamemodify(vim.fn.expand("#:p"), ":h"))
@@ -29,6 +45,9 @@ return {
 				vim.keymap.set("n", "<localleader>3", function()
 					set_paths("<qflist>")
 				end, { buffer = ev.buf, desc = "[GrugFar] path: quickfix" })
+				vim.keymap.set("n", "q", function()
+					grug.toggle_instance({ instanceName = "main" })
+				end, { buffer = ev.buf, desc = "[GrugFar] 閉じる (状態保持)" })
 			end,
 		})
 	end,
