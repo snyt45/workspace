@@ -51,7 +51,7 @@ return {
 			pattern = "grug-far",
 			callback = function(ev)
 				local function set_paths(paths)
-					grug.get_instance(0):update_input_values({ paths = paths }, false)
+					grug.get_instance(ev.buf):update_input_values({ paths = paths }, false)
 				end
 				vim.keymap.set("n", "<localleader>1", function()
 					set_paths(vim.fn.fnamemodify(vim.fn.expand("#:p"), ":h"))
