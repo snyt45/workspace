@@ -69,6 +69,41 @@ local commands = {
 			vim.cmd("ReviewEnd")
 		end,
 	},
+	{
+		name = "[GitSigns] 比較ベース変更",
+		cmd = "gitsigns.change_base(base)",
+		execute = function()
+			vim.ui.input({ prompt = "Compare base: ", default = "origin/main" }, function(base)
+				if not base or base == "" then return end
+				local gs = package.loaded.gitsigns
+				if gs then
+					gs.change_base(base, true)
+					vim.notify("GitSigns base: " .. base)
+				end
+			end)
+		end,
+	},
+	{
+		name = "[GitSigns] 比較ベースをリセット",
+		cmd = "gitsigns.change_base(nil)",
+		execute = function()
+			local gs = package.loaded.gitsigns
+			if gs then
+				gs.change_base(nil, true)
+				vim.notify("GitSigns base: reset")
+			end
+		end,
+	},
+	{
+		name = "[CodeDiff] ブランチとの差分",
+		cmd = "CodeDiff base...HEAD",
+		execute = function()
+			vim.ui.input({ prompt = "Compare base: ", default = "origin/main" }, function(base)
+				if not base or base == "" then return end
+				vim.cmd("CodeDiff " .. base .. "...HEAD")
+			end)
+		end,
+	},
 }
 
 table.sort(commands, function(a, b) return a.name < b.name end)
