@@ -9,9 +9,6 @@ return {
 		explorer = {
 			view_mode = "tree",
 		},
-		diff = {
-			layout = "inline",
-		},
 		keymaps = {
 			view = {
 				stage_hunk = "<leader>gs",
