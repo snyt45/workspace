@@ -26,31 +26,15 @@ return {
 		scratch = {
 			ft = "markdown",
 			win = {
-				position = "right",
-				width = 0.4,
-				border = "none",
+				backdrop = false,
+				on_win = function(self)
+					vim.wo[self.win].winblend = 50
+				end,
 			},
 		},
 	},
 	keys = {
-		{
-			"<leader>n",
-			function()
-				local layout = vim.fn.winrestcmd()
-				Snacks.scratch()
-				local scratch_win = vim.api.nvim_get_current_win()
-				vim.api.nvim_create_autocmd("WinClosed", {
-					pattern = tostring(scratch_win),
-					once = true,
-					callback = function()
-						vim.schedule(function()
-							pcall(vim.cmd, layout)
-						end)
-					end,
-				})
-			end,
-			desc = "[Snacks] スクラッチメモ (cwd+branch単位)"
-		},
+		{ "<leader>n", function() Snacks.scratch() end,        desc = "[Snacks] スクラッチメモ (cwd+branch単位)" },
 		{ "<leader>N", function() Snacks.scratch.select() end, desc = "[Snacks] スクラッチ一覧" },
 	},
 }
