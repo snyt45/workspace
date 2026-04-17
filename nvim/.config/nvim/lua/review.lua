@@ -19,6 +19,18 @@ local function start_with(base)
 	vim.cmd("CodeDiff " .. base .. "...HEAD")
 end
 
+-- "origin/foo" のような remote ref を local branch 名に変換（detached HEAD 回避のため）
+local function to_local_branch(branch)
+	local remotes = vim.fn.systemlist("git remote")
+	for _, remote in ipairs(remotes) do
+		local prefix = remote .. "/"
+		if branch:sub(1, #prefix) == prefix then
+			return branch:sub(#prefix + 1)
+		end
+	end
+	return branch
+end
+
 vim.api.nvim_create_user_command("ReviewStart", function(opts)
 	if opts.args and opts.args ~= "" then
 		start_with(opts.args)
@@ -33,13 +45,13 @@ vim.api.nvim_create_user_command("ReviewStart", function(opts)
 				local selection = action_state.get_selected_entry()
 				actions.close(bufnr)
 				if not selection or not selection.value then return end
-				local branch = selection.value
-				local result = vim.system({ "git", "checkout", branch }):wait()
+				local local_name = to_local_branch(selection.value)
+				local result = vim.system({ "git", "switch", local_name }):wait()
 				if result.code ~= 0 then
-					vim.notify("checkout failed: " .. (result.stderr or ""), vim.log.levels.ERROR)
+					vim.notify("switch failed: " .. (result.stderr or ""), vim.log.levels.ERROR)
 					return
 				end
-				vim.notify("Checked out: " .. branch)
+				vim.notify("Switched to: " .. local_name)
 				vim.ui.input({ prompt = "Compare base: ", default = "origin/main" }, function(base)
 					if not base or base == "" then return end
 					start_with(base)
