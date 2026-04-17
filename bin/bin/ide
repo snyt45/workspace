@@ -2,6 +2,20 @@
 
 show_preview() {
   case "$1" in
+    default*)
+      cat <<'EOF'
+┌───────────────────┬─────────┐
+│                   │         │
+│                   │ term 1  │
+│      term 0       │         │
+│                   │         │
+├───────────────────┴─────────┤
+│           term 2            │
+└─────────────────────────────┘
+  左70%              右30%
+
+EOF
+      ;;
     ai-single*)
       cat <<'EOF'
 ┌───────────────────┬─────────┐
@@ -32,28 +46,6 @@ EOF
 
 EOF
       ;;
-    dev-full*)
-      cat <<'EOF'
-┌─────────────────────────────┐
-│           editor            │
-├─────────┬─────────┬─────────┤
-│ term 1  │ term 2  │ term 3  │
-├─────────┼─────────┼─────────┤
-│ term 4  │ term 5  │ term 6  │
-└─────────┴─────────┴─────────┘
-
-EOF
-      ;;
-    dev*)
-      cat <<'EOF'
-┌─────────────────────────────┐
-│           editor            │
-├─────────┬─────────┬─────────┤
-│ term 1  │ term 2  │ term 3  │
-└─────────┴─────────┴─────────┘
-
-EOF
-      ;;
     pair*)
       cat <<'EOF'
 ┌──────────────┬──────────────┐
@@ -64,6 +56,28 @@ EOF
 │           terminal          │
 └─────────────────────────────┘
   左50%            右50%
+
+EOF
+      ;;
+    grid-full*)
+      cat <<'EOF'
+┌─────────────────────────────┐
+│           term 0            │
+├─────────┬─────────┬─────────┤
+│ term 1  │ term 2  │ term 3  │
+├─────────┼─────────┼─────────┤
+│ term 4  │ term 5  │ term 6  │
+└─────────┴─────────┴─────────┘
+
+EOF
+      ;;
+    grid*)
+      cat <<'EOF'
+┌─────────────────────────────┐
+│           term 0            │
+├─────────┬─────────┬─────────┤
+│ term 1  │ term 2  │ term 3  │
+└─────────┴─────────┴─────────┘
 
 EOF
       ;;
@@ -92,16 +106,25 @@ cx	claude --enable-auto-mode"
 
 apply_layout() {
   case "$1" in
-    dev)
+    default)
+      local base_pane="$TMUX_PANE"
+      # 下段（15%）を作成
+      tmux split-window -v -l 15%
+      # 上段の右30%を分割
+      tmux split-window -h -l 30% -t "$base_pane"
+      # 左上にフォーカス
+      tmux select-pane -t "$base_pane"
+      ;;
+    grid)
       # 下段（25%）を作成
       tmux split-window -v -l 25%
       # 下段を3分割
       tmux split-window -h -l 66%
       tmux split-window -h -l 50%
-      # エディタにフォーカス
+      # 上段にフォーカス
       tmux select-pane -t 0
       ;;
-    dev-full)
+    grid-full)
       # 3行目（下25%）を作成
       tmux split-window -v -l 25%
       # 3行目を3分割
@@ -113,7 +136,7 @@ apply_layout() {
       # 2行目を3分割
       tmux split-window -h -l 66%
       tmux split-window -h -l 50%
-      # エディタにフォーカス
+      # 上段にフォーカス
       tmux select-pane -t 0
       ;;
     ai-dual)
@@ -196,7 +219,7 @@ fi
 # 引数があればそのまま実行
 if [[ -n "$1" ]]; then
   case "$1" in
-    dev|dev-full|pair)
+    default|grid|grid-full|pair)
       apply_layout "$1"
       exit 0
       ;;
@@ -216,11 +239,12 @@ if [[ -n "$1" ]]; then
 fi
 
 # fzfで選択
-layouts="ai-single
+layouts="default
+ai-single
 ai-dual
-dev
-dev-full
-pair"
+pair
+grid
+grid-full"
 
 selected=$(echo "$layouts" | fzf \
   --height=40% \
