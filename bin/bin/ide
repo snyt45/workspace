@@ -46,6 +46,19 @@ EOF
 
 EOF
       ;;
+    pair-ai*)
+      cat <<'EOF'
+┌───────────┬───────────┬─────┐
+│           │           │     │
+│ editor 1  │ editor 2  │c/cx │
+│           │           │     │
+├───────────┴───────────┴─────┤
+│          terminal           │
+└─────────────────────────────┘
+  左40%      中40%    右20%
+
+EOF
+      ;;
     pair*)
       cat <<'EOF'
 ┌──────────────┬──────────────┐
@@ -199,6 +212,28 @@ apply_layout() {
       # 左にフォーカス
       tmux select-pane -t "$editor_pane"
       ;;
+    pair-ai)
+      local agent="$2"
+      if [[ -z "$agent" ]]; then
+        agent=$(select_agent)
+        [[ -z "$agent" ]] && return 0
+      fi
+      local editor_pane="$TMUX_PANE"
+      # 下段（15%）を作成
+      tmux split-window -v -l 15%
+      # エディタペインの右20%を分割してAIペインを作成
+      local ai_pane
+      ai_pane=$(tmux split-window -h -l 20% -t "$editor_pane" -P -F '#{pane_id}')
+      # 残った左側(80%)を左右50%で分割して editor2 を作成
+      local editor2_pane
+      editor2_pane=$(tmux split-window -h -l 50% -t "$editor_pane" -P -F '#{pane_id}')
+      # 各ペインでコマンドを起動
+      tmux send-keys -t "$editor_pane" "$EDITOR ." C-m
+      tmux send-keys -t "$editor2_pane" "$EDITOR ." C-m
+      tmux send-keys -t "$ai_pane" "$agent" C-m
+      # 左のエディタにフォーカス
+      tmux select-pane -t "$editor_pane"
+      ;;
   esac
 
   # Starshipのプロンプト初期化を待ってからクリア
@@ -231,6 +266,10 @@ if [[ -n "$1" ]]; then
       apply_layout "$1" "$2" "$3"
       exit 0
       ;;
+    pair-ai)
+      apply_layout "$1" "$2"
+      exit 0
+      ;;
     *)
       echo "Unknown layout: $1"
       exit 1
@@ -243,6 +282,7 @@ layouts="default
 ai-single
 ai-dual
 pair
+pair-ai
 grid
 grid-full"
 

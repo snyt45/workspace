@@ -28,7 +28,7 @@ return {
 			win = {
 				backdrop = false,
 				on_win = function(self)
-					vim.wo[self.win].winblend = 50
+					vim.wo[self.win].winblend = 30
 				end,
 			},
 		},
