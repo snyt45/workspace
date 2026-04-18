@@ -12,6 +12,7 @@
 | `z <dir>` | ディレクトリ移動 (zoxide。過去の移動先を学習) |
 | `zi` | インタラクティブにディレクトリ選択 |
 | `g` | git のエイリアス |
+| `lz` | lazygit のエイリアス (Git TUI) |
 | `v` | nvim のエイリアス |
 | `vd` | nvim +CodeDiff (diffビュー付きで起動) |
 | `vdh` | nvim +"CodeDiff history" (コミット履歴付きで起動) |
@@ -95,10 +96,10 @@ leader = `,`
 | `,c` | 現在のファイルパスをコピー |
 | `,cc` (ビジュアル) | ファイルパス+選択コードをマークダウン形式でコピー |
 | `,m` | Markdownプレビュー (ブラウザ自動起動) |
-| `,t` | ターミナルを下に分割して開く |
+| `C-z` | Floatターミナル toggle (ノーマル/ターミナル両モード、snacks.terminal) |
+| `lz` (ノーマル) | Lazygit Float起動 (snacks.lazygit) |
 | `C-a` (インサート) | 行頭へ移動 (Karabiner対応) |
 | `C-e` (インサート) | 行末へ移動 (Karabiner対応) |
-| `jj` (ターミナルモード) | ノーマルモードに戻る |
 
 コメント:
 
