@@ -1,27 +1,34 @@
 #!/usr/bin/env zsh
 
-SKILLS_DIR="$HOME/.claude/skills"
+set -e
 
 echo "Claude Code スキルをインストール中..."
 
-# vercel-labs/agent-skills (react-best-practices, web-design-guidelines, composition-patterns, react-native)
-npx -y skills add vercel-labs/agent-skills -a claude-code -g -y --copy
-
-# ramziddin/solid-skills (SOLID原則, TDD, クリーンアーキテクチャ)
-npx -y skills add ramziddin/solid-skills -a claude-code -g -y --copy
-
-# thoughtbot/rails-audit-thoughtbot (Rails コード監査)
-if [[ ! -d "$SKILLS_DIR/rails-audit-thoughtbot" ]]; then
-  git clone --quiet https://github.com/thoughtbot/rails-audit-thoughtbot.git "$SKILLS_DIR/rails-audit-thoughtbot"
+# gh v2.90.0 以降が必要（gh skill サブコマンド）
+if ! gh skill --help >/dev/null 2>&1; then
+  echo "エラー: gh v2.90.0 以降が必要。brew upgrade gh を実行してください" >&2
+  exit 1
 fi
 
+# vercel-labs/agent-skills
+for skill in \
+  react-best-practices \
+  composition-patterns \
+  deploy-to-vercel \
+  vercel-cli-with-tokens \
+  web-design-guidelines \
+  react-native-skills \
+  react-view-transitions; do
+  gh skill install vercel-labs/agent-skills "skills/$skill" --agent claude-code --scope user --force
+done
+
+# ramziddin/solid-skills (SOLID原則, TDD, クリーンアーキテクチャ)
+gh skill install ramziddin/solid-skills skills/solid --agent claude-code --scope user --force
+
 # browser-use/browser-use (ブラウザ自動化CLI)
-npx -y skills add https://github.com/browser-use/browser-use --skill browser-use -a claude-code -g -y --copy
+gh skill install browser-use/browser-use skills/browser-use --agent claude-code --scope user --force
 
 # forrestchang/andrej-karpathy-skills (Karpathy流コーディング原則)
-npx -y skills add forrestchang/andrej-karpathy-skills -a claude-code -g -y --copy
-
-# 既存スキルを最新に更新
-npx -y skills update -a claude-code -g -y
+gh skill install forrestchang/andrej-karpathy-skills skills/karpathy-guidelines --agent claude-code --scope user --force
 
 echo "Claude Code スキルインストール完了"
