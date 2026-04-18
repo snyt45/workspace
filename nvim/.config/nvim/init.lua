@@ -100,12 +100,6 @@ map("n", "<leader>q", function()
 end, { desc = "[Quickfix] quickfixトグル" })
 map("n", "<leader>Q", "<cmd>cexpr []<cr>", { desc = "[Quickfix] quickfixクリア" })
 
--- ターミナルを下に分割して開く
-map("n", "<leader>t", "<cmd>split | terminal<cr>", { desc = "[Terminal] ターミナル" })
-
--- ターミナルモードからノーマルモードに戻る
-map("t", "jj", "<C-\\><C-n>")
-
 -- Markdownプレビュー (mo) - ブラウザ自動起動
 map("n", "<leader>m", function()
 	local file = vim.fn.shellescape(vim.fn.expand("%"))
