@@ -3,6 +3,7 @@ eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 
 alias g='git'
+alias lz='lazygit'
 alias v='nvim'
 alias vd='nvim +CodeDiff'
 alias vdh='nvim +"CodeDiff history"'

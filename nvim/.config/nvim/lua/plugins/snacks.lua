@@ -36,5 +36,6 @@ return {
 	keys = {
 		{ "<leader>n", function() Snacks.scratch() end,        desc = "[Snacks] スクラッチメモ (cwd+branch単位)" },
 		{ "<leader>N", function() Snacks.scratch.select() end, desc = "[Snacks] スクラッチ一覧" },
+		{ "lz",    function() Snacks.lazygit() end,                     desc = "[Snacks] Lazygit" },
 	},
 }
