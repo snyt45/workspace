@@ -52,6 +52,9 @@ Prefix = `C-t`
 | `Prefix-d` | デタッチ |
 | `Prefix-e` | 全ペイン同時入力 ON |
 | `Prefix-E` | 全ペイン同時入力 OFF |
+| `Prefix-:` → `rename-session <name>` | セッション名変更 |
+| `Prefix-I` | tpmプラグインをインストール |
+| `Prefix-U` | tpmプラグインを更新 |
 
 ### コマンド (エイリアス)
 
