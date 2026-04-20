@@ -48,11 +48,17 @@ Prefix = `C-t`
 | `Prefix-h/j/k/l` | ペイン移動（Prefix付き） |
 | `Prefix-t` | ズーム（全画面） |
 | `Prefix-T` | 部分ズーム（縦方向のみ。横レイアウト維持） |
+| `Prefix-i` | ペイン番号を表示。続けて番号キーで該当ペインへジャンプ |
 | `Prefix-q` | ペイン閉じる |
 | `Prefix-d` | デタッチ |
 | `Prefix-e` | 全ペイン同時入力 ON |
 | `Prefix-E` | 全ペイン同時入力 OFF |
-| `Prefix-:` → `rename-session <name>` | セッション名変更 |
+| `Prefix-$` | セッション名変更 (プロンプトで入力) |
+| `Prefix-:` → `rename-session <name>` | セッション名変更 (コマンド経由) |
+| `Prefix-N` | 新規セッション作成 (名前プロンプト) |
+| `Prefix-S` | セッション一覧から切り替え (choose-tree) |
+| `Prefix-n` / `Prefix-p` | 次/前のセッションに切り替え |
+| `Prefix-L` | 直前のセッションに戻る (tmux標準) |
 | `Prefix-I` | tpmプラグインをインストール |
 | `Prefix-U` | tpmプラグインを更新 |
 
