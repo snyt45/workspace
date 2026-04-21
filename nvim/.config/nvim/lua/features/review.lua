@@ -1,6 +1,6 @@
 -- ==========================================================================
 -- レビューモード
--- vim.g.review_base を中心に、gitsigns/CodeDiff/telescope が同じbaseを参照する
+-- vim.g.review_base を中心に、gitsigns/CodeDiff/snacks.picker が同じbaseを参照する
 -- ==========================================================================
 
 local M = {}
@@ -71,24 +71,32 @@ end, { desc = "[Review] レビューモード終了" })
 function M.files_changed()
 	local base = vim.g.review_base
 	if not base then
-		require("telescope.builtin").git_status()
+		Snacks.picker.git_status({ layout = { preset = "ivy" } })
 		return
 	end
-	local pickers = require("telescope.pickers")
-	local finders = require("telescope.finders")
-	local conf = require("telescope.config").values
-	local previewers = require("telescope.previewers")
-
-	pickers.new({}, {
-		prompt_title = "Changed files (Review: " .. base .. ")",
-		finder = finders.new_oneshot_job({ "git", "diff", "--name-only", base .. "...HEAD" }, {}),
-		sorter = conf.generic_sorter({}),
-		previewer = previewers.new_termopen_previewer({
-			get_command = function(entry)
-				return { "git", "diff", base .. "...HEAD", "--", entry.value }
-			end,
-		}),
-	}):find()
+	local files = vim.fn.systemlist({ "git", "diff", "--name-only", base .. "...HEAD" })
+	local items = {}
+	for _, file in ipairs(files) do
+		table.insert(items, { text = file, file = file })
+	end
+	Snacks.picker.pick({
+		source = "review_changed_files",
+		title = "Changed (Review: " .. base .. ")",
+		layout = { preset = "ivy" },
+		items = items,
+		format = "file",
+		preview = function(ctx)
+			local lines = vim.fn.systemlist({ "git", "diff", base .. "...HEAD", "--", ctx.item.file })
+			ctx.preview:set_lines(lines)
+			ctx.preview:highlight({ ft = "diff" })
+		end,
+		confirm = function(picker, item)
+			picker:close()
+			if item and item.file then
+				vim.cmd("edit " .. vim.fn.fnameescape(item.file))
+			end
+		end,
+	})
 end
 
 -- <leader>gg: CodeDiff (モード時はbase適用)

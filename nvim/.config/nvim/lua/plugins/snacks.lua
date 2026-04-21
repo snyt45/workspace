@@ -34,8 +34,11 @@ return {
 		},
 	},
 	keys = {
-		{ "<leader>n", function() Snacks.scratch() end,        desc = "[Snacks] スクラッチメモ (cwd+branch単位)" },
-		{ "<leader>N", function() Snacks.scratch.select() end, desc = "[Snacks] スクラッチ一覧" },
-		{ "<leader>lz", function() Snacks.lazygit() end,       desc = "[Snacks] Lazygit" },
+		{ "<leader>n",  function() Snacks.scratch() end,                               desc = "[Snacks] スクラッチメモ (cwd+branch単位)" },
+		{ "<leader>N",  function() Snacks.scratch.select() end,                        desc = "[Snacks] スクラッチ一覧" },
+		{ "<leader>lz", function() Snacks.lazygit({ win = { keys = { term_normal = false } } }) end, desc = "[Snacks] Lazygit" },
+		{ "<leader>o",  function() Snacks.picker.recent({ filter = { cwd = true } }) end, desc = "[Snacks] 最近のファイル (cwd)" },
+		{ "<leader>b",  function() Snacks.picker.buffers() end,                        desc = "[Snacks] バッファ一覧" },
+		{ "<leader>gf", function() require("features.review").files_changed() end,     desc = "[Snacks] 変更ファイル一覧 (レビューモード時はbase差分)" },
 	},
 }

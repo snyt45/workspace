@@ -145,13 +145,13 @@ fff.nvim 操作:
 | `S-Tab` | grepモード切替 (plain → regex → fuzzy) |
 | `C-Up` | クエリ履歴 |
 
-### その他の検索 (telescope)
+### その他の検索 (snacks.picker / telescope)
 
 | キー | 説明 |
 |------|------|
-| `,o` | 最近使ったファイル (カレントディレクトリのみ) |
-| `,b` | バッファ一覧 |
-| `,gf` | 変更ファイル一覧 (off: working tree / on: `base...HEAD`) |
+| `,o` | 最近使ったファイル (カレントディレクトリのみ) — snacks |
+| `,b` | バッファ一覧 — snacks |
+| `,gf` | 変更ファイル一覧 (off: working tree / on: `base...HEAD`) — telescope |
 
 telescope プレビュー操作:
 

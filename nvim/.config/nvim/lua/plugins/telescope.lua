@@ -30,21 +30,6 @@ return {
 				},
 			},
 			pickers = {
-				oldfiles = {
-					layout_strategy = "horizontal",
-					cwd_only = true,
-				},
-				buffers = {
-					theme = "dropdown",
-					previewer = false,
-					sort_lastused = true,
-					sort_mru = true,
-					mappings = {
-						i = {
-							["<C-d>"] = actions.delete_buffer,
-						},
-					},
-				},
 				git_status = {
 					layout_strategy = "horizontal",
 				},
@@ -52,11 +37,5 @@ return {
 		})
 		telescope.load_extension("fzf")
 		telescope.load_extension("ui-select")
-
-		local builtin = require("telescope.builtin")
-		vim.keymap.set("n", "<leader>o", builtin.oldfiles, { desc = "[Telescope] 最近のファイル" })
-		vim.keymap.set("n", "<leader>b", builtin.buffers, { desc = "[Telescope] バッファ一覧" })
-		vim.keymap.set("n", "<leader>gf", function() require("review").files_changed() end,
-			{ desc = "[Telescope] 変更ファイル一覧 (レビューモード時はbase差分)" })
 	end,
 }
