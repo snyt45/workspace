@@ -31,11 +31,6 @@
 | `Cmd+[` / `Cmd+]` | ペイン移動 |
 | `Cmd+Shift+[` / `Cmd+Shift+]` | タブ移動 |
 
-### Claude Code通知
-
-settings.jsonのhooksで、Claude Codeのレスポンス完了時にmacOS通知を飛ばす。Ghostty/tmuxどちらでも動作する。
-
-
 ## tmux
 
 Prefix = `C-t`
@@ -44,34 +39,51 @@ Prefix = `C-t`
 |------|------|
 | `Prefix-v` | 垂直分割 |
 | `Prefix-s` | 水平分割 |
-| `C-h/j/k/l` | ペイン移動（Neovim/tmuxシームレス） |
 | `Prefix-h/j/k/l` | ペイン移動（Prefix付き） |
 | `Prefix-t` | ズーム（全画面） |
 | `Prefix-T` | 部分ズーム（縦方向のみ。横レイアウト維持） |
 | `Prefix-i` | ペイン番号を表示。続けて番号キーで該当ペインへジャンプ |
 | `Prefix-q` | ペイン閉じる |
-| `Prefix-d` | デタッチ |
 | `Prefix-e` | 全ペイン同時入力 ON |
 | `Prefix-E` | 全ペイン同時入力 OFF |
-| `Prefix-$` | セッション名変更 (プロンプトで入力) |
-| `Prefix-:` → `rename-session <name>` | セッション名変更 (コマンド経由) |
-| `Prefix-N` | 新規セッション作成 (名前プロンプト) |
-| `Prefix-S` | セッション一覧から切り替え (choose-tree) |
-| `Prefix-n` / `Prefix-p` | 次/前のセッションに切り替え |
-| `Prefix-L` | 直前のセッションに戻る (tmux標準) |
 | `Prefix-I` | tpmプラグインをインストール |
 | `Prefix-U` | tpmプラグインを更新 |
 
-### コマンド (エイリアス)
+### ウィンドウ (tab的に使う)
 
-| コマンド | 説明 |
-|----------|------|
-| `t` | tmux |
-| `tn <name>` | 新規セッション作成 |
-| `td` | デタッチ |
-| `tl` | セッション一覧 |
-| `tk <name>` | セッション削除 |
-| `ts` | fzfでセッション切り替え |
+軽量に context 分離したい時はセッションよりウィンドウ。同一セッション内で1プロンプトで飛べる。
+
+| キー | 説明 | 覚え方 |
+|------|------|--------|
+| `Prefix-c` | 新規ウィンドウ作成 | create |
+| `Prefix-,` | ウィンドウ名を変更 | `,` = ラベル貼り |
+| `Prefix-w` | ウィンドウ一覧を表示・切替 | window 一覧 |
+| `Prefix-n` | 次のウィンドウへ移動 | next |
+| `Prefix-p` | 前のウィンドウへ移動 | previous |
+| `Prefix-1`〜`9` | 番号指定でウィンドウ移動 (1始まり) | 番号そのまま |
+| `Prefix-&` | 現在のウィンドウを閉じる | `&` = 確認付き終了 |
+
+### セッション
+
+ウィンドウで足りる日常では出番少なめ。プロジェクトを完全に切替えたい時だけ使う。
+
+| キー | 説明 |
+|------|------|
+| `Prefix-d` | デタッチ |
+| `Prefix-$` | セッション名変更 (プロンプトで入力) |
+| `Prefix-N` | 新規セッション作成 (名前プロンプト) |
+
+### シェル alias
+
+| alias | 実体 |
+|------|------|
+| `t` | `tmux` |
+| `tn` | `tmux new -s` |
+| `td` | `tmux detach` |
+| `tl` | `tmux ls` |
+| `tk` | `tmux kill-session -t` |
+| `ts` | `tmux switch-client -t` |
+| `trn` | `tmux rename-session` |
 
 ### ide コマンド (レイアウト)
 
