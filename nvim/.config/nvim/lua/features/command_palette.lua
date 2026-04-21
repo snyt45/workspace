@@ -108,7 +108,9 @@ local commands = {
 
 table.sort(commands, function(a, b) return a.name < b.name end)
 
-vim.keymap.set("n", "<leader>p", function()
+local M = {}
+
+function M.open()
 	local pickers = require("telescope.pickers")
 	local finders = require("telescope.finders")
 	local conf = require("telescope.config").values
@@ -151,4 +153,6 @@ vim.keymap.set("n", "<leader>p", function()
 		    end,
 	    })
 	    :find()
-end, { desc = "[CommandPalette] コマンドパレット" })
+end
+
+return M

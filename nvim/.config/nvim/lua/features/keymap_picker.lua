@@ -1,4 +1,6 @@
-local function open_keymaps()
+local M = {}
+
+function M.open()
 	local pickers = require("telescope.pickers")
 	local finders = require("telescope.finders")
 	local conf = require("telescope.config").values
@@ -57,4 +59,4 @@ local function open_keymaps()
 	    :find()
 end
 
-vim.keymap.set("n", "<leader>?", open_keymaps, { desc = "[CommandPalette] キーマップ一覧" })
+return M

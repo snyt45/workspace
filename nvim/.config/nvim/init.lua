@@ -9,6 +9,5 @@ require("config.autocmds")
 require("config.lazy")
 
 require("config.lsp")
-require("features.command_palette")
-require("features.keymap_picker")
+require("features.palette")
 require("features.review")
