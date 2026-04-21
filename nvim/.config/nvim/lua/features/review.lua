@@ -67,7 +67,7 @@ vim.api.nvim_create_user_command("ReviewEnd", function()
 	vim.notify("Review off")
 end, { desc = "[Review] レビューモード終了" })
 
--- <leader>gf: モード別の変更ファイル一覧
+-- <leader>gs: モード別の変更ファイル一覧 (git status)
 function M.files_changed()
 	local base = vim.g.review_base
 	if not base then
