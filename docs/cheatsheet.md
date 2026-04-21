@@ -105,7 +105,8 @@ leader = `,`
 | `,c` | 現在のファイルパスをコピー |
 | `,cc` (ビジュアル) | ファイルパス+選択コードをマークダウン形式でコピー |
 | `,m` | Markdownプレビュー (ブラウザ自動起動) |
-| `C-z` | Floatターミナル toggle (ノーマル/ターミナル両モード、snacks.terminal) |
+| `,t` | 水平分割でターミナルを開く (:split \| terminal) |
+| `Esc Esc` (ターミナル) | ターミナルモードを抜ける (insert/term → normal) |
 | `lz` (ノーマル) | Lazygit Float起動 (snacks.lazygit) |
 | `C-a` (インサート) | 行頭へ移動 (Karabiner対応) |
 | `C-e` (インサート) | 行末へ移動 (Karabiner対応) |

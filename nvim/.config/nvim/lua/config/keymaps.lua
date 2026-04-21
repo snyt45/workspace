@@ -42,6 +42,10 @@ map("n", "<leader>m", function()
 	end
 end, { desc = "[General] Markdownプレビュー" })
 
+-- terminal
+map("n", "<leader>t", "<cmd>split | terminal<cr>", { desc = "[Terminal] 水平分割でターミナルを開く" })
+map("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "[Terminal] ターミナルモードを抜ける" })
+
 -- copy
 map("n", "<leader>c", function()
 	local path = vim.fn.expand("%:.")
