@@ -1,6 +1,9 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
 eval "$(zoxide init zsh)"
-eval "$(starship init zsh)"
+# pure prompt
+fpath+=("/opt/homebrew/share/zsh/site-functions")
+autoload -U promptinit; promptinit
+prompt pure
 
 alias g='git'
 alias lz='lazygit'

@@ -15,7 +15,7 @@
 | Git UI | codediff + gitsigns |
 | PRレビュー | snacks.nvim |
 | AIコーディング | OpenCode (`c`) + Claude Code (`cx`) |
-| シェル | zsh + starship |
+| シェル | zsh + pure |
 | 検索 | fzf, ripgrep, fd |
 | バージョン管理 | mise |
 | シークレット管理 | 1Password CLI |

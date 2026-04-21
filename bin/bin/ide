@@ -129,28 +129,30 @@ apply_layout() {
       tmux select-pane -t "$base_pane"
       ;;
     grid)
+      local top_pane="$TMUX_PANE"
       # 下段（25%）を作成
       tmux split-window -v -l 25%
       # 下段を3分割
       tmux split-window -h -l 66%
       tmux split-window -h -l 50%
       # 上段にフォーカス
-      tmux select-pane -t 0
+      tmux select-pane -t "$top_pane"
       ;;
     grid-full)
+      local top_pane="$TMUX_PANE"
       # 3行目（下25%）を作成
       tmux split-window -v -l 25%
       # 3行目を3分割
       tmux split-window -h -l 66%
       tmux split-window -h -l 50%
       # 1行目に戻って2行目（残りの下33%）を作成
-      tmux select-pane -t 0
+      tmux select-pane -t "$top_pane"
       tmux split-window -v -l 33%
       # 2行目を3分割
       tmux split-window -h -l 66%
       tmux split-window -h -l 50%
       # 上段にフォーカス
-      tmux select-pane -t 0
+      tmux select-pane -t "$top_pane"
       ;;
     ai-dual)
       local top_agent="$2"
@@ -236,13 +238,12 @@ apply_layout() {
       ;;
   esac
 
-  # Starshipのプロンプト初期化を待ってからクリア
-  sleep 0.2
-  pane_count=$(tmux list-panes | wc -l)
-  for i in $(seq 0 $((pane_count - 1))); do
-    tmux select-pane -t "$i" 2>/dev/null && tmux send-keys C-l
+  # 各ペインで画面クリア
+  local final_pane=$(tmux display-message -p '#{pane_id}')
+  for pane in $(tmux list-panes -F '#{pane_id}'); do
+    tmux select-pane -t "$pane" && tmux send-keys C-l
   done
-  tmux select-pane -t 0
+  tmux select-pane -t "$final_pane"
 }
 
 # --preview モードの場合（fzfから呼ばれる）
