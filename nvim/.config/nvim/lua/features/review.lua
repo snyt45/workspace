@@ -109,13 +109,4 @@ function M.code_diff()
 	end
 end
 
--- lualine用
-function M.status()
-	local base = vim.g.review_base
-	if base then
-		return "  Review: " .. base
-	end
-	return ""
-end
-
 return M
