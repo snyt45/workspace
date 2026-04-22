@@ -30,11 +30,25 @@ return {
 			},
 		})
 		vim.keymap.set("n", "<leader>e", function()
-			local ok, grug = pcall(require, "grug-far")
-			if ok and grug.has_instance("main") and grug.is_instance_open("main") then
-				grug.toggle_instance({ instanceName = "main" })
+			local cur = vim.api.nvim_get_current_win()
+			local neotree_win
+			for _, win in ipairs(vim.api.nvim_list_wins()) do
+				if vim.bo[vim.api.nvim_win_get_buf(win)].filetype == "neo-tree" then
+					neotree_win = win
+					break
+				end
 			end
-			vim.cmd("Neotree focus")
-		end, { desc = "[NeoTree] ファイルツリー" })
+			if not neotree_win then
+				local ok, grug = pcall(require, "grug-far")
+				if ok and grug.has_instance("main") and grug.is_instance_open("main") then
+					grug.toggle_instance({ instanceName = "main" })
+				end
+				vim.cmd("Neotree focus")
+			elseif neotree_win == cur then
+				vim.cmd("Neotree close")
+			else
+				vim.api.nvim_set_current_win(neotree_win)
+			end
+		end, { desc = "[NeoTree] toggle/focus" })
 	end,
 }

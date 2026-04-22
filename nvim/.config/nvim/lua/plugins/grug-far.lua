@@ -2,7 +2,22 @@ return {
 	"MagicDuck/grug-far.nvim",
 	cmd = { "GrugFar", "GrugFarWithin", "GrugFarFocus", "GrugFarFocusCword", "GrugFarFocusDir" },
 	keys = {
-		{ "<leader>s", "<cmd>GrugFarFocus<cr>", desc = "[GrugFar] フォーカス" },
+		{ "<leader>s", function()
+			local grug = require("grug-far")
+			local cur = vim.api.nvim_get_current_win()
+			local grug_win
+			if grug.has_instance("main") and grug.is_instance_open("main") then
+				local w = vim.fn.bufwinid(grug.get_instance("main")._buf)
+				if w ~= -1 then grug_win = w end
+			end
+			if not grug_win then
+				vim.cmd("GrugFarFocus")
+			elseif grug_win == cur then
+				grug.toggle_instance({ instanceName = "main" })
+			else
+				vim.api.nvim_set_current_win(grug_win)
+			end
+		end, desc = "[GrugFar] toggle/focus" },
 	},
 	opts = {
 		windowCreationCommand = "topleft 60vsplit",
