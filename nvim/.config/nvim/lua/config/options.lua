@@ -27,3 +27,4 @@ opt.splitright = true
 opt.splitbelow = true
 
 opt.laststatus = 0
+opt.cmdheight = 0
