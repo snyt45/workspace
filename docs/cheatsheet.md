@@ -252,6 +252,44 @@ overlook popup 内でも動く (popup は普通のバッファなので remote a
 | `C-k` | 前のサジェスト |
 | `C-e` | サジェストを閉じる |
 
+### AI CLI (Sidekick.nvim)
+
+OpenCode / Claude Code を floating で呼び出す。NES (Next Edit Suggestions) で次の編集案をインラインで提示。
+
+| キー | 説明 |
+|------|------|
+| `,aa` | AI CLI 選択 (picker。installed だけ表示) |
+| `,ao` | OpenCode をトグル |
+| `,ac` | Claude Code をトグル |
+| `,ap` | プロンプトテンプレ選択送信 |
+| `,af` | カレントファイル全体を送信 |
+| `,av` | Visual 選択範囲を送信 (visual モード) |
+| `,at` | カーソル位置のスコープ (関数/ブロック) を送信 |
+| `<Tab>` | NES: AI の次の編集案へジャンプ / 適用 (normal モード) |
+
+floating ウィンドウ内 (sidekick デフォルト):
+
+| キー | モード | 説明 |
+|------|------|------|
+| `q` | n | ウィンドウを隠す |
+| `<C-q>` | n | ウィンドウを隠す |
+| `<C-.>` | n / t | ウィンドウを隠す (terminal モードからも) |
+| `<C-p>` | t | プロンプト / コンテキストを挿入 |
+| `<C-b>` | n / t | バッファピッカー |
+| `<C-f>` | n / t | ファイルピッカー |
+| `<C-z>` | n / t | 前のウィンドウに戻る (hide しない) |
+
+NES 操作コマンド:
+
+| コマンド | 説明 |
+|---------|------|
+| `:Sidekick nes enable` | NES 有効化 |
+| `:Sidekick nes disable` | NES 無効化 |
+| `:Sidekick nes toggle` | NES トグル |
+| `:Sidekick nes update` | 手動で次の編集案を取得 |
+
+ヘルスチェック: `:checkhealth sidekick` で CLI / Copilot LSP 検出状況を確認。
+
 ### Git (gitsigns)
 
 | キー | 説明 |

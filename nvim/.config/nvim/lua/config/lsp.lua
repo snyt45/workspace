@@ -27,6 +27,13 @@ vim.lsp.config.lua_ls = {
 }
 vim.lsp.enable("lua_ls")
 
+vim.lsp.config.copilot = {
+	cmd = { "copilot-language-server", "--stdio" },
+	filetypes = { "*" },
+	root_markers = { ".git" },
+}
+vim.lsp.enable("copilot")
+
 vim.diagnostic.config({
 	virtual_text = { prefix = "●" },
 	severity_sort = true,
