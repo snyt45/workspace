@@ -273,7 +273,8 @@ Neovim内から起動:
 
 | キー | 説明 |
 |------|------|
-| `,gg` | diffビューを開く (レビューモード時は `base...HEAD`) |
+| `,gg` | 全差分ビューを開く (レビューモード時は `base...HEAD`) |
+| `,gf` | 現バッファの単一ファイル差分を開く (レビューモード時は `base...HEAD`) |
 | `,gh` | コミット履歴を開く |
 
 コマンドパレット (`,?` → Commands) から実行:
@@ -284,14 +285,12 @@ Neovim内から起動:
 
 ### レビューモード
 
-baseブランチを宣言すると、gitsigns / CodeDiff / `,gs` が同じbaseを参照するようになる。PRレビュー時に摩擦なく差分を見られる。
+baseブランチを宣言すると、CodeDiff / `,gs` が同じbaseを参照するようになる。PRレビュー時に摩擦なく差分を見られる。
 
 | コマンド | 説明 |
 |----------|------|
-| `:ReviewStart [base]` | レビューモード開始 (引数省略時はtelescopeでbase選択) |
+| `:ReviewStart [base]` | レビューモード開始 + 変更ファイルpicker自動起動 (引数省略時はtelescopeでbase選択) |
 | `:ReviewEnd` | レビューモード終了 |
-
-モードon時は gitsigns のsign/hunk移動が base 基準に切り替わる。
 
 エクスプローラ内:
 

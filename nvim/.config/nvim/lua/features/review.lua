@@ -1,22 +1,18 @@
 -- ==========================================================================
 -- レビューモード
--- vim.g.review_base を中心に、gitsigns/CodeDiff/snacks.picker が同じbaseを参照する
+-- vim.g.review_base を中心に、CodeDiff/snacks.picker が同じbaseを参照する
 -- ==========================================================================
 
 local M = {}
 
 local function apply_base(base)
 	vim.g.review_base = base
-	local gs = package.loaded.gitsigns
-	if gs then
-		gs.change_base(base, true)
-	end
 end
 
 local function start_with(base)
 	apply_base(base)
 	vim.notify("Review: " .. base)
-	vim.cmd("CodeDiff " .. base .. "...HEAD")
+	M.files_changed()
 end
 
 -- "origin/foo" のような remote ref を local branch 名に変換（detached HEAD 回避のため）
@@ -106,6 +102,16 @@ function M.code_diff()
 		vim.cmd("CodeDiff " .. base .. "...HEAD")
 	else
 		vim.cmd("CodeDiff")
+	end
+end
+
+-- <leader>gf: 現在バッファの単一ファイル差分 (モード時はbase適用)
+function M.code_diff_file()
+	local base = vim.g.review_base
+	if base then
+		vim.cmd("CodeDiff file " .. base .. "...HEAD")
+	else
+		vim.cmd("CodeDiff file")
 	end
 end
 
