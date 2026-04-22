@@ -26,3 +26,4 @@ opt.number = true
 opt.splitright = true
 opt.splitbelow = true
 
+opt.laststatus = 0
