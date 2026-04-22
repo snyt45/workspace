@@ -3,7 +3,7 @@ local map = vim.keymap.set
 map("n", "q", "<Nop>")
 map({ "n", "i" }, "<F1>", "<Nop>")
 
-map("n", "<Esc>", ":nohlsearch<CR>")
+map("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 map("i", "<C-a>", "<Home>")
 map("i", "<C-e>", "<End>")
