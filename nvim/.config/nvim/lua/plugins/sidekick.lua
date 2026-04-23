@@ -9,7 +9,13 @@ return {
 	-- folke 側で修正されたら opts を通常の table に戻す。
 	opts = function(_, opts)
 		opts.cli = vim.tbl_deep_extend("force", opts.cli or {}, {
-			win = { layout = "float" },
+			win = {
+				layout = "float",
+				keys = {
+					stopinsert  = false,
+					hide_ctrl_q = { "<c-q>", "hide", mode = "nt" },
+				},
+			},
 		})
 
 		local Config = require("sidekick.config")
@@ -104,7 +110,7 @@ return {
 		{
 			"<leader>ao",
 			function() require("sidekick.cli").toggle({ name = "opencode", focus = true }) end,
-			desc = "[Sidekick] Toggle CLI",
+			desc = "[Sidekick] Toggle OpenCode",
 		},
 		{
 			"<leader>ac",
