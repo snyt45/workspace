@@ -101,45 +101,9 @@ return {
 
 		return opts
 	end,
+	-- CLI統合機能 (OpenCode/Claude Code toggle 等) は不安定のため使わない方針。
+	-- AIチャットは tmux 別pane の opencode/claude CLI alias (`c`/`cx`) で利用する。
 	keys = {
-		{
-			"<leader>aa",
-			function() require("sidekick.cli").select({ filter = { installed = true } }) end,
-			desc = "[Sidekick] SELECT CLI",
-		},
-		{
-			"<leader>ao",
-			function() require("sidekick.cli").toggle({ name = "opencode", focus = true }) end,
-			desc = "[Sidekick] Toggle OpenCode",
-		},
-		{
-			"<leader>ac",
-			function() require("sidekick.cli").toggle({ name = "claude", focus = true }) end,
-			desc = "[Sidekick] Toggle Claude Code",
-		},
-		{
-			"<leader>ap",
-			function() require("sidekick.cli").prompt() end,
-			desc = "[Sidekick] Prompt CLI",
-			mode = { "n", "x" },
-		},
-		{
-			"<leader>af",
-			function() require("sidekick.cli").send({ msg = "{file}" }) end,
-			desc = "[Sidekick] Send current file",
-		},
-		{
-			"<leader>av",
-			function() require("sidekick.cli").send({ msg = "{selection}" }) end,
-			desc = "[Sidekick] Send visual selection",
-			mode = { "x" },
-		},
-		{
-			"<leader>at",
-			function() require("sidekick.cli").send({ msg = "{this}" }) end,
-			desc = "[Sidekick] Send current line",
-			mode = { "n", "x" },
-		},
 		{
 			"<tab>",
 			function()
@@ -148,7 +112,7 @@ return {
 				end
 			end,
 			expr = true,
-			desc = "[Sidekick] NES: Jump or apply",
+			desc = "[Sidekick] NES: ジャンプ / 適用",
 		},
 	},
 }

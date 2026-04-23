@@ -252,32 +252,14 @@ overlook popup 内でも動く (popup は普通のバッファなので remote a
 | `C-k` | 前のサジェスト |
 | `C-e` | サジェストを閉じる |
 
-### AI CLI (Sidekick.nvim)
+### Copilot NES (Sidekick.nvim)
 
-OpenCode / Claude Code を floating で呼び出す。NES (Next Edit Suggestions) で次の編集案をインラインで提示。
-
-| キー | 説明 |
-|------|------|
-| `,aa` | AI CLI 選択 (picker。installed だけ表示) |
-| `,ao` | OpenCode をトグル |
-| `,ac` | Claude Code をトグル |
-| `,ap` | プロンプトテンプレ選択送信 |
-| `,af` | カレントファイル全体を送信 |
-| `,av` | Visual 選択範囲を送信 (visual モード) |
-| `,at` | カーソル位置のスコープ (関数/ブロック) を送信 |
-| `<Tab>` | NES: AI の次の編集案へジャンプ / 適用 (normal モード) |
-
-floating ウィンドウ内:
+Next Edit Suggestions: Copilot が「次にここも編集するでしょ？」を予測してインライン diff で提示。
+sidekick の CLI 統合機能は使わず、**NES のみ利用**。AIチャットは tmux 別pane の `c` (opencode) / `cx` (claude) alias で。
 
 | キー | モード | 説明 |
 |------|------|------|
-| `q` | n | ウィンドウを隠す |
-| `<C-q>` | n / t | ウィンドウを隠す (**terminal 入力中も一発で閉じる**) |
-| `<C-.>` | n / t | ウィンドウを隠す (Ghostty では効かない場合あり) |
-| `<C-p>` | t | プロンプト / コンテキストを挿入 |
-| `<C-b>` | n / t | バッファピッカー |
-| `<C-f>` | n / t | ファイルピッカー |
-| `<C-z>` | n / t | 前のウィンドウに戻る (hide しない) |
+| `<Tab>` | n | NES 提案があれば: ジャンプ → もう一度で apply。無ければ通常の `<Tab>` |
 
 NES 操作コマンド:
 
@@ -288,7 +270,7 @@ NES 操作コマンド:
 | `:Sidekick nes toggle` | NES トグル |
 | `:Sidekick nes update` | 手動で次の編集案を取得 |
 
-ヘルスチェック: `:checkhealth sidekick` で CLI / Copilot LSP 検出状況を確認。
+ヘルスチェック: `:checkhealth sidekick` で Copilot LSP 検出状況を確認。
 
 ### Git (gitsigns)
 
