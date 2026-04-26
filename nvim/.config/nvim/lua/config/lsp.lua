@@ -6,7 +6,6 @@
 vim.lsp.enable("ts_ls")
 vim.lsp.enable("ruby_lsp")
 vim.lsp.enable("lua_ls")
-vim.lsp.enable("copilot")
 
 vim.diagnostic.config({
 	virtual_text = { prefix = "●" },
