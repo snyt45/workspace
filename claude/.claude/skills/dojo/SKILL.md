@@ -53,9 +53,9 @@ description: 学習の道場セッション。~/work/claude-obsidian/wiki/next.m
 - jot 後、すぐ Right now に戻す（「道に戻ります」の一言で十分）
 - ユーザーが「いや今やる」と言ったら方針転換: Right now を差し替えるか、別セッションで再開する
 
-## セッション終了時の更新（4点）
+## セッション終了時の更新（5点）
 
-完了時または明示的な終了宣言時に**必ず以下の4箇所を更新**する。1つでも欠けたら未完了。
+完了時または明示的な終了宣言時に**必ず以下の5箇所を更新**する。1つでも欠けたら未完了。
 
 ### 1. wiki/learning/<topic>.md に学びを1段落
 - **原則ユーザーが自分で書く**（Generation Effect を守る）
@@ -75,11 +75,26 @@ description: 学習の道場セッション。~/work/claude-obsidian/wiki/next.m
 - 削除対象は `log.md` に「dropped: <タイトル> (理由)」と1行残してから消す（消えた履歴を残す）
 - 確認は**まとめて1回**にする（細切れに聞かない）
 
-### 3. daily/YYYY-MM-DD.md に1行追記
+### 3. wiki/log.md にセッション履歴を追記
+- daily は流れていくが log.md は wiki の永続履歴。dojo セッションも ingest / scaffold / lint と並ぶ wiki イベントとして残す。
+- フォーマット（既存の `ingest |` `scaffold |` 形式に揃える）:
+  ```
+  ## [YYYY-MM-DD] dojo | <テーマ>
+  - Topic: <1行説明>
+  - Status: ✅ 完了 / ⚠️ 部分完了 / ❌ 中断
+  - Learning: [[<learning ファイル名>]]
+  - 詰まり: <あれば>
+  - Key insight: <核心の学び 1〜2行>
+  - Next: <次セッションへの送り>
+  ```
+- 後で `git log wiki/log.md` を見れば dojo の歩みが時系列で全部見える状態にする。
+
+### 4. daily/YYYY-MM-DD.md に1行追記
 - 「📝 作業ログ」セクションに `### dojo: <テーマ>` のサブセクション
 - 1〜3行で何をやったか / 何が分かったか
+- log.md と内容が重複しても OK（daily は作業ログ、log.md は wiki 履歴で役割が違う）
 
-### 4. このスキル自身の Lessons を更新（**自己改善ループ**）
+### 5. このスキル自身の Lessons を更新（**自己改善ループ**）
 - 振る舞いに違和感があった場合のみ
 - `~/.dotfiles/claude/.claude/skills/dojo/SKILL.md` の `## Lessons` セクションに1行追加（symlink ではなく source を編集）
 - フォーマット: `- YYYY-MM-DD: {観察} → {改善方針}`
