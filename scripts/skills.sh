@@ -31,4 +31,7 @@ gh skill install browser-use/browser-use skills/browser-use --agent claude-code 
 # forrestchang/andrej-karpathy-skills (Karpathy流コーディング原則)
 gh skill install forrestchang/andrej-karpathy-skills skills/karpathy-guidelines --agent claude-code --scope user --force
 
+# Y0lan/laws-of-software-engineering (ソフトウェア工学の56法則)
+gh skill install Y0lan/laws-of-software-engineering skills/laws-of-software-engineering --agent claude-code --scope user --force
+
 echo "Claude Code スキルインストール完了"
