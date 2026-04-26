@@ -3,35 +3,9 @@
 -- mason-lspconfigでインストール、vim.lsp.config/enableで設定
 -- ==========================================================================
 
-vim.lsp.config.ts_ls = {
-	cmd = { "typescript-language-server", "--stdio" },
-	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-	root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
-}
 vim.lsp.enable("ts_ls")
-
-vim.lsp.config.ruby_lsp = {
-	cmd = { "ruby-lsp" },
-	filetypes = { "ruby" },
-	root_markers = { "Gemfile", ".git" },
-}
 vim.lsp.enable("ruby_lsp")
-
-vim.lsp.config.lua_ls = {
-	settings = {
-		Lua = {
-			runtime = { version = "LuaJIT" },
-			workspace = { library = { vim.env.VIMRUNTIME } },
-		},
-	},
-}
 vim.lsp.enable("lua_ls")
-
-vim.lsp.config.copilot = {
-	cmd = { "copilot-language-server", "--stdio" },
-	filetypes = { "*" },
-	root_markers = { ".git" },
-}
 vim.lsp.enable("copilot")
 
 vim.diagnostic.config({
