@@ -16,5 +16,7 @@ return {
 				view = "mini",
 			},
 		},
+		cmdline = { enabled = false },
+		popupmenu = { enabled = false },
 	},
 }
