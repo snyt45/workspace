@@ -8,8 +8,8 @@ prompt pure
 alias g='git'
 alias lz='lazygit'
 alias v='nvim'
-alias vd='nvim +CodeDiff'
-alias vdh='nvim +"CodeDiff history"'
+alias vd='nvim +DiffviewOpen'
+alias vdh='nvim +DiffviewFileHistory'
 alias c='opencode'
 alias cx='claude --enable-auto-mode'
 
