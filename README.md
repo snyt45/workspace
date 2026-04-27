@@ -12,8 +12,8 @@
 | ターミナル | Ghostty + tmux |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
-| Git UI | codediff + gitsigns |
-| PRレビュー | snacks.nvim |
+| Git UI | gitsigns |
+| PRレビュー | diffview.nvim |
 | AIコーディング | OpenCode (`c`) + Claude Code (`cx`) |
 | シェル | zsh + pure |
 | 検索 | fzf, ripgrep, fd |

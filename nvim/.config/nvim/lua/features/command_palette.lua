@@ -95,12 +95,12 @@ local commands = {
 		end,
 	},
 	{
-		name = "[CodeDiff] ブランチとの差分",
-		cmd = "CodeDiff base...HEAD",
+		name = "[Diffview] ブランチとの差分",
+		cmd = "DiffviewOpen base...HEAD --imply-local",
 		execute = function()
 			vim.ui.input({ prompt = "Compare base: ", default = "origin/main" }, function(base)
 				if not base or base == "" then return end
-				vim.cmd("CodeDiff " .. base .. "...HEAD")
+				vim.cmd("DiffviewOpen " .. base .. "...HEAD --imply-local")
 			end)
 		end,
 	},

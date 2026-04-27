@@ -31,7 +31,7 @@ stow方式。各パッケージは `$HOME` 相対パスで配置し、`scripts/l
 
 ルール:
 - init.lua / lsp.lua のキーマップ: 機能グループ名を使う（`[LSP]`, `[Nav]`, `[General]`, `[Code]`等）
-- プラグインのキーマップ: プラグイン名を使う（`[Telescope]`, `[GitSigns]`, `[Harpoon]`, `[CodeDiff]`等）
+- プラグインのキーマップ: プラグイン名を使う（`[Telescope]`, `[GitSigns]`, `[Harpoon]`, `[Diffview]`等）
 - `desc` が `[` で始まるキーマップだけがコマンドパレットのキーマップ一覧に表示される
 
 例: `{ desc = "[LSP] 定義ジャンプ" }`, `{ desc = "[Telescope] ファイル検索" }`
