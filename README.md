@@ -77,7 +77,7 @@ brew upgrade
 |----------|------|
 | `mise run setup` | 全セットアップ実行 |
 | `mise run packages` | Homebrewパッケージインストール |
-| `mise run link` | シンボリックリンク作成 |
+| `mise run link` | シンボリックリンク作成（dotfiles 由来の切れたリンクも掃除） |
 | `mise run skills` | Claude Codeスキルインストール |
 | `mise run auth` | GitHub CLI認証 |
 | `mise tasks` | タスク一覧表示 |
