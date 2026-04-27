@@ -14,8 +14,8 @@
 | `g` | git のエイリアス |
 | `lz` | lazygit のエイリアス (Git TUI) |
 | `v` | nvim のエイリアス |
-| `vd` | nvim +CodeDiff (diffビュー付きで起動) |
-| `vdh` | nvim +"CodeDiff history" (コミット履歴付きで起動) |
+| `vd` | nvim +DiffviewOpen (diffビュー付きで起動) |
+| `vdh` | nvim +DiffviewFileHistory (コミット履歴付きで起動) |
 | `c` | opencode (AIコーディングエージェント) |
 | `cx` | claude --enable-auto-mode (Claude Code自動モード) |
 
@@ -287,7 +287,7 @@ NES 操作コマンド:
 | `[GitSigns] 比較ベース変更` | 比較対象のブランチを変更 (デフォルト: origin/main) |
 | `[GitSigns] 比較ベースをリセット` | 比較対象をインデックス(デフォルト)に戻す |
 
-### Git diff (codediff)
+### Git diff (Diffview)
 
 ターミナルから起動:
 
@@ -300,33 +300,32 @@ Neovim内から起動:
 
 | キー | 説明 |
 |------|------|
-| `,gg` | 全差分ビューを開く (レビューモード時は `base...HEAD`) |
-| `,gf` | 現バッファの単一ファイル差分を開く (レビューモード時は `base...HEAD`) |
+| `,gg` | 全差分ビューを開く (レビューモード時は `base...HEAD --imply-local`) |
+| `,gf` | 現バッファの単一ファイル差分を開く (レビューモード時は `base...HEAD --imply-local`) |
 | `,gh` | コミット履歴を開く |
 
 コマンドパレット (`,?` → Commands) から実行:
 
 | エントリ | 説明 |
 |---------|------|
-| `[CodeDiff] ブランチとの差分` | 指定ブランチとHEADの差分を表示 (デフォルト: origin/main) |
+| `[Diffview] 全差分` | DiffviewOpen を起動 (レビューモード時はbase差分) |
 
 ### レビューモード
 
-baseブランチを宣言すると、CodeDiff / `,gs` が同じbaseを参照するようになる。PRレビュー時に摩擦なく差分を見られる。
+baseブランチを宣言すると、Diffview が `base...HEAD` を参照するようになる (`--imply-local` で右ペインがワーキングツリーの実バッファになり、差分内から `gd` 等の LSP 操作が直接効く)。`,gs` は通常の git status のまま。
 
 | コマンド | 説明 |
 |----------|------|
-| `:ReviewStart [base]` | レビューモード開始 + 変更ファイルpicker自動起動 (引数省略時はtelescopeでbase選択) |
-| `:ReviewEnd` | レビューモード終了 |
+| `:ReviewStart [base]` | レビューモード開始 + Diffview 自動起動 (引数省略時はtelescopeでbase選択) |
+| `:ReviewEnd` | レビューモード終了 + Diffview を閉じる |
 
-エクスプローラ内:
+Diffview タブ内:
 
 | キー | 説明 |
 |------|------|
-| `i` | リスト/ツリー表示の切り替え |
-| `t` | サイドバイサイド/インラインの切り替え |
-| `g?` | キーマップヘルプ表示 |
-| `gT` | gdで別ファイルに飛んだ後、codediffのタブに戻る |
+| `<Tab>` / `<S-Tab>` | 次/前の変更ファイルへ |
+| `<leader>e` | file panel をトグル |
+| `g?` | Diffview のキーマップヘルプを表示 |
 
 ### 検索・置換 (grug-far)
 
