@@ -39,6 +39,6 @@ return {
 		{ "<leader>lz", function() Snacks.lazygit({ win = { keys = { term_normal = false } } }) end, desc = "[Snacks] Lazygit" },
 		{ "<leader>o",  function() Snacks.picker.recent({ filter = { cwd = true } }) end, desc = "[Snacks] 最近のファイル (cwd)" },
 		{ "<leader>b",  function() Snacks.picker.buffers() end,                        desc = "[Snacks] バッファ一覧" },
-		{ "<leader>gs", function() require("features.review").files_changed() end,     desc = "[Snacks] git status (レビューモード時はbase差分)" },
+		{ "<leader>gs", function() Snacks.picker.git_status({ layout = { preset = "ivy" } }) end, desc = "[Snacks] git status" },
 	},
 }
