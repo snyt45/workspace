@@ -18,5 +18,12 @@ return {
 				{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" } },
 			},
 		},
+		hooks = {
+			diff_buf_win_enter = function(bufnr, winid, ctx)
+				-- Turn off cursor line for diffview windows because of bg conflict
+				-- https://github.com/neovim/neovim/issues/9800
+				vim.wo[winid].culopt = 'number'
+			end,
+		},
 	},
 }
