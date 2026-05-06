@@ -16,6 +16,7 @@ brew "ripgrep"
 brew "pure"
 brew "zoxide"
 brew "tmux"
+brew "worktrunk"
 brew "zsh-autosuggestions"
 
 # アプリケーション

@@ -477,6 +477,38 @@ PR/Issue buffer内のキーマップ:
 | `g aicommit` | AIでコミットメッセージ自動生成 |
 
 
+## worktrunk (wt)
+
+Git worktree 管理 CLI。並行作業や AI agent 用ブランチを高速に切り替え/作成する。
+
+| コマンド | 説明 |
+|----------|------|
+| `ws` | 引数なし: 対話 picker (live preview / Alt-c で新規作成) |
+| `ws <branch>` | 既存ブランチなら switch、無ければ自動 create して switch |
+| `ws -` | 直前の worktree へ |
+| `ws ^` | デフォルトブランチへ |
+| `ws pr:123` | GitHub PR #123 の worktree へ |
+| `wt list` | worktree 一覧 |
+| `wt remove` | 現 worktree を削除 (マージ済みならブランチも) |
+| `wt merge` | 現ブランチをデフォルトブランチへマージ (squash + rebase + remove) |
+
+picker 内のキーバインド:
+
+| キー | 動作 |
+|------|------|
+| `↑/↓` | 移動 |
+| 文字入力 | fuzzy filter |
+| `Enter` | 選択した worktree へ switch |
+| `Alt-c` | 入力した名前で worktree を新規作成 |
+| `1`〜`5` | preview タブ切替 (HEAD±, log, main…±, remote⇅, summary) |
+| `Alt-p` | preview パネル開閉 |
+| `Esc` | キャンセル |
+
+設定ファイル:
+
+- User config: `~/.config/worktrunk/config.toml` (全プロジェクト共通)
+- Project config: `.config/wt.toml` (リポジトリで共有)
+
 ## karabiner キーマップ
 
 | キー | 動作 |

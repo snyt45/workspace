@@ -1,0 +1,14 @@
+[projects."github.com/toypo/toypo-api"]
+step.copy-ignored.exclude = [
+    # ディレクトリ自体と中身の両方をマッチさせるため2パターン書く
+    "log", "log/**",
+    "tmp", "tmp/**",
+    "storage", "storage/**",
+    ".ruby-lsp", ".ruby-lsp/**",
+    ".serena", ".serena/**",
+    ".byebug_history",
+    ".DS_Store",
+]
+
+[[projects."github.com/toypo/toypo-api".pre-start]]
+copy-ignored = "wt step copy-ignored"
