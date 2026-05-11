@@ -3,6 +3,7 @@
         email = snyt45@gmail.com
 [core]
         editor = nvim
+        pager = hunk pager
 [column]
         ui = auto
 [branch]
@@ -11,10 +12,6 @@
         verbose = true
 [diff]
         algorithm = histogram
-[pager]
-        log = diff-highlight | less
-        show = diff-highlight | less
-        diff = diff-highlight | less
 [rebase]
         autosquash = true
 [push]

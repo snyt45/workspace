@@ -14,7 +14,8 @@ return {
 			"TelescopePrompt",
 			"TelescopeResults",
 			"!minifiles",
-			"!neo-tree",
+			"!snacks_picker_list",
+			"!snacks_picker_input",
 		},
 	},
 }

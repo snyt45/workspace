@@ -1,10 +1,12 @@
 # タップ
 tap "k1LoW/tap"
+tap "modem-dev/tap"
 
 # CLI ツール
 brew "fd"
 brew "fzf"
 brew "gh"
+brew "modem-dev/tap/hunk"
 brew "hugo"
 brew "lazygit"
 brew "mise"

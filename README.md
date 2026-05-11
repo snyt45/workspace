@@ -14,6 +14,7 @@
 | エディタ(GUI) | VSCode |
 | Git UI | gitsigns |
 | PRレビュー | diffview.nvim |
+| 差分ビューア(TUI) | hunk |
 | AIコーディング | OpenCode (`c`) + Claude Code (`cx`) |
 | シェル | zsh + pure |
 | 検索 | fzf, ripgrep, fd |

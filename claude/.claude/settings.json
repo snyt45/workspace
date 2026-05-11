@@ -108,7 +108,8 @@
     "additionalDirectories": [
       "~/.claude",
       "~/work"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "hooks": {
     "Stop": [
@@ -161,5 +162,10 @@
   "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754364589827
-  }
+  },
+  "preferredNotifChannel": "terminal_bell",
+  "autoCompactEnabled": false,
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true
 }

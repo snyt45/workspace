@@ -28,20 +28,6 @@ local commands = {
 		end,
 	},
 	{
-		name = "[GrugFar] カーソル下の単語で検索・置換",
-		cmd = "GrugFarFocusCword",
-		execute = function()
-			vim.cmd("GrugFarFocusCword")
-		end,
-	},
-	{
-		name = "[GrugFar] 現在のディレクトリ内で検索・置換",
-		cmd = "GrugFarFocusDir",
-		execute = function()
-			vim.cmd("GrugFarFocusDir")
-		end,
-	},
-	{
 		name = "[Conform] 自動フォーマットを無効化",
 		cmd = "ConformDisable",
 		execute = function()
