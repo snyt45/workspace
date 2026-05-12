@@ -1,0 +1,5 @@
+git:
+  pagers:
+    - pager: hunk pager
+os:
+  editPreset: "nvim"
