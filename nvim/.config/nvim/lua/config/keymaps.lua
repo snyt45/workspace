@@ -13,6 +13,18 @@ map("n", "<C-j>", "<C-w>j")
 map("n", "<C-k>", "<C-w>k")
 map("n", "<C-l>", "<C-w>l")
 
+-- ウィンドウズームトグル (mm でカレントを最大化 / もう一度で等分に戻す)
+local window_zoomed = false
+map("n", "mm", function()
+	if window_zoomed then
+		vim.cmd("wincmd =")
+	else
+		vim.cmd("wincmd |")
+		vim.cmd("wincmd _")
+	end
+	window_zoomed = not window_zoomed
+end, { desc = "[Window] ズームトグル" })
+
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 map("n", "<C-f>", "<C-f>zz")
