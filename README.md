@@ -80,6 +80,7 @@ brew upgrade
 | `mise run packages` | Homebrewパッケージインストール |
 | `mise run link` | シンボリックリンク作成（dotfiles 由来の切れたリンクも掃除） |
 | `mise run skills` | Claude Codeスキルインストール |
+| `mise run npm-latest` | npm を最新化（サプライチェーン対策の min-release-age v11.10+ 用） |
 | `mise run auth` | GitHub CLI認証 |
 | `mise tasks` | タスク一覧表示 |
 
@@ -88,6 +89,6 @@ brew upgrade
 | コマンド | 説明 |
 |----------|------|
 | `mise install` | .tool-versionsに従ってランタイムインストール |
-| `mise use node@20` | Node.js 20を使用 |
+| `mise use node@24` | Node.js 24を使用 |
 | `mise ls` | インストール済みランタイム一覧 |
 | `mise run <task>` | タスク実行 |

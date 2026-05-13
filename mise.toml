@@ -1,7 +1,11 @@
 [tasks.setup]
 description = "全セットアップ実行"
-depends = ["macos", "rosetta", "packages", "link", "skills", "plugins", "auth"]
+depends = ["macos", "rosetta", "packages", "link", "npm-latest", "skills", "plugins", "auth"]
 run = 'echo "セットアップ完了。再起動してください。"'
+
+[tasks.npm-latest]
+description = "npm を最新化 (min-release-age v11.10+ のため)"
+run = 'mise exec -- npm install -g npm@latest'
 
 [tasks.macos]
 description = "macOS システム設定"
