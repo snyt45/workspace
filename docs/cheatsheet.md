@@ -17,7 +17,7 @@
 | `vd` | nvim +DiffviewOpen (diffビュー付きで起動) |
 | `vdh` | nvim +DiffviewFileHistory (コミット履歴付きで起動) |
 | `c` | opencode (AIコーディングエージェント) |
-| `cx` | claude --enable-auto-mode (Claude Code自動モード) |
+| `cx` | Claude Codeエージェント管理画面を自動モードで起動 (`claude agents --enable-auto-mode`) |
 
 
 ## Ghostty

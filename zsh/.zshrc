@@ -11,7 +11,7 @@ alias v='nvim'
 alias vd='nvim +DiffviewOpen'
 alias vdh='nvim +DiffviewFileHistory'
 alias c='opencode'
-alias cx='claude --enable-auto-mode'
+alias cx='claude --enable-auto-mode agents'
 
 export EDITOR=nvim
 export CLAUDE_CODE_NO_FLICKER=1
