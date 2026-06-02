@@ -1,6 +1,7 @@
 # タップ
 tap "k1LoW/tap"
 tap "modem-dev/tap"
+tap "nikitabobko/tap"
 
 # CLI ツール
 brew "fd"
@@ -24,6 +25,7 @@ brew "zsh-autosuggestions"
 # アプリケーション
 cask "1password"
 cask "1password-cli"
+cask "nikitabobko/tap/aerospace"
 cask "aqua-voice"
 cask "alt-tab"
 cask "claude"
