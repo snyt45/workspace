@@ -105,11 +105,11 @@
       "Bash(brew install:*)",
       "Bash(brew uninstall:*)"
     ],
+    "defaultMode": "auto",
     "additionalDirectories": [
       "~/.claude",
       "~/work"
-    ],
-    "defaultMode": "auto"
+    ]
   },
   "hooks": {
     "Stop": [
@@ -127,6 +127,9 @@
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline.py"
+  },
+  "worktree": {
+    "bgIsolation": "none"
   },
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": true,
@@ -159,13 +162,15 @@
   "language": "ja",
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
-  "voiceEnabled": true,
-  "feedbackSurveyState": {
-    "lastShownTime": 1754364589827
-  },
+  "worktree": { "bgIsolation": "none" },
+  "tui": "fullscreen",
   "preferredNotifChannel": "terminal_bell",
   "autoCompactEnabled": false,
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true,
+  "feedbackSurveyState": {
+    "lastShownTime": 1754364589827
+  }
 }
