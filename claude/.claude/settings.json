@@ -133,25 +133,10 @@
   },
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": true,
-    "superpowers@superpowers-marketplace": true,
     "ruby-lsp@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
-    "frontend-design@claude-code-plugins": true,
     "claude-obsidian@claude-obsidian-marketplace": true
   },
   "extraKnownMarketplaces": {
-    "superpowers-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "obra/superpowers-marketplace"
-      }
-    },
-    "claude-code-plugins": {
-      "source": {
-        "source": "github",
-        "repo": "anthropics/claude-code"
-      }
-    },
     "claude-obsidian-marketplace": {
       "source": {
         "source": "github",
