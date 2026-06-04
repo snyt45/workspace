@@ -99,6 +99,8 @@ leader = `,`
 |------|------|------|
 | `Esc` | n | 検索ハイライト解除 |
 | `C-^` | n | 前のバッファに戻る |
+| `C-o` | n | ジャンプ履歴を1つ前へ戻る (定義ジャンプ/検索など飛んだ後に元へ) |
+| `C-i` | n | ジャンプ履歴を1つ先へ進む (`C-o` の逆。`Tab` と同一キー) |
 | `,x` | n | バッファを閉じる |
 | `,c` | n | 現在のファイルパスをコピー |
 | `,cc` | v | ファイルパス + 選択コードをマークダウン形式でコピー |
@@ -185,11 +187,11 @@ LSP管理は組み込みコマンドを使う
 
 | コマンド | 説明 |
 |----------|------|
-| `:lsp restart [client]` | LSP再起動 (引数省略でカレントバッファの全クライアント) |
+| `:lsp restart [client]` | LSP再起動 |
 | `:lsp stop [client]` | LSP停止 |
 | `:lsp enable [config]` | LSPを有効化 (現在/今後のバッファ) |
 | `:lsp disable [config]` | LSPを無効化 (起動中なら停止) |
-| `:checkhealth vim.lsp` | LSP状態を確認 (`:che lsp` でlsp系health全部に一致) |
+| `:checkhealth vim.lsp` | LSP状態を確認  |
 
 ### GitHub Copilot
 
@@ -203,23 +205,9 @@ LSP管理は組み込みコマンドを使う
 
 ### Copilot NES (Sidekick.nvim)
 
-Next Edit Suggestions: Copilot が「次にここも編集するでしょ？」を予測してインライン diff で提示。
-sidekick の CLI 統合機能は使わず、**NES のみ利用**。AIチャットは tmux 別pane の `c` (opencode) / `cx` (claude) alias で。
-
 | キー | モード | 説明 |
 |------|------|------|
 | `<Tab>` | n | NES 提案があれば: ジャンプ → もう一度で apply。無ければ通常の `<Tab>` |
-
-NES 操作コマンド:
-
-| コマンド | 説明 |
-|---------|------|
-| `:Sidekick nes enable` | NES 有効化 |
-| `:Sidekick nes disable` | NES 無効化 |
-| `:Sidekick nes toggle` | NES トグル |
-| `:Sidekick nes update` | 手動で次の編集案を取得 |
-
-ヘルスチェック: `:checkhealth sidekick` で Copilot LSP 検出状況を確認。
 
 ### Git (gitsigns)
 
@@ -228,14 +216,7 @@ NES 操作コマンド:
 | `]c` | n | 次の変更箇所へ |
 | `[c` | n | 前の変更箇所へ |
 | `,gb` | n | blame表示 |
-| `,go` | n/v | カーソル位置をGitHubで開く (commit固定permalink、ビジュアル選択で範囲リンク) |
-
-コマンドパレット (`,?` → Commands) から実行:
-
-| エントリ | 説明 |
-|---------|------|
-| `[GitSigns] 比較ベース変更` | 比較対象のブランチを変更 (デフォルト: origin/main) |
-| `[GitSigns] 比較ベースをリセット` | 比較対象をインデックス(デフォルト)に戻す |
+| `,go` | n/v | カーソル位置をGitHubで開く |
 
 ### Git diff (Diffview)
 
@@ -250,44 +231,25 @@ Neovim内から起動:
 
 | キー | モード | 説明 |
 |------|------|------|
-| `,gg` | n | 全差分ビューを開く (レビューモード時は `base...HEAD --imply-local`) |
-| `,gf` | n | 現バッファの単一ファイル差分を開く (レビューモード時は `base...HEAD --imply-local`) |
+| `,gg` | n | 全差分ビューを開く |
+| `,gf` | n | 現バッファの単一ファイル差分を開く |
 | `,gh` | n | コミット履歴を開く |
-
-コマンドパレット (`,?` → Commands) から実行:
-
-| エントリ | 説明 |
-|---------|------|
-| `[Diffview] 全差分` | DiffviewOpen を起動 (レビューモード時はbase差分) |
 
 ### レビューモード
 
-baseブランチを宣言すると、Diffview が `base...HEAD` を参照するようになる (`--imply-local` で右ペインがワーキングツリーの実バッファになり、差分内から `gd` 等の LSP 操作が直接効く)。`,gs` は通常の git status のまま。
-
 | コマンド | 説明 |
 |----------|------|
-| `:ReviewStart [base]` | レビューモード開始 + Diffview 自動起動 (引数省略時はtelescopeでbase選択) |
+| `:ReviewStart [base]` | レビューモード開始 + Diffview 自動起動  |
 | `:ReviewEnd` | レビューモード終了 + Diffview を閉じる |
 
-Diffview タブ内:
+### コマンドパレット
+
 
 | キー | モード | 説明 |
 |------|------|------|
-| `<Tab>` / `<S-Tab>` | n | 次/前の変更ファイルへ |
-| `<leader>e` | n | file panel をトグル |
-| `g?` | n | Diffview のキーマップヘルプを表示 |
+| `,?` | n | Commands / Keymaps を選択して開く |
 
-### コマンドパレット (command-palette)
-
-キーマップやコマンドを検索して実行できる。`desc` が `[` で始まるキーマップとコマンドパレット専用コマンドが一覧に表示される。
-
-| キー | モード | 説明 |
-|------|------|------|
-| `,?` | n | Commands / Keymaps を選択して開く (2段メニュー) |
-
-### Overlook (peek definition)
-
-LSPの定義やカーソル位置をスタック可能なフロートpopupで表示。popupは編集可能で `:w` で保存もできる。
+### Overlook
 
 | キー | モード | 説明 |
 |------|------|------|
@@ -301,7 +263,6 @@ LSPの定義やカーソル位置をスタック可能なフロートpopupで表
 | `,pv` | n | popupを垂直分割で開く |
 | `,pt` | n | popupを新規タブで開く |
 | `,po` | n | popupを元ウィンドウで開く |
-| `q` (popup内) | n | 最上位のpopupを閉じる |
 
 ### quickfix
 
@@ -319,7 +280,7 @@ LSPの定義やカーソル位置をスタック可能なフロートpopupで表
 | `C-w s` | n | 水平分割 |
 | `C-w v` | n | 垂直分割 |
 | `C-w x` | n | 隣のウィンドウと入れ替え |
-| `C-w H/J/K/L` | n | ウィンドウを指定方向の端に移動 |
+| `C-w H / J / K / L` | n | ウィンドウを指定方向の端に移動 |
 | `mm` | n | ズームトグル (カレントを縦横最大化 / もう一度で等分に戻す) |
 
 ### 折りたたみ
@@ -341,20 +302,11 @@ LSPの定義やカーソル位置をスタック可能なフロートpopupで表
 
 ## GitHub (snacks.gh)
 
-`,?` → Commands (コマンドパレット) から呼ぶ。`gh` CLI使用。
-
-| エントリ | 説明 |
-|---------|------|
-| `[Snacks] Issue一覧 (open)` | OpenなIssue一覧 → bufferで開く |
-| `[Snacks] Issue一覧 (all)` | closed含む全Issue |
-| `[Snacks] PR一覧 (open)` | OpenなPR一覧 → bufferで開く |
-| `[Snacks] PR一覧 (all)` | closed/merged含む全PR |
-
 PR/Issue buffer内のキーマップ:
 
 | キー | 動作 |
 |------|------|
-| `<CR>` | アクションメニュー (diff/merge/checkout/browser/label/react/review等) |
+| `<CR>` | アクションメニュー |
 | `i` | タイトル/本文を編集 |
 | `a` | コメント追加 (コメント上なら返信、diff行上ならインラインコメント) |
 | `c` | Close |
@@ -364,9 +316,9 @@ PR/Issue buffer内のキーマップ:
 
 | キー | 動作 |
 |------|------|
-| `<C-s>` | 送信 (ノーマル/インサート両対応)。`:wq`では送信されない |
+| `<C-s>` | 送信 (ノーマル/インサート両対応) |
 
-## Git (コマンドライン)
+## Git
 
 | コマンド | 説明 |
 |----------|------|
@@ -379,9 +331,7 @@ PR/Issue buffer内のキーマップ:
 | `g aicommit` | AIでコミットメッセージ自動生成 |
 
 
-## worktrunk (wt)
-
-Git worktree 管理 CLI。並行作業や AI agent 用ブランチを高速に切り替え/作成する。
+## worktrunk
 
 | コマンド | 説明 |
 |----------|------|
