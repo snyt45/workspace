@@ -79,7 +79,6 @@ brew upgrade
 | `mise run setup` | 全セットアップ実行 |
 | `mise run packages` | Homebrewパッケージインストール |
 | `mise run link` | シンボリックリンク作成（dotfiles 由来の切れたリンクも掃除） |
-| `mise run skills` | Claude Codeスキルインストール |
 | `mise run npm-latest` | npm を最新化（サプライチェーン対策の min-release-age v11.10+ 用） |
 | `mise run auth` | GitHub CLI認証 |
 | `mise tasks` | タスク一覧表示 |
