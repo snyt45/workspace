@@ -344,32 +344,7 @@ PR/Issue buffer内のキーマップ:
 | `wt remove` | 現 worktree を削除 (マージ済みならブランチも) |
 | `wt merge` | 現ブランチをデフォルトブランチへマージ (squash + rebase + remove) |
 
-picker 内のキーバインド:
-
-| キー | 動作 |
-|------|------|
-| `↑/↓` | 移動 |
-| 文字入力 | fuzzy filter |
-| `Enter` | 選択した worktree へ switch |
-| `Alt-c` | 入力した名前で worktree を新規作成 |
-| `1`〜`5` | preview タブ切替 (HEAD±, log, main…±, remote⇅, summary) |
-| `Alt-p` | preview パネル開閉 |
-| `Esc` | キャンセル |
-
 設定ファイル:
 
 - User config: `~/.config/worktrunk/config.toml` (全プロジェクト共通)
 - Project config: `.config/wt.toml` (リポジトリで共有)
-
-## karabiner キーマップ
-
-| キー | 動作 |
-|------|------|
-| `ESC` | 英数キー + ESC (IME切替) |
-| `英数+h/j/k/l` | カーソルキー (上下左右) |
-| `英数+a/e` | 行頭/行末 |
-| `英数+u/i` | 前の単語/次の単語 |
-| `英数+n/m` | BackSpace/Delete |
-| `CapsLock` | Command (Mac内蔵) / Control (外部KB) |
-
-
