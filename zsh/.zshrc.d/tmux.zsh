@@ -1,7 +1,0 @@
-alias t='tmux'
-alias tn='tmux new -s'
-alias td='tmux detach'
-alias tl='tmux ls'
-alias tk='tmux kill-session -t'
-alias ts='tmux switch-client -t'
-alias trn='tmux rename-session'

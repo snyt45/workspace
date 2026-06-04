@@ -20,32 +20,32 @@
 | `yy` | ページURLをコピー |
 
 
-## シェル (zsh)
+## Zsh
 
 | キー/コマンド | 説明 |
 |---------------|------|
-| `Ctrl+r` | 履歴検索 (fzf) |
-| `z <dir>` | ディレクトリ移動 (zoxide。過去の移動先を学習) |
-| `zi` | インタラクティブにディレクトリ選択 |
-| `g` | git のエイリアス |
-| `lz` | lazygit のエイリアス (Git TUI) |
-| `v` | nvim のエイリアス |
-| `vd` | nvim +DiffviewOpen (diffビュー付きで起動) |
-| `vdh` | nvim +DiffviewFileHistory (コミット履歴付きで起動) |
-| `c` | opencode (AIコーディングエージェント) |
-| `cx` | Claude Codeエージェント管理画面を自動モードで起動 (`claude agents --enable-auto-mode`) |
+| `Ctrl + r` | 履歴検索 (fzf) |
+| `z <dir>` | ディレクトリ移動 (zoxide) |
+| `zi` | ディレクトリ選択 (zoxide) |
+| `g` | git |
+| `lz` | lazygit |
+| `v` | nvim |
+| `vd` | nvim +DiffviewOpen |
+| `vdh` | nvim +DiffviewFileHistory |
+| `c` | opencode |
+| `cx` | Claude Code |
 
 
 ## Ghostty
 
 | キー | 説明 |
 |------|------|
-| `Cmd+D` | 垂直分割 |
-| `Cmd+Shift+D` | 水平分割 |
-| `Cmd+T` | 新規タブ |
-| `Cmd+W` | タブを閉じる |
-| `Cmd+[` / `Cmd+]` | ペイン移動 |
-| `Cmd+Shift+[` / `Cmd+Shift+]` | タブ移動 |
+| `Cmd + D` | 垂直分割 |
+| `Cmd + Shift + D` | 水平分割 |
+| `Cmd + T` | 新規タブ |
+| `Cmd + W` | タブを閉じる |
+| `Cmd + [` / `Cmd + ]` | ペイン移動 |
+| `Cmd + Shift + [` / `Cmd + Shift + ]` | タブ移動 |
 
 ## tmux
 
@@ -53,84 +53,40 @@ Prefix = `C-t`
 
 | キー | 説明 |
 |------|------|
-| `Prefix-v` | 垂直分割 |
-| `Prefix-s` | 水平分割 |
-| `Prefix-h/j/k/l` | ペイン移動（Prefix付き） |
-| `Prefix-H/J/K/L` | ペインを方向にスワップ |
-| `Prefix-t` | ズーム（全画面） |
-| `Prefix-T` | 部分ズーム（縦方向のみ。横レイアウト維持） |
-| `Prefix-i` | ペイン番号を表示。続けて番号キーで該当ペインへジャンプ |
-| `Prefix-q` | ペイン閉じる |
-| `Prefix-e` | 全ペイン同時入力 ON |
-| `Prefix-E` | 全ペイン同時入力 OFF |
-| `Prefix-I` | tpmプラグインをインストール |
-| `Prefix-U` | tpmプラグインを更新 |
+| `Prefix - v` | 垂直分割 |
+| `Prefix - s` | 水平分割 |
+| `Prefix - h / j / k / l` | ペイン移動 |
+| `Prefix - H / J / K / L` | ペインをスワップ |
+| `Prefix - t` | ズーム（全画面） |
+| `Prefix - T` | 部分ズーム（縦方向のみ。横レイアウト維持） |
+| `Prefix - i` | ペイン番号を表示。続けて番号キーで該当ペインへジャンプ |
+| `Prefix - q` | ペイン閉じる |
+| `Prefix - e` | 全ペイン同時入力 ON |
+| `Prefix - E` | 全ペイン同時入力 OFF |
+| `Prefix - I` | tpmプラグインをインストール |
+| `Prefix - U` | tpmプラグインを更新 |
 
-### ウィンドウ (tab的に使う)
-
-軽量に context 分離したい時はセッションよりウィンドウ。同一セッション内で1プロンプトで飛べる。
-
-| キー | 説明 | 覚え方 |
-|------|------|--------|
-| `Prefix-c` | 新規ウィンドウ作成 | create |
-| `Prefix-,` | ウィンドウ名を変更 | `,` = ラベル貼り |
-| `Prefix-w` | ウィンドウ一覧を表示・切替 | window 一覧 |
-| `Prefix-n` | 次のウィンドウへ移動 | next |
-| `Prefix-p` | 前のウィンドウへ移動 | previous |
-| `Prefix-1`〜`9` | 番号指定でウィンドウ移動 (1始まり) | 番号そのまま |
-| `Prefix-&` | 現在のウィンドウを閉じる | `&` = 確認付き終了 |
-
-ウィンドウの並び順を入れ替える:
+### ウィンドウ
 
 | キー | 説明 |
 |------|------|
-| `Prefix-<` | 現在のウィンドウを1つ左へ（フォーカス追従） |
-| `Prefix->` | 現在のウィンドウを1つ右へ（フォーカス追従） |
-
-任意の番号と入れ替えたい時は `Prefix-:` でコマンド:
-
-| コマンド | 説明 |
-|---------|------|
-| `swap-window -t 2` | 現在のウィンドウをウィンドウ2と入れ替え |
-| `swap-window -s 3 -t 1` | ウィンドウ3 と ウィンドウ1 を入れ替え |
+| `Prefix - c` | 新規ウィンドウ作成 |
+| `Prefix - ,` | ウィンドウ名を変更 |
+| `Prefix - w` | ウィンドウ一覧を表示・切替 |
+| `Prefix - n` | 次のウィンドウへ移動 |
+| `Prefix - p` | 前のウィンドウへ移動 |
+| `Prefix - <` | 現在のウィンドウを1つ左へ |
+| `Prefix - >` | 現在のウィンドウを1つ右へ |
+| `Prefix - 1`〜`9` | 番号指定でウィンドウ移動 (1始まり) |
+| `Prefix - &` | 現在のウィンドウを閉じる | 
 
 ### セッション
 
-ウィンドウで足りる日常では出番少なめ。プロジェクトを完全に切替えたい時だけ使う。
-
 | キー | 説明 |
 |------|------|
-| `Prefix-d` | デタッチ |
-| `Prefix-$` | セッション名変更 (プロンプトで入力) |
-| `Prefix-N` | 新規セッション作成 (名前プロンプト) |
-
-### シェル alias
-
-| alias | 実体 |
-|------|------|
-| `t` | `tmux` |
-| `tn` | `tmux new -s` |
-| `td` | `tmux detach` |
-| `tl` | `tmux ls` |
-| `tk` | `tmux kill-session -t` |
-| `ts` | `tmux switch-client -t` |
-| `trn` | `tmux rename-session` |
-
-### ide コマンド (レイアウト)
-
-| コマンド | 説明 |
-|----------|------|
-| `ide` | fzfでレイアウト選択 |
-| `ide ai-single` | NeoVim + エージェント1つ + ターミナル (エージェント選択) |
-| `ide ai-single c` | NeoVim + OpenCode + ターミナル |
-| `ide ai-single cx` | NeoVim + Claude Code + ターミナル |
-| `ide ai-dual` | NeoVim + エージェント2つ + ターミナル (各ペイン選択) |
-| `ide ai-dual c cx` | NeoVim + OpenCode(上) + Claude Code(下) + ターミナル |
-| `ide ai-dual cx cx` | NeoVim + Claude Code×2 + ターミナル |
-| `ide dev` | エディタ + ターミナル3つ |
-| `ide dev-full` | エディタ + ターミナル6つ |
-| `ide pair` | NeoVim 2つ横並び + ターミナル |
-
+| `Prefix - d` | デタッチ |
+| `Prefix - $` | セッション名変更 |
+| `Prefix - N` | 新規セッション作成 |
 
 ## Neovim
 
