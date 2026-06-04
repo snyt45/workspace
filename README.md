@@ -21,7 +21,6 @@
 | バージョン管理 | mise |
 | シークレット管理 | 1Password CLI |
 | キーリマッパー | karabiner |
-| ウィンドウ管理 | AeroSpace |
 
 ## セットアップ
 
