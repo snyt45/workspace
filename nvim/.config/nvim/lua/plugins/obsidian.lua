@@ -7,15 +7,41 @@ return {
 		"nvim-lua/plenary.nvim",
 	},
 	init = function()
+		local vault = vim.fn.expand("~/work/claude-obsidian")
+
+		local function map_checkbox_toggle(bufnr)
+			vim.keymap.set("n", "<CR>", function()
+				local line = vim.api.nvim_get_current_line()
+				local is_checkbox = line:match("^%s*[-*+]%s+%[.?%]") or
+				    line:match("^%s*%d+[.)]%s+%[.?%]")
+				if is_checkbox then
+					vim.cmd("Obsidian toggle_checkbox")
+				else
+					vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true),
+						"n", false)
+				end
+			end, { buffer = bufnr, desc = "[Obsidian] チェックボックス切替 / 通常Enter" })
+			vim.keymap.set("v", "<CR>", "<cmd>Obsidian toggle_checkbox<cr>", {
+				buffer = bufnr,
+				desc = "[Obsidian] チェックボックス切替（選択行）",
+			})
+		end
+
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = "markdown",
-			callback = function()
+			callback = function(ev)
+				if not vim.startswith(vim.api.nvim_buf_get_name(ev.buf), vault) then
+					return
+				end
 				vim.opt_local.conceallevel = 2
+				map_checkbox_toggle(ev.buf)
 			end,
 		})
 	end,
 	opts = {
 		legacy_commands = false,
+
+		frontmatter = { enabled = false },
 
 		workspaces = {
 			{ name = "claude-obsidian", path = "~/work/claude-obsidian" },
@@ -51,5 +77,7 @@ return {
 		{ "<leader>or", "<cmd>Obsidian search<cr>", desc = "[Obsidian] 全文検索" },
 		{ "<leader>oq", "<cmd>Obsidian quick_switch<cr>", desc = "[Obsidian] ノート切替" },
 		{ "<leader>ob", "<cmd>Obsidian backlinks<cr>", desc = "[Obsidian] バックリンク" },
+		{ "<leader>oT", "<cmd>Obsidian tags<cr>", desc = "[Obsidian] タグで探す" },
+		{ "<leader>oo", "<cmd>Obsidian open<cr>", desc = "[Obsidian] アプリで開く" },
 	},
 }
