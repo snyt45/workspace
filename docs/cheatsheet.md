@@ -352,11 +352,12 @@ PR/Issue buffer内のキーマップ:
 
 | コマンド | 説明 |
 |----------|------|
-| `ws` | 引数なし: 対話 picker (live preview / Alt-c で新規作成) |
-| `ws <branch>` | 既存ブランチなら switch、無ければ自動 create して switch |
-| `ws -` | 直前の worktree へ |
-| `ws ^` | デフォルトブランチへ |
-| `ws pr:123` | GitHub PR #123 の worktree へ |
+| `wt switch` | 対話 picker (live preview / Alt-c で新規作成) |
+| `wt switch <branch>` | 既存ブランチへ switch |
+| `wt switch --create <branch>` | 新規ブランチを作成して switch |
+| `wt switch -` | 直前の worktree へ |
+| `wt switch ^` | デフォルトブランチへ |
+| `wt switch pr:123` | GitHub PR #123 の worktree へ |
 | `wt list` | worktree 一覧 |
 | `wt remove` | 現 worktree を削除 (マージ済みならブランチも) |
 | `wt merge` | 現ブランチをデフォルトブランチへマージ (squash + rebase + remove) |
