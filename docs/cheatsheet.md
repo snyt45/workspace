@@ -299,6 +299,23 @@ Neovim内から起動:
 | `:Mason` | LSPサーバ管理 |
 | `:ConformInfo` | フォーマッタ設定の確認 |
 
+### Obsidian (obsidian.nvim)
+
+vault: `~/work/claude-obsidian`（このvault内のmarkdownでのみ有効）
+
+| キー | モード | 説明 |
+|------|------|------|
+| `,ot` | n | 今日のdaily note |
+| `,oy` | n | 昨日のdaily note |
+| `,on` | n | 新規ノート |
+| `,or` | n | 全文検索 |
+| `,oq` | n | ノート切替 (quick switch) |
+| `,ob` | n | バックリンク |
+| `,oT` | n | タグで探す |
+| `,oo` | n | アプリで開く |
+| `<CR>` | n | チェックボックス行なら切替、それ以外は通常Enter |
+| `<CR>` | v | 選択行のチェックボックス切替 |
+
 
 ## GitHub (snacks.gh)
 

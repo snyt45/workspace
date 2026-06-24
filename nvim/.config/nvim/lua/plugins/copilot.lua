@@ -7,7 +7,7 @@ return {
 			copilot_node_command = vim.fn.expand(
 				"~/.local/share/mise/installs/node/22.22.1/bin/node"),
 			suggestion = {
-				enabled = true,
+				enabled = false,
 				auto_trigger = true,
 				keymap = {
 					accept = false,
