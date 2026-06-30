@@ -1,14 +1,7 @@
-[projects."github.com/toypo/toypo-api"]
-step.copy-ignored.exclude = [
-    # ディレクトリ自体と中身の両方をマッチさせるため2パターン書く
-    "log", "log/**",
-    "tmp", "tmp/**",
-    "storage", "storage/**",
-    ".ruby-lsp", ".ruby-lsp/**",
-    ".serena", ".serena/**",
-    ".byebug_history",
-    ".DS_Store",
-]
+[post-start]
+copy = "wt step copy-ignored"
 
-[[projects."github.com/toypo/toypo-api".pre-start]]
-copy-ignored = "wt step copy-ignored"
+[projects."github.com/toypo/toypo-api".post-start]
+vendor = "cp -Rc {{ primary_worktree_path }}/vendor ."
+migrate = "bundle exec rails db:migrate"
+seed = "bundle exec rails db:seed"
