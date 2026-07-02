@@ -33,13 +33,15 @@ return {
 				if not vim.startswith(vim.api.nvim_buf_get_name(ev.buf), vault) then
 					return
 				end
-				vim.opt_local.conceallevel = 2
 				map_checkbox_toggle(ev.buf)
 			end,
 		})
 	end,
 	opts = {
 		legacy_commands = false,
+
+		-- 描画は render-markdown.nvim に一本化（二重描画を防ぐ）
+		ui = { enable = false },
 
 		frontmatter = { enabled = false },
 
