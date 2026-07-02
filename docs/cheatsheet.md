@@ -225,6 +225,7 @@ LSP管理は組み込みコマンドを使う
 | `]c` | n | 次の変更箇所へ |
 | `[c` | n | 前の変更箇所へ |
 | `,gb` | n | blame表示 |
+| `,ga` | n | 現在のファイルをstage (git add) |
 | `,go` | n/v | カーソル位置をGitHubで開く |
 
 ### Git diff (Diffview)

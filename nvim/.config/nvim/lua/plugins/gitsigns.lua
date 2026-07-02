@@ -15,6 +15,7 @@ return {
 				vim.keymap.set("n", "]c", gs.next_hunk, { buffer = bufnr, desc = "[GitSigns] 次のhunk" })
 				vim.keymap.set("n", "[c", gs.prev_hunk, { buffer = bufnr, desc = "[GitSigns] 前のhunk" })
 				vim.keymap.set("n", "<leader>gb", gs.blame, { buffer = bufnr, desc = "[GitSigns] blame" })
+				vim.keymap.set("n", "<leader>ga", gs.stage_buffer, { buffer = bufnr, desc = "[GitSigns] 現在のファイルをstage" })
 			end,
 		})
 	end,
