@@ -75,13 +75,25 @@ function M.code_diff()
 end
 
 -- <leader>gf: 現在バッファの単一ファイル差分 (モード時はbase適用)
+-- ファイル名が空のバッファ(パネル等)だとpathspecが空になり全差分が開いてしまうためガードする
 function M.code_diff_file()
+	local file = vim.api.nvim_buf_get_name(0)
+	if vim.bo.buftype ~= "" or file == "" or file:match("^diffview://") then
+		vim.notify("ファイルバッファで実行してください", vim.log.levels.WARN)
+		return
+	end
+	-- 未追跡ファイルには差分が存在しない
+	if vim.system({ "git", "ls-files", "--error-unmatch", file }, { cwd = vim.fs.dirname(file) }):wait().code ~= 0 then
+		vim.notify("未追跡ファイルのため差分はありません", vim.log.levels.WARN)
+		return
+	end
 	local base = vim.g.review_base
-	local file = vim.fn.fnameescape(vim.fn.expand("%"))
+	file = vim.fn.fnameescape(file)
+	-- diffviewはuntracked一覧にpathspecを適用せず全件混ぜてくるため明示的に除外する
 	if base then
-		vim.cmd("DiffviewOpen " .. base .. "...HEAD --imply-local -- " .. file)
+		vim.cmd("DiffviewOpen " .. base .. "...HEAD --imply-local --untracked-files=no -- " .. file)
 	else
-		vim.cmd("DiffviewOpen -- " .. file)
+		vim.cmd("DiffviewOpen --untracked-files=no -- " .. file)
 	end
 end
 
