@@ -48,4 +48,7 @@ for plugin in "${PLUGINS_OBSIDIAN[@]}"; do
   fi
 done
 
+# 外部スキル (skills CLI経由。実体: ~/.agents/skills、~/.claude/skills にsymlinkが張られる)
+[[ -d "$HOME/.agents/skills/herdr" ]] || npx -y skills add ogulcancelik/herdr --skill herdr -g
+
 echo "Claude Code プラグインインストール完了"
