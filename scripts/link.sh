@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 DOTFILES_DIR="$HOME/.dotfiles"
-PACKAGES=(bin git nvim zsh karabiner claude mise tmux ghostty opencode worktrunk lazygit npmrc)
+PACKAGES=(bin git nvim zsh karabiner claude mise tmux ghostty herdr opencode worktrunk lazygit npmrc)
 
 ok=0
 ng=0
@@ -65,6 +65,10 @@ for tool in git-jump diff-highlight; do
   src="/opt/homebrew/share/git-core/contrib/$tool/$tool"
   [[ -f "$src" ]] && ln -sf "$src" "/opt/homebrew/bin/$tool"
 done
+
+# hunk同梱のClaude Codeスキル (Cellar直パスはバージョンで変わるためopt経由)
+hunk_skill="/opt/homebrew/opt/hunk/libexec/skills/hunk-review"
+[[ -d "$hunk_skill" ]] && ln -sfn "$hunk_skill" "$HOME/.claude/skills/hunk-review"
 
 echo
 echo "合計: OK=${ok} NG=${ng} PRUNED=${pruned}"

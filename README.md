@@ -10,6 +10,7 @@
 | レイヤー | ツール |
 |----------|--------|
 | ターミナル | Ghostty + tmux |
+| エージェントマルチプレクサ | herdr（tmuxからの移行を試行中） |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
 | Git UI | gitsigns |

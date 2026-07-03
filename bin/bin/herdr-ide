@@ -1,4 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env zsh
+# herdr内でIDEレイアウトを組む (bin/ide のherdr版)
+# 使い方: herdrのペインでプロジェクトディレクトリに移動して herdr-ide [レイアウト] [エージェント...]
+# 引数なしはfzfで選択（プレビュー付き）
+# 分割ペインのcwdは実行ペインを引き継ぐ(new_cwd=follow)
+# 注: herdrのsplit --ratio は「元ペインが保持する割合」(tmuxの -l は新ペインの割合)
 
 show_preview() {
   case "$1" in
@@ -97,6 +102,17 @@ EOF
   esac
 }
 
+# --preview モードの場合（fzfから呼ばれる）
+if [[ "$1" == "--preview" ]]; then
+  show_preview "$2"
+  exit 0
+fi
+
+if [[ -z "$HERDR_PANE_ID" ]]; then
+  echo "herdrのペイン内で実行してください" >&2
+  exit 1
+fi
+
 select_agent() {
   local agents="c	opencode
 cx	claude --enable-auto-mode"
@@ -117,42 +133,28 @@ cx	claude --enable-auto-mode"
   echo "$selected" | cut -f1
 }
 
+pane_id() { grep -o '"pane_id":"[^"]*"' | head -1 | cut -d'"' -f4 }
+sp() { herdr pane split "$1" --direction "$2" --ratio "$3" --no-focus | pane_id }
+run_in() { herdr pane run "$1" "$2" >/dev/null }
+
 apply_layout() {
+  local p1=$HERDR_PANE_ID
   case "$1" in
     default)
-      local base_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # 上段の右30%を分割
-      tmux split-window -h -l 30% -t "$base_pane"
-      # 左上にフォーカス
-      tmux select-pane -t "$base_pane"
+      # 下段(15%)と右30%を作成
+      sp $p1 down 0.85 >/dev/null
+      sp $p1 right 0.70 >/dev/null
       ;;
-    grid)
-      local top_pane="$TMUX_PANE"
-      # 下段（25%）を作成
-      tmux split-window -v -l 25%
-      # 下段を3分割
-      tmux split-window -h -l 66%
-      tmux split-window -h -l 50%
-      # 上段にフォーカス
-      tmux select-pane -t "$top_pane"
-      ;;
-    grid-full)
-      local top_pane="$TMUX_PANE"
-      # 3行目（下25%）を作成
-      tmux split-window -v -l 25%
-      # 3行目を3分割
-      tmux split-window -h -l 66%
-      tmux split-window -h -l 50%
-      # 1行目に戻って2行目（残りの下33%）を作成
-      tmux select-pane -t "$top_pane"
-      tmux split-window -v -l 33%
-      # 2行目を3分割
-      tmux split-window -h -l 66%
-      tmux split-window -h -l 50%
-      # 上段にフォーカス
-      tmux select-pane -t "$top_pane"
+    ai-single)
+      local agent="$2"
+      if [[ -z "$agent" ]]; then
+        agent=$(select_agent)
+        [[ -z "$agent" ]] && return 0
+      fi
+      sp $p1 down 0.85 >/dev/null
+      local ai_pane=$(sp $p1 right 0.70)
+      sleep 1
+      run_in $ai_pane "$agent"
       ;;
     ai-dual)
       local top_agent="$2"
@@ -167,48 +169,16 @@ apply_layout() {
         bottom_agent=$(select_agent)
         [[ -z "$bottom_agent" ]] && return 0
       fi
-      local editor_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # エディタペインの右30%を分割してAIペインを作成
-      local ai_pane
-      ai_pane=$(tmux split-window -h -l 30% -t "$editor_pane" -P -F '#{pane_id}')
-      # AIペインを縦分割して下段AIペインを作成
-      local bottom_pane
-      bottom_pane=$(tmux split-window -v -t "$ai_pane" -P -F '#{pane_id}')
-      # 各ペインでコマンドを起動 (エディタは自動起動しない)
-      tmux send-keys -t "$ai_pane" "$top_agent" C-m
-      tmux send-keys -t "$bottom_pane" "$bottom_agent" C-m
-      # エディタにフォーカス
-      tmux select-pane -t "$editor_pane"
-      ;;
-    ai-single)
-      local agent="$2"
-      if [[ -z "$agent" ]]; then
-        agent=$(select_agent)
-        [[ -z "$agent" ]] && return 0
-      fi
-      local editor_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # エディタペインの右30%を分割してAIペインを作成
-      local ai_pane
-      ai_pane=$(tmux split-window -h -l 30% -t "$editor_pane" -P -F '#{pane_id}')
-      # AIペインでエージェントを起動 (エディタは自動起動しない)
-      tmux send-keys -t "$ai_pane" "$agent" C-m
-      # エディタにフォーカス
-      tmux select-pane -t "$editor_pane"
+      sp $p1 down 0.85 >/dev/null
+      local ai_pane=$(sp $p1 right 0.70)
+      local bottom_pane=$(sp $ai_pane down 0.5)
+      sleep 1
+      run_in $ai_pane "$top_agent"
+      run_in $bottom_pane "$bottom_agent"
       ;;
     pair)
-      local editor_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # エディタペインを左右50%で分割
-      local right_pane
-      right_pane=$(tmux split-window -h -l 50% -t "$editor_pane" -P -F '#{pane_id}')
-      # エディタは自動起動しない
-      # 左にフォーカス
-      tmux select-pane -t "$editor_pane"
+      sp $p1 down 0.85 >/dev/null
+      sp $p1 right 0.50 >/dev/null
       ;;
     pair-ai)
       local agent="$2"
@@ -216,35 +186,27 @@ apply_layout() {
         agent=$(select_agent)
         [[ -z "$agent" ]] && return 0
       fi
-      local editor_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # エディタペインの右20%を分割してAIペインを作成
-      local ai_pane
-      ai_pane=$(tmux split-window -h -l 20% -t "$editor_pane" -P -F '#{pane_id}')
-      # 残った左側(80%)を左右50%で分割して editor2 を作成
-      local editor2_pane
-      editor2_pane=$(tmux split-window -h -l 50% -t "$editor_pane" -P -F '#{pane_id}')
-      # AIペインでエージェントを起動 (エディタは自動起動しない)
-      tmux send-keys -t "$ai_pane" "$agent" C-m
-      # 左のエディタにフォーカス
-      tmux select-pane -t "$editor_pane"
+      sp $p1 down 0.85 >/dev/null
+      local ai_pane=$(sp $p1 right 0.80)
+      sp $p1 right 0.50 >/dev/null
+      sleep 1
+      run_in $ai_pane "$agent"
+      ;;
+    grid)
+      local bottom=$(sp $p1 down 0.75)
+      local b2=$(sp $bottom right 0.34)
+      sp $b2 right 0.5 >/dev/null
+      ;;
+    grid-full)
+      local row3=$(sp $p1 down 0.75)
+      local r3b=$(sp $row3 right 0.34)
+      sp $r3b right 0.5 >/dev/null
+      local row2=$(sp $p1 down 0.67)
+      local r2b=$(sp $row2 right 0.34)
+      sp $r2b right 0.5 >/dev/null
       ;;
   esac
-
-  # 各ペインで画面クリア
-  local final_pane=$(tmux display-message -p '#{pane_id}')
-  for pane in $(tmux list-panes -F '#{pane_id}'); do
-    tmux select-pane -t "$pane" && tmux send-keys C-l
-  done
-  tmux select-pane -t "$final_pane"
 }
-
-# --preview モードの場合（fzfから呼ばれる）
-if [[ "$1" == "--preview" ]]; then
-  show_preview "$2"
-  exit 0
-fi
 
 # 引数があればそのまま実行
 if [[ -n "$1" ]]; then
@@ -253,16 +215,12 @@ if [[ -n "$1" ]]; then
       apply_layout "$1"
       exit 0
       ;;
-    ai-single)
+    ai-single|pair-ai)
       apply_layout "$1" "$2"
       exit 0
       ;;
     ai-dual)
       apply_layout "$1" "$2" "$3"
-      exit 0
-      ;;
-    pair-ai)
-      apply_layout "$1" "$2"
       exit 0
       ;;
     *)
