@@ -111,6 +111,7 @@
       "~/work"
     ]
   },
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "Stop": [
       {
@@ -124,12 +125,12 @@
       }
     ]
   },
+  "worktree": {
+    "bgIsolation": "none"
+  },
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline.py"
-  },
-  "worktree": {
-    "bgIsolation": "none"
   },
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": true,
@@ -151,6 +152,7 @@
   "preferredNotifChannel": "terminal_bell",
   "autoCompactEnabled": false,
   "remoteControlAtStartup": true,
+  "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
