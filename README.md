@@ -16,7 +16,7 @@
 | Git UI | gitsigns |
 | PRレビュー | diffview.nvim |
 | 差分ビューア(TUI) | hunk |
-| AIコーディング | OpenCode (`c`) + Claude Code (`cx`) |
+| AIコーディング | OpenCode (`c`) + Claude Code (`cx`) + Pi (`pi`) |
 | シェル | zsh + pure |
 | 検索 | fzf, ripgrep, fd |
 | バージョン管理 | mise |

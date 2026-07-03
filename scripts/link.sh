@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 DOTFILES_DIR="$HOME/.dotfiles"
-PACKAGES=(bin git nvim zsh karabiner claude mise tmux ghostty herdr opencode worktrunk lazygit npmrc)
+PACKAGES=(bin git nvim zsh karabiner claude mise tmux ghostty herdr opencode pi worktrunk lazygit npmrc)
 
 ok=0
 ng=0

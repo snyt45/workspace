@@ -51,4 +51,10 @@ done
 # 外部スキル (skills CLI経由。実体: ~/.agents/skills、~/.claude/skills にsymlinkが張られる)
 [[ -d "$HOME/.agents/skills/herdr" ]] || npx -y skills add ogulcancelik/herdr --skill herdr -g
 
+# herdrのpi状態検知統合 (~/.pi/agent/extensions/herdr-agent-state.ts を生成)
+if command -v pi >/dev/null && command -v herdr >/dev/null; then
+  mkdir -p "$HOME/.pi/agent/extensions"
+  [[ -f "$HOME/.pi/agent/extensions/herdr-agent-state.ts" ]] || herdr integration install pi
+fi
+
 echo "Claude Code プラグインインストール完了"

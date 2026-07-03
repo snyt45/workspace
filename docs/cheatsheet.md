@@ -36,6 +36,15 @@
 | `vdh` | nvim +DiffviewFileHistory |
 | `c` | opencode |
 | `cx` | Claude Code |
+| `pi` | Pi  |
+
+### Pi
+
+
+| 操作 | 説明 |
+|------|------|
+| `/debt-check` | 理解負債を1件だけ確認質問。正答で1段階昇格、不正答は失敗ポイントを記録 |
+| commit前 | 未解消（Lv3未満）があれば通知される（commitは止めない） |
 
 
 ## Ghostty
