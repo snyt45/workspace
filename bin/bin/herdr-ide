@@ -115,7 +115,8 @@ fi
 
 select_agent() {
   local agents="c	opencode
-cx	claude --enable-auto-mode"
+cx	claude --enable-auto-mode
+pi	pi"
 
   local selected
   selected=$(echo "$agents" | fzf \
