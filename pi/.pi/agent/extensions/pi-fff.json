@@ -1,0 +1,9 @@
+{
+  "enabledFeatures": [
+    "autocomplete",
+    "builtInReadEnhancement",
+    "builtInGrepEnhancement",
+    "agentTools",
+    "statusUI"
+  ]
+}
