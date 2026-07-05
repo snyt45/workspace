@@ -51,10 +51,15 @@ bindkey '^R' history-search-fzf
 [ -s /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # 1Password CLI経由でシークレットを遅延読み込み（初回参照時にTouch IDで認証）
-function ensure_anthropic_api_key() {
-    if [ -z "$ANTHROPIC_API_KEY" ]; then
-        export ANTHROPIC_API_KEY=$(op read "op://Development/anthropic/credential")
+function ensure_opencode_api_key() {
+    if [ -z "$OPENCODE_API_KEY" ]; then
+        export OPENCODE_API_KEY=$(op read "op://Development/opencode_zen/credential")
     fi
+}
+
+function pi() {
+    ensure_opencode_api_key
+    command pi "$@"
 }
 
 for f in ~/.zshrc.d/*.zsh(N); do source "$f"; done
