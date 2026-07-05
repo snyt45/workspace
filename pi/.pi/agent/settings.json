@@ -4,6 +4,8 @@
   "defaultModel": "mimo-v2.5",
   "defaultThinkingLevel": "low",
   "packages": [
-    "npm:pi-fff"
-  ]
+    "npm:pi-fff",
+    "npm:@plannotator/pi-extension"
+  ],
+  "lastChangelogVersion": "0.80.3"
 }
