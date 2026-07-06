@@ -27,3 +27,9 @@ close_pane = "prefix+q"
 
 # tmuxの ,(ウィンドウ名変更) に合わせる（デフォルトは prefix+shift+t）
 rename_tab = "prefix+comma"
+
+# blocked / done(unread) な agent pane を巡回フォーカス
+[[keys.command]]
+key = "prefix+shift+u"
+type = "pane"
+command = "/Users/snyt45/bin/herdr-unread"
