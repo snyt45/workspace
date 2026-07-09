@@ -1,11 +1,10 @@
 {
   "theme": "dark",
   "defaultProvider": "opencode-go",
-  "defaultModel": "kimi-k2.6",
-  "defaultThinkingLevel": "high",
+  "defaultModel": "kimi-k2.7-code",
+  "defaultThinkingLevel": "off",
   "packages": [
-    "npm:pi-fff",
-    "npm:@plannotator/pi-extension"
+    "npm:pi-fff"
   ],
   "lastChangelogVersion": "0.80.3"
 }
