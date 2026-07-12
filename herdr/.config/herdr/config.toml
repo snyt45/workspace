@@ -9,7 +9,10 @@ name = "catppuccin"
 [ui]
 # ペイン間の余白をなくし境界線を共有する(tmuxと同じ密度)。数値指定は不可でon/offのみ
 pane_gaps = false
+# サイドバーを折りたたんだときに完全に非表示にする（デフォルトはコンパクトなレール表示）
+sidebar_collapsed_mode = "hidden"
 
+agent_panel_sort = "spaces"
 [keys]
 prefix = "ctrl+t"
 
