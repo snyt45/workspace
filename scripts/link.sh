@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 DOTFILES_DIR="$HOME/.dotfiles"
-PACKAGES=(bin git nvim zsh karabiner claude mise tmux ghostty herdr opencode pi worktrunk lazygit npmrc)
+PACKAGES=(bin git nvim zsh karabiner claude mise tmux ghostty herdr opencode pi worktrunk lazygit npmrc agents)
 
 ok=0
 ng=0
@@ -66,9 +66,29 @@ for tool in git-jump diff-highlight; do
   [[ -f "$src" ]] && ln -sf "$src" "/opt/homebrew/bin/$tool"
 done
 
-# hunk同梱のClaude Codeスキル (Cellar直パスはバージョンで変わるためopt経由)
-hunk_skill="/opt/homebrew/opt/hunk/libexec/skills/hunk-review"
-[[ -d "$hunk_skill" ]] && ln -sfn "$hunk_skill" "$HOME/.claude/skills/hunk-review"
+# スキルの正規置き場は ~/.agents/skills (opencode/piはネイティブに読む)
+# 外部スキルはVercel skills CLIで管理する (ロックは ~/.agents/.skill-lock.json)
+#   hunk:  npx skills add modem-dev/hunk --skill hunk-review -g -a claude-code -y
+#   herdr: npx skills add ogulcancelik/herdr --skill herdr -g
+#   更新:  npx skills update -g
+
+# Claude Codeは ~/.agents/skills を読まないため、スキルごとにリンクを張る
+mkdir -p "$HOME/.claude/skills"
+for skill in "$HOME/.agents/skills"/*(N); do
+  dest="$HOME/.claude/skills/${skill:t}"
+  if [[ -d "$dest" && ! -L "$dest" ]]; then
+    echo "  SKIP(実ディレクトリのため手動確認): $dest"
+    continue
+  fi
+  ln -sfn "$skill" "$dest"
+done
+# .agents側から消えたスキルのdanglingリンクを掃除
+for link in "$HOME/.claude/skills"/*(N@); do
+  if [[ ! -e "$link" ]]; then
+    echo "  PRUNE: ~/.claude/skills/${link:t}"
+    rm "$link"
+  fi
+done
 
 echo
 echo "合計: OK=${ok} NG=${ng} PRUNED=${pruned}"
