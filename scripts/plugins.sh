@@ -18,11 +18,6 @@ PLUGINS_CLAUDE_CODE=(
   frontend-design       # フロントエンドデザイン生成
 )
 
-# プラグイン一覧 (マーケットプレイス: claude-obsidian-marketplace)
-PLUGINS_OBSIDIAN=(
-  claude-obsidian       # Obsidian Wiki vault管理
-)
-
 installed=$(claude plugin list 2>/dev/null)
 
 for plugin in "${PLUGINS_OFFICIAL[@]}"; do
@@ -37,24 +32,20 @@ for plugin in "${PLUGINS_CLAUDE_CODE[@]}"; do
   fi
 done
 
-# claude-obsidian-marketplace (要: marketplace add が先)
-marketplaces=$(claude plugin marketplace list 2>/dev/null)
-if ! echo "$marketplaces" | grep -q "claude-obsidian-marketplace"; then
-  claude plugin marketplace add AgriciDaniel/claude-obsidian
-fi
-for plugin in "${PLUGINS_OBSIDIAN[@]}"; do
-  if ! echo "$installed" | grep -q "$plugin@claude-obsidian-marketplace"; then
-    claude plugin install "$plugin@claude-obsidian-marketplace"
-  fi
-done
-
-# 外部スキル (skills CLI経由。実体: ~/.agents/skills、~/.claude/skills にsymlinkが張られる)
-[[ -d "$HOME/.agents/skills/herdr" ]] || npx -y skills add ogulcancelik/herdr --skill herdr -g
+# 外部スキル (skills CLI経由)
+# -a universal で実体が ~/.agents/skills に入る (opencode/piはネイティブに読む)
+# 再実行は冪等 (既存はスキップ)。更新は: npx skills update -g
+[[ -d "$HOME/.agents/skills/herdr" ]]       || npx -y skills add ogulcancelik/herdr --skill herdr -g -a universal -y
+[[ -d "$HOME/.agents/skills/hunk-review" ]] || npx -y skills add modem-dev/hunk --skill hunk-review -g -a universal -y
+[[ -d "$HOME/.agents/skills/wiki-query" ]]  || npx -y skills add AgriciDaniel/claude-obsidian --skill '*' -g -a universal -y
 
 # herdrのpi状態検知統合 (~/.pi/agent/extensions/herdr-agent-state.ts を生成)
 if command -v pi >/dev/null && command -v herdr >/dev/null; then
   mkdir -p "$HOME/.pi/agent/extensions"
   [[ -f "$HOME/.pi/agent/extensions/herdr-agent-state.ts" ]] || herdr integration install pi
 fi
+
+# インストールしたスキルを各エージェントへ配布 (claudeへのsymlink)
+"$HOME/.dotfiles/scripts/link.sh" | tail -2
 
 echo "Claude Code プラグインインストール完了"

@@ -135,21 +135,14 @@
   },
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": true,
-    "ruby-lsp@claude-plugins-official": true,
-    "claude-obsidian@claude-obsidian-marketplace": true
+    "ruby-lsp@claude-plugins-official": true
   },
-  "extraKnownMarketplaces": {
-    "claude-obsidian-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "AgriciDaniel/claude-obsidian"
-      }
-    }
-  },
+  "extraKnownMarketplaces": {},
   "language": "ja",
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
   "preferredNotifChannel": "terminal_bell",
   "autoCompactEnabled": false,
   "remoteControlAtStartup": true,

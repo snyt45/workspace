@@ -67,12 +67,8 @@ for tool in git-jump diff-highlight; do
 done
 
 # スキルの正規置き場は ~/.agents/skills (opencode/piはネイティブに読む)
-# 外部スキルはVercel skills CLIで管理する (ロックは ~/.agents/.skill-lock.json)
-#   hunk:       npx skills add modem-dev/hunk --skill hunk-review -g -a universal -y
-#   herdr:      npx skills add ogulcancelik/herdr --skill herdr -g -a universal -y
-#   claude-obsidian: npx skills add AgriciDaniel/claude-obsidian --skill '*' -g -a universal -y
-#   (-a universal で ~/.agents/skills に直接入る。エージェント個別指定だと各エージェントのディレクトリにコピーされてしまう)
-#   更新:  npx skills update -g
+# 自作スキルは agents パッケージ、外部スキルは scripts/plugins.sh (skills CLI) で入る
+# 更新: npx skills update -g (ロックは ~/.agents/.skill-lock.json)
 
 # Claude Codeは ~/.agents/skills を読まないため、スキルごとにリンクを張る
 mkdir -p "$HOME/.claude/skills"
