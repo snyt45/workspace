@@ -66,13 +66,22 @@ herdr agent rename "$HERDR_PANE_ID" orchestrator
 ### 起動手順
 
 ```bash
-herdr agent start worker-a --workspace <WS_ID> --no-focus \
+herdr agent start worker-a --workspace <WS_ID> --cwd /path/to/workdir --no-focus \
   --env ORCH_PANE="$HERDR_PANE_ID" \
   -- claude
 ```
 
 - ワーカー名（`worker-a` 等）はタスク内容がわかる名前にする。以後の `agent send` / `agent read` / `agent wait` は全てこの名前で指定できる。
+- **`--cwd` を必ず指定する。** 省略するとworkspaceのcwdではなく `$HOME` で起動する（実測）。
 - `--env ORCH_PANE` で自分のペインIDを渡す。ワーカーが報告の宛先解決に使う。
+- **pi / opencode には `OPENCODE_API_KEY` が必要。** シェルのzsh関数（ensure_opencode_api_key）で遅延読み込みしているため `agent start` 経由では設定されない。同一シェル内で取得して `--env` で渡す:
+
+  ```bash
+  KEY=$(op read "op://Development/opencode_zen/credential")  # 初回はTouch ID認証
+  herdr agent start ... --env OPENCODE_API_KEY="$KEY" -- pi
+  ```
+
+- 2台目以降を同じworkspaceに横並びで配置するには `--split right` を付ける。
 
 起動後、入力プロンプトが出るまで待つ:
 
