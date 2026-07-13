@@ -22,7 +22,11 @@ orchestrateスキルが使ってよい編成はこのファイルに定義され
 | implement | `worker-<t>-impl` | `pi` | 左（最初に起動） |
 | review | `worker-<t>-review` | `opencode --model opencode-go/kimi-k2.7-code` | 右（`--split right`） |
 
-- フロー: implに実装させ、完了報告を受けたらオーケストレーターがreviewに対象diffのレビューを指示する。指摘があればimplに差し戻す（往復は1回まで。それ以上はユーザーに相談）。
+- フロー: implに実装させ、`HERDR-DONE: <impl>` を確認したらreviewに対象diffのレビューを指示する。reviewの完了契約はverdict付きにする:
+  - `HERDR-DONE: worker-<t>-review | PASS — <要約>`
+  - `HERDR-DONE: worker-<t>-review | FAIL — <どの基準> : <期待 vs 実際>`
+
+  FAILならその内容（コマンド・期待・実際）をそのままimplに差し戻す（往復は1回まで。それ以上はユーザーに相談）。reviewはコードを直接修正しない。
 
 ## team: solo
 
