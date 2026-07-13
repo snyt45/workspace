@@ -9,7 +9,8 @@ orchestrateスキルが使ってよい編成はこのファイルに定義され
   - pi: 設定デフォルト（`~/.pi/agent/settings.json` = `opencode-go/kimi-k2.7-code`）をそのまま使う。フラグ指定は不要。
   - opencode: 必ず `--model opencode-go/kimi-k2.7-code` を明示する（未指定だと別プロバイダに落ちうる）。
   - claude: サブスク内。モデル指定なし（セッションデフォルト）。
-- 作業場所は常に新規workspace。既存workspaceに相乗りしない。同一リポジトリで複数チームを並走させるときはworktreeで隔離する。
+- 作業場所は常に新規workspace。既存workspaceに相乗りしない。
+- **worktreeはユーザーが明示的に指示した場合のみ。** 同一リポジトリでの並走が必要になったら、直列化するかworktreeを使うかをユーザーに確認する。
 
 ## team: impl-review（デフォルト）
 

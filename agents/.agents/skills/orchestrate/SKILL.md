@@ -22,21 +22,15 @@ herdr agent rename "$HERDR_PANE_ID" orchestrator
 
 ## 1. タスク分解と作業場所の用意
 
-ユーザーの依頼をワーカー単位のタスクに分解する。タスクごとに独立した作業場所を作る:
+ユーザーの依頼をワーカー単位のタスクに分解する。タスクごとに新規ワークスペースを作る:
 
-- **別リポジトリ・別ディレクトリのタスク** → ワークスペースを作る:
+```bash
+herdr workspace create --cwd /path/to/repo --label "task-a" --no-focus
+```
 
-  ```bash
-  herdr workspace create --cwd /path/to/repo --label "task-a" --no-focus
-  ```
+JSONを返すので `result` から `workspace_id` を必ずパースして使う（IDは閉じると圧縮されるので、古いIDを推測で使い回さない）。
 
-- **同一リポジトリ内の並列タスク**（ファイル競合の恐れあり）→ git worktreeで隔離する:
-
-  ```bash
-  herdr worktree create --cwd /path/to/repo --branch task-a --no-focus
-  ```
-
-どちらもJSONを返す。`result` から `workspace_id` を必ずパースして使う（IDは閉じると圧縮されるので、古いIDを推測で使い回さない）。
+**git worktreeは勝手に作らない。** ユーザーが明示的に「worktreeで」と指示した場合のみ `herdr worktree create --cwd /path/to/repo --branch task-a --no-focus` を使う。同一リポジトリで複数ワーカーを並走させるとファイル競合の恐れがある場合は、勝手に隔離せず「直列にするか、worktreeを使うか」をユーザーに確認する。
 
 ## 2. チームの選択
 
