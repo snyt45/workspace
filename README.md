@@ -84,6 +84,16 @@ brew upgrade
 | `mise run auth` | GitHub CLI認証 |
 | `mise tasks` | タスク一覧表示 |
 
+## シンボリックリンクの仕組み
+
+`scripts/link.sh` は「src配下の全ファイルを同じ相対パスでファイル単位リンクし、srcから消えたものはdest側の切れたリンクを掃除する」処理（`link_tree` / `prune_links`）だけで構成される。
+
+- dotfiles直下のディレクトリは `EXCLUDE`（`_archive` `docs` `scripts` `vendor`）以外すべて `$HOME` へリンクされる（stow規約: 各パッケージは `$HOME` 相対パスで配置）
+- スキル共有: 正規置き場は `~/.agents/skills`（OpenCode / Pi はここをネイティブに読む）
+  - 自作スキル: `agents/.agents/skills/` から上記の仕組みでリンク
+  - 外部スキル: skills CLI（`scripts/plugins.sh`）が実ディレクトリとして配置。更新は `npx skills update -g`
+  - Claude Code は `~/.agents/skills` を読まないため、同じ処理で `~/.agents/skills` → `~/.claude/skills` にミラーする
+
 ## mise (ランタイムバージョン管理)
 
 | コマンド | 説明 |

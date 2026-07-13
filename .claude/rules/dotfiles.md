@@ -19,8 +19,8 @@
 
 stow方式。各パッケージは `$HOME` 相対パスで配置し、`scripts/link.sh` でシンボリックリンクを作成する。
 
-- リンク対象パッケージ: `scripts/link.sh` の `PACKAGES` 配列で管理
-- パッケージ追加時は `PACKAGES` への追加を忘れない
+- dotfiles直下のディレクトリは `scripts/link.sh` の `EXCLUDE` 配列に載せない限り自動でリンク対象になる（パッケージ追加時の登録作業は不要）
+- リンク対象外にしたいディレクトリだけ `EXCLUDE` へ追加する
 - 不要になった設定は `_archive/mac/` に移動する（削除ではなく退避）
 - セットアップタスクは `mise.toml` の `[tasks]` で定義
 
