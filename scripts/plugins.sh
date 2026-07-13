@@ -37,7 +37,6 @@ done
 # 再実行は冪等 (既存はスキップ)。更新は: npx skills update -g
 [[ -d "$HOME/.agents/skills/herdr" ]]       || npx -y skills add ogulcancelik/herdr --skill herdr -g -a universal -y
 [[ -d "$HOME/.agents/skills/hunk-review" ]] || npx -y skills add modem-dev/hunk --skill hunk-review -g -a universal -y
-[[ -d "$HOME/.agents/skills/wiki-query" ]]  || npx -y skills add AgriciDaniel/claude-obsidian --skill '*' -g -a universal -y
 
 # herdrのpi状態検知統合 (~/.pi/agent/extensions/herdr-agent-state.ts を生成)
 if command -v pi >/dev/null && command -v herdr >/dev/null; then
