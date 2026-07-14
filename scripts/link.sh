@@ -67,6 +67,14 @@ done
 prune_links "$HOME/.agents/skills" "$HOME/.claude/skills"
 link_tree "$HOME/.agents/skills" "$HOME/.claude/skills"
 
+# エージェント定義の正規置き場は ~/.agents/agents (agentsパッケージでリンク済み)
+# 1ファイルにClaude Code / opencode両対応のfrontmatterを書き、各ツールの置き場へミラーする
+# (どちらも ~/.agents/agents は読まないため。未知のfrontmatterキーは互いに無視される)
+prune_links "$HOME/.agents/agents" "$HOME/.claude/agents"
+link_tree "$HOME/.agents/agents" "$HOME/.claude/agents"
+prune_links "$HOME/.agents/agents" "$HOME/.config/opencode/agents"
+link_tree "$HOME/.agents/agents" "$HOME/.config/opencode/agents"
+
 echo
 echo "合計: OK=${ok} NG=${ng} PRUNED=${pruned}"
 if (( ng > 0 )); then

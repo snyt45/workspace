@@ -93,6 +93,10 @@ brew upgrade
   - 自作スキル: `agents/.agents/skills/` から上記の仕組みでリンク
   - 外部スキル: skills CLI（`scripts/plugins.sh`）が実ディレクトリとして配置。更新は `npx skills update -g`
   - Claude Code は `~/.agents/skills` を読まないため、同じ処理で `~/.agents/skills` → `~/.claude/skills` にミラーする
+- エージェント共有: 正規置き場は `~/.agents/agents`（自作エージェントを `agents/.agents/agents/` からリンク）
+  - 1ファイルに Claude Code / OpenCode 両対応の frontmatter（`name` / `description` / `mode: subagent`）を書く。未知のキーは互いに無視される
+  - どちらも `~/.agents/agents` は読まないため、同じ処理で `~/.claude/agents` と `~/.config/opencode/agents` にミラーする
+  - Pi は本体にサブエージェント機能がないため対象外（必要になったら pi-subagents 等の拡張を導入）
 
 ## mise (ランタイムバージョン管理)
 
