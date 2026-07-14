@@ -5,7 +5,8 @@
   "defaultThinkingLevel": "off",
   "packages": [
     "npm:pi-fff",
-    "npm:pi-subagents"
+    "npm:pi-subagents",
+    "npm:pi-web-access"
   ],
   "lastChangelogVersion": "0.80.3"
 }
