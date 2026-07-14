@@ -4,7 +4,8 @@
   "defaultModel": "kimi-k2.7-code",
   "defaultThinkingLevel": "off",
   "packages": [
-    "npm:pi-fff"
+    "npm:pi-fff",
+    "npm:pi-subagents"
   ],
   "lastChangelogVersion": "0.80.3"
 }
