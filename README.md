@@ -16,6 +16,7 @@
 | Git UI | gitsigns |
 | PRレビュー | diffview.nvim |
 | 差分ビューア(TUI) | hunk |
+| AIレビューループ | crit |
 | AIコーディング | OpenCode (`c`) + Claude Code (`cx`) + Pi (`pi`) |
 | シェル | zsh + pure |
 | 検索 | fzf, ripgrep, fd |
@@ -92,6 +93,7 @@ brew upgrade
 - スキル共有: 正規置き場は `~/.agents/skills`（OpenCode / Pi はここをネイティブに読む）
   - 自作スキル: `agents/.agents/skills/` から上記の仕組みでリンク
   - 外部スキル: skills CLI（`scripts/plugins.sh`）が実ディレクトリとして配置。更新は `npx skills update -g`
+  - crit スキル: `crit install codex`（`scripts/plugins.sh`）が `~/.agents/skills/crit{,-cli}` に配置（codex向け integration が `.agents/skills` を使うため共有スキルとして流用）
   - Claude Code は `~/.agents/skills` を読まないため、同じ処理で `~/.agents/skills` → `~/.claude/skills` にミラーする
 - エージェント共有: 正規置き場は `~/.agents/agents`（自作エージェントを `agents/.agents/agents/` からリンク）
   - 1ファイルに Claude Code / OpenCode 両対応の frontmatter（`name` / `description` / `mode: subagent`）を書く。未知のキーは互いに無視される

@@ -3,6 +3,7 @@ tap "k1LoW/tap"
 tap "modem-dev/tap"
 
 # CLI ツール
+brew "crit"
 brew "fd"
 brew "fzf"
 brew "gh"

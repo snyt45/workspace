@@ -38,6 +38,11 @@ done
 [[ -d "$HOME/.agents/skills/herdr" ]]       || npx -y skills add ogulcancelik/herdr --skill herdr -g -a universal -y
 [[ -d "$HOME/.agents/skills/hunk-review" ]] || npx -y skills add modem-dev/hunk --skill hunk-review -g -a universal -y
 
+# crit (レビューループCLI、本体はBrewfile) のスキル
+# codex向けintegrationが ~/.agents/skills に配置されるため、それを共有スキルとして使う
+# (claude-code/opencode/pi向けintegrationは各ツール固有の場所に入るので使わない)
+[[ -d "$HOME/.agents/skills/crit" ]] || (cd "$HOME" && crit install codex)
+
 # herdrのpi状態検知統合 (~/.pi/agent/extensions/herdr-agent-state.ts を生成)
 if command -v pi >/dev/null && command -v herdr >/dev/null; then
   mkdir -p "$HOME/.pi/agent/extensions"
