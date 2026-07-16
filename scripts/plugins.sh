@@ -37,6 +37,7 @@ done
 # 再実行は冪等 (既存はスキップ)。更新は: npx skills update -g
 [[ -d "$HOME/.agents/skills/herdr" ]]       || npx -y skills add ogulcancelik/herdr --skill herdr -g -a universal -y
 [[ -d "$HOME/.agents/skills/hunk-review" ]] || npx -y skills add modem-dev/hunk --skill hunk-review -g -a universal -y
+[[ -d "$HOME/.agents/skills/wayfinder" ]]   || npx -y skills add mattpocock/skills -s '*' -g -a universal -y
 
 # crit (レビューループCLI、本体はBrewfile) のスキル
 # codex向けintegrationが ~/.agents/skills に配置されるため、それを共有スキルとして使う
