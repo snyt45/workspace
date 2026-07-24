@@ -32,4 +32,4 @@ hooks:
         echo '=== worktree専用DBのセットアップ手順 ==='
         echo '  1. メインのcomposeが動いていれば止める: docker compose -p toypo-api down'
         echo '  2. このworktree内で起動: docker compose up'
-        echo '  3. DB作成+スキーマ+seed: bundle exec rails db:prepare'
+        echo '  3. DBセットアップ: bundle exec rails db:create db:migrate db:seed'

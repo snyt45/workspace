@@ -432,4 +432,4 @@ PR/Issue buffer内のキーマップ:
 - 実体は dotfiles の `wtp/work/<repo>/.wtp.yml` で管理し、`mise run link` で各リポジトリへシンボリックリンク (リポジトリ側は `.git/info/exclude` に `.wtp.yml` を追加)
 - `defaults.base_dir` はリポジトリごとに `../worktrees/<repo名>` を指定 (同名ブランチのパス衝突回避)
 - hook は `hooks.post_create` に copy / symlink / command の 3 種 (command は新 worktree 内で `sh -c` 実行、`$GIT_WTP_REPO_ROOT` でメイン worktree を参照可)
-- DB セットアップは hook でやらない: worktree 内で `docker compose up` すると compose プロジェクト名 (ディレクトリ名由来) が変わり専用の空 DB ができるので、その後 `bundle exec rails db:prepare` を手動実行 (hook 時点で migrate/seed を流すとメイン worktree の共有 DB で走ってしまう)
+- DB セットアップは hook でやらない: worktree 内で `docker compose up` すると compose プロジェクト名 (ディレクトリ名由来) が変わり専用の空 DB ができるので、その後 `bundle exec rails db:create db:migrate db:seed` を手動実行 (hook 時点で migrate/seed を流すとメイン worktree の共有 DB で走ってしまう)
