@@ -433,3 +433,38 @@ PR/Issue buffer内のキーマップ:
 - `defaults.base_dir` はリポジトリごとに `../worktrees/<repo名>` を指定 (同名ブランチのパス衝突回避)
 - hook は `hooks.post_create` に copy / symlink / command の 3 種 (command は新 worktree 内で `sh -c` 実行、`$GIT_WTP_REPO_ROOT` でメイン worktree を参照可)
 - DB セットアップは hook でやらない: worktree 内で `docker compose up` すると compose プロジェクト名 (ディレクトリ名由来) が変わり専用の空 DB ができるので、その後 `bundle exec rails db:create db:migrate db:seed` を手動実行 (hook 時点で migrate/seed を流すとメイン worktree の共有 DB で走ってしまう)
+
+## lavish (HTMLアーティファクトレビュー)
+
+explainスキル等が生成したHTMLを、アノテーション付きでレビューするビューア。
+
+| コマンド | 説明 |
+|----------|------|
+| `lavish-axi <file.html>` | HTMLを開く (live reload 付き。ファイルを直せば自動反映) |
+| `lavish-axi poll <file.html>` | アノテーション(要素・テキスト範囲への指摘)をエージェントが回収 |
+
+- ブラウザ上で要素やテキストを選択して指摘を書き込み、エージェントに返せる
+- エクスポート (スタンドアロンHTML) と ht-ml.app への公開も可能
+- インストールは mise の npm バックエンド (`config.toml` の `"npm:lavish-axi"`)。**バージョン固定必須**: `~/.npmrc` の `minimum-release-age` により latest 指定は ETARGET で落ちる。更新は `mise use -g npm:lavish-axi@<新版>`
+- エージェントからは explain スキル (解説HTML生成→lavishで開く→求められたらObsidian保存) または lavish スキルで使う
+
+## no-mistakes (PR品質ゲート)
+
+push をローカルゲートで検証してから origin へ転送する PR 品質パイプライン (レビュー → テスト → ドキュメント → リント → push → PR → CI)。
+
+| コマンド | 説明 |
+|----------|------|
+| `git push no-mistakes <branch>` | パイプラインを通して origin へ push (worktree からも可) |
+| `no-mistakes` | TUI で対話実行 |
+| `no-mistakes init` | リポジトリに導入 (gate作成 + `no-mistakes` リモート追加 + スキル配置) |
+| `no-mistakes status` / `runs` | 現リポジトリの状態 / パイプライン実行履歴 |
+| `no-mistakes attach` | 実行中のパイプラインに接続 |
+| `no-mistakes rerun` | 現ブランチのパイプラインを再実行 |
+| `no-mistakes sync` | パイプラインが push した head にローカルブランチを合わせる |
+| `no-mistakes eject` | 現リポジトリから撤去 |
+| `no-mistakes doctor` | 依存関係と状態の診断 |
+
+- エージェントからは `/no-mistakes` スキル
+- `--skip <step>` でパイプラインの一部をスキップして実行できる
+- バイナリは mise の ubi バックエンド (`config.toml` の `"ubi:kunchenguid/no-mistakes"`)。リポジトリ別の gate は `~/.no-mistakes/repos/` (initで作成、dotfiles管理外)
+- 導入済みリポジトリ: toypo-api
