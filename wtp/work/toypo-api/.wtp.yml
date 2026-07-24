@@ -1,0 +1,35 @@
+# wtp設定 (実体: ~/.dotfiles/wtp/work/toypo-api/.wtp.yml)
+# 他リポジトリで使う場合はこのファイルをコピーし、base_dirとhookを調整する
+version: "1.0"
+
+defaults:
+  base_dir: ../worktrees/toypo-api
+
+hooks:
+  post_create:
+    # gitignoredファイルをメインworktreeからコピー
+    - type: copy
+      from: .env
+      to: .env
+    - type: copy
+      from: .bundle
+      to: .bundle
+    - type: copy
+      from: .tool-versions
+      to: .tool-versions
+    - type: copy
+      from: .claude
+      to: .claude
+    # vendorはAPFSのcopy-on-write (cp -Rc) で高速コピー
+    - type: command
+      command: cp -Rc "$GIT_WTP_REPO_ROOT/vendor" .
+    # DBセットアップはhookでやらない: composeプロジェクト名がディレクトリ名由来のため、
+    # worktree専用の空DBはworktree内でcomposeを起動して初めてできる。hookの時点で
+    # migrate/seedを流すとメインworktreeの共有DBで走ってしまう
+    - type: command
+      command: |
+        echo ''
+        echo '=== worktree専用DBのセットアップ手順 ==='
+        echo '  1. メインのcomposeが動いていれば止める: docker compose -p toypo-api down'
+        echo '  2. このworktree内で起動: docker compose up'
+        echo '  3. DB作成+スキーマ+seed: bundle exec rails db:prepare'

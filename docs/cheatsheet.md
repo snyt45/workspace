@@ -413,21 +413,23 @@ PR/Issue buffer内のキーマップ:
 | `g aicommit` | AIでコミットメッセージ自動生成 |
 
 
-## worktrunk
+## wtp (Worktree Plus)
 
 | コマンド | 説明 |
 |----------|------|
-| `wt switch` | 対話 picker (live preview / Alt-c で新規作成) |
-| `wt switch <branch>` | 既存ブランチへ switch |
-| `wt switch --create <branch>` | 新規ブランチを作成して switch |
-| `wt switch -` | 直前の worktree へ |
-| `wt switch ^` | デフォルトブランチへ |
-| `wt switch pr:123` | GitHub PR #123 の worktree へ |
-| `wt list` | worktree 一覧 |
-| `wt remove` | 現 worktree を削除 (マージ済みならブランチも) |
-| `wt merge` | 現ブランチをデフォルトブランチへマージ (squash + rebase + remove) |
+| `wtp add <branch>` | 既存ブランチから worktree 作成 |
+| `wtp add -b <branch>` | 新規ブランチで worktree 作成 |
+| `wtp list` | worktree 一覧 (git worktree list 準拠) |
+| `wtp cd <branch>` | worktree へ移動 (シェル統合有効時) |
+| `wtp cd` / `wtp cd @` | メイン worktree へ戻る |
+| `wtp remove <branch>` | worktree を削除 |
+| `wtp remove --with-branch <branch>` | worktree とブランチを一括削除 |
+| `wtp exec <branch> -- <cmd>` | 指定 worktree でコマンド実行 |
 
 設定ファイル:
 
-- User config: `~/.config/worktrunk/config.toml` (全プロジェクト共通)
-- Project config: `.config/wt.toml` (リポジトリで共有)
+- Project config のみ: プロジェクトルートの `.wtp.yml` (グローバル設定はない)
+- 実体は dotfiles の `wtp/work/<repo>/.wtp.yml` で管理し、`mise run link` で各リポジトリへシンボリックリンク (リポジトリ側は `.git/info/exclude` に `.wtp.yml` を追加)
+- `defaults.base_dir` はリポジトリごとに `../worktrees/<repo名>` を指定 (同名ブランチのパス衝突回避)
+- hook は `hooks.post_create` に copy / symlink / command の 3 種 (command は新 worktree 内で `sh -c` 実行、`$GIT_WTP_REPO_ROOT` でメイン worktree を参照可)
+- DB セットアップは hook でやらない: worktree 内で `docker compose up` すると compose プロジェクト名 (ディレクトリ名由来) が変わり専用の空 DB ができるので、その後 `bundle exec rails db:prepare` を手動実行 (hook 時点で migrate/seed を流すとメイン worktree の共有 DB で走ってしまう)

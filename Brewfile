@@ -1,6 +1,7 @@
 # タップ
 tap "k1LoW/tap"
 tap "modem-dev/tap"
+tap "satococoa/tap"
 
 # CLI ツール
 brew "crit"
@@ -20,7 +21,7 @@ brew "ripgrep"
 brew "pure"
 brew "zoxide"
 brew "tmux"
-brew "worktrunk"
+brew "satococoa/tap/wtp"
 brew "zsh-autosuggestions"
 
 # アプリケーション

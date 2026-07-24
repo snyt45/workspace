@@ -1,7 +1,0 @@
-[post-start]
-copy = "wt step copy-ignored"
-
-[projects."github.com/toypo/toypo-api".post-start]
-vendor = "cp -Rc {{ primary_worktree_path }}/vendor ."
-migrate = "bundle exec rails db:migrate"
-seed = "bundle exec rails db:seed"
