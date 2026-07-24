@@ -2,6 +2,21 @@
 
 show_preview() {
   case "$1" in
+    default-quad*)
+      cat <<'EOF'
+┌───────────────────┬─────────┐
+│                   │         │
+│                   │ term 1  │
+│      term 0       │         │
+│                   │         │
+├───────┬──────┬────┴─┬───────┤
+│term 2 │term 3│term 4│term 5 │
+└───────┴──────┴──────┴───────┘
+  左70%              右30%
+  下段は25%ずつ4分割
+
+EOF
+      ;;
     default*)
       cat <<'EOF'
 ┌───────────────────┬─────────┐
@@ -129,6 +144,20 @@ apply_layout() {
       # 左上にフォーカス
       tmux select-pane -t "$base_pane"
       ;;
+    default-quad)
+      local base_pane="$TMUX_PANE"
+      # 下段（15%）を作成
+      local bottom_pane
+      bottom_pane=$(tmux split-window -v -l 15% -P -F '#{pane_id}')
+      # 上段の右30%を分割
+      tmux split-window -h -l 30% -t "$base_pane"
+      # 下段を25%ずつ4分割
+      tmux split-window -h -l 75% -t "$bottom_pane"
+      tmux split-window -h -l 66%
+      tmux split-window -h -l 50%
+      # 左上にフォーカス
+      tmux select-pane -t "$base_pane"
+      ;;
     grid)
       local top_pane="$TMUX_PANE"
       # 下段（25%）を作成
@@ -250,7 +279,7 @@ fi
 # 引数があればそのまま実行
 if [[ -n "$1" ]]; then
   case "$1" in
-    default|grid|grid-full|pair)
+    default|default-quad|grid|grid-full|pair)
       apply_layout "$1"
       exit 0
       ;;
@@ -275,6 +304,7 @@ fi
 
 # fzfで選択
 layouts="default
+default-quad
 ai-single
 ai-dual
 pair

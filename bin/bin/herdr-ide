@@ -7,6 +7,21 @@
 
 show_preview() {
   case "$1" in
+    default-quad*)
+      cat <<'EOF'
+┌───────────────────┬─────────┐
+│                   │         │
+│                   │ term 1  │
+│      term 0       │         │
+│                   │         │
+├───────┬──────┬────┴─┬───────┤
+│term 2 │term 3│term 4│term 5 │
+└───────┴──────┴──────┴───────┘
+  左70%              右30%
+  下段は25%ずつ4分割
+
+EOF
+      ;;
     default*)
       cat <<'EOF'
 ┌───────────────────┬─────────┐
@@ -146,6 +161,14 @@ apply_layout() {
       sp $p1 down 0.85 >/dev/null
       sp $p1 right 0.70 >/dev/null
       ;;
+    default-quad)
+      # 下段(15%)を作成して25%ずつ4分割、右30%も作成
+      local bottom=$(sp $p1 down 0.85)
+      sp $p1 right 0.70 >/dev/null
+      local b2=$(sp $bottom right 0.25)
+      local b3=$(sp $b2 right 0.34)
+      sp $b3 right 0.5 >/dev/null
+      ;;
     ai-single)
       local agent="$2"
       if [[ -z "$agent" ]]; then
@@ -212,7 +235,7 @@ apply_layout() {
 # 引数があればそのまま実行
 if [[ -n "$1" ]]; then
   case "$1" in
-    default|grid|grid-full|pair)
+    default|default-quad|grid|grid-full|pair)
       apply_layout "$1"
       exit 0
       ;;
@@ -233,6 +256,7 @@ fi
 
 # fzfで選択
 layouts="default
+default-quad
 ai-single
 ai-dual
 pair
