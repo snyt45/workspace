@@ -7,6 +7,9 @@ echo "Claude Code プラグインをインストール中..."
 mise exec ruby@3.2.8 -- gem list -i ruby-lsp -q >/dev/null 2>&1 \
   || mise exec ruby@3.2.8 -- gem install ruby-lsp
 
+# lavish CLI (explainスキルがHTMLアーティファクトを開くのに使う。バイナリ名は lavish-axi)
+command -v lavish-axi >/dev/null 2>&1 || npm install -g lavish-axi
+
 # プラグイン一覧 (マーケットプレイス: claude-plugins-official)
 PLUGINS_OFFICIAL=(
   ruby-lsp              # Ruby LSP連携
@@ -39,6 +42,7 @@ done
 [[ -d "$HOME/.agents/skills/hunk-review" ]] || npx -y skills add modem-dev/hunk --skill hunk-review -g -a universal -y
 [[ -d "$HOME/.agents/skills/wayfinder" ]]   || npx -y skills add mattpocock/skills -s '*' -g -a universal -y
 [[ -d "$HOME/.agents/skills/i-have-adhd" ]] || npx -y skills add ayghri/i-have-adhd --skill i-have-adhd -g -a universal -y
+[[ -d "$HOME/.agents/skills/lavish" ]]      || npx -y skills add kunchenguid/lavish-axi --skill lavish -g -a universal -y
 
 # crit (レビューループCLI、本体はBrewfile) のスキル
 # codex向けintegrationが ~/.agents/skills に配置されるため、それを共有スキルとして使う
