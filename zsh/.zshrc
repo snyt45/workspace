@@ -5,6 +5,9 @@ fpath+=("/opt/homebrew/share/zsh/site-functions")
 autoload -U promptinit; promptinit
 prompt pure
 
+# 補完システムの初期化 (fpath設定後、compdefを使う設定の読み込みより前に必要)
+autoload -Uz compinit && compinit
+
 alias g='git'
 alias lz='lazygit'
 alias v='nvim'
