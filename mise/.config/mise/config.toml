@@ -1,5 +1,6 @@
 [tools]
 node = "24"
+"npm:lavish-axi" = "0.1.42"
 
 [settings]
 http_timeout = "120"

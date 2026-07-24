@@ -7,9 +7,6 @@ echo "Claude Code プラグインをインストール中..."
 mise exec ruby@3.2.8 -- gem list -i ruby-lsp -q >/dev/null 2>&1 \
   || mise exec ruby@3.2.8 -- gem install ruby-lsp
 
-# lavish CLI (explainスキルがHTMLアーティファクトを開くのに使う。バイナリ名は lavish-axi)
-command -v lavish-axi >/dev/null 2>&1 || npm install -g lavish-axi
-
 # プラグイン一覧 (マーケットプレイス: claude-plugins-official)
 PLUGINS_OFFICIAL=(
   ruby-lsp              # Ruby LSP連携

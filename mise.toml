@@ -1,7 +1,11 @@
 [tasks.setup]
 description = "全セットアップ実行"
-depends = ["macos", "rosetta", "packages", "link", "npm-latest", "plugins", "auth"]
+depends = ["macos", "rosetta", "packages", "tools", "link", "npm-latest", "plugins", "auth"]
 run = 'echo "セットアップ完了。再起動してください。"'
+
+[tasks.tools]
+description = "mise 管理ツールのインストール (~/.config/mise/config.toml の [tools])"
+run = 'mise install'
 
 [tasks.npm-latest]
 description = "npm を最新化 (min-release-age v11.10+ のため)"
