@@ -28,9 +28,17 @@ link_tree() {
 }
 
 # dest配下(dest自体も含む)で src_root を指す切れたリンクを削除し、空になった親ディレクトリを畳む
+# リンクは src_root の構造をミラーした深さにしか存在しないため、destの走査はその深さで打ち切る
+# (無制限に再帰すると ~/work のような巨大ツリーの全スキャンになり数分かかる)
 prune_links() {
   local src_root="$1" dest="$2"
   [[ -e "$dest" || -L "$dest" ]] || return 0
+  local depth=1 f rel
+  for f in "$src_root"/**/*(D-.N); do
+    rel="${f#$src_root/}"
+    local -a parts=(${(s:/:)rel})
+    (( $#parts > depth )) && depth=$#parts
+  done
   while read -r link; do
     local resolved="$(readlink "$link")"
     if [[ "$resolved" == "$src_root"/* && ! -e "$resolved" ]]; then
@@ -39,7 +47,7 @@ prune_links() {
       rmdir "${link:h}" 2>/dev/null
       ((pruned++))
     fi
-  done < <(find "$dest" -type l 2>/dev/null)
+  done < <(find "$dest" -maxdepth $depth -type l 2>/dev/null)
 }
 
 echo "dotfilesのシンボリックリンクを作成中..."
