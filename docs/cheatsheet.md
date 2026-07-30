@@ -31,6 +31,7 @@
 | `zi` | ディレクトリ選択 (zoxide) |
 | `g` | git |
 | `lz` | lazygit |
+| `lzd` | lazydocker |
 | `v` | nvim |
 | `vd` | nvim +DiffviewOpen |
 | `vdh` | nvim +DiffviewFileHistory |

@@ -10,6 +10,7 @@ autoload -Uz compinit && compinit
 
 alias g='git'
 alias lz='lazygit'
+alias lzd='lazydocker'
 alias v='nvim'
 alias vd='nvim +DiffviewOpen'
 alias vdh='nvim +DiffviewFileHistory'
