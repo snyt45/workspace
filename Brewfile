@@ -4,6 +4,7 @@ tap "modem-dev/tap"
 tap "satococoa/tap"
 
 # CLI ツール
+brew "bun"          # herdr-browser プラグインの実行に必要
 brew "crit"
 brew "fd"
 brew "fzf"

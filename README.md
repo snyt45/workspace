@@ -11,6 +11,7 @@
 |----------|--------|
 | ターミナル | Ghostty + tmux |
 | エージェントマルチプレクサ | herdr（tmuxからの移行を試行中） |
+| ブラウザ(ペイン内) | herdr-browser（herdrプラグイン。bun + Google Chrome が必要） |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
 | Git UI | gitsigns |
@@ -82,6 +83,9 @@ brew upgrade
 | `mise run packages` | Homebrewパッケージインストール |
 | `mise run link` | シンボリックリンク作成（dotfiles 由来の切れたリンクも掃除） |
 | `mise run npm-latest` | npm を最新化（サプライチェーン対策の min-release-age v11.10+ 用） |
+| `mise run claude-plugins` | Claude Codeプラグインインストール |
+| `mise run skills` | 共有スキルのインストールと各エージェントへの配布 |
+| `mise run herdr` | herdrプラグイン・外部ツール統合のインストール（herdr起動中のみ） |
 | `mise run auth` | GitHub CLI認証 |
 | `mise tasks` | タスク一覧表示 |
 
@@ -92,8 +96,8 @@ brew upgrade
 - dotfiles直下のディレクトリは `EXCLUDE`（`_archive` `docs` `scripts` `vendor`）以外すべて `$HOME` へリンクされる（stow規約: 各パッケージは `$HOME` 相対パスで配置）
 - スキル共有: 正規置き場は `~/.agents/skills`（OpenCode / Pi はここをネイティブに読む）
   - 自作スキル: `agents/.agents/skills/` から上記の仕組みでリンク
-  - 外部スキル: skills CLI（`scripts/plugins.sh`）が実ディレクトリとして配置。更新は `npx skills update -g`
-  - crit スキル: `crit install codex`（`scripts/plugins.sh`）が `~/.agents/skills/crit{,-cli}` に配置（codex向け integration が `.agents/skills` を使うため共有スキルとして流用）
+  - 外部スキル: skills CLI（`scripts/skills.sh`）が実ディレクトリとして配置。更新は `npx skills update -g`
+  - crit スキル: `crit install codex`（`scripts/skills.sh`）が `~/.agents/skills/crit{,-cli}` に配置（codex向け integration が `.agents/skills` を使うため共有スキルとして流用）
   - Claude Code は `~/.agents/skills` を読まないため、同じ処理で `~/.agents/skills` → `~/.claude/skills` にミラーする
 - エージェント共有: 正規置き場は `~/.agents/agents`（自作エージェントを `agents/.agents/agents/` からリンク）
   - 1ファイルに Claude Code / OpenCode 両対応の frontmatter（`name` / `description` / `mode: subagent`）を書く。未知のキーは互いに無視される

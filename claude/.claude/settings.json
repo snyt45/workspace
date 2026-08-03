@@ -135,7 +135,8 @@
   },
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": true,
-    "ruby-lsp@claude-plugins-official": true
+    "ruby-lsp@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {},
   "language": "ja",

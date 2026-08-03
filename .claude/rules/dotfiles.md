@@ -5,7 +5,9 @@
 - `mise run setup` - 全セットアップ実行（初回セットアップ時）
 - `mise run link` - シンボリックリンク作成
 - `mise run packages` - Homebrewパッケージインストール
-- `mise run plugins` - Claude Codeプラグインインストール
+- `mise run claude-plugins` - Claude Codeプラグインインストール
+- `mise run skills` - 共有スキルのインストールと各エージェントへの配布
+- `mise run herdr` - herdrプラグイン・外部ツール統合のインストール
 
 ## ドキュメント自動更新
 

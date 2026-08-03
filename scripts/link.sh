@@ -70,7 +70,7 @@ done
 
 # スキルの正規置き場は ~/.agents/skills (opencode/piはネイティブに読む)
 #   自作スキル: 上のループ(agentsパッケージ)でリンク済み
-#   外部スキル: scripts/plugins.sh (skills CLI) が実ディレクトリとして配置
+#   外部スキル: scripts/skills.sh (skills CLI) が実ディレクトリとして配置
 # Claude Codeは ~/.agents/skills を読まないため、同じ処理で ~/.claude/skills へミラーする
 prune_links "$HOME/.agents/skills" "$HOME/.claude/skills"
 link_tree "$HOME/.agents/skills" "$HOME/.claude/skills"

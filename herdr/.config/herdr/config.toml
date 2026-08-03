@@ -13,6 +13,11 @@ pane_gaps = false
 sidebar_collapsed_mode = "hidden"
 
 agent_panel_sort = "spaces"
+
+[experimental]
+# ペイン内に画像を描画する（herdr-browser プラグインの必須要件）。外側の端末が Ghostty なので利用可能
+kitty_graphics = true
+
 [keys]
 prefix = "ctrl+t"
 

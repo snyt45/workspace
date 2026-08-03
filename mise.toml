@@ -1,6 +1,6 @@
 [tasks.setup]
 description = "全セットアップ実行"
-depends = ["macos", "rosetta", "packages", "tools", "link", "npm-latest", "plugins", "auth"]
+depends = ["macos", "rosetta", "packages", "tools", "link", "npm-latest", "claude-plugins", "skills", "herdr", "auth"]
 run = 'echo "セットアップ完了。再起動してください。"'
 
 [tasks.tools]
@@ -27,9 +27,17 @@ run = 'brew bundle --file=Brewfile'
 description = "シンボリックリンク作成"
 run = './scripts/link.sh'
 
-[tasks.plugins]
+[tasks.claude-plugins]
 description = "Claude Code プラグインインストール"
-run = './scripts/plugins.sh'
+run = './scripts/claude-plugins.sh'
+
+[tasks.skills]
+description = "共有スキルのインストールと各エージェントへの配布"
+run = './scripts/skills.sh'
+
+[tasks.herdr]
+description = "herdr プラグイン・外部ツール統合のインストール"
+run = './scripts/herdr.sh'
 
 [tasks.auth]
 description = "GitHub CLI 認証"

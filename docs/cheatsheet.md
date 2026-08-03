@@ -148,6 +148,23 @@ tmuxに合わせて変更したキー:
 | `herdr server stop` | サーバ停止（tmuxのkill-server相当）。レイアウトは保存され次回起動で復元、プロセスは再起動 |
 | `herdr session delete default` | 保存状態ごと完全削除 |
 
+### herdr-browser（ペイン内ブラウザ）
+
+herdrのペインの中で実際のChromiumを動かすプラグイン。エージェントの操作をそのまま見られて、途中からマウス/キーボードで引き継げる。
+要件: herdr 0.7.4+ / bun / Google Chrome / 外側の端末がkitty graphics対応（Ghostty）/ `config.toml` の `[experimental] kitty_graphics = true`
+
+| コマンド | 説明 |
+|----------|------|
+| `herdr plugin pane open --plugin official.browser --entrypoint browser --placement split --direction right --focus` | 右分割でブラウザペインを開く |
+| `... --env HERDR_BROWSER_INITIAL_URL=http://127.0.0.1:3000` | 初期URLを指定して開く |
+| `... --placement tab \| zoomed \| overlay` | 配置を変える（split以外） |
+| `herdr plugin config-dir official.browser` | `browser.json`（ズーム倍率・キャプチャ方式など）の場所を表示 |
+| `bun run <plugin_root>/src/cli.ts views` | ブラウザビュー一覧（エージェント連携用） |
+| `bun run <plugin_root>/src/cli.ts connect --view <view_id>` | CDPエンドポイントを取得（Playwright等から接続） |
+
+ターミナル内の `localhost` / `127.0.0.1` のURLは `Ctrl+クリック` でこのブラウザに開く。
+未対応: ダウンロード、右クリックメニュー、DevTools、IME、ページ内のテキスト選択・検索。
+
 
 ## Neovim
 
