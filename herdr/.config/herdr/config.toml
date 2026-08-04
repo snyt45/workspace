@@ -7,36 +7,26 @@ onboarding = false
 name = "catppuccin"
 
 [ui]
-# ペイン間の余白をなくし境界線を共有する(tmuxと同じ密度)。数値指定は不可でon/offのみ
 pane_gaps = false
-# サイドバーを折りたたんだときに完全に非表示にする（デフォルトはコンパクトなレール表示）
 sidebar_collapsed_mode = "hidden"
 
 agent_panel_sort = "spaces"
 
 [experimental]
-# ペイン内に画像を描画する（herdr-browser プラグインの必須要件）。外側の端末が Ghostty なので利用可能
 kitty_graphics = true
 
 [keys]
 prefix = "ctrl+t"
 
-# tmuxの s(水平分割) に合わせる（デフォルトは prefix+minus）
 split_horizontal = "prefix+s"
-# split_horizontal に prefix+s を譲る
 settings = "prefix+shift+s"
 
-# tmuxの t(ズーム) に合わせる（デフォルトは prefix+z）
 zoom = "prefix+t"
 
-# tmuxの d(デタッチ) / q(ペイン閉じる) に合わせる（デフォルトは detach=q, close_pane=x）
 detach = "prefix+d"
 close_pane = "prefix+q"
 
-# tmuxの ,(ウィンドウ名変更) に合わせる（デフォルトは prefix+shift+t）
 rename_tab = "prefix+comma"
 
-# エージェント間の移動（デフォルトは未割り当て）。
-# a = agent。n/p はタブ移動（next_tab/previous_tab）が使っているため avoid
 next_agent = "prefix+a"
 previous_agent = "prefix+shift+a"
