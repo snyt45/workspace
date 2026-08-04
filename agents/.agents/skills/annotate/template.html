@@ -416,6 +416,7 @@ function addPath(d, w, op, warn){
 
 /* ---- tooltip: L1 detail, L2 repeat-occurrence hint ---- */
 const tip = document.getElementById("tip");
+let pinnedMark = null;
 function showTip(mk){
   const a = ANN[mk.dataset.id]; if (!a) return;
   if (a.lv===2) {
@@ -432,18 +433,28 @@ function showTip(mk){
 }
 function hideTip(){ tip.style.display = "none"; }
 document.addEventListener("mouseover", e => {
+  if (pinnedMark) return;
   const mk = e.target.closest("mark");
   if (mk) showTip(mk); else hideTip();
 });
-document.addEventListener("mouseout", e => { if (e.target.closest("mark")) hideTip(); });
+document.addEventListener("mouseout", e => { if (!pinnedMark && e.target.closest("mark")) hideTip(); });
 document.addEventListener("click", e => {
-  const mk = e.target.closest("mark"); if (!mk) return;
+  const mk = e.target.closest("mark");
+  if (!mk) {                                  // タップ/クリックが外れたら閉じる
+    if (pinnedMark) { pinnedMark = null; hideTip(); }
+    return;
+  }
   const a = ANN[mk.dataset.id]; if (!a) return;
   if (a.lv===2) {
+    pinnedMark = null; hideTip();
     const c = firstCardOf[mk.dataset.id];
     if (c) { c.scrollIntoView({behavior:"smooth", block:"center"});
       c.classList.remove("flash"); void c.offsetWidth; c.classList.add("flash"); }
-  } else { showTip(mk); setTimeout(hideTip, 3000); }
+  } else if (pinnedMark === mk) {             // 同じマークを再タップで閉じる
+    pinnedMark = null; hideTip();
+  } else {                                    // 開いたら勝手には閉じない
+    pinnedMark = mk; showTip(mk);
+  }
 });
 
 window.addEventListener("resize", () => { clearTimeout(layout._t); layout._t = setTimeout(layout, 120); });
