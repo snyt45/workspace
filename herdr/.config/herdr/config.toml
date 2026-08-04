@@ -41,10 +41,3 @@ rename_tab = "prefix+comma"
 focus_agent = "prefix+alt+1..9"
 next_agent = "prefix+a"
 previous_agent = "prefix+shift+a"
-
-# 最も優先度の高い agent pane グループを巡回フォーカス（blocked > done > working > idle）
-[[keys.command]]
-key = "prefix+shift+u"
-# type=pane だと一時ペインが閉じる際にフォーカスが元に戻るため、フォーカス操作は shell で実行する
-type = "shell"
-command = "/Users/snyt45/bin/herdr-unread"

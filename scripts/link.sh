@@ -62,12 +62,6 @@ for pkg in "$DOTFILES_DIR"/*(N/); do
   link_tree "$pkg" "$HOME"
 done
 
-# Homebrew contrib tools
-for tool in git-jump diff-highlight; do
-  src="/opt/homebrew/share/git-core/contrib/$tool/$tool"
-  [[ -f "$src" ]] && ln -sfn "$src" "/opt/homebrew/bin/$tool"
-done
-
 # スキルの正規置き場は ~/.agents/skills (opencode/piはネイティブに読む)
 #   スキルは上のループ(agentsパッケージ)でリンク済み (例外: Plannotatorインストーラが実dirを自前配置)
 # Claude Codeは ~/.agents/skills を読まないため、同じ処理で ~/.claude/skills へミラーする

@@ -91,7 +91,6 @@ tmuxに合わせて変更したキー:
 | `Prefix - ,` | タブ名変更（デフォルト `Shift+t` から変更) |
 | `Prefix - Alt+1`〜`9` | エージェントへ直接ジャンプ（デフォルト未割り当て） |
 | `Prefix - a` / `Shift+a` | 次 / 前のエージェントへ移動（デフォルト未割り当て） |
-| `Prefix - Shift+u` | 要対応エージェントへ巡回フォーカス（blocked > done > working > idle） |
 | `Prefix - Shift+s` | 設定画面（`s` を分割に譲ったため移動） |
 
 主なデフォルトキー（tmuxと同じ操作感のもの）:
@@ -236,16 +235,6 @@ LSP管理は組み込みコマンドを使う
 | `:lsp disable [config]` | LSPを無効化 (起動中なら停止) |
 | `:checkhealth vim.lsp` | LSP状態を確認  |
 
-### GitHub Copilot
-
-| キー | モード | 説明 |
-|------|------|------|
-| `Right` | i | サジェストを受け入れる |
-| `C-l` | i | 単語単位で受け入れる |
-| `C-j` | i | 次のサジェスト |
-| `C-k` | i | 前のサジェスト |
-| `C-e` | i | サジェストを閉じる |
-
 ### Copilot NES (Sidekick.nvim)
 
 | キー | モード | 説明 |
@@ -371,7 +360,6 @@ PR/Issue buffer内のキーマップ:
 | `g bc` | fzfでブランチを選んでcheckout |
 | `g ls` | fzfでコミットを選んでshow (プレビュー付き) |
 | `g fixup` | fzfでコミットを選んでfixupコミット作成 |
-| `g aicommit` | AIでコミットメッセージ自動生成 |
 
 
 ## wtp (Worktree Plus)

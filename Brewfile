@@ -10,8 +10,6 @@ brew "fzf"
 brew "gh"
 brew "herdr"
 brew "modem-dev/tap/hunk"
-brew "hugo"
-brew "jq"          # herdr-unread / git-aicommit が使用
 brew "lazydocker"
 brew "lazygit"
 brew "mise"

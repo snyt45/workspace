@@ -5,12 +5,12 @@ run = 'echo "セットアップ完了。再起動してください。"'
 
 [tasks.tools]
 description = "mise 管理ツールのインストール (~/.config/mise/config.toml の [tools])"
-depends = ["packages"]  # pipxバックエンドがbrewのpipxを使う
+depends = ["packages"]
 run = 'mise install'
 
 [tasks.npm-latest]
 description = "npm を最新化 (min-release-age v11.10+ のため)"
-depends = ["tools"]  # nodeが必要
+depends = ["tools"]
 run = 'mise exec -- npm install -g npm@latest'
 
 [tasks.macos]
@@ -31,7 +31,7 @@ run = './scripts/link.sh'
 
 [tasks.claude-plugins]
 description = "Claude Code プラグインインストール"
-depends = ["packages"]  # claude-code caskが必要
+depends = ["packages"]
 run = './scripts/claude-plugins.sh'
 
 [tasks.plannotator]
@@ -40,10 +40,10 @@ run = 'command -v plannotator >/dev/null || curl -fsSL https://plannotator.ai/in
 
 [tasks.herdr]
 description = "herdr プラグイン・外部ツール統合のインストール"
-depends = ["packages"]  # herdr本体が必要
+depends = ["packages"]
 run = './scripts/herdr.sh'
 
 [tasks.auth]
 description = "GitHub CLI 認証"
-depends = ["packages"]  # ghが必要
+depends = ["packages"]
 run = 'gh auth status 2>/dev/null || gh auth login'
