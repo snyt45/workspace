@@ -27,4 +27,4 @@ opt.splitright = true
 opt.splitbelow = true
 
 opt.laststatus = 0
-opt.cmdheight = 0
+-- cmdheight=0 は tiny-cmdline.lua が要件として設定する

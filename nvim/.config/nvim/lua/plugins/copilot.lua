@@ -4,8 +4,8 @@ return {
 	event = "InsertEnter",
 	config = function()
 		require("copilot").setup({
-			copilot_node_command = vim.fn.expand(
-				"~/.local/share/mise/installs/node/22.22.1/bin/node"),
+			-- miseのnodeバージョン更新に追従するため固定パスにしない
+			copilot_node_command = vim.fn.exepath("node"),
 			suggestion = {
 				enabled = false,
 				auto_trigger = true,

@@ -102,7 +102,7 @@ return {
 		return opts
 	end,
 	-- CLI統合機能 (OpenCode/Claude Code toggle 等) は不安定のため使わない方針。
-	-- AIチャットは tmux 別pane の opencode/claude CLI alias (`c`/`cx`) で利用する。
+	-- AIチャットは herdr 別pane の opencode/claude CLI alias (`c`/`cx`) で利用する。
 	keys = {
 		{
 			"<tab>",
