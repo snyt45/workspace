@@ -113,6 +113,10 @@ mark.lv2{background:var(--r-mark);
 @keyframes fl{0%{box-shadow:0 0 0 4px var(--r-mark)}100%{box-shadow:none}}
 .line.flash{animation:lfl 1.2s}
 @keyframes lfl{0%{background:var(--r-mark)}100%{background:none}}
+/* trace: penciled-in data state at end of line */
+.trace{margin-left:1.8em;font-family:var(--hand);font-size:11.5px;color:var(--dim);
+  white-space:pre;transform:rotate(-0.6deg);display:inline-block}
+.trace::before{content:"⟵ ";opacity:.7}
 /* inline (narrow screen) card placement */
 #codearea .card{margin:8px 14px 10px calc(3.2em + 14px);max-width:620px}
 /* tooltip */
@@ -228,6 +232,17 @@ function lnrefEl(f, l){
   a.onclick = () => flashLine(f, l);
   return a;
 }
+
+/* ---- trace: data-in-flight scribbles at end of lines ---- */
+(meta.trace||[]).forEach(tr => {
+  const lineEl = lineAt(tr.f, tr.line);
+  if (!lineEl) return;
+  const sp = document.createElement("span");
+  sp.className = "trace";
+  sp.textContent = tr.text || "";
+  lineEl.querySelector(".lc").appendChild(sp);
+  if (tr.ref) { sp.appendChild(document.createTextNode(" ")); sp.appendChild(lnrefEl(tr.reff ?? tr.f, tr.ref)); }
+});
 
 /* ---- warn cards from meta.issues: placed at their line like ann cards ---- */
 (meta.issues||[]).forEach(it => {
