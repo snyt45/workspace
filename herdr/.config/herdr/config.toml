@@ -36,8 +36,7 @@ close_pane = "prefix+q"
 # tmuxの ,(ウィンドウ名変更) に合わせる（デフォルトは prefix+shift+t）
 rename_tab = "prefix+comma"
 
-# エージェントへの直接ジャンプ（デフォルトは未割り当て）。
+# エージェント間の移動（デフォルトは未割り当て）。
 # a = agent。n/p はタブ移動（next_tab/previous_tab）が使っているため avoid
-focus_agent = "prefix+alt+1..9"
 next_agent = "prefix+a"
 previous_agent = "prefix+shift+a"

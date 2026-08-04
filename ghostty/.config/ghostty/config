@@ -7,5 +7,3 @@ scrollback-limit = 100000
 unfocused-split-opacity = 1
 window-decoration = true
 macos-titlebar-style = tabs
-# optionをaltとして送る（herdrのfocus_agent prefix+alt+1..9 に必要。未設定だとoption+数字が特殊文字になる）
-macos-option-as-alt = true
