@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """annotate スキルの出力HTMLを機械検証する。
-usage: check.py <output.html> <target_source_file>
+usage: check.py <output.html> <target_source_file...>
 - マーカー ⟦id⟧...⟦⟧ の id 集合と meta JSON の ann キー集合の一致
 - ネストや閉じ忘れの検出
 - マーカーを除去したソースが対象ファイルの原文と一致するか
+  （複数ファイル時は ⟪path⟫ 区切りのチャンクを引数の順に突き合わせる）
 """
 import json
 import re
@@ -13,7 +14,7 @@ OPEN = re.compile(r"⟦([A-Za-z0-9_-]+)⟧")
 ANY = re.compile(r"⟦[A-Za-z0-9_-]*⟧")
 
 def main() -> int:
-    out_path, target_path = sys.argv[1], sys.argv[2]
+    out_path, target_paths = sys.argv[1], sys.argv[2:]
     html = open(out_path, encoding="utf-8").read()
 
     m = re.search(r'<script type="text/plain" id="src">(.*?)</script>', html, re.S)
@@ -56,17 +57,33 @@ def main() -> int:
         print(f"NG: マーカーで使われていない ann キー: {sorted(defined - used)}")
         ok = False
 
-    # 原文一致 (マーカー除去後)
+    # 原文一致 (マーカー除去後)。⟪path⟫ 区切りで複数ファイルに対応
     clean = ANY.sub("", src).strip("\n")
-    orig = open(target_path, encoding="utf-8").read().strip("\n")
-    if clean != orig:
+    chunks = []
+    cur = []
+    for line in clean.split("\n"):
+        if re.fullmatch(r"⟪.+⟫", line):
+            if cur:
+                chunks.append("\n".join(cur).strip("\n"))
+            cur = []
+        else:
+            cur.append(line)
+    chunks.append("\n".join(cur).strip("\n"))
+    chunks = [c for c in chunks if c]
+    if len(chunks) != len(target_paths):
+        print(f"NG: ファイル数不一致 出力チャンク={len(chunks)} 対象ファイル={len(target_paths)}")
         ok = False
-        clean_lines, orig_lines = clean.split("\n"), orig.split("\n")
-        if len(clean_lines) != len(orig_lines):
-            print(f"NG: 行数不一致 出力={len(clean_lines)} 原文={len(orig_lines)}")
-        for i, (c, o) in enumerate(zip(clean_lines, orig_lines), 1):
+    for chunk, target_path in zip(chunks, target_paths):
+        orig = open(target_path, encoding="utf-8").read().strip("\n")
+        if chunk == orig:
+            continue
+        ok = False
+        chunk_lines, orig_lines = chunk.split("\n"), orig.split("\n")
+        if len(chunk_lines) != len(orig_lines):
+            print(f"NG: {target_path} 行数不一致 出力={len(chunk_lines)} 原文={len(orig_lines)}")
+        for i, (c, o) in enumerate(zip(chunk_lines, orig_lines), 1):
             if c != o:
-                print(f"NG: 原文と不一致 (最初の相違: {i}行目)\n  出力: {c!r}\n  原文: {o!r}")
+                print(f"NG: {target_path} と不一致 (最初の相違: {i}行目)\n  出力: {c!r}\n  原文: {o!r}")
                 break
 
     # レベル値の妥当性

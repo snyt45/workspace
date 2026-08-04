@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>annotate</title>
 <style>
-/* mark/label style adapted from neat-annotations (MIT) https://github.com/syabro/neat-annotations */
+/* mark style adapted from neat-annotations (MIT) https://github.com/syabro/neat-annotations */
 :root{
   color-scheme: light dark;
   --bg:#faf8f3; --fg:#2b2a27; --dim:#8a857a; --line:#e6e1d6;
@@ -35,12 +35,34 @@ header .sum{color:var(--dim);margin:0 0 14px;max-width:900px}
 .legend .chip{border:1.5px solid var(--line);padding:6px 12px;background:var(--card-bg);
   border-radius:255px 15px 225px 15px/15px 225px 15px 255px}
 .legend .c1 b{color:var(--y)} .legend .c2 b{color:var(--r)}
+/* flow section */
+#flow{max-width:760px;border:1.5px solid var(--line);background:var(--card-bg);
+  border-radius:15px 255px 15px 225px/225px 15px 255px 15px;
+  padding:12px 18px;margin:0 0 18px;font-size:13.5px}
+#flow h2{margin:0 0 6px;font-size:13.5px;font-family:var(--hand);transform:rotate(-0.8deg)}
+#flow .intro{margin:0 0 4px}
+#flow ol{margin:0;padding-left:1.6em}
+#flow li{margin:4px 0}
+.lnref{color:var(--r);cursor:pointer;text-decoration:underline dotted;
+  font-family:ui-monospace,monospace;font-size:12px;white-space:nowrap}
+/* hand-drawn figure */
+.fig{margin:10px 0 4px}
+.fig .frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}
+.fig .node{border:1.5px solid var(--fg);opacity:.85;padding:2px 10px;
+  font-family:ui-monospace,monospace;font-size:12px;
+  border-radius:255px 15px 225px 15px/15px 225px 15px 255px;background:var(--code-bg)}
+.fig .arrow{display:flex;flex-direction:column;align-items:center;min-width:60px}
+.fig .arrow .albl{font-size:11px;color:var(--dim);font-family:var(--hand);
+  transform:rotate(-2deg);margin-bottom:-4px}
+.fig .cap{font-size:12px;color:var(--dim);margin-top:2px;font-family:var(--hand)}
 /* board = code + margin notes + overlay */
 #board{position:relative;display:flex;align-items:flex-start;gap:26px}
 #codearea{flex:1;min-width:0;overflow-x:auto;border:1.5px solid var(--line);
   background:var(--code-bg);border-radius:8px;padding:14px 0}
 #notes{width:360px;flex:0 0 360px;position:relative;min-height:100px}
 #overlay{position:absolute;top:0;left:0;pointer-events:none;overflow:visible;z-index:5}
+.filehead{padding:10px 14px 4px;font-family:ui-monospace,monospace;font-size:13px;
+  font-weight:600;color:var(--dim);border-bottom:1px dashed var(--line);margin-bottom:4px}
 .line{display:flex;min-width:max-content;padding-right:14px}
 .line:hover{background:rgba(128,120,90,.06)}
 .ln{flex:0 0 3.2em;text-align:right;padding-right:1.2em;color:var(--ln);
@@ -56,48 +78,38 @@ mark.lv2{background:var(--r-mark);
 /* margin note card */
 .card{background:var(--card-bg);border:1.5px solid var(--r);
   border-radius:255px 15px 225px 15px/15px 225px 15px 255px;
-  padding:9px 14px 10px;font-size:13px;line-height:1.55}
+  padding:9px 14px 10px;font-size:13px;line-height:1.6}
+.card.warn{border-color:var(--y)}
 #notes .card{position:absolute;left:0;width:100%}
-.card h3{margin:0 0 5px;font-size:13px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+.card h3{margin:0 0 4px;font-size:13px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
   font-family:var(--hand);transform:rotate(-1.2deg)}
 .card h3 .tag{color:var(--r);font-weight:600}
+.card.warn h3 .tag{color:var(--y)}
 .card h3 code{font-family:ui-monospace,monospace;font-size:12px;color:var(--dim);font-weight:400}
 .card h3 .lno{color:var(--dim);font-size:10.5px;font-family:ui-monospace,monospace;
   cursor:pointer;text-decoration:underline dotted;margin-left:auto}
-.card .row{display:flex;gap:8px;margin:3px 0}
-.card .k{flex:0 0 5.8em;color:var(--dim);font-size:11.5px;padding-top:2px}
-.card .v{flex:1;min-width:0}
-.card .v code{font-family:ui-monospace,monospace;font-size:12px;
+.card .txt{margin:0 0 4px}
+.card .txt code,#flow code,.card .ex code,#tip code{font-family:ui-monospace,monospace;font-size:12px;
   background:rgba(128,120,90,.12);padding:1px 4px;border-radius:4px}
-.card .data{font-family:ui-monospace,monospace;font-size:11.5px;white-space:pre-wrap;
+.card .ex{font-family:ui-monospace,monospace;font-size:11.5px;white-space:pre-wrap;
   background:rgba(128,120,90,.09);padding:5px 9px;border-radius:6px;overflow-x:auto}
+.card .ref{margin-top:5px;font-size:11.5px}
+.card .ref a{color:var(--dim)}
 .card.flash{animation:fl 1s}
 @keyframes fl{0%{box-shadow:0 0 0 4px var(--r-mark)}100%{box-shadow:none}}
+.line.flash{animation:lfl 1.2s}
+@keyframes lfl{0%{background:var(--r-mark)}100%{background:none}}
 /* inline (narrow screen) card placement */
 #codearea .card{margin:8px 14px 10px calc(3.2em + 14px);max-width:620px}
 /* tooltip */
-#tip{position:absolute;z-index:10;max-width:360px;font-size:12.5px;line-height:1.55;
+#tip{position:absolute;z-index:10;max-width:380px;font-size:12.5px;line-height:1.55;
   background:var(--card-bg);border:1.5px solid var(--y);color:var(--fg);
   border-radius:15px 225px 15px 255px/255px 15px 225px 15px;
   padding:7px 12px;pointer-events:none;display:none}
 #tip b{color:var(--y);font-size:11.5px;display:block;font-family:var(--hand)}
-#tip .tipdata{font-family:ui-monospace,monospace;font-size:11.5px;display:block;
+#tip .tipex{font-family:ui-monospace,monospace;font-size:11.5px;display:block;
   margin-top:3px;color:var(--dim);white-space:pre-wrap}
 footer{margin-top:26px;color:var(--dim);font-size:12px}
-/* flow / issues sections */
-#secs{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 16px}
-#secs .sec{flex:1 1 340px;max-width:640px;border:1.5px solid var(--line);background:var(--card-bg);
-  border-radius:15px 255px 15px 225px/225px 15px 255px 15px;padding:10px 16px;font-size:13px}
-#secs h2{margin:0 0 6px;font-size:13px;font-family:var(--hand);transform:rotate(-0.8deg)}
-#secs .sec.issues{border-color:var(--r)}
-#secs .sec.issues h2{color:var(--r)}
-#secs ol,#secs ul{margin:0;padding-left:1.5em}
-#secs li{margin:3px 0}
-#secs .lnref{color:var(--r);cursor:pointer;text-decoration:underline dotted;font-family:ui-monospace,monospace;font-size:12px}
-.card .ref{margin-top:5px;font-size:11.5px}
-.card .ref a{color:var(--dim)}
-.line.flash{animation:lfl 1.2s}
-@keyframes lfl{0%{background:var(--r-mark)}100%{background:none}}
 @media (max-width:1000px){ #notes,#overlay{display:none} }
 </style>
 </head>
@@ -107,10 +119,10 @@ footer{margin-top:26px;color:var(--dim);font-size:12px}
     <h1 id="h-title"></h1>
     <p class="sum" id="h-sum"></p>
     <div class="legend">
-      <span class="chip c1"><b>🟡 注意</b> — 読めるが罠がある構文。<u>ホバー/タップ</u>でメモ表示</span>
-      <span class="chip c2"><b>🔴 警告</b> — 知らないと推測不能な構文。欄外カードに 何をする / 返すもの / 実データ</span>
+      <span class="chip c1"><b>🟡 注意</b> — 罠がある構文。<u>ホバー/タップ</u>でメモ表示</span>
+      <span class="chip c2"><b>🔴 警告</b> — 知らないと推測不能な構文。右の欄外カード参照</span>
     </div>
-    <div id="secs"></div>
+    <div id="flow" hidden></div>
   </header>
   <div id="board">
     <div id="codearea"><div id="code"></div></div>
@@ -133,21 +145,36 @@ document.getElementById("h-title").textContent = meta.title || "";
 document.title = "annotate: " + (meta.title || "");
 document.getElementById("h-sum").textContent = meta.summary || "";
 
-/* ---- parse #src: ⟦id⟧...⟦⟧ markers ---- */
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function inline(s){ return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>"); }
+let seed = 7;
+function rnd(){ seed = (seed*1103515245+12345) & 0x7fffffff; return seed/0x7fffffff; }
+function j(v){ return (rnd()-0.5)*2*v; }
+
+/* ---- parse #src: ⟪path⟫ file delimiters + ⟦id⟧...⟦⟧ markers ---- */
 let raw = document.getElementById("src").textContent;
 raw = raw.replace(/^\n/,"").replace(/\n[ \t]*$/,"");
-const lines = raw.split("\n");
 const codeEl = document.getElementById("code");
 const notesEl = document.getElementById("notes");
-const cardInfo = [];              // {id, lineEl, markEl, cardEl} in document order
-const firstCardOf = {};           // id -> cardEl
+const fileLines = [[]];           // fileLines[fileIdx] = [lineEl, ...]
+const cardInfo = [];              // {lineEl, anchorEl, cardEl} sorted by code order
+const firstCardOf = {};           // ann id -> cardEl
 let n1=0, n2=0;
 
-lines.forEach((text, i) => {
+raw.split("\n").forEach(text => {
+  const fm = text.match(/^⟪(.+)⟫$/);
+  if (fm) {
+    if (fileLines[fileLines.length-1].length) fileLines.push([]);
+    const fh = document.createElement("div");
+    fh.className = "filehead"; fh.textContent = "📄 " + fm[1];
+    codeEl.appendChild(fh);
+    return;
+  }
+  const cur = fileLines[fileLines.length-1];
   const line = document.createElement("div");
   line.className = "line";
   const ln = document.createElement("span");
-  ln.className = "ln"; ln.textContent = i+1;
+  ln.className = "ln"; ln.textContent = cur.length+1;
   const lc = document.createElement("span");
   lc.className = "lc";
   const re = /⟦([A-Za-z0-9_-]+)⟧([\s\S]*?)⟦⟧/g;
@@ -157,14 +184,13 @@ lines.forEach((text, i) => {
     const id = m[1], a = ANN[id];
     const mk = document.createElement("mark");
     mk.textContent = m[2];
-    const lv = a ? (a.lv||1) : 1;
-    if (lv===2) mk.className = "lv2";
+    if (a && a.lv===2) mk.className = "lv2";
     mk.dataset.id = id;
     lc.appendChild(mk);
-    if (a && lv===2 && !firstCardOf[id]) {
-      const card = makeCard(id, i+1);
+    if (a && a.lv===2 && !firstCardOf[id]) {
+      const card = makeAnnCard(id, cur.length+1);
       firstCardOf[id] = card;
-      cardInfo.push({id, lineEl: line, markEl: mk, cardEl: card});
+      cardInfo.push({lineEl: line, anchorEl: mk, cardEl: card});
     }
     last = re.lastIndex;
   }
@@ -172,44 +198,77 @@ lines.forEach((text, i) => {
   if (text === "") lc.appendChild(document.createTextNode("​"));
   line.appendChild(ln); line.appendChild(lc);
   codeEl.appendChild(line);
+  cur.push(line);
 });
 for (const id in ANN) (ANN[id].lv===2 ? n2++ : n1++);
-document.getElementById("foot").textContent =
-  `注釈: 🔴 ${n2} / 🟡 ${n1} — ${meta.lang||""}`;
 
-/* ---- flow / issues sections ---- */
-const secs = document.getElementById("secs");
-if (meta.flow && meta.flow.length) {
-  const s = document.createElement("div"); s.className = "sec";
-  s.innerHTML = "<h2>🧭 全体の流れ</h2>";
-  const ol = document.createElement("ol");
-  meta.flow.forEach(t => { const li = document.createElement("li"); li.innerHTML = inline(t); ol.appendChild(li); });
-  s.appendChild(ol); secs.appendChild(s);
-}
-if (meta.issues && meta.issues.length) {
-  const s = document.createElement("div"); s.className = "sec issues";
-  s.innerHTML = "<h2>⚠ レビューメモ — 挙動の注意・バグ疑い</h2>";
-  const ul = document.createElement("ul");
-  meta.issues.forEach(it => {
-    const li = document.createElement("li");
-    if (it.line) {
-      const a = document.createElement("span"); a.className = "lnref";
-      a.textContent = "L" + it.line;
-      a.onclick = () => flashLine(it.line);
-      li.appendChild(a); li.appendChild(document.createTextNode(" "));
-    }
-    const sp = document.createElement("span"); sp.innerHTML = inline(it.text||"");
-    li.appendChild(sp); ul.appendChild(li);
-  });
-  s.appendChild(ul); secs.appendChild(s);
-}
-
-function flashLine(n){
-  const el = codeEl.children[n-1]; if (!el) return;
+function lineAt(f, l){ return (fileLines[f||0]||[])[l-1]; }
+function flashLine(f, l){
+  const el = lineAt(f, l); if (!el) return;
   el.scrollIntoView({behavior:"smooth", block:"center"});
   el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
 }
-function makeCard(id, lineNo){
+function lnrefEl(f, l){
+  const a = document.createElement("span"); a.className = "lnref";
+  a.textContent = "L"+l; a.title = "該当行へ";
+  a.onclick = () => flashLine(f, l);
+  return a;
+}
+
+/* ---- warn cards from meta.issues: placed at their line like ann cards ---- */
+(meta.issues||[]).forEach(it => {
+  const lineEl = lineAt(it.file, it.line);
+  if (!lineEl) return;
+  const c = document.createElement("div");
+  c.className = "card warn";
+  const h = document.createElement("h3");
+  h.innerHTML = `<span class="tag">⚠ 注意</span>`;
+  h.appendChild(lnrefEl(it.file, it.line));
+  c.appendChild(h);
+  const t = document.createElement("p"); t.className = "txt";
+  t.innerHTML = inline(it.text||"");
+  c.appendChild(t);
+  cardInfo.push({lineEl, anchorEl: lineEl.querySelector(".lc"), cardEl: c});
+});
+document.getElementById("foot").textContent =
+  `注釈: 🔴 ${n2} / 🟡 ${n1} / ⚠ ${(meta.issues||[]).length} — ${meta.lang||""}`;
+
+function makeFig(fig){
+  const w = document.createElement("div"); w.className = "fig";
+  (fig.rows||[]).forEach(row => {
+    const r = document.createElement("div"); r.className = "frow";
+    const [a, label, b] = row;
+    const na = document.createElement("span"); na.className = "node"; na.textContent = a;
+    r.appendChild(na);
+    const ar = document.createElement("span"); ar.className = "arrow";
+    if (label) { const l = document.createElement("span"); l.className = "albl"; l.textContent = label; ar.appendChild(l); }
+    ar.insertAdjacentHTML("beforeend", roughArrowSVG());
+    r.appendChild(ar);
+    if (b !== undefined) { const nb = document.createElement("span"); nb.className = "node"; nb.textContent = b; r.appendChild(nb); }
+    w.appendChild(r);
+  });
+  if (fig.caption) { const c = document.createElement("div"); c.className = "cap"; c.textContent = fig.caption; w.appendChild(c); }
+  return w;
+}
+
+/* ---- flow section ---- */
+const flowEl = document.getElementById("flow");
+if (meta.flow && (meta.flow.steps||[]).length) {
+  flowEl.hidden = false;
+  flowEl.innerHTML = "<h2>🧭 流れ — 実例で追う</h2>";
+  if (meta.flow.intro) { const p = document.createElement("p"); p.className = "intro"; p.innerHTML = inline(meta.flow.intro); flowEl.appendChild(p); }
+  const ol = document.createElement("ol");
+  meta.flow.steps.forEach(st => {
+    const li = document.createElement("li");
+    li.innerHTML = inline(st.t||"");
+    if (st.l) { li.appendChild(document.createTextNode("　")); li.appendChild(lnrefEl(st.f, st.l)); }
+    ol.appendChild(li);
+  });
+  flowEl.appendChild(ol);
+  if (meta.flow.fig) flowEl.appendChild(makeFig(meta.flow.fig));
+}
+
+function makeAnnCard(id, lineNo){
   const a = ANN[id];
   const c = document.createElement("div");
   c.className = "card"; c.id = "card-"+id;
@@ -218,19 +277,11 @@ function makeCard(id, lineNo){
     (a.syn ? `<code>${esc(a.syn)}</code>` : "");
   const lno = document.createElement("span");
   lno.className = "lno"; lno.textContent = "L"+lineNo; lno.title = "該当行へ";
-  lno.onclick = () => flashLine(lineNo);
   h.appendChild(lno);
   c.appendChild(h);
-  addRow(c, "何をする", a.what);
-  addRow(c, "返すもの", a.ret);
-  if (a.data) {
-    const r = document.createElement("div"); r.className = "row";
-    r.innerHTML = `<span class="k">実データ</span>`;
-    const v = document.createElement("div"); v.className = "v";
-    const d = document.createElement("div"); d.className = "data";
-    d.textContent = a.data;
-    v.appendChild(d); r.appendChild(v); c.appendChild(r);
-  }
+  if (a.what) { const t = document.createElement("p"); t.className = "txt"; t.innerHTML = inline(a.what); c.appendChild(t); }
+  if (a.ex) { const d = document.createElement("div"); d.className = "ex"; d.textContent = a.ex; c.appendChild(d); }
+  if (a.fig) c.appendChild(makeFig(a.fig));
   if (a.ref) {
     const r = document.createElement("div"); r.className = "ref";
     const link = document.createElement("a");
@@ -240,20 +291,25 @@ function makeCard(id, lineNo){
   }
   return c;
 }
-function addRow(c, k, v){
-  if (!v) return;
-  const r = document.createElement("div"); r.className = "row";
-  r.innerHTML = `<span class="k">${k}</span><span class="v">${inline(v)}</span>`;
-  c.appendChild(r);
-}
-function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
-function inline(s){ return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>"); }
+
+/* wire card line-jump after fileLines is complete */
+cardInfo.forEach(ci => {
+  const lno = ci.cardEl.querySelector(".lno");
+  if (lno && !lno.onclick) lno.onclick = () => {
+    ci.lineEl.scrollIntoView({behavior:"smooth", block:"center"});
+    ci.lineEl.classList.remove("flash"); void ci.lineEl.offsetWidth; ci.lineEl.classList.add("flash");
+  };
+});
 
 /* ---- layout: margin notes (wide) / inline (narrow) ---- */
 const board = document.getElementById("board");
 const codearea = document.getElementById("codearea");
 const overlay = document.getElementById("overlay");
 let marginMode = null;
+cardInfo.sort((x, y) => {
+  const p = x.lineEl.compareDocumentPosition(y.lineEl);
+  return (p & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : (p & Node.DOCUMENT_POSITION_PRECEDING) ? 1 : 0;
+});
 
 function layout(){
   const wide = document.documentElement.clientWidth > 1000;
@@ -265,7 +321,6 @@ function layout(){
     });
   }
   if (!wide) { overlay.innerHTML = ""; return; }
-  // place each card at its line's y, pushed below the previous card
   const boardTop = board.getBoundingClientRect().top;
   let prevBottom = 0;
   cardInfo.forEach(ci => {
@@ -278,10 +333,20 @@ function layout(){
   draw();
 }
 
-/* ---- hand-drawn connector arrows (rough, neat-annotations flavored) ---- */
-let seed = 7;
-function rnd(){ seed = (seed*1103515245+12345) & 0x7fffffff; return seed/0x7fffffff; }
-function j(v){ return (rnd()-0.5)*2*v; }
+/* ---- hand-drawn connector arrows ---- */
+function strokeColor(warn){
+  return getComputedStyle(document.documentElement).getPropertyValue(warn ? "--y" : "--r").trim();
+}
+function roughArrowSVG(){
+  seed = (seed*31+7) & 0x7fffffff;
+  const y = 12;
+  let d = `M 3 ${y+j(1)}`;
+  for (let x=18; x<=54; x+=18) d += ` Q ${x-9+j(2)} ${y+j(2.2)} ${x+j(1)} ${y+j(1.5)}`;
+  return `<svg width="60" height="24" viewBox="0 0 60 24" aria-hidden="true">
+    <path d="${d}" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".7"/>
+    <path d="M ${46+j(1)} ${y-5+j(1)} L 55 ${y} L ${46+j(1)} ${y+5+j(1)}" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
+  </svg>`;
+}
 function draw(){
   overlay.innerHTML = ""; seed = 7;
   const b = board.getBoundingClientRect();
@@ -289,14 +354,14 @@ function draw(){
   overlay.setAttribute("height", board.scrollHeight);
   const caRect = codearea.getBoundingClientRect();
   cardInfo.forEach((ci, idx) => {
-    const mr = ci.markEl.getBoundingClientRect();
+    const warn = ci.cardEl.classList.contains("warn");
+    const mr = ci.anchorEl.getBoundingClientRect();
     if (mr.right > caRect.right - 8 || mr.left < caRect.left + 46) return; // scrolled out
     const cr = ci.cardEl.getBoundingClientRect();
-    // card left edge -> gutter between code and notes -> horizontally into the mark
     const x1 = cr.left - b.left - 5,  y1 = cr.top - b.top + 16;
-    // aim under the text baseline so the approach runs through the underline zone
-    const x2 = mr.right - b.left + 6, y2 = mr.bottom - b.top - 1;
-    const gx = caRect.right - b.left + 7 + (idx % 4) * 4 + j(2);  // spread lanes in the gutter
+    const x2 = Math.min(mr.right, caRect.right - 20) - b.left + 6;
+    const y2 = mr.bottom - b.top - 1;
+    const gx = caRect.right - b.left + 7 + (idx % 4) * 4 + j(2);
     let d;
     if (Math.abs(y1 - y2) < 14) {
       d = `M ${x1} ${y1} C ${x1-40+j(6)} ${y1+j(4)}, ${x2+50+j(6)} ${y2+j(3)}, ${x2+3} ${y2}`;
@@ -305,17 +370,16 @@ function draw(){
         + ` L ${gx+j(2)} ${y2+(y2>y1?-16:16)}`
         + ` Q ${gx+j(4)} ${y2+j(3)} ${x2+3} ${y2+j(1)}`;
     }
-    addPath(d, 1.4, .6);
-    // arrowhead pointing left at the mark
+    addPath(d, 1.4, .6, warn);
     for (const dy of [-5.5, 5.5]) {
-      addPath(`M ${x2+11+j(1.2)} ${y2+dy+j(1.2)} L ${x2+1} ${y2}`, 1.4, .6);
+      addPath(`M ${x2+11+j(1.2)} ${y2+dy+j(1.2)} L ${x2+1} ${y2}`, 1.4, .6, warn);
     }
   });
 }
-function addPath(d, w, op){
+function addPath(d, w, op, warn){
   const p = document.createElementNS("http://www.w3.org/2000/svg","path");
   p.setAttribute("d", d);
-  p.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue("--r").trim());
+  p.setAttribute("stroke", strokeColor(warn));
   p.setAttribute("stroke-width", w); p.setAttribute("fill", "none");
   p.setAttribute("stroke-linecap", "round"); p.setAttribute("opacity", op);
   overlay.appendChild(p);
@@ -329,7 +393,7 @@ function showTip(mk){
     tip.innerHTML = `<b style="color:var(--r)">🔴 ${esc(a.name||"")}</b>クリックでカードへ`;
   } else {
     tip.innerHTML = `<b>🟡 ${esc(a.name||"")}</b>${inline(a.what||"")}` +
-      (a.data ? `<span class="tipdata">${esc(a.data)}</span>` : "");
+      (a.ex ? `<span class="tipex">${esc(a.ex)}</span>` : "");
   }
   tip.style.display = "block";
   const r = mk.getBoundingClientRect();
