@@ -301,28 +301,6 @@ Neovim内から起動:
 | `:ReviewStart [base]` | レビューモード開始 + Diffview 自動起動  |
 | `:ReviewEnd` | レビューモード終了 + Diffview を閉じる |
 
-### レビューコメント (code-review.nvim)
-
-レビュー中に任意のバッファへコメント（質問）を溜めて、AI向けにまとめてエクスポートする。
-
-| キー | モード | 説明 |
-|------|------|------|
-| `,gc` | n/v | カーソル行 / 選択範囲にコメント追加 |
-| `,gl` | n | コメント一覧 |
-| `,gy` | n | レビューをクリップボードへコピー（AI向けminimal形式） |
-| `,gd` | n | カーソル行のコメント削除（確認あり） |
-| `,gp` | n | プレビューを開く（Markdownを直接編集して `:w` で反映、`q` で閉じる） |
-
-コメント入力ウィンドウ内（insertモードで開く。Enterは改行）:
-
-| キー | モード | 説明 |
-|------|------|------|
-| `Esc` → `Enter` | i→n | 確定（プラグイン標準の `C-CR` はtmuxに潰されるため、normalのEnterに自前で割り当て） |
-| `q` / `Esc` | n | キャンセル（**破棄**。normalモードでEscを押すと即キャンセルなのでEsc連打に注意） |
-| `C-c` | i | キャンセル（破棄） |
-
-その他の操作は `:CodeReview` コマンド（`Preview` / `Clear` / `DeleteComment` 等）。コメントはセッション内のみ保持（メモリ保存）。
-
 ### コマンドパレット
 
 
@@ -432,16 +410,19 @@ PR/Issue buffer内のキーマップ:
 - hook は `hooks.post_create` に copy / symlink / command の 3 種 (command は新 worktree 内で `sh -c` 実行、`$GIT_WTP_REPO_ROOT` でメイン worktree を参照可)
 - DB セットアップは hook でやらない: worktree 内で `docker compose up` すると compose プロジェクト名 (ディレクトリ名由来) が変わり専用の空 DB ができるので、その後 `bundle exec rails db:create db:migrate db:seed` を手動実行 (hook 時点で migrate/seed を流すとメイン worktree の共有 DB で走ってしまう)
 
-## lavish (HTMLアーティファクトレビュー)
+## Plannotator (plan/diff/文書レビューUI)
 
-explainスキル等が生成したHTMLを、アノテーション付きでレビューするビューア。
+エージェントの成果物（plan・diff・Markdown・HTML）をブラウザで注釈レビューし、フィードバックをエージェントに返す。フィードバックチャネルはこれ1本。
 
 | コマンド | 説明 |
 |----------|------|
-| `lavish-axi <file.html>` | HTMLを開く (live reload 付き。ファイルを直せば自動反映) |
-| `lavish-axi poll <file.html>` | アノテーション(要素・テキスト範囲への指摘)をエージェントが回収 |
+| `/plannotator-review` | origin/main 以降の全変更（コミット済み+未コミット+untracked）をレビュー |
+| `/plannotator-review <PR_URL>` | GitHub PR / GitLab MR をレビュー（説明・CIチェック・議論スレッド込み、botフィルタあり） |
+| `/plannotator-annotate <file\|url\|folder>` | Markdown / HTML / URL / フォルダを注釈UIで開く（explain の HTML レビューはこれ） |
+| `/plannotator-last` | 直近のレビュー結果をエージェントに再取得させる |
 
-- ブラウザ上で要素やテキストを選択して指摘を書き込み、エージェントに返せる
-- エクスポート (スタンドアロンHTML) と ht-ml.app への公開も可能
-- インストールは mise の npm バックエンド (`config.toml` の `"npm:lavish-axi"`)。**バージョン固定必須**: `~/.npmrc` の `minimum-release-age` により latest 指定は ETARGET で落ちる。更新は `mise use -g npm:lavish-axi@<新版>`
-- エージェントからは explain スキル (解説HTML生成→lavishで開く→求められたらObsidian保存) または lavish スキルで使う
+- **plan モードの承認時は自動でブラウザレビューが開く**（ExitPlanMode フック横取り。Approve / Request changes / Approve with notes）
+- CLI 直叩きも可: `plannotator review` / `plannotator annotate <対象> [--gate]`（`--gate` は Approve ボタン付き承認ゲート）
+- 注釈はファイル・行に固定された Markdown でエージェントに届く。下書きは自動保存、vim キー操作対応
+- データはローカル（`~/.plannotator/`）。PR へのコメント投稿は明示操作のみ
+- 更新はインストーラ再実行（`mise run plannotator` は冪等ガード付きなので `curl -fsSL https://plannotator.ai/install.sh | bash` を直接実行）

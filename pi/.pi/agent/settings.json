@@ -6,7 +6,8 @@
   "packages": [
     "npm:pi-fff",
     "npm:pi-subagents",
-    "npm:pi-web-access"
+    "npm:pi-web-access",
+    "npm:@plannotator/pi-extension"
   ],
   "lastChangelogVersion": "0.80.3"
 }

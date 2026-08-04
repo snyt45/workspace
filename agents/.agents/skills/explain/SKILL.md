@@ -1,6 +1,6 @@
 ---
 name: explain
-description: コードの変更(diff・branch・PR)や既存機能を、背景・直感・図・クイズ付きのリッチなHTMLで解説する。「このPRを説明して」「diffを解説して」「この機能どう動いてる？」「〇〇の仕組みを追いたい」「関連ファイルを整理して」といった、コード変更または既存コードの理解を求める依頼で使うこと。HTMLはlavishで開き、求められたらMarkdown版をObsidianに保存する。
+description: コードの変更(diff・branch・PR)や既存機能を、背景・直感・図・クイズ付きのリッチなHTMLで解説する。「このPRを説明して」「diffを解説して」「この機能どう動いてる？」「〇〇の仕組みを追いたい」「関連ファイルを整理して」といった、コード変更または既存コードの理解を求める依頼で使うこと。HTMLはPlannotatorで開き、求められたらMarkdown版をObsidianに保存する。
 ---
 
 # Explain
@@ -64,5 +64,5 @@ HTMLを書き始める前に、機能の全体像を掴むこと:
 
 ## 出力後のワークフロー
 
-1. **lavishで開く**: `lavish-axi <file>` で解説HTMLを開く（コマンドがなければ `open` にフォールバックし、その旨を伝える）。live reload対応なので、指摘を受けたらHTMLファイルを直接修正すれば自動反映される。アノテーションの回収は `lavish-axi poll`（詳細はlavishスキル参照）。
+1. **Plannotatorで開く**: `plannotator annotate <file>` をバックグラウンドで実行して解説HTMLを開く（コマンドがなければ `open` にフォールバックし、その旨を伝える）。ユーザーが注釈を送信するとコマンドが終了し、ファイル・行に固定されたフィードバックが標準出力に返るので、それを受けてHTMLを修正し再度開く。
 2. **Obsidianへの保存（求められたら）**: 「Obsidianに保存して」と言われたら、解説のMarkdown版を作成し、obsidian-vaultスキル/MCPでvaultの `explains/` フォルダに保存する（ファイル名はHTMLと同じ `YYYY-MM-DD-<slug>.md`）。HTMLを機械的に変換するのではなく、Markdownとして自然な形（見出し・コードブロック・Mermaid図）に書き直す。インタラクティブなクイズは動かないので、質問と解答を折りたたみ（`> [!question]` コールアウト等）で表現するか省略する。

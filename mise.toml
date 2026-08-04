@@ -1,6 +1,6 @@
 [tasks.setup]
 description = "全セットアップ実行"
-depends = ["macos", "rosetta", "packages", "tools", "link", "npm-latest", "claude-plugins", "skills", "herdr", "auth"]
+depends = ["macos", "rosetta", "packages", "tools", "link", "npm-latest", "claude-plugins", "plannotator", "herdr", "auth"]
 run = 'echo "セットアップ完了。再起動してください。"'
 
 [tasks.tools]
@@ -31,9 +31,9 @@ run = './scripts/link.sh'
 description = "Claude Code プラグインインストール"
 run = './scripts/claude-plugins.sh'
 
-[tasks.skills]
-description = "共有スキルのインストールと各エージェントへの配布"
-run = './scripts/skills.sh'
+[tasks.plannotator]
+description = "Plannotator インストール (plan/diff/文書レビューUI)"
+run = 'command -v plannotator >/dev/null || curl -fsSL https://plannotator.ai/install.sh | bash'
 
 [tasks.herdr]
 description = "herdr プラグイン・外部ツール統合のインストール"

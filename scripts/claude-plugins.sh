@@ -20,4 +20,10 @@ for plugin in "${PLUGINS_OFFICIAL[@]}"; do
   fi
 done
 
+# Plannotator (マーケットプレイス: backnotprop/plannotator。本体CLIは mise run plannotator)
+if ! echo "$installed" | grep -q "plannotator@plannotator"; then
+  claude plugin marketplace add backnotprop/plannotator
+  claude plugin install plannotator@plannotator
+fi
+
 echo "Claude Code プラグインインストール完了"
