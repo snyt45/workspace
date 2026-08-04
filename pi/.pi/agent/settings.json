@@ -9,7 +9,6 @@
     "npm:pi-web-access",
     "npm:@plannotator/pi-extension",
     "npm:@pi-kaush/pi-inline-skill-identifier",
-    "npm:pi-tool-display",
     "npm:pi-compact-thinking"
   ],
   "lastChangelogVersion": "0.80.3",
