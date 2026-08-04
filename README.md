@@ -95,9 +95,8 @@ brew upgrade
 
 - dotfiles直下のディレクトリは `EXCLUDE`（`_archive` `docs` `scripts` `vendor`）以外すべて `$HOME` へリンクされる（stow規約: 各パッケージは `$HOME` 相対パスで配置）
 - スキル共有: 正規置き場は `~/.agents/skills`（OpenCode / Pi はここをネイティブに読む）
-  - 自作スキル: `agents/.agents/skills/` から上記の仕組みでリンク
-  - 外部スキル: skills CLI（`scripts/skills.sh`）が実ディレクトリとして配置。更新は `npx skills update -g`
-  - crit スキル: `crit install codex`（`scripts/skills.sh`）が `~/.agents/skills/crit{,-cli}` に配置（codex向け integration が `.agents/skills` を使うため共有スキルとして流用）
+  - スキルは自作・外部由来を問わずすべて `agents/.agents/skills/` のファイルとして管理し、上記の仕組みでリンクする（外部由来は vendor 方式: 上流からコピーして取り込み、更新は再コピー）
+  - 例外は crit / lavish の2つだけ（`scripts/skills.sh` が実ディレクトリとして配置。Plannotator 試験の結果次第で廃止予定）
   - Claude Code は `~/.agents/skills` を読まないため、同じ処理で `~/.agents/skills` → `~/.claude/skills` にミラーする
 - エージェント共有: 正規置き場は `~/.agents/agents`（自作エージェントを `agents/.agents/agents/` からリンク）
   - 1ファイルに Claude Code / OpenCode 両対応の frontmatter（`name` / `description` / `mode: subagent`）を書く。未知のキーは互いに無視される

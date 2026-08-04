@@ -9,8 +9,7 @@ mise exec ruby@3.2.8 -- gem list -i ruby-lsp -q >/dev/null 2>&1 \
 
 # プラグイン一覧 (マーケットプレイス: claude-plugins-official)
 PLUGINS_OFFICIAL=(
-  ruby-lsp              # Ruby LSP連携
-  claude-md-management  # CLAUDE.md管理
+  ruby-lsp  # Ruby LSP連携
 )
 
 installed=$(claude plugin list 2>/dev/null)
