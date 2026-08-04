@@ -1,14 +1,16 @@
 {
   "theme": "dark",
-  "defaultProvider": "opencode",
-  "defaultModel": "deepseek-v4-flash",
-  "defaultThinkingLevel": "off",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "glm-5.2",
+  "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-fff",
     "npm:pi-subagents",
     "npm:pi-web-access",
     "npm:@plannotator/pi-extension",
-    "npm:@pi-kaush/pi-inline-skill-identifier"
+    "npm:@pi-kaush/pi-inline-skill-identifier",
+    "npm:pi-tool-display",
+    "npm:pi-compact-thinking"
   ],
   "lastChangelogVersion": "0.80.3",
   "hideThinkingBlock": true
