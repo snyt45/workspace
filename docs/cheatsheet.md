@@ -5,7 +5,7 @@
 | キー/コマンド | 説明 |
 |---------------|------|
 | `ide` | レイアウト選択（tmux用） |
-| `herdr-ide` | レイアウト選択（herdr用） |
+| `herdr-ide` / `hide` | レイアウト選択（herdr用） |
 | `Ctrl + r` | 履歴検索 (fzf) |
 | `z <dir>` | ディレクトリ移動 (zoxide) |
 | `zi` | ディレクトリ選択 (zoxide) |
