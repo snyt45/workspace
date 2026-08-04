@@ -1,7 +1,5 @@
 git:
   pagers:
-    # autoはlazygitのパネル幅で判定されstackに落ちるため、side-by-sideを明示
-    # (0.15.3ではキャプチャホストでsplitが無視されるバグあり。hunk 0.16.0+が必要)
     - pager: hunk pager --mode split
 os:
   editPreset: "nvim"
