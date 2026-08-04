@@ -11,13 +11,15 @@ brew "gh"
 brew "herdr"
 brew "modem-dev/tap/hunk"
 brew "hugo"
+brew "jq"          # herdr-unread / git-aicommit が使用
 brew "lazydocker"
 brew "lazygit"
 brew "mise"
-brew "mo"
+brew "k1LoW/tap/mo" # Markdownプレビュー (nvim <leader>m)
 brew "neovim"
 brew "opencode"
 brew "pi-coding-agent"
+brew "pipx"         # mise の pipx バックエンド (code-review-graph) に必要
 brew "ripgrep"
 brew "pure"
 brew "zoxide"
