@@ -4,7 +4,7 @@ tap "modem-dev/tap"
 tap "satococoa/tap"
 
 # CLI ツール
-brew "bun"          # herdr-browser プラグインの実行に必要
+brew "bun"
 brew "fd"
 brew "fzf"
 brew "gh"
@@ -13,11 +13,11 @@ brew "modem-dev/tap/hunk"
 brew "lazydocker"
 brew "lazygit"
 brew "mise"
-brew "k1LoW/tap/mo" # Markdownプレビュー (nvim <leader>m)
+brew "k1LoW/tap/mo"
 brew "neovim"
 brew "opencode"
 brew "pi-coding-agent"
-brew "pipx"         # mise の pipx バックエンド (code-review-graph) に必要
+brew "pipx"
 brew "ripgrep"
 brew "pure"
 brew "zoxide"
