@@ -14,8 +14,8 @@
 | ブラウザ(ペイン内) | herdr-browser（herdrプラグイン。bun + Google Chrome が必要） |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
-| Git UI | gitsigns |
-| PRレビュー | diffview.nvim |
+| Git UI (TUI) | lazygit / lazydocker |
+| PRレビュー | diffview.nvim + gitsigns |
 | 差分ビューア(TUI) | hunk |
 | レビューUI (plan/diff/文書) | Plannotator |
 | AIコーディング | OpenCode (`c`) + Claude Code (`cx`) + Pi (`pi`) |
@@ -81,6 +81,7 @@ brew upgrade
 |----------|------|
 | `mise run setup` | 全セットアップ実行 |
 | `mise run packages` | Homebrewパッケージインストール |
+| `mise run tools` | mise管理ツールのインストール |
 | `mise run link` | シンボリックリンク作成（dotfiles 由来の切れたリンクも掃除） |
 | `mise run npm-latest` | npm を最新化（サプライチェーン対策の min-release-age v11.10+ 用） |
 | `mise run claude-plugins` | Claude Codeプラグインインストール |

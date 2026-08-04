@@ -4,7 +4,8 @@
 
 | キー/コマンド | 説明 |
 |---------------|------|
-| `ide` | レイアウト選択 |
+| `ide` | レイアウト選択（tmux用） |
+| `herdr-ide` | レイアウト選択（herdr用） |
 | `Ctrl + r` | 履歴検索 (fzf) |
 | `z <dir>` | ディレクトリ移動 (zoxide) |
 | `zi` | ディレクトリ選択 (zoxide) |
@@ -17,16 +18,7 @@
 | `pv` | plannotator review（コミット/差分をブラウザでレビュー） |
 | `c` | opencode |
 | `cx` | Claude Code |
-| `pi` | Pi  |
-
-### Pi
-
-
-| 操作 | 説明 |
-|------|------|
-| `/debt-check` | 理解負債を1件だけ確認質問。正答で1段階昇格、不正答は失敗ポイントを記録 |
-| commit前 | 未解消（Lv3未満）があれば通知される（commitは止めない） |
-
+| `pi` | Pi |
 
 ## Ghostty
 
@@ -40,8 +32,6 @@
 | `Cmd + Shift + [` / `Cmd + Shift + ]` | タブ移動 |
 
 ### リンク（OSC 8 ハイパーリンク）
-
-リンクは普段ただのテキストに見える。Cmd押下中のホバーでのみ下線が出る。
 
 | キー | 説明 |
 |------|------|
@@ -78,7 +68,7 @@ Prefix = `C-t`
 | `Prefix - <` | 現在のウィンドウを1つ左へ |
 | `Prefix - >` | 現在のウィンドウを1つ右へ |
 | `Prefix - 1`〜`9` | 番号指定でウィンドウ移動 (1始まり) |
-| `Prefix - &` | 現在のウィンドウを閉じる | 
+| `Prefix - &` | 現在のウィンドウを閉じる |
 
 ### セッション
 
@@ -86,7 +76,7 @@ Prefix = `C-t`
 |------|------|
 | `Prefix - d` | デタッチ |
 | `Prefix - $` | セッション名変更 |
-| `Prefix - N` | 新規セッション作成 |
+| `Prefix - S` | セッション一覧 (choose-tree) |
 
 ## herdr
 
@@ -101,6 +91,8 @@ tmuxに合わせて変更したキー:
 | `Prefix - ,` | タブ名変更（デフォルト `Shift+t` から変更) |
 | `Prefix - Alt+1`〜`9` | エージェントへ直接ジャンプ（デフォルト未割り当て） |
 | `Prefix - a` / `Shift+a` | 次 / 前のエージェントへ移動（デフォルト未割り当て） |
+| `Prefix - Shift+u` | 要対応エージェントへ巡回フォーカス（blocked > done > working > idle） |
+| `Prefix - Shift+s` | 設定画面（`s` を分割に譲ったため移動） |
 
 主なデフォルトキー（tmuxと同じ操作感のもの）:
 
@@ -118,9 +110,8 @@ tmuxに合わせて変更したキー:
 | `Prefix - Shift+d` | ワークスペースを閉じる（確認あり） |
 | `Prefix - b` | サイドバー表示切替 |
 | `Prefix - Shift+r` | 設定リロード |
-| `Prefix - g` | goto（ペイン選択オーバーレイ。`hjkl`=ペイン、`↑↓`=workspace、`1-9`=タブを選び `Enter` で確定 / `Esc` でキャンセル。離れたペインへの一発移動用） |
-| `Prefix - r` | リサイズモード（`hjkl` or 矢印キーでフォーカス中ペインの境界を移動。連打で連続調整でき、`Esc` / `Enter` / `r` で抜ける） |
-
+| `Prefix - g` | goto（ペイン選択オーバーレイ。`hjkl`=ペイン、`↑↓`=workspace、`1-9`=タブ） |
+| `Prefix - r` | リサイズモード（`hjkl` で境界移動、`Esc` で抜ける） |
 
 セッション全体の終了（キーなし・コマンドで行う）:
 
@@ -131,17 +122,14 @@ tmuxに合わせて変更したキー:
 
 ### herdr-browser（ペイン内ブラウザ）
 
-herdrのペインの中で実際のChromiumを動かすプラグイン。エージェントの操作をそのまま見られて、途中からマウス/キーボードで引き継げる。
-要件: herdr 0.7.4+ / bun / Google Chrome / 外側の端末がkitty graphics対応（Ghostty）/ `config.toml` の `[experimental] kitty_graphics = true`
+herdrのペイン内でChromiumを動かすプラグイン。エージェントの操作を見られて、マウス/キーボードで引き継げる。
 
 | コマンド | 説明 |
 |----------|------|
 | `herdr plugin pane open --plugin official.browser --entrypoint browser --placement split --direction right --focus` | 右分割でブラウザペインを開く |
 | `... --env HERDR_BROWSER_INITIAL_URL=http://127.0.0.1:3000` | 初期URLを指定して開く |
 | `... --placement tab \| zoomed \| overlay` | 配置を変える（split以外） |
-| `herdr plugin config-dir official.browser` | `browser.json`（ズーム倍率・キャプチャ方式など）の場所を表示 |
-| `bun run <plugin_root>/src/cli.ts views` | ブラウザビュー一覧（エージェント連携用） |
-| `bun run <plugin_root>/src/cli.ts connect --view <view_id>` | CDPエンドポイントを取得（Playwright等から接続） |
+| `herdr plugin config-dir official.browser` | `browser.json`（ズーム倍率等）の場所を表示 |
 
 ターミナル内の `localhost` / `127.0.0.1` のURLは `Ctrl+クリック` でこのブラウザに開く。
 未対応: ダウンロード、右クリックメニュー、DevTools、IME、ページ内のテキスト選択・検索。
@@ -165,7 +153,7 @@ leader = `,`
 | `,m` | n | Markdownプレビュー |
 | `,t` | n | 水平分割でターミナルを開く |
 | `Esc Esc` | t | ターミナルモードを抜ける |
-| `lz` | n | Lazygit 起動 |
+| `,lz` | n | Lazygit 起動 (snacks) |
 
 ### コメント
 
@@ -219,13 +207,9 @@ leader = `,`
 |------|------|------|
 | `s` | n/v/o | ラベル付きジャンプ |
 
-#### Remote action 
+#### Remote action
 
-| 操作 |
-|------|
-| `yr`(遠くをコピー) → ラベル → `iw`(単語選択) → `viwp`(単語選択して貼り付け) |
-| `dr`(遠くを削除) → ラベル → `iw`(単語選択) → `viwp`(単語選択して貼り付け) |
-| `cr`(遠くを書き換え) → ラベル → `iw`(単語選択) → `viwp`(単語選択して貼り付け) |
+`yr` / `dr` / `cr`（遠くをコピー / 削除 / 書き換え）→ ラベル選択 → テキストオブジェクト（例: `iw`）で、カーソルを動かさず離れた場所を操作する。
 
 ### LSP
 
@@ -276,7 +260,7 @@ LSP管理は組み込みコマンドを使う
 | `[c` | n | 前の変更箇所へ |
 | `,gb` | n | blame表示 |
 | `,ga` | n | 現在のファイルをstage (git add) |
-| `,go` | n/v | カーソル位置をGitHubで開く |
+| `,go` | n/v | カーソル位置をGitHubで開く (snacks.gitbrowse) |
 
 ### Git diff (Diffview)
 
@@ -405,25 +389,20 @@ PR/Issue buffer内のキーマップ:
 
 設定ファイル:
 
-- Project config のみ: プロジェクトルートの `.wtp.yml` (グローバル設定はない)
-- 実体は dotfiles の `wtp/work/<repo>/.wtp.yml` で管理し、`mise run link` で各リポジトリへシンボリックリンク (リポジトリ側は `.git/info/exclude` に `.wtp.yml` を追加)
-- `defaults.base_dir` はリポジトリごとに `../worktrees/<repo名>` を指定 (同名ブランチのパス衝突回避)
-- hook は `hooks.post_create` に copy / symlink / command の 3 種 (command は新 worktree 内で `sh -c` 実行、`$GIT_WTP_REPO_ROOT` でメイン worktree を参照可)
-- DB セットアップは hook でやらない: worktree 内で `docker compose up` すると compose プロジェクト名 (ディレクトリ名由来) が変わり専用の空 DB ができるので、その後 `bundle exec rails db:create db:migrate db:seed` を手動実行 (hook 時点で migrate/seed を流すとメイン worktree の共有 DB で走ってしまう)
+- `.wtp.yml` は dotfiles の `wtp/work/<repo>/` で管理し、`mise run link` で各リポジトリへリンク (リポジトリ側は `.git/info/exclude` に追加)
+- worktree 内の DB は `docker compose up` 後に `rails db:create db:migrate db:seed` を手動実行 (hook で流すとメイン側の共有 DB に当たる)
 
 ## Plannotator (plan/diff/文書レビューUI)
 
-エージェントの成果物（plan・diff・Markdown・HTML）をブラウザで注釈レビューし、フィードバックをエージェントに返す。フィードバックチャネルはこれ1本。
+エージェントの成果物をブラウザで注釈レビューしてフィードバックを返す。フィードバックチャネルはこれ1本。
 
 | コマンド | 説明 |
 |----------|------|
-| `/plannotator-review` | origin/main 以降の全変更（コミット済み+未コミット+untracked）をレビュー |
-| `/plannotator-review <PR_URL>` | GitHub PR / GitLab MR をレビュー（説明・CIチェック・議論スレッド込み、botフィルタあり） |
-| `/plannotator-annotate <file\|url\|folder>` | Markdown / HTML / URL / フォルダを注釈UIで開く（explain の HTML レビューはこれ） |
+| `pv` / `/plannotator-review` | origin/main 以降の全変更をレビュー（コミット単位の履歴レールあり） |
+| `/plannotator-review <PR_URL>` | GitHub PR / GitLab MR をレビュー（議論スレッド込み、botフィルタあり） |
+| `/plannotator-annotate <file\|url\|folder>` | Markdown / HTML / URL を注釈UIで開く（explain の HTML レビューはこれ） |
 | `/plannotator-last` | 直近のレビュー結果をエージェントに再取得させる |
 
-- **plan モードの承認時は自動でブラウザレビューが開く**（ExitPlanMode フック横取り。Approve / Request changes / Approve with notes）
-- CLI 直叩きも可: `plannotator review` / `plannotator annotate <対象> [--gate]`（`--gate` は Approve ボタン付き承認ゲート）
-- 注釈はファイル・行に固定された Markdown でエージェントに届く。下書きは自動保存、vim キー操作対応
-- データはローカル（`~/.plannotator/`）。PR へのコメント投稿は明示操作のみ
-- 更新はインストーラ再実行（`mise run plannotator` は冪等ガード付きなので `curl -fsSL https://plannotator.ai/install.sh | bash` を直接実行）
+- plan モードの承認時は自動でブラウザレビューが開く（Approve / Request changes / Approve with notes）
+- CLI 直叩き: `plannotator review` / `plannotator annotate <対象> [--gate]`（`--gate` は承認ゲート）
+- データはローカル（`~/.plannotator/`）。PR へのコメント投稿は明示操作のみ。更新は `curl -fsSL https://plannotator.ai/install.sh | bash`
