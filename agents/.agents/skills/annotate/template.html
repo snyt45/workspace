@@ -24,6 +24,20 @@
     --card-bg:#2a2822;
   }
 }
+:root[data-theme="dark"]{
+  --bg:#1e1d1a; --fg:#e8e4da; --dim:#96917f; --line:#3a382f;
+  --code-bg:#232219; --ln:#5f5a4c;
+  --y:#e0b13e; --y-mark:rgba(224,177,62,.20);
+  --r:#e07a5a; --r-mark:rgba(224,110,80,.18);
+  --card-bg:#2a2822;
+}
+:root[data-theme="light"]{
+  --bg:#faf8f3; --fg:#2b2a27; --dim:#8a857a; --line:#e6e1d6;
+  --code-bg:#fffdf8; --ln:#b8b2a4;
+  --y:#b8751a; --y-mark:rgba(255,176,0,.16);
+  --r:#c45a38; --r-mark:rgba(216,90,56,.13);
+  --card-bg:#fffef9;
+}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);
   font-family:"Hiragino Sans","Noto Sans CJK JP",system-ui,sans-serif;
