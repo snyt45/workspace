@@ -58,6 +58,7 @@ export default function (pi: ExtensionAPI) {
   let lastRealTokens: number | null = null;
   let contextWindow = 0;
   let lastPercent: number | null = null;
+  let tidyMode = false;
 
   function buildStatusLine(ctx: ExtensionContext, theme: any): string {
     try {
@@ -90,6 +91,9 @@ export default function (pi: ExtensionAPI) {
         theme.fg("muted", `[thinking: ${thinkingLevel}]`),
         `${bar} ${theme.fg("text", pctStr)} ${theme.fg("dim", tokStr)}`,
       ];
+      if (tidyMode) {
+        parts.splice(1, 0, theme.fg("success", "[tidy]"));
+      }
 
       return parts.join(" ");
     } catch {
@@ -129,6 +133,11 @@ export default function (pi: ExtensionAPI) {
 
   pi.on("thinking_level_select", async () => {
     // フッターは次の render で自動更新される
+  });
+
+  // pi-tidy からのモード変更通知を受け取る
+  pi.events.on("pi-tidy:mode", (data: { mode: boolean }) => {
+    tidyMode = data.mode;
   });
 
   pi.registerCommand("status-footer", {
