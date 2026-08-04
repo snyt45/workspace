@@ -1,5 +1,6 @@
 [tools]
 node = "24"
+"pipx:code-review-graph" = "2.3.7"
 
 [settings]
 http_timeout = "120"
