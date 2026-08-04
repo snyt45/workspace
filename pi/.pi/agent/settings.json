@@ -1,13 +1,15 @@
 {
   "theme": "dark",
-  "defaultProvider": "opencode-go",
-  "defaultModel": "kimi-k2.7-code",
+  "defaultProvider": "opencode",
+  "defaultModel": "deepseek-v4-flash",
   "defaultThinkingLevel": "off",
   "packages": [
     "npm:pi-fff",
     "npm:pi-subagents",
     "npm:pi-web-access",
-    "npm:@plannotator/pi-extension"
+    "npm:@plannotator/pi-extension",
+    "npm:@pi-kaush/pi-inline-skill-identifier"
   ],
-  "lastChangelogVersion": "0.80.3"
+  "lastChangelogVersion": "0.80.3",
+  "hideThinkingBlock": true
 }
