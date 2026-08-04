@@ -15,6 +15,7 @@ return {
 
 		require("incline").setup({
 			window = {
+				placement = { vertical = "top", horizontal = "left" },
 				winhighlight = {
 					active = { Normal = "InclineNormal" },
 					inactive = { Normal = "InclineNormalNC" },

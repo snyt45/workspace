@@ -196,7 +196,7 @@ leader = `,`
 | `,r` | n | grep検索 |
 | `,rw` | n | カーソル下の単語でgrep |
 
-### その他の検索 (snacks.picker / telescope)
+### その他の検索 (snacks.picker)
 
 | キー | モード | 説明 |
 |------|------|------|

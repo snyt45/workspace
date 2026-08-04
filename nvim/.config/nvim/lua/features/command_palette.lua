@@ -97,48 +97,25 @@ table.sort(commands, function(a, b) return a.name < b.name end)
 local M = {}
 
 function M.open()
-	local pickers = require("telescope.pickers")
-	local finders = require("telescope.finders")
-	local conf = require("telescope.config").values
-	local actions = require("telescope.actions")
-	local action_state = require("telescope.actions.state")
-	local previewers = require("telescope.previewers")
+	local items = {}
+	for _, c in ipairs(commands) do
+		table.insert(items, {
+			text = c.name,
+			execute = c.execute,
+			preview = { text = ":" .. c.cmd, ft = "vim" },
+		})
+	end
 
-	pickers
-	    .new({
-		    layout_strategy = "horizontal",
-		    layout_config = { width = 0.6, height = 0.4, preview_width = 0.4 },
-	    }, {
-		    prompt_title = "Command Palette",
-		    finder = finders.new_table({
-			    results = commands,
-			    entry_maker = function(entry)
-				    return {
-					    value = entry,
-					    display = entry.name,
-					    ordinal = entry.name,
-				    }
-			    end,
-		    }),
-		    sorter = conf.generic_sorter({}),
-		    previewer = previewers.new_buffer_previewer({
-			    title = "Command",
-			    define_preview = function(self, entry)
-				    vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, {
-					    ":" .. entry.value.cmd,
-				    })
-			    end,
-		    }),
-		    attach_mappings = function(prompt_bufnr)
-			    actions.select_default:replace(function()
-				    local selection = action_state.get_selected_entry()
-				    actions.close(prompt_bufnr)
-				    selection.value.execute()
-			    end)
-			    return true
-		    end,
-	    })
-	    :find()
+	Snacks.picker.pick({
+		title = "Command Palette",
+		items = items,
+		preview = "preview",
+		format = "text",
+		confirm = function(picker, item)
+			picker:close()
+			item.execute()
+		end,
+	})
 end
 
 return M

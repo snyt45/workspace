@@ -32,28 +32,21 @@ vim.api.nvim_create_user_command("ReviewStart", function(opts)
 		start_with(opts.args)
 		return
 	end
-	local builtin = require("telescope.builtin")
-	local actions = require("telescope.actions")
-	local action_state = require("telescope.actions.state")
-	builtin.git_branches({
-		attach_mappings = function(_, _)
-			actions.select_default:replace(function(bufnr)
-				local selection = action_state.get_selected_entry()
-				actions.close(bufnr)
-				if not selection or not selection.value then return end
-				local local_name = to_local_branch(selection.value)
-				local result = vim.system({ "git", "switch", local_name }):wait()
-				if result.code ~= 0 then
-					vim.notify("switch failed: " .. (result.stderr or ""), vim.log.levels.ERROR)
-					return
-				end
-				vim.notify("Switched to: " .. local_name)
-				vim.ui.input({ prompt = "Compare base: ", default = "origin/main" }, function(base)
-					if not base or base == "" then return end
-					start_with(base)
-				end)
+	Snacks.picker.git_branches({
+		confirm = function(picker, item)
+			picker:close()
+			if not item or not item.branch then return end
+			local local_name = to_local_branch(item.branch)
+			local result = vim.system({ "git", "switch", local_name }):wait()
+			if result.code ~= 0 then
+				vim.notify("switch failed: " .. (result.stderr or ""), vim.log.levels.ERROR)
+				return
+			end
+			vim.notify("Switched to: " .. local_name)
+			vim.ui.input({ prompt = "Compare base: ", default = "origin/main" }, function(base)
+				if not base or base == "" then return end
+				start_with(base)
 			end)
-			return true
 		end,
 	})
 end, { nargs = "?", desc = "[Review] レビューモード開始" })

@@ -11,8 +11,6 @@ return {
 			"checkhealth",
 			"help",
 			"man",
-			"TelescopePrompt",
-			"TelescopeResults",
 			"!minifiles",
 			"!snacks_picker_list",
 			"!snacks_picker_input",
