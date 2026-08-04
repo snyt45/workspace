@@ -69,8 +69,7 @@ for tool in git-jump diff-highlight; do
 done
 
 # スキルの正規置き場は ~/.agents/skills (opencode/piはネイティブに読む)
-#   自作スキル: 上のループ(agentsパッケージ)でリンク済み
-#   外部スキル: scripts/skills.sh (skills CLI) が実ディレクトリとして配置
+#   スキルは上のループ(agentsパッケージ)でリンク済み (例外: Plannotatorインストーラが実dirを自前配置)
 # Claude Codeは ~/.agents/skills を読まないため、同じ処理で ~/.claude/skills へミラーする
 prune_links "$HOME/.agents/skills" "$HOME/.claude/skills"
 link_tree "$HOME/.agents/skills" "$HOME/.claude/skills"

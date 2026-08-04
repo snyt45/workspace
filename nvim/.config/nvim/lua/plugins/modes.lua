@@ -5,13 +5,10 @@ return {
 		line_opacity = 0.5,
 		set_cursorline = true,
 		ignore = {
-			"NvimTree",
 			"lspinfo",
-			"packer",
 			"checkhealth",
 			"help",
 			"man",
-			"!minifiles",
 			"!snacks_picker_list",
 			"!snacks_picker_input",
 		},
