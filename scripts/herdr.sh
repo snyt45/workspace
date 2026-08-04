@@ -16,10 +16,10 @@ elif ! herdr plugin list 2>/dev/null | grep -q "browser"; then
   herdr plugin install ogulcancelik/herdr-browser --yes
 fi
 
-# piの状態検知統合 (~/.pi/agent/extensions/herdr-agent-state.ts を生成)
-if command -v pi >/dev/null; then
-  mkdir -p "$HOME/.pi/agent/extensions"
-  [[ -f "$HOME/.pi/agent/extensions/herdr-agent-state.ts" ]] || herdr integration install pi
-fi
+# エージェント状態検知の統合 (各エージェントの設定領域にフック/拡張を生成)
+# ファイル存在ガードだと旧版が更新されないため毎回実行する (冪等)
+for agent in claude opencode pi; do
+  command -v "$agent" >/dev/null && herdr integration install "$agent"
+done
 
 echo "herdr プラグイン・統合インストール完了"

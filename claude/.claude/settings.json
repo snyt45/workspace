@@ -124,6 +124,18 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/snyt45/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "worktree": {
@@ -134,7 +146,6 @@
     "command": "~/.claude/statusline.py"
   },
   "enabledPlugins": {
-    "ruby-lsp@claude-plugins-official": true,
     "plannotator@plannotator": true
   },
   "extraKnownMarketplaces": {
