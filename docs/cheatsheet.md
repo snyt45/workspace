@@ -123,15 +123,8 @@ tmuxに合わせて変更したキー:
 
 herdrのペイン内でChromiumを動かすプラグイン。エージェントの操作を見られて、マウス/キーボードで引き継げる。
 
-| コマンド | 説明 |
-|----------|------|
-| `herdr plugin pane open --plugin official.browser --entrypoint browser --placement split --direction right --focus` | 右分割でブラウザペインを開く |
-| `... --env HERDR_BROWSER_INITIAL_URL=http://127.0.0.1:3000` | 初期URLを指定して開く |
-| `... --placement tab \| zoomed \| overlay` | 配置を変える（split以外） |
-| `herdr plugin config-dir official.browser` | `browser.json`（ズーム倍率等）の場所を表示 |
-
-ターミナル内の `localhost` / `127.0.0.1` のURLは `Ctrl+クリック` でこのブラウザに開く。
-未対応: ダウンロード、右クリックメニュー、DevTools、IME、ページ内のテキスト選択・検索。
+- ターミナル内の `localhost` / `127.0.0.1` のURLは `Ctrl+クリック` でこのブラウザに開く
+- 未対応: ダウンロード、右クリックメニュー、DevTools、IME、ページ内のテキスト選択・検索
 
 
 ## Neovim
