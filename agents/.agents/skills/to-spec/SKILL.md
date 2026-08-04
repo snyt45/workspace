@@ -6,7 +6,10 @@ disable-model-invocation: true
 
 This skill takes the current conversation context and codebase understanding and produces a spec (you may know this document as a PRD). Do NOT interview the user — just synthesize what you already know.
 
-The issue tracker is GitHub Issues (`gh issue create`). If the repo uses something else, ask the user where to publish.
+The spec goes to one of two destinations — always ask the user which:
+
+- **Local file**: `docs/specs/YYYY-MM-DD-<slug>.md` in the repo
+- **GitHub Issue**: `gh issue create`
 
 ## Process
 
@@ -16,7 +19,7 @@ The issue tracker is GitHub Issues (`gh issue create`). If the repo uses somethi
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Write the spec using the template below, then ask the user where to save it (local file or GitHub Issue) and publish accordingly.
 
 <spec-template>
 
