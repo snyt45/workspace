@@ -14,6 +14,7 @@
 | `v` | nvim |
 | `vd` | nvim +DiffviewOpen |
 | `vdh` | nvim +DiffviewFileHistory |
+| `pv` | plannotator review（コミット/差分をブラウザでレビュー） |
 | `c` | opencode |
 | `cx` | Claude Code |
 | `pi` | Pi  |

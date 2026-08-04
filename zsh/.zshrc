@@ -14,6 +14,7 @@ alias lzd='lazydocker'
 alias v='nvim'
 alias vd='nvim +DiffviewOpen'
 alias vdh='nvim +DiffviewFileHistory'
+alias pv='plannotator review'
 alias c='opencode'
 alias cx='claude --enable-auto-mode'
 
