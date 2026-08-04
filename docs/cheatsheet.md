@@ -58,7 +58,6 @@ Prefix = `C-t`
 | `Prefix - h / j / k / l` | ペイン移動 |
 | `Prefix - H / J / K / L` | ペインをスワップ |
 | `Prefix - t` | ズーム（全画面） |
-| `Prefix - T` | 部分ズーム（縦方向のみ。横レイアウト維持） |
 | `Prefix - i` | ペイン番号を表示。続けて番号キーで該当ペインへジャンプ |
 | `Prefix - q` | ペイン閉じる |
 | `Prefix - e` | 全ペイン同時入力 ON |
