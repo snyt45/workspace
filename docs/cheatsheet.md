@@ -125,6 +125,14 @@ herdrのペイン内でChromiumを動かすプラグイン。エージェント�
 - ターミナル内の `localhost` / `127.0.0.1` のURLは `Ctrl+クリック` でこのブラウザに開く
 - 未対応: ダウンロード、右クリックメニュー、DevTools、IME、ページ内のテキスト選択・検索
 
+### サブエージェント委譲（orchestrate）
+
+leadエージェントに「サブエージェントに任せて」等と頼むと orchestrate スキルが発動し、配置（右分割/新規タブ）・構成（claude/pi + モデル）・依頼内容を確認してから herdr 上でサブエージェントを起動する。
+
+| コマンド | 説明 |
+|----------|------|
+| `/herdr-status` | pi拡張: 同一workspaceのサブエージェント状況ウィジェットの on/off（working→done/blocked で通知も鳴る） |
+
 
 ## Neovim
 
