@@ -11,7 +11,8 @@
     "npm:@pi-kaush/pi-inline-skill-identifier",
     "npm:pi-compact-thinking",
     "npm:@aliou/pi-guardrails",
-    "npm:pi-ask-user"
+    "npm:pi-ask-user",
+    "npm:@dietrichgebert/ponytail"
   ],
   "lastChangelogVersion": "0.80.3",
   "hideThinkingBlock": true
