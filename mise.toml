@@ -1,7 +1,16 @@
 [tasks.setup]
 description = "全セットアップ実行"
-depends = ["macos", "rosetta", "packages", "tools", "gems", "link", "npm-latest", "claude-plugins", "plannotator", "herdr", "auth"]
+depends = ["system", "packages", "tools", "link", "plugins"]
 run = 'echo "セットアップ完了。再起動してください。"'
+
+[tasks.system]
+description = "macOS設定 + Rosetta + GitHub認証（初回のみ）"
+run = './scripts/system.sh'
+
+[tasks.plugins]
+description = "Claude Code / Plannotator / herdr プラグイン"
+depends = ["packages"]
+run = './scripts/plugins.sh'
 
 [tasks.tools]
 description = "mise 管理ツールのインストール (~/.config/mise/config.toml の [tools])"

@@ -10,9 +10,11 @@ if ! command -v herdr >/dev/null; then
 fi
 
 # herdr-browser (herdrペイン内にChromiumを描画するプラグイン、bunが必要)
-if ! herdr plugin list >/dev/null 2>&1; then
+plugins=$(herdr plugin list 2>&1) || {
   echo "herdr サーバー未起動のため herdr-browser をスキップ (herdr起動後に再実行)"
-elif ! herdr plugin list 2>/dev/null | grep -q "browser"; then
+  plugins=
+}
+if [ -n "$plugins" ] && ! echo "$plugins" | grep -q "browser"; then
   herdr plugin install ogulcancelik/herdr-browser --yes
 fi
 

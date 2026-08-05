@@ -62,19 +62,15 @@ for pkg in "$DOTFILES_DIR"/*(N/); do
   link_tree "$pkg" "$HOME"
 done
 
-# スキルの正規置き場は ~/.agents/skills (opencode/piはネイティブに読む)
-#   スキルは上のループ(agentsパッケージ)でリンク済み (例外: Plannotatorインストーラが実dirを自前配置)
-# Claude Codeは ~/.agents/skills を読まないため、同じ処理で ~/.claude/skills へミラーする
-prune_links "$HOME/.agents/skills" "$HOME/.claude/skills"
-link_tree "$HOME/.agents/skills" "$HOME/.claude/skills"
-
-# エージェント定義の正規置き場は ~/.agents/agents (agentsパッケージでリンク済み)
-# 1ファイルにClaude Code / opencode両対応のfrontmatterを書き、各ツールの置き場へミラーする
-# (どちらも ~/.agents/agents は読まないため。未知のfrontmatterキーは互いに無視される)
-prune_links "$HOME/.agents/agents" "$HOME/.claude/agents"
-link_tree "$HOME/.agents/agents" "$HOME/.claude/agents"
-prune_links "$HOME/.agents/agents" "$HOME/.config/opencode/agents"
-link_tree "$HOME/.agents/agents" "$HOME/.config/opencode/agents"
+# スキル/エージェントのミラー: 正規置き場 → 各ツールが読む場所へ
+# Claude Code / OpenCode は ~/.agents/ を読まないためミラーが必要
+for src dest in \
+  "$HOME/.agents/skills" "$HOME/.claude/skills" \
+  "$HOME/.agents/agents" "$HOME/.claude/agents" \
+  "$HOME/.agents/agents" "$HOME/.config/opencode/agents"; do
+  prune_links "$src" "$dest"
+  link_tree "$src" "$dest"
+done
 
 echo
 echo "合計: OK=${ok} NG=${ng} PRUNED=${pruned}"
