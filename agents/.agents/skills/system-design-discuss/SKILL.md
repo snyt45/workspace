@@ -45,7 +45,7 @@ description: "複数の設計案を比較して共通認識を取るための HT
 
 ## フェーズ4: フィードバック（Plannotator）
 
-`plannotator annotate <生成したHTML>` で開く。注釈が返ってきたら反映し、`pkill -f "plannotator annotate"` で止めてから再起動する。
+`$plannotator-annotate` に委譲して開く。注釈が返ってきたら反映して再度開く。
 注釈が来なくなったら完了。
 
 ---

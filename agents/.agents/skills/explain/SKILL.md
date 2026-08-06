@@ -64,5 +64,5 @@ HTMLを書き始める前に、機能の全体像を掴むこと:
 
 ## 出力後のワークフロー
 
-1. **Plannotatorで開く**: `plannotator annotate <file>` をバックグラウンドで実行して解説HTMLを開く（コマンドがなければ `open` にフォールバックし、その旨を伝える）。ユーザーが注釈を送信するとコマンドが終了し、ファイル・行に固定されたフィードバックが標準出力に返るので、それを受けてHTMLを修正し再度開く。
+1. **Plannotatorで開く**: `$plannotator-annotate` に委譲（注釈が返ったらHTMLを修正して再度開く）。
 2. **Obsidianへの保存（求められたら）**: 「Obsidianに保存して」と言われたら、解説のMarkdown版を作成し、obsidian-vault MCPでvaultの `explains/` フォルダに保存する（ファイル名はHTMLと同じ `YYYY-MM-DD-<slug>.md`）。HTMLを機械的に変換するのではなく、Markdownとして自然な形（見出し・コードブロック・Mermaid図）に書き直す。インタラクティブなクイズは動かないので、質問と解答を折りたたみ（`> [!question]` コールアウト等）で表現するか省略する。
