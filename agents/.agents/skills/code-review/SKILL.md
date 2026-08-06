@@ -53,23 +53,15 @@ spec-scope-check に渡す仕様を次の順で探す:
 
 ### 5. サブエージェント5体を並列起動
 
-起動手段は環境依存。**herdr が使える環境では herdr pane で5体を並列起動する**（本スキルの既定）。ネイティブの Agent ツールが露出している環境ではそちらでもよい。
+起動の仕組み（新規タブ・pane分割・`agent start`・prompt・回収）は `$orchestrate` に従う。**1オーケストラ=1タブ**で、5体をタブ内のpaneに1体ずつ起動する。
 
-#### 5a. 起動手段の判定（起動前に必ず確認）
+各エージェントのプロンプトには必ず含める（サブエージェントはこのスキルを読めない）:
 
-```bash
-test "${HERDR_ENV:-}" = 1 && which herdr
-```
-
-- 成功 → 5b の herdr pane 方式
-- 失敗 → 5c のフォールバック（lead が5つの役割を自分で1パス実行）
-
-#### 5b. herdr pane で5体を並列起動（推奨・既定）
-
-1. **5ペイン作成**: 現在の pane から右/下に交互 split（`herdr pane split --current --direction right|down --cwd "$PWD" --no-focus`）。戻り値 JSON の `.result.pane.pane_id` を読む。同じ方向の連続 split で細すぎるペインを作らない
-2. **エージェント起動**: `herdr agent start <名前> --kind pi --pane <id>`。名前は `[a-z][a-z0-9_-]{0,31}` で、役割名を使う（responsibility / naming / test-quality / critical-impact / spec-scope）。`agent start` はエージェントが入力受付になるまで待つ
-3. **プロンプト送信（並列）**: `herdr agent prompt <名前> "<本文>" --wait --timeout 300000`。5体は独立ペインなのでそのまま並列で動く。**エージェントはこのスキルを読めない**ため、本文に必ず含める: ①役割定義（agents/*.md の全文） ②該当するスタック別基準（references/*.md）の全文 ③diffコマンドとコミット一覧 ④仕様（あれば spec-scope-check のみ）⑤出力フォーマット指示。プロンプトは実行後に返事を求める形で書く
-4. **回収と後片付け**: `herdr agent read <名前> --source recent-unwrapped --lines 200` で出力を回収 → `herdr pane close <pane-id>` で閉じる
+1. 役割定義の全文 — [agents/](agents/) の対応ファイル
+2. スタック別基準の全文 — 手順4で選んだ [references/](references/) のファイル
+3. diffコマンドとコミット一覧
+4. 仕様全文（あれば。spec-scope-check のみ）
+5. 完了報告の定型句（`$orchestrate` に記載）
 
 起動する5体:
 
@@ -83,11 +75,7 @@ test "${HERDR_ENV:-}" = 1 && which herdr
 
 エージェント定義の共通部（報告しないもの・出力フォーマット・テスト方針）は各定義に自己完結で書いてある。文言を変えるときは `agents/` 以下の全該当箇所を同時に修正する。
 
-#### 5c. フォールバック（herdr が無い環境）
-
-lead が5つの役割チェックリストを自分で順に1パス実行し、各指摘に役割タグを付けて手順6のフォーマットで集約する。報告冒頭に「フォールバック（サブエージェント未起動）」と明記する。並列レビューの代替であり、指摘の質は保つ。
-
-> ⚠️ 退行防止: 手順5を「Agent ツールの呼び出し」前提に書き換えないこと。pi のデフォルト環境にはネイティブ Agent ツールが露出しない場合があり、その場合 herdr pane（5b）が唯一の並列起動手段。ツールに Agent 呼び出しが無くても 5b は実行できる。
+herdr が使えない環境では lead が5つの役割を自分で1パス実行し、各指摘に役割タグを付けて手順6のフォーマットで集約する。報告冒頭に「フォールバック（サブエージェント未起動）」と明記する。
 
 ### 6. 集約
 
