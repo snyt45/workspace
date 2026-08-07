@@ -25,7 +25,15 @@ herdrの操作方法・構文・安全規則は herdr スキル（`herdr --skill
 ## 起動手順
 
 1. **lead に名前を付ける**: `herdr agent rename "$HERDR_PANE_ID" lead`（`lead` が既に使われていたら `<project>-lead`）。以下これを「lead名」と呼ぶ。サブエージェントはこの名前で完了報告を送る
-2. 新規タブ作成（`herdr tab create --label <タスク名> --cwd <プロジェクト>`）→ **タブ内のルートpaneを `herdr pane split` で必要数に分割**（herdrスキルの配置指針: 横に広いpaneは right、縦に狭いpaneは down。同じ方向の連続分割で細くしすぎない。先に right で2列にしてから各列を down で割ると見やすい）→ 各paneに `agent start`（ロール名、`--timeout 60000`）→ 依頼プロンプト送信
+2. 新規タブ作成 → **タブ内のルートpaneを `herdr pane split` で必要数に分割** → 各paneに `agent start`（ロール名、`--timeout 60000`）→ 依頼プロンプト送信
+
+   - **タブ作成は必ず呼び出し元workspaceを明示する**:
+     ```
+     herdr tab create --workspace "$HERDR_WORKSPACE_ID" --label <タスク名> --cwd <プロジェクト>
+     ```
+   - **理由**: `--workspace` を省略すると herdr は **UIでフォーカス中のworkspace**（別プロジェクトのことが多い）にタブを作る。`--cwd` はタブ内の作業ディレクトリを決めるだけで、配置先workspaceは決めない。呼び出し元workspaceは `$HERDR_WORKSPACE_ID` または `herdr pane current --current` で取得する。
+   - **配置検証**: 作成応答の `tab.workspace_id`、および `pane split` 応答の `pane.workspace_id` が `$HERDR_WORKSPACE_ID` と一致することを確認する。不一致なら `herdr tab close` で閉じて作り直す（pane移動での復旧はせず作り直しが確実）。
+   - 分割の配置指針: 横に広いpaneは right、縦に狭いpaneは down。同じ方向の連続分割で細くしすぎない。先に right で2列にしてから各列を down で割ると見やすい。
 
 ## 依頼プロンプトの定型句
 
@@ -63,7 +71,7 @@ herdr agent prompt <lead名> "完了報告: <変更/調査の要約・検証結�
 
 ## 運用規約
 
-- **1オーケストラ=1タブで作業する**。`herdr tab create` でタブを1つ作成し、**必ずタブ名を付ける**（例: `investigate-freeze`, `review-npd-import`）。サブエージェントはすべて同じタブ内のpane分割に配置する（leadのpaneの右分割や複数タブへの分散はしない）。タブ名はタスク名ベースにしてサイドバーで分かるようにする
+- **1オーケストラ=1タブで作業する**。`herdr tab create --workspace "$HERDR_WORKSPACE_ID"` でタブを1つ作成し、**必ずタブ名を付ける**（例: `investigate-freeze`, `review-npd-import`）。サブエージェントはすべて同じタブ内のpane分割に配置する（leadのpaneの右分割や複数タブへの分散はしない）。タブ名はタスク名ベースにしてサイドバーで分かるようにする。タブ・paneは必ず呼び出し元workspace内に置く（配置がズレたら作り直す）
 - 名前はロール名（reviewer, impl, tester…）。追加指示・回収はすべて名前で行う
 - 名前は herdr セッション全体（全workspace横断）で一意。`agent_name_taken` になったらプロジェクト名や連番を付けて回避する（例: dotfiles-reviewer, reviewer2）
 - 作成したpaneにも同じロール名のラベルを付ける（サイドバーで誰が何をしているか分かるように）
