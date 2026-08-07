@@ -220,18 +220,23 @@ export default function orchestraManager(pi: ExtensionAPI) {
   }
 
   /**
-   * Close all panes in a tab.
-   * Uses `herdr tab close` to close the entire tab (all panes).
+   * Close all agent panes in a group.
+   * Uses `herdr pane close` for each pane individually.
    */
-  function closeTab(tabId: string): boolean {
-    // Safety: refuse to close own tab
-    if (tabId === process.env.HERDR_PANE_ID?.split(":")[0]) return false;
-    try {
-      execSync(`herdr tab close ${tabId}`, { timeout: 5000, stdio: "pipe" });
-      return true;
-    } catch {
-      return false;
+  function closeGroup(group: OrchestraGroup): { success: number; fail: number } {
+    const myPaneId = process.env.HERDR_PANE_ID;
+    let success = 0;
+    let fail = 0;
+    for (const a of group.agents) {
+      if (a.pane_id === myPaneId) continue; // never close self
+      try {
+        execSync(`herdr pane close ${a.pane_id}`, { timeout: 3000, stdio: "pipe" });
+        success++;
+      } catch {
+        fail++;
+      }
     }
+    return { success, fail };
   }
 
   function formatGroupList(): string {
@@ -280,11 +285,12 @@ export default function orchestraManager(pi: ExtensionAPI) {
           `Close tab "${match.label || match.tabId}" with ${match.agents.length} agents?`,
         );
         if (!ok) return;
-        const closed = closeTab(match.tabId);
-        if (closed) {
-          ctx.ui.notify(`Closed: ${match.label || match.tabId}`, "info");
+        const { success, fail } = closeGroup(match);
+        const label = match.label || match.tabId;
+        if (fail === 0) {
+          ctx.ui.notify(`Closed ${success} panes: ${label}`, "info");
         } else {
-          ctx.ui.notify(`Failed to close: ${match.label || match.tabId}`, "error");
+          ctx.ui.notify(`Closed ${success}/${success + fail} panes: ${label}`, "warning");
         }
         return;
       }
@@ -299,13 +305,14 @@ export default function orchestraManager(pi: ExtensionAPI) {
           `Close ${groups.length} tab(s) with ${groups.reduce((s, g) => s + g.agents.length, 0)} agents?`,
         );
         if (!ok) return;
-        let success = 0;
-        let fail = 0;
+        let totalOk = 0;
+        let totalFail = 0;
         for (const g of groups) {
-          if (closeTab(g.tabId)) success++;
-          else fail++;
+          const { success, fail } = closeGroup(g);
+          totalOk += success;
+          totalFail += fail;
         }
-        ctx.ui.notify(`Closed ${success} orchestras${fail > 0 ? `, ${fail} failed` : ""}.`, "info");
+        ctx.ui.notify(`Closed ${totalOk} panes${totalFail > 0 ? `, ${totalFail} failed` : ""}.`, "info");
         return;
       }
 
