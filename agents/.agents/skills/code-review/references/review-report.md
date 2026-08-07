@@ -1,23 +1,21 @@
 # plannotator review への指摘コメント注入
 
-集約した指摘を、`plannotator review` が表示する実差分（PR diff / ローカル差分）にインラインコメントとして付ける。差分そのものに載るため、コードと指摘の対応が確実。人がレビューしたのと同じ見た目にする（ラベル・文体・提案コード）。
+集約した指摘を、`plannotator review` が表示する実差分にインラインコメントとして付ける。人がレビューしたのと同じ見た目にする（ラベル・文体・提案コード）。起動・注入・フィードバック回収の操作は `$plannotator-review` に委譲する（API の詳細はそちらに記載）。
 
 ## 手順
 
-1. 対象の差分を `plannotator review` で開く（PR URL を渡すか、`--git` でローカル差分）。
-2. セッションのポートを読む: `~/.plannotator/sessions/<pid>.json` の `port`。
-3. `GET /api/diff` で rawPatch を取得する。hunk ヘッダー（`@@ -a,b +c,d @@`）から新しい側の行番号を計算し、各指摘の `file:line` を差分内の行へ写像する。
-4. 指摘を codeAnnotation に変換する:
-   - `filePath` / `lineStart` / `lineEnd`（新しい側の行番号）/ `side: "new"`
-   - `text`: 人がレビューするように書く（下記「文体」）
-   - `conventionalLabel`: 重大度に応じて `issue` / `suggestion` / `nitpick`（下記「ラベル」）
-   - `severity`: `error` / `warning` / `info`
-   - `suggestedCode` / `originalCode`: コードで直せる指摘には変更前後を入れる
-   - `author: "ai-code-review"`。`commitSha` / `commitSubject` は該当行の blame から取る（取れなければ省略可）
-5. `POST /api/draft` に draft JSON を送る（`codeAnnotations` / `descriptionAnnotations` / `commentAnnotations` / `viewedFiles` / `draftGeneration` / `ts`）。既存のドラフトがあれば先に `DELETE /api/draft` で消す。
-6. `GET /api/draft` で注入件数と位置を確認する。
-7. ブラウザのタブをリロードしてもらう（UI はロード時に一度だけ取得する。ポーリングしない）。
-8. ブラウザセッションのフィードバックが返ったら、ユーザー自身の注釈も含めて集約に反映する。
+1. 指摘を codeAnnotation に変換する（下記「アノテーションの内容」）。
+2. `$plannotator-review` に委譲して起動・注入・回収する。
+3. ブラウザセッションのフィードバック（ユーザー自身の注釈を含む）が返ったら集約に反映する。
+
+## アノテーションの内容
+
+- アンカー: 指摘の影響が現れる差分内の行（新しい側）に置く。hunk ヘッダー（`@@ -a,b +c,d @@`）から新しい側の行番号を計算する。差分に無い行の指摘（既存コード・テスト欠落など）は、関係する差分の行に置く。
+- `text`: 人がレビューするように書く（下記「文体」）。
+- `conventionalLabel`: 重大度に応じて `issue` / `suggestion` / `nitpick`（下記「ラベル」）。
+- `severity`: `error` / `warning` / `info`。
+- `suggestedCode` / `originalCode`: コードで直せる指摘には変更前後を入れる。
+- `author: "ai-code-review"`。`commitSha` / `commitSubject` は該当行の blame から取る（取れなければ省略可）。
 
 ## ラベル（conventionalLabel）
 
@@ -42,7 +40,5 @@ plannotator のラベルバッジ。重大度との対応:
 
 ## 品質基準
 
-- アンカーは指摘の影響が現れる差分内の行（新しい側）に置く。差分に無い行の指摘（既存コード・テスト欠落など）は、関係する差分の行に置く。
 - 軸・重大度は集約時と同じものをそのまま使う。再ランクしない。
-- 既存のユーザー注釈を上書きしない。POST 前に `GET /api/draft` で確認する。
-- 注入した draft は差分のハッシュに紐づく。同じ差分を再レビューすると残っていることがあるので、不要なら `DELETE /api/draft` で消す。
+- 軽量パス（手順2）では注入を省略してよい。
