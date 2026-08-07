@@ -3,7 +3,7 @@
 DOTFILES_DIR="$HOME/.dotfiles"
 # リンク対象外の直下ディレクトリ。それ以外の直下ディレクトリはすべて $HOME へリンクされる
 # (隠しディレクトリ .git .claude 等は glob で除外される)
-EXCLUDE=(_archive docs scripts vendor)
+EXCLUDE=(_archive docs poc scripts vendor)
 
 ok=0
 ng=0

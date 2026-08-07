@@ -94,7 +94,7 @@ brew upgrade
 
 `scripts/link.sh` は「src配下の全ファイルを同じ相対パスでファイル単位リンクし、srcから消えたものはdest側の切れたリンクを掃除する」処理（`link_tree` / `prune_links`）だけで構成される。
 
-- dotfiles直下のディレクトリは `EXCLUDE`（`_archive` `docs` `scripts` `vendor`）以外すべて `$HOME` へリンクされる（stow規約: 各パッケージは `$HOME` 相対パスで配置）
+- dotfiles直下のディレクトリは `EXCLUDE`（`_archive` `docs` `poc` `scripts` `vendor`）以外すべて `$HOME` へリンクされる（stow規約: 各パッケージは `$HOME` 相対パスで配置）
 - スキル共有: 正規置き場は `~/.agents/skills`（OpenCode / Pi はここをネイティブに読む）
   - スキルは自作・外部由来を問わずすべて `agents/.agents/skills/` のファイルとして管理し、上記の仕組みでリンクする（外部由来は vendor 方式: 上流からコピーして取り込み、更新は再コピー）
   - 例外は Plannotator のスキルだけ（インストーラが `~/.agents/skills/plannotator-*` に実ディレクトリとして配置し、自前で更新する）
