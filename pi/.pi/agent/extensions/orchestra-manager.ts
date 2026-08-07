@@ -17,7 +17,8 @@
  */
 
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import { DynamicBorder } from "@earendil-works/pi-coding-agent";
+import { Container, type SelectItem, SelectList, Text, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 import { exec, execSync } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -316,8 +317,80 @@ export default function orchestraManager(pi: ExtensionAPI) {
         return;
       }
 
-      // Default: show list
-      ctx.ui.setEditorText(formatGroupList());
+      // Default: interactive overlay
+      if (groups.length === 0) {
+        ctx.ui.notify("No active orchestras.", "info");
+        return;
+      }
+
+      const items: SelectItem[] = groups.map((g) => ({
+        value: g.tabId,
+        label: g.label || g.tabId.split(":")[1] || g.tabId,
+        description: `${g.agents.length} agents • ${g.agents.map((a) => a.agent_status).join(", ")}`,
+      }));
+      items.push({ value: "__close_all__", label: "Close All", description: `Close all ${groups.length} group(s)` });
+      items.push({ value: "__cancel__", label: "Cancel", description: "" });
+
+      const result = await ctx.ui.custom<string | null>((tui, theme, _kb, done) => {
+        const container = new Container();
+        container.addChild(new DynamicBorder((s: string) => theme.fg("accent", s)));
+        container.addChild(new Text(theme.fg("accent", theme.bold("Orchestra Groups")), 1, 0));
+
+        const selectList = new SelectList(items, Math.min(items.length + 1, 15), {
+          selectedPrefix: (t) => theme.fg("accent", t),
+          selectedText: (t) => theme.fg("accent", t),
+          description: (t) => theme.fg("muted", t),
+          scrollInfo: (t) => theme.fg("dim", t),
+          noMatch: (t) => theme.fg("warning", t),
+        });
+
+        selectList.onSelect = (item) => done(item.value);
+        selectList.onCancel = () => done(null);
+        container.addChild(selectList);
+        container.addChild(new Text(theme.fg("dim", "↑↓ select • enter confirm • esc cancel"), 1, 0));
+        container.addChild(new DynamicBorder((s: string) => theme.fg("accent", s)));
+
+        return {
+          render: (w) => container.render(w),
+          invalidate: () => container.invalidate(),
+          handleInput: (data) => { selectList.handleInput(data); tui.requestRender(); },
+        };
+      }, { overlay: true });
+
+      if (!result || result === "__cancel__") return;
+
+      if (result === "__close_all__") {
+        const ok = await ctx.ui.confirm(
+          "Close all?",
+          `Close ${groups.reduce((s, g) => s + g.agents.length, 0)} panes in ${groups.length} group(s)?`,
+        );
+        if (!ok) return;
+        let totalOk = 0;
+        let totalFail = 0;
+        for (const g of groups) {
+          const { success, fail } = closeGroup(g);
+          totalOk += success;
+          totalFail += fail;
+        }
+        ctx.ui.notify(`Closed ${totalOk} panes${totalFail > 0 ? `, ${totalFail} failed` : ""}.`, "info");
+        return;
+      }
+
+      // Close single group
+      const match = groups.find((g) => g.tabId === result);
+      if (!match) return;
+      const ok = await ctx.ui.confirm(
+        "Close orchestra?",
+        `Close "${match.label || match.tabId}" (${match.agents.length} agents)?`,
+      );
+      if (!ok) return;
+      const { success, fail } = closeGroup(match);
+      const label = match.label || match.tabId;
+      if (fail === 0) {
+        ctx.ui.notify(`Closed ${success} panes: ${label}`, "info");
+      } else {
+        ctx.ui.notify(`Closed ${success}/${success + fail} panes: ${label}`, "warning");
+      }
     },
   });
 }
