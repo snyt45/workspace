@@ -11,7 +11,8 @@
     "npm:pi-compact-thinking",
     "npm:@aliou/pi-guardrails",
     "npm:pi-ask-user",
-    "npm:@dietrichgebert/ponytail"
+    "npm:@dietrichgebert/ponytail",
+    "npm:@feniix/pi-notion"
   ],
   "lastChangelogVersion": "0.80.3",
   "hideThinkingBlock": false
