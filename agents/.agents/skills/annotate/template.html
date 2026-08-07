@@ -12,6 +12,7 @@
   --code-bg:#fffdf8; --ln:#b8b2a4;
   --y:#b8751a; --y-mark:rgba(255,176,0,.16);
   --r:#c45a38; --r-mark:rgba(216,90,56,.13);
+  --b:#4a74b8; --b-mark:rgba(90,141,214,.15);
   --card-bg:#fffef9;
   --hand:"Shantell Sans","Hiragino Maru Gothic ProN","BIZ UDGothic",cursive,sans-serif;
 }
@@ -21,6 +22,7 @@
     --code-bg:#232219; --ln:#5f5a4c;
     --y:#e0b13e; --y-mark:rgba(224,177,62,.20);
     --r:#e07a5a; --r-mark:rgba(224,110,80,.18);
+    --b:#7aa5e0; --b-mark:rgba(122,165,224,.18);
     --card-bg:#2a2822;
   }
 }
@@ -29,6 +31,7 @@
   --code-bg:#232219; --ln:#5f5a4c;
   --y:#e0b13e; --y-mark:rgba(224,177,62,.20);
   --r:#e07a5a; --r-mark:rgba(224,110,80,.18);
+  --b:#7aa5e0; --b-mark:rgba(122,165,224,.18);
   --card-bg:#2a2822;
 }
 :root[data-theme="light"]{
@@ -36,37 +39,31 @@
   --code-bg:#fffdf8; --ln:#b8b2a4;
   --y:#b8751a; --y-mark:rgba(255,176,0,.16);
   --r:#c45a38; --r-mark:rgba(216,90,56,.13);
+  --b:#4a74b8; --b-mark:rgba(90,141,214,.15);
   --card-bg:#fffef9;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);
   font-family:"Hiragino Sans","Noto Sans CJK JP",system-ui,sans-serif;
   font-size:15px;line-height:1.7}
-.wrap{max-width:1360px;margin:0 auto;padding:24px 20px 80px}
+.wrap{max-width:1500px;margin:0 auto;padding:24px 20px 80px}
 header h1{font-size:20px;margin:0 0 4px;font-family:ui-monospace,monospace}
-header .sum{color:var(--dim);margin:0 0 14px;max-width:900px}
+header .sum{color:var(--dim);margin:0 0 14px;max-width:1100px}
 .legend{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px;font-size:13px}
-.legend .chip{border:1.5px solid var(--line);padding:6px 12px;background:var(--card-bg);
-  border-radius:255px 15px 225px 15px/15px 225px 15px 255px}
-.legend .c1 b{color:var(--y)} .legend .c2 b{color:var(--r)}
-/* entry & flow sections */
-#flow,#entry{max-width:760px;border:1.5px solid var(--line);background:var(--card-bg);
-  border-radius:15px 255px 15px 225px/225px 15px 255px 15px;
-  padding:12px 18px;margin:0 0 18px;font-size:13.5px}
-#flow h2,#entry h2{margin:0 0 6px;font-size:13.5px;font-family:var(--hand);transform:rotate(-0.8deg)}
-/* entry: stack trace / component tree */
+.legend .chip{border:1.5px solid var(--line);padding:6px 12px;background:var(--card-bg);border-radius:8px}
+.legend .c1 b{color:var(--y)} .legend .c2 b{color:var(--r)} .legend .c3 b{color:var(--b)}
+/* entry & flow sections — plain rectangles, full width */
+#flow,#entry{width:100%;border:1.5px solid var(--line);background:var(--card-bg);
+  border-radius:10px;padding:14px 18px;margin:0 0 16px;font-size:13.5px}
+#flow h2,#entry h2{margin:0 0 8px;font-size:14px;font-weight:600}
+#entry .enote{margin:8px 0 0;padding-left:1.2em;color:var(--dim);font-size:12.5px}
+#entry .enote li{margin:2px 0}
+/* entry: stack trace */
 .stack{margin:8px 0 2px}
 .stack .snode{display:inline-block;border:1.5px solid var(--fg);opacity:.88;padding:2px 10px;
-  font-family:ui-monospace,monospace;font-size:12px;background:var(--code-bg);
-  border-radius:255px 15px 225px 15px/15px 225px 15px 255px}
+  font-family:ui-monospace,monospace;font-size:12px;background:var(--code-bg);border-radius:8px}
 .stack .loc{font-size:10.5px;color:var(--dim);margin-left:8px;font-family:ui-monospace,monospace}
 .stack .sarr{margin:1px 0 1px 22px;color:var(--dim)}
-.tree ul{list-style:none;margin:2px 0;padding-left:1.3em;border-left:1.5px dashed var(--line)}
-.tree>ul{border-left:none;padding-left:0}
-.tree li{margin:3px 0}
-.tree .tn{font-family:ui-monospace,monospace;font-size:12px}
-.tree .here .tn{border:1.5px solid var(--r);padding:1px 8px;
-  border-radius:255px 15px 225px 15px/15px 225px 15px 255px;background:var(--r-mark)}
 #flow .intro{margin:0 0 4px}
 #flow ol{margin:0;padding-left:1.6em}
 #flow li{margin:4px 0}
@@ -76,25 +73,58 @@ header .sum{color:var(--dim);margin:0 0 14px;max-width:900px}
 .fig{margin:10px 0 4px}
 .fig .frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}
 .fig .node{border:1.5px solid var(--fg);opacity:.85;padding:2px 10px;
-  font-family:ui-monospace,monospace;font-size:12px;
-  border-radius:255px 15px 225px 15px/15px 225px 15px 255px;background:var(--code-bg)}
+  font-family:ui-monospace,monospace;font-size:12px;border-radius:8px;background:var(--code-bg)}
 .fig .arrow{display:flex;flex-direction:column;align-items:center;min-width:60px}
 .fig .arrow .albl{font-size:11px;color:var(--dim);font-family:var(--hand);
   transform:rotate(-2deg);margin-bottom:-4px}
-.fig .cap{font-size:12px;color:var(--dim);margin-top:2px;font-family:var(--hand)}
-/* board = code + margin notes + overlay */
-#board{position:relative;display:flex;align-items:flex-start;gap:26px}
-#codearea{flex:1;min-width:0;overflow-x:auto;border:1.5px solid var(--line);
-  background:var(--code-bg);border-radius:8px;padding:14px 0}
-#notes{width:360px;flex:0 0 360px;position:relative;min-height:100px}
+.fig .cap{font-size:12px;color:var(--dim);margin-top:2px}
+/* layout: sidebar + code + notes */
+#topbar{display:none;margin:0 0 10px}
+#topbar select{max-width:100%;font-size:13px;padding:5px 8px;border:1.5px solid var(--line);
+  background:var(--card-bg);color:var(--fg);border-radius:8px}
+#board{position:relative;display:flex;align-items:flex-start;gap:18px}
+#sidebar{flex:0 0 250px;border:1.5px solid var(--line);background:var(--card-bg);
+  border-radius:10px;align-self:flex-start;position:sticky;top:14px;
+  max-height:calc(100vh - 28px);overflow-y:auto}
+#sidebar .shead{padding:8px 12px;font-size:11.5px;font-weight:600;color:var(--dim);
+  border-bottom:1.5px dashed var(--line);font-family:ui-monospace,monospace;
+  position:sticky;top:0;background:var(--card-bg)}
+.sdir{display:flex;align-items:center;gap:6px;padding:5px 0;cursor:pointer;
+  font-size:12.5px;font-weight:600;border-bottom:1px dashed var(--line)}
+.sdir:hover{background:rgba(128,120,90,.08)}
+.sdir .tri{font-size:10px;color:var(--dim);width:10px;flex:0 0 auto}
+.sfile{display:flex;align-items:center;gap:8px;padding:7px 0;cursor:pointer;
+  border-bottom:1px dashed var(--line)}
+.sfile:hover{background:rgba(128,120,90,.08)}
+.sfile.active{background:var(--y-mark)}
+.sfile .tri{font-size:10px;color:var(--dim);width:10px;flex:0 0 auto}
+.sfile.viewed .fname{text-decoration:line-through;color:var(--dim)}
+.sfile .fname{flex:1;font-family:ui-monospace,monospace;font-size:11.5px;
+  word-break:break-all;line-height:1.4}
+.sfile .flines{color:var(--dim);font-size:10.5px;font-family:ui-monospace,monospace;flex:0 0 auto}
+.sfile input{accent-color:#b8751a;cursor:pointer;flex:0 0 auto}
+#mainarea{flex:1;min-width:0}
+#codearea{padding:0}
+.filewrap{border:1.5px solid var(--line);border-radius:10px;margin-bottom:16px;
+  overflow:hidden;background:var(--code-bg)}
+#notes{width:330px;flex:0 0 330px;position:relative;min-height:100px}
 #overlay{position:absolute;top:0;left:0;pointer-events:none;overflow:visible;z-index:5}
-.filehead{padding:10px 14px 4px;font-family:ui-monospace,monospace;font-size:13px;
-  font-weight:600;color:var(--dim);border-bottom:1px dashed var(--line);margin-bottom:4px}
-.line{display:flex;min-width:max-content;padding-right:14px}
+.filehead{padding:8px 14px;font-family:ui-monospace,monospace;font-size:13px;
+  font-weight:600;color:var(--dim);border-bottom:1.5px solid var(--line);
+  display:flex;align-items:center;gap:8px;cursor:pointer;background:rgba(128,120,90,.06);
+  border-radius:10px 10px 0 0}
+.filehead:hover{background:rgba(128,120,90,.11)}
+.filehead .ftri{font-size:11px;width:12px;flex:0 0 auto;color:var(--dim)}
+.filehead .fname{flex:0 1 auto;word-break:break-all}
+.filehead .viewedchk{margin-left:auto;font-size:11px;font-weight:400}
+.filehead .viewedchk input{accent-color:#b8751a;cursor:pointer}
+.flines{padding:0}
+.line{display:flex;padding-right:14px}
 .line:hover{background:rgba(128,120,90,.06)}
 .ln{flex:0 0 3.2em;text-align:right;padding-right:1.2em;color:var(--ln);
   user-select:none;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:13px;line-height:1.85}
-.lc{white-space:pre;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:13px;line-height:1.85}
+.lc{white-space:pre-wrap;min-width:0;overflow-wrap:break-word;
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:13px;line-height:1.85}
 /* neat-annotations style mark */
 mark{color:inherit;border-radius:3px;cursor:pointer;background:var(--y-mark);
   box-shadow:-0.15em 0 0 0 var(--y-mark),0.15em 0 0 0 var(--y-mark);
@@ -102,14 +132,20 @@ mark{color:inherit;border-radius:3px;cursor:pointer;background:var(--y-mark);
 mark.lv2{background:var(--r-mark);
   box-shadow:-0.15em 0 0 0 var(--r-mark),0.15em 0 0 0 var(--r-mark);
   border-bottom:1.5px solid var(--r)}
+/* trace: blue data scribble */
+.trace{background:var(--b-mark);
+  box-shadow:-0.15em 0 0 0 var(--b-mark),0.15em 0 0 0 var(--b-mark);
+  border-bottom:1.5px dotted var(--b);border-radius:3px;cursor:pointer;margin-left:1.6em;
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11.5px;color:var(--dim);
+  white-space:pre-wrap}
+.trace::before{content:"⟵ ";opacity:.7}
 /* margin note card */
-.card{background:var(--card-bg);border:1.5px solid var(--r);
-  border-radius:255px 15px 225px 15px/15px 225px 15px 255px;
+.card{background:var(--card-bg);border:1.5px solid var(--r);border-radius:10px;
   padding:9px 14px 10px;font-size:13px;line-height:1.6}
 .card.warn{border-color:var(--y)}
 #notes .card{position:absolute;left:0;width:100%}
 .card h3{margin:0 0 4px;font-size:13px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
-  font-family:var(--hand);transform:rotate(-1.2deg)}
+  font-weight:600}
 .card h3 .tag{color:var(--r);font-weight:600}
 .card.warn h3 .tag{color:var(--y)}
 .card h3 code{font-family:ui-monospace,monospace;font-size:12px;color:var(--dim);font-weight:400}
@@ -126,22 +162,20 @@ mark.lv2{background:var(--r-mark);
 @keyframes fl{0%{box-shadow:0 0 0 4px var(--r-mark)}100%{box-shadow:none}}
 .line.flash{animation:lfl 1.2s}
 @keyframes lfl{0%{background:var(--r-mark)}100%{background:none}}
-/* trace: penciled-in data state at end of line */
-.trace{margin-left:1.8em;font-family:var(--hand);font-size:11.5px;color:var(--dim);
-  white-space:pre;transform:rotate(-0.6deg);display:inline-block}
-.trace::before{content:"⟵ ";opacity:.7}
 /* inline (narrow screen) card placement */
 #codearea .card{margin:8px 14px 10px calc(3.2em + 14px);max-width:620px}
 /* tooltip */
 #tip{position:absolute;z-index:10;max-width:380px;font-size:12.5px;line-height:1.55;
-  background:var(--card-bg);border:1.5px solid var(--y);color:var(--fg);
-  border-radius:15px 225px 15px 255px/255px 15px 225px 15px;
+  background:var(--card-bg);border:1.5px solid var(--y);color:var(--fg);border-radius:10px;
   padding:7px 12px;pointer-events:none;display:none}
-#tip b{color:var(--y);font-size:11.5px;display:block;font-family:var(--hand)}
+#tip b{color:var(--y);font-size:11.5px;display:block}
 #tip .tipex{font-family:ui-monospace,monospace;font-size:11.5px;display:block;
   margin-top:3px;color:var(--dim);white-space:pre-wrap}
 footer{margin-top:26px;color:var(--dim);font-size:12px}
-@media (max-width:1000px){ #notes,#overlay{display:none} }
+@media (max-width:1100px){
+  #topbar{display:block}
+  #sidebar,#notes,#overlay{display:none}
+}
 </style>
 </head>
 <body>
@@ -152,12 +186,15 @@ footer{margin-top:26px;color:var(--dim);font-size:12px}
     <div class="legend">
       <span class="chip c1"><b>🟡 注意</b> — 罠がある構文。<u>ホバー/タップ</u>でメモ表示</span>
       <span class="chip c2"><b>🔴 警告</b> — 知らないと推測不能な構文。右の欄外カード参照</span>
+      <span class="chip c3"><b>🔵 データ</b> — この時点の実データ。ホバーで出どころを表示</span>
     </div>
     <div id="entry" hidden></div>
     <div id="flow" hidden></div>
   </header>
+  <div id="topbar"><select id="filesel"></select></div>
   <div id="board">
-    <div id="codearea"><div id="code"></div></div>
+    <div id="sidebar"><div class="shead">ファイル</div></div>
+    <div id="mainarea"><div id="codearea"><div id="code"></div></div></div>
     <div id="notes"></div>
     <svg id="overlay"></svg>
   </div>
@@ -183,30 +220,69 @@ let seed = 7;
 function rnd(){ seed = (seed*1103515245+12345) & 0x7fffffff; return seed/0x7fffffff; }
 function j(v){ return (rnd()-0.5)*2*v; }
 
-/* ---- parse #src: ⟪path⟫ file delimiters + ⟦id⟧...⟦⟧ markers ---- */
+/* ---- parse #src into per-file chunks ---- */
 let raw = document.getElementById("src").textContent;
 raw = raw.replace(/^\n/,"").replace(/\n[ \t]*$/,"");
 const codeEl = document.getElementById("code");
 const notesEl = document.getElementById("notes");
-const fileLines = [[]];           // fileLines[fileIdx] = [lineEl, ...]
-const cardInfo = [];              // {lineEl, anchorEl, cardEl} sorted by code order
-const firstCardOf = {};           // ann id -> cardEl
+const files = [];                 // {path, lines:[lineEl], cards:[{lineEl,anchorEl,cardEl}], wrap}
+const firstCardOf = {};           // "fileIdx:id" -> cardEl
+const fileSel = document.getElementById("filesel");
+let current = -1;
 let n1=0, n2=0;
+
+function newFile(path){
+  const f = {path, lines: [], cards: [], collapsed: false};
+  f.wrap = document.createElement("div");
+  f.wrap.className = "filewrap";
+  const fh = document.createElement("div");
+  fh.className = "filehead";
+  const tri = document.createElement("span");
+  tri.className = "ftri"; tri.textContent = "▾";
+  const name = document.createElement("span");
+  name.className = "fname"; name.textContent = "📄 " + path;
+  const vc = document.createElement("label");
+  vc.className = "viewedchk";
+  vc.innerHTML = `<input type="checkbox"> viewed`;
+  vc.addEventListener("click", e => e.stopPropagation());
+  vc.querySelector("input").addEventListener("change", () => {
+    viewed[f.path] = vc.querySelector("input").checked;
+    if (f.row) {
+      f.row.classList.toggle("viewed", viewed[f.path]);
+      f.row.querySelector("input").checked = viewed[f.path];
+    }
+    saveViewed();
+  });
+  fh.append(tri, name, vc);
+  f.body = document.createElement("div");
+  f.body.className = "flines";
+  f.wrap.append(fh, f.body);
+  codeEl.appendChild(f.wrap);
+  files.push(f);
+  const opt = document.createElement("option");
+  opt.value = files.length - 1;
+  opt.textContent = path;
+  fileSel.appendChild(opt);
+  fh.addEventListener("click", () => toggleFile(files.indexOf(f)));
+  return f;
+}
 
 raw.split("\n").forEach(text => {
   const fm = text.match(/^⟪(.+)⟫$/);
   if (fm) {
-    if (fileLines[fileLines.length-1].length) fileLines.push([]);
-    const fh = document.createElement("div");
-    fh.className = "filehead"; fh.textContent = "📄 " + fm[1];
-    codeEl.appendChild(fh);
+    if (!files.length) return newFile(fm[1]);
+    // starting a new file: the previous one must have content
+    if (files[files.length-1].lines.length) return newFile(fm[1]);
+    files[files.length-1].path = fm[1];
+    files[files.length-1].wrap.querySelector(".filehead .fname").textContent = "📄 " + fm[1];
     return;
   }
-  const cur = fileLines[fileLines.length-1];
+  let cur = files[files.length-1];
+  if (!cur) cur = newFile(meta.title || "source");
   const line = document.createElement("div");
   line.className = "line";
   const ln = document.createElement("span");
-  ln.className = "ln"; ln.textContent = cur.length+1;
+  ln.className = "ln"; ln.textContent = cur.lines.length+1;
   const lc = document.createElement("span");
   lc.className = "lc";
   const re = /⟦([A-Za-z0-9_-]+)⟧([\s\S]*?)⟦⟧/g;
@@ -219,24 +295,170 @@ raw.split("\n").forEach(text => {
     if (a && a.lv===2) mk.className = "lv2";
     mk.dataset.id = id;
     lc.appendChild(mk);
-    if (a && a.lv===2 && !firstCardOf[id]) {
-      const card = makeAnnCard(id, cur.length+1);
-      firstCardOf[id] = card;
-      cardInfo.push({lineEl: line, anchorEl: mk, cardEl: card});
+    if (a && a.lv===2 && !firstCardOf[files.length-1+":"+id]) {
+      const card = makeAnnCard(id, cur.lines.length+1);
+      firstCardOf[files.length-1+":"+id] = card;
+      cur.cards.push({lineEl: line, anchorEl: mk, cardEl: card, lineNo: cur.lines.length+1});
     }
     last = re.lastIndex;
   }
   if (last < text.length) lc.appendChild(document.createTextNode(text.slice(last)));
   if (text === "") lc.appendChild(document.createTextNode("​"));
   line.appendChild(ln); line.appendChild(lc);
-  codeEl.appendChild(line);
-  cur.push(line);
+  cur.body.appendChild(line);
+  cur.lines.push(line);
 });
 for (const id in ANN) (ANN[id].lv===2 ? n2++ : n1++);
 
-function lineAt(f, l){ return (fileLines[f||0]||[])[l-1]; }
+/* ---- traces: blue data scribbles ---- */
+(meta.trace||[]).forEach(tr => {
+  const f = tr.f ?? tr.file ?? 0;
+  const file = files[f]; if (!file) return;
+  const lineEl = file.lines[tr.line-1]; if (!lineEl) return;
+  const sp = document.createElement("span");
+  sp.className = "trace";
+  sp.textContent = tr.text || "";
+  sp.dataset.f = f;
+  sp.dataset.ref = tr.ref ?? "";
+  lineEl.querySelector(".lc").appendChild(sp);
+});
+
+/* ---- warn cards from meta.issues ---- */
+(meta.issues||[]).forEach(it => {
+  const f = it.f ?? it.file ?? 0;
+  const file = files[f]; if (!file) return;
+  const lineEl = file.lines[it.line-1]; if (!lineEl) return;
+  const c = document.createElement("div");
+  c.className = "card warn";
+  const h = document.createElement("h3");
+  h.innerHTML = `<span class="tag">⚠ 注意</span>`;
+  h.appendChild(lnrefEl(f, it.line));
+  c.appendChild(h);
+  const t = document.createElement("p"); t.className = "txt";
+  t.innerHTML = inline(it.text||"");
+  c.appendChild(t);
+  file.cards.push({lineEl, anchorEl: lineEl.querySelector(".lc"), cardEl: c, lineNo: it.line});
+});
+document.getElementById("foot").textContent =
+  `注釈: 🔴 ${n2} / 🟡 ${n1} / ⚠ ${(meta.issues||[]).length} — ${meta.lang||""}`;
+
+/* ---- sidebar: file tree with viewed checkboxes ---- */
+const sidebarEl = document.getElementById("sidebar");
+const viewedKey = "annotate-viewed:" + (meta.title||"");
+let viewed = {};
+try { viewed = JSON.parse(localStorage.getItem(viewedKey) || "{}"); } catch(e){}
+function saveViewed(){ try { localStorage.setItem(viewedKey, JSON.stringify(viewed)); } catch(e){} }
+
+/* build path trie: root.dirs = {name: node}, node.files = [fileIdx] */
+const root = {dirs: {}, files: []};
+const rootEl = document.createElement("div");
+files.forEach((f, i) => {
+  const parts = f.path.split("/");
+  let node = root;
+  parts.slice(0, -1).forEach(p => {
+    node.dirs[p] = node.dirs[p] || {dirs: {}, files: []};
+    node = node.dirs[p];
+  });
+  node.files.push(i);
+});
+
+/* nested, collapsible directory tree (GitHub-like) */
+const open = new Set();
+(function collect(n, p){
+  Object.keys(n.dirs).forEach(k => {
+    const key = p ? p + "/" + k : k;
+    open.add(key);
+    collect(n.dirs[k], key);
+  });
+})(root, "");
+
+function buildTree(n, depth, prefix){
+  const frag = document.createDocumentFragment();
+  Object.keys(n.dirs).forEach(name => {
+    const child = n.dirs[name];
+    const key = prefix ? prefix + "/" + name : name;
+    const row = document.createElement("div");
+    row.className = "sdir";
+    row.style.paddingLeft = (10 + depth * 13) + "px";
+    row.innerHTML = `<span class="tri">▾</span><span class="dname"></span>`;
+    row.querySelector(".dname").textContent = name;
+    const childWrap = document.createElement("div");
+    childWrap.appendChild(buildTree(child, depth + 1, key));
+    row.addEventListener("click", () => {
+      const isOpen = open.has(key);
+      if (isOpen) open.delete(key); else open.add(key);
+      row.querySelector(".tri").textContent = isOpen ? "▸" : "▾";
+      childWrap.style.display = isOpen ? "none" : "";
+    });
+    frag.appendChild(row);
+    frag.appendChild(childWrap);
+  });
+  n.files.forEach(i => {
+    const f = files[i];
+    const row = document.createElement("div");
+    row.className = "sfile";
+    row.style.paddingLeft = (10 + depth * 13) + "px";
+    row.innerHTML = `<span class="tri">▸</span><input type="checkbox"><span class="fname"></span><span class="flines"></span>`;
+    row.querySelector(".fname").textContent = f.path.split("/").pop();
+    row.querySelector(".flines").textContent = f.lines.length + "行";
+    const chk = row.querySelector("input");
+    chk.checked = !!viewed[f.path];
+    if (chk.checked) row.classList.add("viewed");
+    chk.addEventListener("click", e => e.stopPropagation());
+    chk.addEventListener("change", () => {
+      viewed[f.path] = chk.checked;
+      row.classList.toggle("viewed", chk.checked);
+      saveViewed();
+    });
+    row.addEventListener("click", () => reveal(i));
+    f.row = row;
+    frag.appendChild(row);
+  });
+  return frag;
+}
+rootEl.appendChild(buildTree(root, 0, ""));
+sidebarEl.appendChild(rootEl);
+
+function select(i){
+  if (i < 0 || i >= files.length) return;
+  current = i;
+  files.forEach((f, j) => {
+    if (!f.row) return;
+    f.row.classList.toggle("active", j === i);
+    f.row.querySelector(".tri").textContent = j === i ? "▾" : "▸";
+  });
+  const vc = files[i].wrap.querySelector(".filehead .viewedchk input");
+  vc.checked = !!viewed[files[i].path];
+  // detach previous cards, attach active file's
+  (files.flatMap(f => f.cards)).forEach(ci => ci.cardEl.parentNode && ci.cardEl.parentNode.removeChild(ci.cardEl));
+  if (document.documentElement.clientWidth > 1100) files[i].cards.forEach(ci => notesEl.appendChild(ci.cardEl));
+  else files[i].cards.forEach(ci => ci.lineEl.after(ci.cardEl));
+  fileSel.value = i;
+  layout();
+}
+
+function toggleFile(i){
+  const f = files[i];
+  f.collapsed = !f.collapsed;
+  f.body.style.display = f.collapsed ? "none" : "";
+  f.wrap.querySelector(".ftri").textContent = f.collapsed ? "▸" : "▾";
+}
+
+function reveal(i){
+  if (i < 0 || i >= files.length) return;
+  if (files[i].collapsed) toggleFile(i);
+  select(i);
+  files[i].wrap.scrollIntoView({behavior: "smooth", block: "start"});
+}
+fileSel.addEventListener("change", () => reveal(parseInt(fileSel.value, 10)));
+
+/* ---- line jumping ---- */
 function flashLine(f, l){
-  const el = lineAt(f, l); if (!el) return;
+  if (f === undefined || f === null) f = 0;
+  if (files[f] && files[f].collapsed) toggleFile(f);
+  if (f !== current) select(f);
+  const el = (files[f]||{}).lines ? files[f].lines[l-1] : null;
+  if (!el) return;
   el.scrollIntoView({behavior:"smooth", block:"center"});
   el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
 }
@@ -247,58 +469,11 @@ function lnrefEl(f, l){
   return a;
 }
 
-/* ---- trace: data-in-flight scribbles at end of lines ---- */
-(meta.trace||[]).forEach(tr => {
-  const lineEl = lineAt(tr.f, tr.line);
-  if (!lineEl) return;
-  const sp = document.createElement("span");
-  sp.className = "trace";
-  sp.textContent = tr.text || "";
-  lineEl.querySelector(".lc").appendChild(sp);
-  if (tr.ref) { sp.appendChild(document.createTextNode(" ")); sp.appendChild(lnrefEl(tr.reff ?? tr.f, tr.ref)); }
-});
-
-/* ---- warn cards from meta.issues: placed at their line like ann cards ---- */
-(meta.issues||[]).forEach(it => {
-  const lineEl = lineAt(it.file, it.line);
-  if (!lineEl) return;
-  const c = document.createElement("div");
-  c.className = "card warn";
-  const h = document.createElement("h3");
-  h.innerHTML = `<span class="tag">⚠ 注意</span>`;
-  h.appendChild(lnrefEl(it.file, it.line));
-  c.appendChild(h);
-  const t = document.createElement("p"); t.className = "txt";
-  t.innerHTML = inline(it.text||"");
-  c.appendChild(t);
-  cardInfo.push({lineEl, anchorEl: lineEl.querySelector(".lc"), cardEl: c});
-});
-document.getElementById("foot").textContent =
-  `注釈: 🔴 ${n2} / 🟡 ${n1} / ⚠ ${(meta.issues||[]).length} — ${meta.lang||""}`;
-
-function makeFig(fig){
-  const w = document.createElement("div"); w.className = "fig";
-  (fig.rows||[]).forEach(row => {
-    const r = document.createElement("div"); r.className = "frow";
-    const [a, label, b] = row;
-    const na = document.createElement("span"); na.className = "node"; na.textContent = a;
-    r.appendChild(na);
-    const ar = document.createElement("span"); ar.className = "arrow";
-    if (label) { const l = document.createElement("span"); l.className = "albl"; l.textContent = label; ar.appendChild(l); }
-    ar.insertAdjacentHTML("beforeend", roughArrowSVG());
-    r.appendChild(ar);
-    if (b !== undefined) { const nb = document.createElement("span"); nb.className = "node"; nb.textContent = b; r.appendChild(nb); }
-    w.appendChild(r);
-  });
-  if (fig.caption) { const c = document.createElement("div"); c.className = "cap"; c.textContent = fig.caption; w.appendChild(c); }
-  return w;
-}
-
-/* ---- entry section: stack trace / component tree ---- */
+/* ---- entry section: 呼び出し経路 ---- */
 const entryEl = document.getElementById("entry");
 if (meta.entry && (meta.entry.stack || meta.entry.tree)) {
   entryEl.hidden = false;
-  entryEl.innerHTML = `<h2>🚪 ${esc(meta.entry.title || "入口 — どこから来るか")}</h2>`;
+  entryEl.innerHTML = `<h2>${esc(meta.entry.title || "呼び出し経路")}</h2>`;
   if (meta.entry.stack) {
     const w = document.createElement("div"); w.className = "stack";
     meta.entry.stack.forEach((st, i) => {
@@ -338,16 +513,23 @@ if (meta.entry && (meta.entry.stack || meta.entry.tree)) {
     w.appendChild(root);
     entryEl.appendChild(w);
   }
-  if (meta.entry.note) { const p = document.createElement("p");
-    p.style.cssText = "margin:6px 0 0;font-size:12.5px;color:var(--dim)";
-    p.innerHTML = inline(meta.entry.note); entryEl.appendChild(p); }
+  if (meta.entry.note) {
+    const ul = document.createElement("ul"); ul.className = "enote";
+    meta.entry.note.split("\n").forEach(line => {
+      const t = line.trim(); if (!t) return;
+      const li = document.createElement("li");
+      li.innerHTML = inline(t);
+      ul.appendChild(li);
+    });
+    entryEl.appendChild(ul);
+  }
 }
 
-/* ---- flow section ---- */
+/* ---- flow section: 処理の流れ ---- */
 const flowEl = document.getElementById("flow");
 if (meta.flow && (meta.flow.steps||[]).length) {
   flowEl.hidden = false;
-  flowEl.innerHTML = "<h2>🧭 流れ — 実例で追う</h2>";
+  flowEl.innerHTML = `<h2>${esc(meta.flow.title || "処理の流れ")}</h2>`;
   if (meta.flow.intro) { const p = document.createElement("p"); p.className = "intro"; p.innerHTML = inline(meta.flow.intro); flowEl.appendChild(p); }
   const ol = document.createElement("ol");
   meta.flow.steps.forEach(st => {
@@ -358,6 +540,24 @@ if (meta.flow && (meta.flow.steps||[]).length) {
   });
   flowEl.appendChild(ol);
   if (meta.flow.fig) flowEl.appendChild(makeFig(meta.flow.fig));
+}
+
+function makeFig(fig){
+  const w = document.createElement("div"); w.className = "fig";
+  (fig.rows||[]).forEach(row => {
+    const r = document.createElement("div"); r.className = "frow";
+    const [a, label, b] = row;
+    const na = document.createElement("span"); na.className = "node"; na.textContent = a;
+    r.appendChild(na);
+    const ar = document.createElement("span"); ar.className = "arrow";
+    if (label) { const l = document.createElement("span"); l.className = "albl"; l.textContent = label; ar.appendChild(l); }
+    ar.insertAdjacentHTML("beforeend", roughArrowSVG());
+    r.appendChild(ar);
+    if (b !== undefined) { const nb = document.createElement("span"); nb.className = "node"; nb.textContent = b; r.appendChild(nb); }
+    w.appendChild(r);
+  });
+  if (fig.caption) { const c = document.createElement("div"); c.className = "cap"; c.textContent = fig.caption; w.appendChild(c); }
+  return w;
 }
 
 function makeAnnCard(id, lineNo){
@@ -384,38 +584,37 @@ function makeAnnCard(id, lineNo){
   return c;
 }
 
-/* wire card line-jump after fileLines is complete */
-cardInfo.forEach(ci => {
+/* wire card line-jump */
+files.forEach((f, fi) => f.cards.forEach(ci => {
   const lno = ci.cardEl.querySelector(".lno");
-  if (lno && !lno.onclick) lno.onclick = () => {
-    ci.lineEl.scrollIntoView({behavior:"smooth", block:"center"});
-    ci.lineEl.classList.remove("flash"); void ci.lineEl.offsetWidth; ci.lineEl.classList.add("flash");
-  };
-});
+  if (lno) lno.onclick = () => flashLine(fi, ci.lineNo);
+}));
 
 /* ---- layout: margin notes (wide) / inline (narrow) ---- */
 const board = document.getElementById("board");
 const codearea = document.getElementById("codearea");
 const overlay = document.getElementById("overlay");
 let marginMode = null;
-cardInfo.sort((x, y) => {
-  const p = x.lineEl.compareDocumentPosition(y.lineEl);
-  return (p & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : (p & Node.DOCUMENT_POSITION_PRECEDING) ? 1 : 0;
-});
+
+function currentCards(){ return current >= 0 ? files[current].cards : []; }
 
 function layout(){
-  const wide = document.documentElement.clientWidth > 1000;
+  const wide = document.documentElement.clientWidth > 1100;
   if (wide !== marginMode) {
     marginMode = wide;
-    cardInfo.forEach(ci => {
-      if (wide) notesEl.appendChild(ci.cardEl);
-      else ci.lineEl.after(ci.cardEl);
+    files.forEach((f, fi) => {
+      if (fi === current) {
+        f.cards.forEach(ci => {
+          if (wide) notesEl.appendChild(ci.cardEl);
+          else ci.lineEl.after(ci.cardEl);
+        });
+      }
     });
   }
   if (!wide) { overlay.innerHTML = ""; return; }
   const boardTop = board.getBoundingClientRect().top;
   let prevBottom = 0;
-  cardInfo.forEach(ci => {
+  currentCards().forEach(ci => {
     const y = ci.lineEl.getBoundingClientRect().top - boardTop;
     const top = Math.max(y - 4, prevBottom);
     ci.cardEl.style.top = top + "px";
@@ -445,7 +644,7 @@ function draw(){
   overlay.setAttribute("width", b.width);
   overlay.setAttribute("height", board.scrollHeight);
   const caRect = codearea.getBoundingClientRect();
-  cardInfo.forEach((ci, idx) => {
+  currentCards().forEach((ci, idx) => {
     const warn = ci.cardEl.classList.contains("warn");
     const mr = ci.anchorEl.getBoundingClientRect();
     if (mr.right > caRect.right - 8 || mr.left < caRect.left + 46) return; // scrolled out
@@ -477,7 +676,7 @@ function addPath(d, w, op, warn){
   overlay.appendChild(p);
 }
 
-/* ---- tooltip: L1 detail, L2 repeat-occurrence hint ---- */
+/* ---- tooltip: L1 detail, L2 card jump, trace ref ---- */
 const tip = document.getElementById("tip");
 let pinnedMark = null;
 function showTip(mk){
@@ -488,8 +687,21 @@ function showTip(mk){
     tip.innerHTML = `<b>🟡 ${esc(a.name||"")}</b>${inline(a.what||"")}` +
       (a.ex ? `<span class="tipex">${esc(a.ex)}</span>` : "");
   }
+  showTipAt(mk);
+}
+function showTraceTip(el){
+  const f = parseInt(el.dataset.f||0), ref = parseInt(el.dataset.ref||0);
+  tip.innerHTML = `<b style="color:var(--b)">🔵 この時点の実データ</b>` +
+    (ref ? `出どころ <span class="lnref">L${ref}</span>（クリックで移動）` : "");
+  const r = document.createElement("span"); r.className = "tipex"; r.textContent = el.textContent.replace(/^⟵ /,"");
+  tip.appendChild(r);
+  showTipAt(el);
+  const refEl = tip.querySelector(".lnref");
+  if (refEl) refEl.onclick = () => { hideTip(); flashLine(f, ref); };
+}
+function showTipAt(el){
   tip.style.display = "block";
-  const r = mk.getBoundingClientRect();
+  const r = el.getBoundingClientRect();
   const x = r.left + window.scrollX, y = r.bottom + window.scrollY + 8;
   tip.style.left = Math.min(x, window.scrollX + document.documentElement.clientWidth - tip.offsetWidth - 12) + "px";
   tip.style.top = y + "px";
@@ -497,34 +709,45 @@ function showTip(mk){
 function hideTip(){ tip.style.display = "none"; }
 document.addEventListener("mouseover", e => {
   if (pinnedMark) return;
+  const tr = e.target.closest(".trace");
+  if (tr) { showTraceTip(tr); return; }
   const mk = e.target.closest("mark");
   if (mk) showTip(mk); else hideTip();
 });
 document.addEventListener("mouseout", e => { if (!pinnedMark && e.target.closest("mark")) hideTip(); });
 document.addEventListener("click", e => {
+  const tr = e.target.closest(".trace");
+  if (tr) { const f = parseInt(tr.dataset.f||0), ref = parseInt(tr.dataset.ref||0); if (ref) flashLine(f, ref); return; }
   const mk = e.target.closest("mark");
-  if (!mk) {                                  // タップ/クリックが外れたら閉じる
+  if (!mk) {
     if (pinnedMark) { pinnedMark = null; hideTip(); }
     return;
   }
   const a = ANN[mk.dataset.id]; if (!a) return;
   if (a.lv===2) {
     pinnedMark = null; hideTip();
-    const c = firstCardOf[mk.dataset.id];
+    const c = firstCardOf[current+":"+mk.dataset.id];
     if (c) { c.scrollIntoView({behavior:"smooth", block:"center"});
       c.classList.remove("flash"); void c.offsetWidth; c.classList.add("flash"); }
-  } else if (pinnedMark === mk) {             // 同じマークを再タップで閉じる
+  } else if (pinnedMark === mk) {
     pinnedMark = null; hideTip();
-  } else {                                    // 開いたら勝手には閉じない
+  } else {
     pinnedMark = mk; showTip(mk);
   }
 });
 
 window.addEventListener("resize", () => { clearTimeout(layout._t); layout._t = setTimeout(layout, 120); });
-codearea.addEventListener("scroll", () => requestAnimationFrame(draw));
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
 window.addEventListener("load", layout);
-layout();
+select(0);
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    const fi = files.findIndex(f => f.wrap === en.target);
+    if (fi >= 0 && fi !== current) select(fi);
+  });
+}, {rootMargin: "-35% 0px -55% 0px"});
+files.forEach(f => io.observe(f.wrap));
 })();
 </script>
 </body>
