@@ -72,9 +72,13 @@ description: 変更差分を役割別の並列レビューエージェント（�
 | [critical-impact-check](agents/critical-impact-check.md) | クリティカル・顧客影響 |
 | [spec-scope-check](agents/spec-scope-check.md) | 仕様・スコープ |
 
-**担当境界**: 命名の実態・統一・マジックストリングは naming-comment の専任。
-投機的実装を削る判断は spec-scope の専任。
-responsibility は要件から来た拡張だけを見る。
+担当境界:
+
+| エージェント | 他軸と干渉しない範囲 |
+|---|---|
+| naming-comment | 命名の実態・統一・マジックストリングは専任。responsibility は名称に踏み込まない。 |
+| spec-scope | 投機的実装を削る判断は専任。responsibility は要件から来た拡張だけを見る。 |
+| responsibility | 上記2軸の判断に委ねられた領域には踏み込まない。 |
 
 **フォールバック**: herdr が使えない環境では、lead が5役割を1パスで実行する。
 各指摘に役割タグを付け、手順6のフォーマットで集約する。
