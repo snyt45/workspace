@@ -66,19 +66,11 @@ description: 変更差分を役割別の並列レビューエージェント（�
 
 | エージェント | 役割 |
 |---|---|
-| [responsibility-check](agents/responsibility-check.md) | 責務・設計品質 |
-| [naming-comment-check](agents/naming-comment-check.md) | 命名・コメント |
+| [responsibility-check](agents/responsibility-check.md) | 責務・設計品質。命名の指摘と投機的実装の判定は該当軸に譲る。 |
+| [naming-comment-check](agents/naming-comment-check.md) | 命名・コメント（実態・統一・マジックストリング） |
 | [test-quality-check](agents/test-quality-check.md) | テスト価値・カバレッジ |
 | [critical-impact-check](agents/critical-impact-check.md) | クリティカル・顧客影響 |
-| [spec-scope-check](agents/spec-scope-check.md) | 仕様・スコープ |
-
-担当境界:
-
-| エージェント | 他軸と干渉しない範囲 |
-|---|---|
-| naming-comment | 命名の実態・統一・マジックストリングは専任。responsibility は名称に踏み込まない。 |
-| spec-scope | 投機的実装を削る判断は専任。responsibility は要件から来た拡張だけを見る。 |
-| responsibility | 上記2軸の判断に委ねられた領域には踏み込まない。 |
+| [spec-scope-check](agents/spec-scope-check.md) | 仕様・スコープ（投機的実装の削除判定含む） |
 
 **フォールバック**: herdr が使えない環境では、lead が5役割を1パスで実行する。
 各指摘に役割タグを付け、手順6のフォーマットで集約する。
