@@ -131,7 +131,7 @@ leadエージェントに「サブエージェントに任せて」等と頼む�
 
 | コマンド | 説明 |
 |----------|------|
-| `/herdr-status` | pi拡張: 同一workspaceのサブエージェント状況ウィジェットの on/off（working→done/blocked で通知も鳴る） |
+| `/orchestra` | pi拡張: オーケストラ（同一タブのサブエージェント群）ウィジェット一覧・close。ウィジェットは常時表示（working→done/blocked で通知も鳴る） |
 
 
 ## Neovim
