@@ -240,6 +240,8 @@ LSP管理は組み込みコマンドを使う
 
 `MERCURY_AI_TOKEN` は1Password (`op://Development/inception/credential`) から遅延読み込み。キー変更時は `:CursortabRestart`。
 
+デフォルト無効（節約のため）。使うセッションで `:CursortabToggle` で有効化（セッション毎に必要）。
+
 ### Git (gitsigns)
 
 | キー | モード | 説明 |
