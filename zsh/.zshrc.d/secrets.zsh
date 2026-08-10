@@ -9,3 +9,15 @@ function pi() {
     ensure_opencode_api_key
     command pi "$@"
 }
+
+# cursortab.nvim (Mercury API)
+function ensure_inception_api_key() {
+    if [ -z "$MERCURY_AI_TOKEN" ]; then
+        export MERCURY_AI_TOKEN=$(op read "op://Development/inception/credential")
+    fi
+}
+
+function nvim() {
+    ensure_inception_api_key
+    command nvim "$@"
+}

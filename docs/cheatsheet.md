@@ -231,11 +231,14 @@ LSP管理は組み込みコマンドを使う
 | `:lsp disable [config]` | LSPを無効化 (起動中なら停止) |
 | `:checkhealth vim.lsp` | LSP状態を確認  |
 
-### Copilot NES (Sidekick.nvim)
+### cursortab.nvim (Mercury API)
 
 | キー | モード | 説明 |
 |------|------|------|
-| `<Tab>` | n | NES 提案があれば: ジャンプ → もう一度で apply。無ければ通常の `<Tab>` |
+| `<Tab>` | i | 提案を承認 / 次の編集位置へジャンプ |
+| `<S-Tab>` | i | 単語単位で承認 |
+
+`MERCURY_AI_TOKEN` は1Password (`op://Development/inception/credential`) から遅延読み込み。キー変更時は `:CursortabRestart`。
 
 ### Git (gitsigns)
 
