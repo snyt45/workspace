@@ -12,7 +12,8 @@
     "npm:@aliou/pi-guardrails",
     "npm:pi-ask-user",
     "npm:@dietrichgebert/ponytail",
-    "npm:@feniix/pi-notion"
+    "npm:@feniix/pi-notion",
+    "npm:pi-markdown-preview"
   ],
   "lastChangelogVersion": "0.80.3",
   "hideThinkingBlock": false
