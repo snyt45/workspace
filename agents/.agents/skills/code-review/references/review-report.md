@@ -6,8 +6,11 @@ API操作は `$plannotator-review` に委譲する。
 ## 手順
 
 1. 指摘を codeAnnotation に変換する（下記「アノテーションの内容」）。
-2. `$plannotator-review` に委譲して起動・注入・回収する。
-3. ブラウザセッションのフィードバックが返ったら集約に反映する。
+2. セッションが起動していない場合は自分で起動する:
+   - `plannotator review <PR_URL>` をバックグラウンドで起動し、`~/.plannotator/sessions/<pid>.json` の `port` を確認するまで待つ。
+   - PR_URL は `gh pr view --json url -q .url` で取得する。
+3. `$plannotator-review` に委譲して注入・回収する。
+4. ブラウザセッションのフィードバックが返ったら集約に反映する。
 
 ## アノテーションの内容
 

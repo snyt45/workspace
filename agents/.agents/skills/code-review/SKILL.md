@@ -105,5 +105,6 @@ description: 変更差分を役割別の並列レビューエージェント（�
 同時に before/after コードを書く。
 
 **plannotator注入**: 集約した指摘を `plannotator review` の実差分にインラインコメントとして注入する（手順は [references/review-report.md](references/review-report.md)）。
-軽量パスでは省略する。
+セッションが起動していない場合も「ないから省略」ではなく、lead が `plannotator review <PR_URL>` を自分で起動してから注入する（PR_URL は `gh pr view --json url` で取得）。
+省略してよいのは軽量パスのみ。
 フィードバックが返ったら集約に反映する。
