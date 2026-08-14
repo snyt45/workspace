@@ -4,6 +4,7 @@ return {
 	opts = {
 		gh = {},
 		gitbrowse = {},
+		image = {},
 		picker = {
 			sources = {
 				gh_issue = {},
