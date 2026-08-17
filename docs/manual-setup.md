@@ -165,3 +165,9 @@ op read "op://Development/anthropic/credential"
 
 - [HackGen](https://github.com/yuru7/HackGen/releases/latest)から`HackGen_NF_vx.x.x.zip`をダウンロード
 - `HackGenConsoleNF-Regular.ttf`をインストール
+
+### DeepTutor
+
+個人学習アプリ（自ホスト）。セットアップ手順は長いので別ファイルに分割:
+
+→ [DeepTutor セットアップ](deeptutor-setup.md)
