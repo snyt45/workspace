@@ -15,6 +15,6 @@
     "npm:@feniix/pi-notion",
     "npm:pi-markdown-preview"
   ],
-  "lastChangelogVersion": "0.80.3",
-  "hideThinkingBlock": false
+  "lastChangelogVersion": "0.84.2",
+  "hideThinkingBlock": true
 }

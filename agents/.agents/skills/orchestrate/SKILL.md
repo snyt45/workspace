@@ -18,6 +18,7 @@ herdrの操作・構文・安全規則は herdr スキル（`herdr --skill`）�
    タスクの重さ・適性で提案する。原因究明・設計レビューなど重いタスクは `fable`（Fable 5）や `opus`（Opus 5）を優先し、`sonnet`（Sonnet 5）は軽めの実装・確認向け。
    claude ハーネスのモデル: `fable` / `opus` / `sonnet`。
    pi ハーネスのモデル: `glm-5.2` / `deepseek-v4-flash` / `kimi-k2.6` / `kimi-k2.7-code`。
+   画像・スクリーンショットを読むタスクは画像対応モデル（opencode-go の `grok-4.5` など `input: ["text", "image"]` のモデル）を使う。テキスト専用モデル（`deepseek-v4-flash` など）では画像が読めない。config は `~/.pi/agent/models-store.json` で確認する。
 3. **依頼内容**: 各エージェントに送るプロンプトの一行要約
 
 複数のサブエージェントに委譲する場合も、全員分をまとめて1メッセージで確認する。承認を得てから起動する。

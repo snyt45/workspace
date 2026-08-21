@@ -18,13 +18,17 @@ kitty_graphics = true
 [keys]
 prefix = "ctrl+t"
 
-split_horizontal = "prefix+s"
+# iPhone/Termius用にFキーを追加(既存のprefixバインドは維持)
+zoom = ["prefix+t", "f5"]
+cycle_pane_next = "f6"
+cycle_pane_previous = "f7"
+close_pane = ["prefix+q", "f8"]
+
+split_horizontal = ["prefix+s", "f9"]
+split_vertical = "f10"
 settings = "prefix+shift+s"
 
-zoom = "prefix+t"
-
 detach = "prefix+d"
-close_pane = "prefix+q"
 
 rename_tab = "prefix+comma"
 
