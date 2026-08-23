@@ -7,5 +7,9 @@ alias vdh='nvim +DiffviewFileHistory'
 alias pv='plannotator review'
 alias pa='plannotator annotate'
 alias hide='herdr-ide'
+alias inno='INNO_HOME=~/work/inno-workspace INNO_WORKSPACE_DIR=~/work/inno-workspace/workspace npm --prefix ~/work/inno-agent run start'
+alias inno-web='INNO_HOME=~/work/inno-workspace INNO_WORKSPACE_DIR=~/work/inno-workspace/workspace INNO_PORT=8152 npm --prefix ~/work/inno-agent run server'
+# INNO_HOME: config/data/skills が全て入る（旧 ~/.inno-agent から移設済み）
+# INNO_WORKSPACE_DIR: Practice Lab の作業dir。cwdがデフォルト（=リポジトリを汚す）ため明示する
 alias c='opencode'
 alias cx='claude --enable-auto-mode'
