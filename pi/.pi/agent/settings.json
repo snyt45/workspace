@@ -13,7 +13,8 @@
     "npm:pi-ask-user",
     "npm:@dietrichgebert/ponytail",
     "npm:@feniix/pi-notion",
-    "npm:pi-markdown-preview"
+    "npm:pi-markdown-preview",
+    "https://github.com/carderne/pi-nvim"
   ],
   "lastChangelogVersion": "0.84.2",
   "hideThinkingBlock": true
