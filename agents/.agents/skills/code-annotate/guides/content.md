@@ -38,7 +38,7 @@
 
 ## 出力形式
 
-注釈は `plannotator review` の codeAnnotation として実差分に注入する。1注釈 = 1コメント。API 操作は `$plannotator-review` に委譲する（draft JSON の codeAnnotations）。
+注釈は `plannotator review` の codeAnnotation として実差分に注入する。1注釈 = 1コメント。API 操作は `$plannotator-review` に委譲する（draft JSON の codeAnnotations）。コミット済み差分を対象にするときは起動後に `POST /api/diff/switch` へ `{"diffType":"commit:<sha>"}` を送る（gitRef が対象コミットに切り替わる。変更前に `/api/diff` で diffType / gitRef を確認）。
 
 - アンカー: 差分内の該当行（新しい側、`lineStart`〜`lineEnd`）。差分に無い行の注釈（既存コード・diff外の構文）は、それが使われている差分行に置く。ファイル全体への注釈は `scope:"file"`（`lineStart`/`lineEnd` = 1）
 - `text`: 下記「カード」。**Markdown で整形する**（plannotator は注釈テキストを Markdown 描画し、太字・引用・リンク・インラインコードにスタイルが付く）:

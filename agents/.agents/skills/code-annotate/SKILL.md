@@ -11,7 +11,7 @@ description: 対象コード（PR差分・作業ツリー）の引っかかり�
 
 ## 手順
 
-1. **対象を読む** — 差分と実データを特定する（`guides/content.md`）。PR なら `plannotator review <PR_URL>` の diff（`GET /api/diff`）が対象になる。注釈は差分内の行にのみ置ける。差分に無い構文は、それが使われている差分行に置く
+1. **対象を読む** — 差分と実データを特定する（`guides/content.md`）。PR なら `plannotator review <PR_URL>` の diff（`GET /api/diff`）が対象になる。コミット済みの差分をレビューする場合は `POST /api/diff/switch` に `{"diffType":"commit:<sha>"}` を送って開く（起動時は未コミット変更が対象）。注釈は差分内の行にのみ置ける。差分に無い構文は、それが使われている差分行に置く
 2. **注釈を組み立てる** — 概要・呼び出し経路・処理の流れ・構文注釈（L1/L2）を決める（`guides/content.md`）
 3. **注入する** — `$plannotator-review` に委譲して起動・注入・回収する
 4. **反映する** — フィードバックが返ったら注釈を直して再度注入する
