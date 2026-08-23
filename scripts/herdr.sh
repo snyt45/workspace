@@ -9,13 +9,15 @@ if ! command -v herdr >/dev/null; then
   exit 0
 fi
 
-# herdr-browser (herdrペイン内にChromiumを描画するプラグイン、bunが必要)
+# terminal-code / terminal-browser (herdrペイン内でVS Code/ブラウザを開くプラグイン)
+# プラグインのビルド時に実体 (tode / terminal-browser) が ~/.local/bin へ自動インストールされる
 plugins=$(herdr plugin list 2>&1) || {
-  echo "herdr サーバー未起動のため herdr-browser をスキップ (herdr起動後に再実行)"
+  echo "herdr サーバー未起動のためプラグインをスキップ (herdr起動後に再実行)"
   plugins=
 }
-if [ -n "$plugins" ] && ! echo "$plugins" | grep -q "browser"; then
-  herdr plugin install ogulcancelik/herdr-browser --yes
+if [ -n "$plugins" ]; then
+  echo "$plugins" | grep -q "zenbu-labs.tode" || herdr plugin install zenbu-labs/terminal-code/herdr-plugin --yes
+  echo "$plugins" | grep -q "zenbu-labs.terminal-browser" || herdr plugin install zenbu-labs/terminal-browser/herdr-plugin --yes
 fi
 
 # エージェント状態検知の統合 (各エージェントの設定領域にフック/拡張を生成)

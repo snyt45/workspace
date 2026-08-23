@@ -11,9 +11,10 @@
 |----------|--------|
 | ターミナル | Ghostty + tmux |
 | エージェントマルチプレクサ | herdr（tmuxからの移行を試行中） |
-| ブラウザ(ペイン内) | herdr-browser（herdrプラグイン。bun + Google Chrome が必要） |
+| ブラウザ(ペイン内) | terminal-browser（zenbu-labs製。herdrプラグイン。実体も自動インストール） |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
+| エディタ(ペイン内) | terminal-code『tode』（VS Code in terminal。code-server + terminal-browser） |
 | Git UI (TUI) | lazygit / lazydocker |
 | PRレビュー | diffview.nvim + gitsigns |
 | 差分ビューア(TUI) | hunk |

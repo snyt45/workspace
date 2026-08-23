@@ -34,3 +34,17 @@ rename_tab = "prefix+comma"
 
 next_agent = "prefix+a"
 previous_agent = "prefix+shift+a"
+
+# ペイン内エディタ/ブラウザ (zenbu-labs) 要 herdr 0.8.2+
+# type=pane はフォーカス中のペインのcwdから実行される（plugin_actionはプラグインの作業ディレクトリ扱いになるため不可）
+[[keys.command]]
+key = "prefix+e"
+type = "pane"
+command = "tode --split right"
+description = "Open terminal-code (VS Code) in a right split"
+
+[[keys.command]]
+key = "prefix+shift+b"
+type = "pane"
+command = "terminal-browser open --split right"
+description = "Open terminal-browser in a right split"

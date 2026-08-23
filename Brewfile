@@ -4,7 +4,6 @@ tap "modem-dev/tap"
 tap "satococoa/tap"
 
 # CLI ツール
-brew "bun"
 brew "fd"
 brew "fzf"
 brew "gh"

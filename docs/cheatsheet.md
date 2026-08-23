@@ -90,6 +90,8 @@ tmuxに合わせて変更したキー:
 | `Prefix - d` | デタッチ（デフォルト `q` から変更）。再アタッチは `herdr` を実行するだけ |
 | `Prefix - ,` | タブ名変更（デフォルト `Shift+t` から変更) |
 | `Prefix - a` / `Shift+a` | 次 / 前のエージェントへ移動（デフォルト未割り当て） |
+| `Prefix - e` | terminal-code『tode』（ペイン内VS Code）を右分割で開く（要 herdr 0.8.2+） |
+| `Prefix - Shift+b` | terminal-browser（ペイン内ブラウザ）を右分割で開く |
 | `Prefix - Shift+s` | 設定画面（`s` を分割に譲ったため移動） |
 
 主なデフォルトキー（tmuxと同じ操作感のもの）:
@@ -118,12 +120,38 @@ tmuxに合わせて変更したキー:
 | `herdr server stop` | サーバ停止（tmuxのkill-server相当）。レイアウトは保存され次回起動で復元、プロセスは再起動 |
 | `herdr session delete default` | 保存状態ごと完全削除 |
 
-### herdr-browser（ペイン内ブラウザ）
+### terminal-code / terminal-browser（ペイン内エディタ・ブラウザ）
 
-herdrのペイン内でChromiumを動かすプラグイン。エージェントの操作を見られて、マウス/キーボードで引き継げる。
+zenbu-labs製。ブラウザはターミナル上でChromiumを描画（kitty graphics）、エディタは code-server をそのブラウザで開くもの。
 
-- ターミナル内の `localhost` / `127.0.0.1` のURLは `Ctrl+クリック` でこのブラウザに開く
-- 未対応: ダウンロード、右クリックメニュー、DevTools、IME、ページ内のテキスト選択・検索
+- 実体は `tode` / `terminal-browser`。herdrプラグインのビルドで ~/.local/bin に自動インストールされる
+- `Prefix - e` で VS Code、`Prefix - Shift+b` でブラウザを右分割で開く（フォーカス中のペインのディレクトリ基準）
+
+#### terminal-code（tode）
+
+```sh
+tode                      # 現在のディレクトリを開く
+tode ~/work/project       # 指定フォルダを開く
+tode src/main.ts          # ファイルを開く
+tode src/main.ts -g 42:5  # 42行5列目を開く
+tode --split right        # 分割で開く（left/down/upも可）
+```
+
+初回: `tode --import vscode`（VSCodeの設定・拡張を引き継ぎ）→ `tode --shortcut-setup`（ターミナルとのキー衝突解消）。終了は `tode --shutdown`。
+
+#### terminal-browser
+
+```sh
+terminal-browser open https://example.com      # URLを開く
+terminal-browser open ./dist/index.html        # ローカルHTMLも開ける
+terminal-browser open --split right <url>      # 右分割
+terminal-browser ls                            # 開いてるブラウザ・タブ一覧
+terminal-browser shutdown                      # 全部閉じる
+```
+
+ブラウザ内キー: `cmd+l` URL編集 / `cmd+r` 再読込 / `cmd+[` `cmd+]` 戻る・進む / `cmd+shift+i` DevTools / `ctrl+q` 終了。
+
+エージェント（pi / Claude Code）は `terminal-browser action -- snapshot|click @e3|fill @e3 "text"|eval "..."` で操作できる（skill: terminal-browser）。
 
 ### サブエージェント委譲（orchestrate）
 
