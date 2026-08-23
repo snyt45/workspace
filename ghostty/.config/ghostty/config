@@ -7,3 +7,8 @@ scrollback-limit = 100000
 unfocused-split-opacity = 1
 window-decoration = true
 macos-titlebar-style = tabs
+
+# Cmd+Shift+P は tode（VS Code）のコマンドパレットに譲る。ghostty側のパレットはunbind
+keybind = super+shift+p=unbind
+# Cmd+Shift+V は tode（VS Code）のmarkdownプレビューに譲る。ghosttyのpaste_from_selectionはunbind
+keybind = super+shift+v=unbind
