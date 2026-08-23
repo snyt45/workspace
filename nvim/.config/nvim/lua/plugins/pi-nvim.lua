@@ -3,6 +3,7 @@ return {
 	-- nvimから実行中のpiセッションへファイル/選択/プロンプトを送る（拡張がソケットを開く）
 	-- ,P: 送信ダイアログ / ,PS: セッション切替（:PiSendFile / :PiSendSelection / :PiSendBuffer も可）
 	-- 注意: 小文字の <leader>p は overlook の pd/pp/pu 等と衝突するため大文字Pを使用
+	-- 行コメントレビュー（,pa / ,px）は features/pi_review.lua がこのソケットを再利用する
 	event = "VeryLazy",
 	keys = {
 		{ "<leader>P", ":Pi<CR>", desc = "[Pi] 送信ダイアログ" },
