@@ -46,7 +46,7 @@ walkthroughは、コード上のポイント列（ステップ）を意図した
 保存前に必ず実行し、エラー0にする:
 
 ```bash
-node scripts/validate.mjs <path/to/walkthrough.json> --check-files
+node ~/.agents/skills/walkthrough/scripts/validate.mjs <path/to/walkthrough.json> --check-files
 ```
 
 `--check-files` はファイル存在と行範囲もチェックする。exit 0=成功 / 1=スキーマ・ファイルエラー / 2=usageエラー。
@@ -55,6 +55,6 @@ node scripts/validate.mjs <path/to/walkthrough.json> --check-files
 
 1. 保存先: **対象リポジトリ直下の `.walkthroughs/<slug>.json`**（ディレクトリがなければ作成。git管理不要 — グローバルgitignore済み）。slugは内容を表す短いケバブケース（例: `fix-cache-race.json`）
 2. 保存後、ユーザーへ案内して終わり（nvimの起動や操作はしない）:
-   > nvimで `<leader>wo` を押すとこのwalkthroughを開けます
+   > nvimで `,wo` を押すとこのwalkthroughを開けます
 
 nvim側の操作・API・設定は `~/.config/nvim/walkthrough.nvim/README.md` を参照。

@@ -314,11 +314,27 @@ AIが生成したwalkthrough JSON（`.walkthroughs/*.json`）やLuaテーブル�
 | `,wg` | n | ステップ一覧から選んでジャンプ（noteプレビュー付き） |
 | `,wo` | n | walkthroughを開く（picker・mtime降順） |
 | `,ww` | n | セッション切り替え（位置保持） |
-| `,wt` | n | noteフロートの表示/非表示 |
-| `,w<CR>` | n | noteフロートにフォーカス（`q`で戻る） |
+| `,wt` | n | 現在ファイルの全ステップのnoteを右側にまとめてトグル |
+| `,w<CR>` | n | noteフロートにフォーカス（連打で次へ循環・`q`で戻る） |
 | `,wq` | n | アクティブセッションを閉じる |
 | `,wR` | n | JSONを再読み込み |
 | `:Walkthrough [path]` | - | JSONを指定して開く（無指定はpicker） |
+
+### Piコメントレビュー (pi-nvim / pi-nvim-comment)
+
+実行中のpiセッションへ送信・行コメントレビュー。詳細は `nvim/.config/nvim/pi-nvim-comment/README.md`。
+
+| キー | モード | 説明 |
+|------|------|------|
+| `,P` | n/v | piへ送信ダイアログ / 選択を送信 (pi-nvim) |
+| `,PS` | n | piセッション切替 (pi-nvim) |
+| `,pa` | n/x | 行/選択範囲にレビューコメント追加（walkthroughの `pi-comments` セッションとしてコード上に表示） |
+| `,pl` | n | コメントをwalkthroughで表示（閉じた後・他セッション表示中からの入口） |
+| `,px` | n | コメントをpiへ提出（回答はwalkthrough JSONとして `.walkthroughs/` にも保存され `,wo` で開ける） |
+| `:PiReviewClear` | - | 未提出コメント破棄 |
+
+> コメントのコード表示・移動（`]w`/`[w`）・フロート表示（`,wt`）・フォーカス（`,w<CR>`）はすべてwalkthroughのUIに一本化。
+> フロートにフォーカスして `e` で編集・`d` で削除（入力UIはコメント追加時と同じ）。
 
 ### コマンドパレット
 
@@ -433,7 +449,7 @@ PR/Issue buffer内のキーマップ:
 |----------|------|
 | `pv` / `/plannotator-review` | origin/main 以降の全変更をレビュー（コミット単位の履歴レールあり） |
 | `/plannotator-review <PR_URL>` | GitHub PR / GitLab MR をレビュー（議論スレッド込み、botフィルタあり） |
-| `/plannotator-annotate <file\|url\|folder>` | Markdown / HTML / URL を注釈UIで開く（explain の HTML レビューはこれ） |
+| `/plannotator-annotate <file\|url\|folder>` | Markdown / HTML / URL を注釈UIで開く |
 | `/plannotator-last` | 直近のレビュー結果をエージェントに再取得させる |
 
 - plan モードの承認時は自動でブラウザレビューが開く（Approve / Request changes / Approve with notes）

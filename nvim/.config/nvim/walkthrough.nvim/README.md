@@ -33,8 +33,8 @@ AIが生成したJSON、または他のプラグインが組み立てたLuaテ�
 | `<leader>wg` | ステップ一覧から選んでジャンプ（noteプレビュー付き） |
 | `<leader>wo` | 保存ディレクトリからpickerで開く（mtime降順） |
 | `<leader>ww` | セッション切り替え（位置保持・即ジャンプ） |
-| `<leader>wt` | noteフロートの表示/非表示 |
-| `<leader>w<CR>` | noteフロートにフォーカス（`q` で戻る） |
+| `<leader>wt` | 現在ファイルの全ステップのnoteを右側に縦積みでトグル（カーソル位置不問）。ステップのないファイルではアクティブステップのnoteをトグル |
+| `<leader>w<CR>` | noteフロートにフォーカス（連打で次へ循環・アクティブステップのフロート優先・`q` で戻る） |
 | `<leader>wq` | アクティブセッションを閉じる |
 | `<leader>wR` | JSONを再読み込み（現在位置は維持） |
 
@@ -47,6 +47,9 @@ local wt = require("walkthrough")
 
 wt.setup(opts)          -- 上記2項目
 wt.start(spec)          -- コアAPI: Luaテーブルからセッション作成+アクティブ化。同名セッションは置き換え
+wt.update(spec)         -- 連携API: nameでセッション置換（index省略時は維持）。表示中なら再描画、非アクティブなら裏で更新のみ（表示は奪わない）
+wt.remove(name)         -- 連携API: セッションを名前で削除（アクティブなら表示もクリア）
+wt.activate(name)       -- 連携API: セッションを名前でアクティブ化（現在位置へジャンプ）
 wt.start_file(path)     -- JSONを読んで start() する薄いラッパー
 wt.next() / wt.prev()   -- ステップ移動
 wt.goto_step(n)         -- ステップNへ（プロデューサー・連携用）
@@ -56,8 +59,10 @@ wt.switch()             -- セッション切り替えpicker
 wt.close()              -- アクティブセッションを閉じる
 wt.reload()             -- JSON再読み込み
 wt.toggle_float() / wt.focus_float()
-wt.status()             -- 現在位置を通知
 wt.get_state()          -- 読み取り専用スナップショット（テスト・連携用）
+
+- `start(spec)` / `update(spec)` の spec は `hooks = { [キー] = function(session, idx) }` と `step_label`（表示名。デフォルト `step`）を持つことができる
+  （例: pi-nvim-comment はフロート内 `e`=編集・`d`=削除を登録し、`step_label = "comment"` でコメント単位の表記にしている）。フロートにフォーカス中にそのキーが有効になる
 ```
 
 `start(spec)` のspec:
@@ -99,6 +104,8 @@ wt.get_state()          -- 読み取り専用スナップショット（テス�
 
 ## 動作モデル
 
-- 複数セッションをロードでき、描画（行ハイライト・変数値のvirtual text・右上のnoteフロート）は常にアクティブな1本のみ
+- 複数セッションをロードでき、描画は常にアクティブな1本のみ
+- アクティブなステップは `▶` + 行ハイライト + 変数値virtual text + 右上noteフロート。**同一セッションの他ステップも `▷` サインで常時表示**される
+- `<leader>wt` は**ファイル単位のnoteビュー**: 現在ファイルに含まれる全ステップのnote（アクティブは `●` 付き）を右側に縦積みで開閉する。ステップ順に見るのは `]w`/`[w`、ファイル単位で眺めるのは `<leader>wt` という使い分け
 - 切り替え時は各セッションの現在位置を保持したまま該当ステップへ即ジャンプ
 - 永続化なし。nvim再起動でセッションは消える（JSON由来はファイルから開き直す）

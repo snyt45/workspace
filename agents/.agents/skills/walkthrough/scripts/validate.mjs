@@ -21,6 +21,13 @@ if (!existsSync(jsonPath)) {
   process.exit(2);
 }
 
+for (const f of flags) {
+  if (f !== "--check-files") {
+    console.error(`error: unknown flag: ${f}`);
+    process.exit(2);
+  }
+}
+
 const checkFiles = flags.has("--check-files");
 
 let data;
