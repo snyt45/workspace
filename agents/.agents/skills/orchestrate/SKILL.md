@@ -51,7 +51,7 @@ herdrの操作・構文・安全規則は herdr スキル（`herdr --skill`）�
 配置は固定で **1オーケストラ=1タブ、呼び出し元workspace内**。
 
 1. **自分（委譲元）にロール名を付ける**: `herdr agent rename "$HERDR_PANE_ID" <role>`（例: `<project>-chief` か `<project>-lead`）+ `herdr pane rename "$HERDR_PANE_ID" <ラベル>`
-2. 新規タブ作成 → ルートpaneを分割 → 各paneに `agent start`（ロール名、`--timeout 60000`）→ 依頼プロンプト送信
+2. 新規タブ作成 → ルートpaneを分割 → 各paneに `herdr agent start <ロール名> --kind <pi|claude> --pane <pane-id> --timeout 60000` → 依頼プロンプト送信（`--kind` は必須。省略するとエラーになる）
 
    タブ作成:
    ```
@@ -60,7 +60,7 @@ herdrの操作・構文・安全規則は herdr スキル（`herdr --skill`）�
    `--workspace` を省略すると UI でフォーカス中の workspace（別プロジェクトのことが多い）に作られる。作成応答の `tab.workspace_id` が `$HERDR_WORKSPACE_ID` と一致することを確認する。不一致なら閉じて作り直す。
 
    分割の配置指針: 横に広いpaneは right、縦に狭いpaneは down。同じ方向の連続分割で細くしすぎない。先に right で2列にしてから各列を down で割ると見やすい。
-3. 各paneにロール名と同じラベルを付け、`agent start`（ロール名、`--timeout 60000`）→ 依頼プロンプト送信
+3. 各paneにロール名と同じラベルを付ける（`herdr pane rename`）
 
 ## 3層（社長→lead→sub）の組み方
 

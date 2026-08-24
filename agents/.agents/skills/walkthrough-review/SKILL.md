@@ -50,18 +50,20 @@ description: 変更差分を役割別の並列レビューエージェント（�
 - `.rb` → [references/ruby.md](references/ruby.md)
 - `.ts` / `.tsx` → [references/frontend.md](references/frontend.md)
 
-### 5. サブエージェント5体を並列起動
+### 5. サブエージェント5体を並列起動（herdr）
 
-`$orchestrate` に従い、1タブ内のpaneに5体を1体ずつ起動する。
+**`test "${HERDR_ENV:-}" = 1` が通るなら必ずherdrで起動する。** ハーネス内蔵の並列サブエージェント機能（Claude CodeのAgent tool等）は使わない — ユーザーが各paneでレビューの進行を見られることが要件。
+
+`$orchestrate` に従い、1タブ内のpaneに5体を1体ずつ起動する（`herdr agent start <ロール名> --kind <pi|claude> --pane <pane-id>`）。
 プロンプト送信の失敗と起動未達を見逃さないこと。全員の実行開始を確認してから待機に入る。
 
-各エージェントのプロンプトに含める内容:
+**依頼プロンプトは短く、本文はファイル参照で渡す**（長文のCLI送信は壊れる。`$orchestrate` のコンテキスト最小化原則）:
 
-1. 役割定義の全文 — [agents/](agents/) の対応ファイル
-2. スタック別基準の全文 — 手順4で選んだファイル
-3. diffコマンドとコミット一覧
-4. 仕様全文（あれば。spec-scope-check のみ）
-5. 完了報告の定型句（`$orchestrate` に記載）
+1. 役割定義: `~/.agents/skills/walkthrough-review/agents/<エージェント名>.md` を読んで従うよう指示する（全文を貼らない）
+2. スタック別基準: 手順4で選んだファイルのパス（`~/.agents/skills/walkthrough-review/references/...`）
+3. diffコマンドとコミット一覧の取得コマンド（出力は貼らない）
+4. 仕様（あれば。spec-scope-check のみ）: 一時ファイルに書いてパスを渡す
+5. 完了報告の定型句（`$orchestrate` に記載）。指摘一覧は一時ファイルに書かせ、報告にはパスと件数だけ入れさせる
 
 起動する5体:
 
@@ -73,7 +75,7 @@ description: 変更差分を役割別の並列レビューエージェント（�
 | [critical-impact-check](agents/critical-impact-check.md) | クリティカル・顧客影響 |
 | [spec-scope-check](agents/spec-scope-check.md) | 仕様・スコープ（投機的実装の削除判定含む） |
 
-**フォールバック**: herdr が使えない環境では、lead が5役割を1パスで実行する。各指摘に役割タグを付けて手順6に進み、報告冒頭に「フォールバック」と明記する。
+**フォールバック**: `HERDR_ENV` が無い環境でのみ、lead が5役割を1パスで実行する。各指摘に役割タグを付けて手順6に進み、報告冒頭に「フォールバック（herdrなし）」と明記する。
 
 ### 6. 集約してwalkthroughにする
 
