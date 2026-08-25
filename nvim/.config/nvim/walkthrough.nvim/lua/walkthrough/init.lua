@@ -20,10 +20,10 @@ local default_keymaps = {
 	prev = "[w",
 	steps = "<leader>wg",
 	open = "<leader>wo",
-	switch = "<leader>ww",
 	toggle_float = "<leader>wt",
 	focus_float = "<leader>w<CR>",
 	close = "<leader>wq",
+	delete = "<leader>wd",
 	reload = "<leader>wR",
 }
 
@@ -74,14 +74,6 @@ local function has_float()
 	return false
 end
 
-local function clear_marks()
-	for _, b in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.api.nvim_buf_is_loaded(b) then
-			vim.api.nvim_buf_clear_namespace(b, ns_marker, 0, -1)
-			vim.api.nvim_buf_clear_namespace(b, ns_values, 0, -1)
-		end
-	end
-end
 
 local function place_marker(bufnr, line, idx, total, is_active, label)
 	label = label or "step"
@@ -341,46 +333,59 @@ local function buffer_steps(session, bufnr)
 	return out
 end
 
--- バッファ内の全ステップを描画（アクティブ=▶+行ハイライト、それ以外=▷サインのみ）
-local function decorate_buffer(session, bufnr)
+-- 描画対象セッション: アクティブ + pinされた非アクティブ（pinはマークのみ常時表示）
+local function sessions_to_render()
+	local list = {}
+	if active then
+		list[#list + 1] = active
+	end
+	for _, s in ipairs(sessions) do
+		if s.pin and s ~= active then
+			list[#list + 1] = s
+		end
+	end
+	return list
+end
+
+-- バッファ内のステップを描画（アクティブセッションのアクティブステップ=▶+行ハイライト、それ以外=▷サインのみ）
+local function decorate_buffer(bufnr)
 	if not (vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_is_loaded(bufnr)) then
 		return
 	end
 	vim.api.nvim_buf_clear_namespace(bufnr, ns_marker, 0, -1)
 	vim.api.nvim_buf_clear_namespace(bufnr, ns_values, 0, -1)
-	for _, entry in ipairs(buffer_steps(session, bufnr)) do
-		local is_active = entry.idx == session.index
-		local placed =
-			place_marker(bufnr, entry.step.line or 1, entry.idx, #session.steps, is_active, session.step_label)
-		if not placed and is_active then
-			-- 範囲外警告はセッション×ステップごとに1回だけ（BufWinEnterのたびに連発させない）
-			session.warned = session.warned or {}
-			if not session.warned[entry.idx] then
-				session.warned[entry.idx] = true
-				notify(
-					string.format(
-						"ステップ%dの行%dが範囲外です（コード編集で行がずれた可能性）",
-						entry.idx,
-						entry.step.line or 1
-					),
-					vim.log.levels.WARN
-				)
+	for _, session in ipairs(sessions_to_render()) do
+		local is_session_active = session == active
+		for _, entry in ipairs(buffer_steps(session, bufnr)) do
+			local is_active = is_session_active and entry.idx == session.index
+			local placed =
+				place_marker(bufnr, entry.step.line or 1, entry.idx, #session.steps, is_active, session.step_label)
+			if not placed and is_active then
+				-- 範囲外警告はセッション×ステップごとに1回だけ（BufWinEnterのたびに連発させない）
+				session.warned = session.warned or {}
+				if not session.warned[entry.idx] then
+					session.warned[entry.idx] = true
+					notify(
+						string.format(
+							"ステップ%dの行%dが範囲外です（コード編集で行がずれた可能性）",
+							entry.idx,
+							entry.step.line or 1
+						),
+						vim.log.levels.WARN
+					)
+				end
 			end
-		end
-		if is_active then
-			place_values(bufnr, entry.step)
+			if is_active then
+				place_values(bufnr, entry.step)
+			end
 		end
 	end
 end
 
-local function refresh_marks(session)
-	clear_marks()
-	if not session then
-		return
-	end
+local function refresh_marks()
 	for _, b in ipairs(vim.api.nvim_list_bufs()) do
 		if vim.api.nvim_buf_is_loaded(b) then
-			decorate_buffer(session, b)
+			decorate_buffer(b)
 		end
 	end
 end
@@ -458,7 +463,7 @@ local function jump_to(session, idx)
 	pcall(vim.api.nvim_win_set_cursor, 0, { line, 0 })
 	pcall(vim.cmd, "normal! zz")
 
-	refresh_marks(session)
+	refresh_marks()
 	show_float(session)
 end
 
@@ -542,6 +547,8 @@ local function build_session(spec, name)
 		index = math.max(1, math.min(spec.index or 1, #spec.steps)),
 		hooks = spec.hooks,
 		step_label = spec.step_label or "step",
+		-- pin: 非アクティブでもマークを常時表示し、close()でレジストリから消えない
+		pin = spec.pin == true,
 	}
 end
 
@@ -613,12 +620,11 @@ function M.update(spec)
 		session.index = math.max(1, math.min(prev.index, #session.steps))
 	end
 
-	-- アクティブ表示は奪わない: 更新対象が表示中（または何も表示していない）ときだけ描画を更新する。
-	-- 非アクティブなら裏でレジストリだけ最新化し、切り替え時に反映される
+	-- アクティブ表示は奪わない: 更新対象が表示中（または何も表示していない）ときだけフロートを更新する。
+	-- マークはpinセッションを含めて常に再描画する
 	local was_active = prev ~= nil and active == prev
 	if was_active or active == nil then
 		active = session
-		refresh_marks(session)
 		if has_float() then
 			if float_state.mode == "file" and float_state.bufnr and vim.api.nvim_buf_is_valid(float_state.bufnr) then
 				show_file_floats(session, float_state.bufnr)
@@ -627,6 +633,7 @@ function M.update(spec)
 			end
 		end
 	end
+	refresh_marks()
 end
 
 --- セッションを名前で削除（アクティブなら表示もクリア）。連携API
@@ -640,12 +647,31 @@ function M.remove(name)
 			if s == active then
 				active = nil
 				close_float()
-				clear_marks()
 			end
+			refresh_marks()
 			return true
 		end
 	end
 	return false
+end
+
+--- セッションを一覧から選んで削除する（pinセッションも削除できる）
+function M.delete()
+	if #sessions == 0 then
+		notify("セッションがありません", vim.log.levels.WARN)
+		return
+	end
+	vim.ui.select(sessions, {
+		prompt = "セッション削除",
+		format_item = function(s)
+			local marker = s == active and "● " or "  "
+			return string.format("%s%s  [%d/%d]", marker, s.name, s.index, #s.steps)
+		end,
+	}, function(choice)
+		if choice and M.remove(choice.name) then
+			notify("セッションを削除しました: " .. choice.name)
+		end
+	end)
 end
 
 --- セッションを名前でアクティブ化（現在位置へジャンプ）。連携API
@@ -758,52 +784,56 @@ function M.steps()
 	end)
 end
 
---- 保存ディレクトリ（<git root>/config.dir）のJSONをmtime降順で選んで開く
+--- 統合picker: ロード済みセッション（位置保持で切替）+ 保存ディレクトリの未ロードJSON（新規ロード）
 function M.open()
+	local items = {}
+	local loaded_paths = {}
+	for _, s in ipairs(sessions) do
+		items[#items + 1] = { session = s }
+		if s.json_path then
+			loaded_paths[s.json_path] = true
+		end
+	end
+
 	local root = repo_root(vim.uv.cwd()) or vim.uv.cwd()
 	local dir = root .. "/" .. config.dir
 	local files = vim.fn.glob(dir .. "/*.json", false, true)
-	if #files == 0 then
-		notify("walkthroughがありません: " .. dir, vim.log.levels.WARN)
-		return
-	end
-
 	table.sort(files, function(a, b)
 		local sa = vim.uv.fs_stat(a)
 		local sb = vim.uv.fs_stat(b)
 		return (sa and sa.mtime.sec or 0) > (sb and sb.mtime.sec or 0)
 	end)
-
-	vim.ui.select(files, {
-		prompt = "Walkthroughを開く",
-		format_item = function(path)
-			local stat = vim.uv.fs_stat(path)
-			local mtime = stat and os.date("%m/%d %H:%M", stat.mtime.sec) or "?"
-			return string.format("%s  (%s)", vim.fn.fnamemodify(path, ":t:r"), mtime)
-		end,
-	}, function(choice)
-		if choice then
-			M.start_file(choice)
+	for _, f in ipairs(files) do
+		if not loaded_paths[vim.fn.fnamemodify(f, ":p")] then
+			items[#items + 1] = { path = f }
 		end
-	end)
-end
+	end
 
---- セッション切り替え。各セッションの現在位置は保持され、選択で即ジャンプする
-function M.switch()
-	if #sessions == 0 then
-		notify("セッションがありません", vim.log.levels.WARN)
+	if #items == 0 then
+		notify("walkthroughがありません: " .. dir, vim.log.levels.WARN)
 		return
 	end
 
-	vim.ui.select(sessions, {
-		prompt = "セッション切り替え",
-		format_item = function(s)
-			local marker = s == active and "● " or "  "
-			return string.format("%s%s  [%d/%d]", marker, s.name, s.index, #s.steps)
+	vim.ui.select(items, {
+		prompt = "Walkthrough",
+		format_item = function(item)
+			if item.session then
+				local s = item.session
+				local marker = s == active and "● " or "  "
+				return string.format("%s%s  [%d/%d]", marker, s.name, s.index, #s.steps)
+			end
+			local stat = vim.uv.fs_stat(item.path)
+			local mtime = stat and os.date("%m/%d %H:%M", stat.mtime.sec) or "?"
+			return string.format("  %s  (%s · 未ロード)", vim.fn.fnamemodify(item.path, ":t:r"), mtime)
 		end,
 	}, function(choice)
-		if choice then
-			activate(choice)
+		if not choice then
+			return
+		end
+		if choice.session then
+			activate(choice.session)
+		else
+			M.start_file(choice.path)
 		end
 	end)
 end
@@ -812,7 +842,16 @@ end
 function M.close()
 	if not active then
 		close_float()
-		clear_marks()
+		refresh_marks()
+		return
+	end
+	local name = active.name
+	if active.pin then
+		-- pinセッションはレジストリに残す（マークも表示されたまま）。,ww で戻れる
+		active = nil
+		close_float()
+		refresh_marks()
+		notify(("セッションを非アクティブ化しました: %s（,woで戻れます）"):format(name))
 		return
 	end
 	for i, s in ipairs(sessions) do
@@ -821,10 +860,9 @@ function M.close()
 			break
 		end
 	end
-	local name = active.name
 	active = nil
 	close_float()
-	clear_marks()
+	refresh_marks()
 	notify(("セッションを閉じました: %s（残り%d）"):format(name, #sessions))
 end
 
@@ -921,7 +959,7 @@ end
 function M.get_state()
 	local list = {}
 	for _, s in ipairs(sessions) do
-		list[#list + 1] = { name = s.name, index = s.index, total = #s.steps, active = s == active }
+		list[#list + 1] = { name = s.name, index = s.index, total = #s.steps, active = s == active, pin = s.pin == true }
 	end
 	return list
 end
@@ -938,11 +976,11 @@ local function apply_keymaps(keys)
 	map(keys.next, M.next, "[Walkthrough] 次のステップ")
 	map(keys.prev, M.prev, "[Walkthrough] 前のステップ")
 	map(keys.steps, M.steps, "[Walkthrough] ステップ一覧から選んでジャンプ")
-	map(keys.open, M.open, "[Walkthrough] walkthroughを開く")
-	map(keys.switch, M.switch, "[Walkthrough] セッション切り替え")
+	map(keys.open, M.open, "[Walkthrough] 開く/切り替え（セッション+JSON）")
 	map(keys.toggle_float, M.toggle_float, "[Walkthrough] noteフロート表示/非表示")
 	map(keys.focus_float, M.focus_float, "[Walkthrough] noteフロートにフォーカス")
 	map(keys.close, M.close, "[Walkthrough] セッションを閉じる")
+	map(keys.delete, M.delete, "[Walkthrough] セッションを一覧から削除")
 	map(keys.reload, M.reload, "[Walkthrough] JSONを再読み込み")
 end
 
@@ -973,13 +1011,11 @@ function M.setup(opts)
 		end
 	end, { nargs = "?", complete = "file", desc = "[Walkthrough] JSONを指定して開く（無指定はpicker）" })
 
-	-- 後から開いたバッファにもステップのサインを描画する
+	-- 後から開いたバッファにもステップのサインを描画する（アクティブ + pinセッション）
 	vim.api.nvim_create_autocmd("BufWinEnter", {
 		group = vim.api.nvim_create_augroup("walkthrough_decorate", { clear = true }),
 		callback = function(ev)
-			if active then
-				decorate_buffer(active, ev.buf)
-			end
+			decorate_buffer(ev.buf)
 		end,
 	})
 end

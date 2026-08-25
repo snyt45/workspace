@@ -34,11 +34,12 @@ carderne/pi-nvim のソケット自動発見・送信を再利用する。**コ�
 
 | キー | モード | 動作 |
 |---|---|---|
-| `<leader>pa` | n/x | 行/選択範囲にレビューコメント追加（他のwalkthroughを表示中でなければ `pi-comments` セッションとして即表示） |
-| `<leader>pl` | n | コメントをwalkthroughで表示（閉じた後・他セッション表示中からの入口） |
-| `<leader>px` | n | コメントをpiへ提出（`opts.prompt_suffix` に応じて回答後の指示を付記） |
+| `<leader>pa` | n/x | 行/選択範囲にレビューコメント追加（コード上に常時マーク表示される） |
+| `<leader>px` | n | コメントをpiへ提出（`opts.prompt_suffix` に応じて回答後の指示を付記) |
 
-コマンド: `:PiReviewAnnotate` / `:PiReviewShow` / `:PiReviewSubmit` / `:PiReviewClear`
+コマンド: `:PiReviewAnnotate` / `:PiReviewSubmit` / `:PiReviewClear`
+
+**メンタルモデル: `,p*` はコメントを作る・送るだけ。見る・切り替える・辿るはすべてwalkthroughのキー（`,wo` `]w` `,wg` `,wt`）。** コメントは `pi-comments` という名前のwalkthroughセッションになり、他のセッションと完全に同じ操作で扱える。
 
 ## 公開API
 
@@ -46,7 +47,6 @@ carderne/pi-nvim のソケット自動発見・送信を再利用する。**コ�
 local pc = require("pi-nvim-comment")
 pc.setup(opts)
 pc.annotate(start_line, end_line) -- コメント追加モーダル
-pc.show()                        -- コメントをwalkthroughで表示（再表示の入口）
 pc.submit()                      -- piへ提出
 pc.clear()                       -- 未提出コメント破棄
 ```
@@ -54,8 +54,8 @@ pc.clear()                       -- 未提出コメント破棄
 ## コメントの表示（walkthrough連携）
 
 - コメントを追加/編集/削除すると、未提出コメントが walkthrough.nvim の **`pi-comments` セッションとして自動同期**される（`wt.update` / `wt.remove`）。カーソルは動かない
-- **他のwalkthrough（diffレビュー等）を表示中の場合は表示を奪わず裏で同期**する。コメント表示に切り替えるのは `<leader>pl`（または walkthrough側の `<leader>ww`）
-- コード上には walkthrough のUIで表示される: `▶`/`▷` マーカー・行ハイライト・移動は `]w`/`[w`・ファイル単位のnote縦積みは `<leader>wt`・一覧pickerは `<leader>wg`・セッション切替は `<leader>ww`
+- セッションは **`pin = true`** で同期されるため、他のwalkthroughを表示中でも**コメントのマークは常に見える**。`,wq` で閉じても消えず、`,wo` でいつでも戻れる。巡回・編集したいときは `,wo` で `pi-comments` に切り替える
+- コード上には walkthrough のUIで表示される: `▶`/`▷` マーカー・行ハイライト・移動は `]w`/`[w`・ファイル単位のnote縦積みは `<leader>wt`・一覧pickerは `<leader>wg`・セッション切替は `<leader>wo`
 - 表示名は `step_label = "comment"` で設定し、マーカーは `● comment 1/5` のようにコメント単位で表記される（walkthrough のデフォルトは `step`）
 - noteフロートにフォーカス（`<leader>w<CR>`、連打で次へ循環）したときのキーは hooks で登録: **`e`=編集モーダル**（入力UIは追加時と同じ）/ **`d`=コメント削除**
 - 提出（`<leader>px`）後は `pi-comments` セッションを閉じる。回答後の後処理は **環境側の `opts.prompt_suffix`** で指示する（例: 回答を `.walkthroughs/` のJSONとして返すよう pi に依頼）

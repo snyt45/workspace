@@ -245,7 +245,7 @@ function M.annotate(start_line, end_line)
 		next_id = next_id + 1
 		save_state()
 		sync_walkthrough()
-		notify(("コメントを追加: %s:%s"):format(path, location))
+		notify(("コメントを追加: %s:%s（切替: ,wo / 巡回: ]w）"):format(path, location))
 	end)
 end
 
@@ -621,6 +621,8 @@ sync_walkthrough = function()
 		name = "pi-comments",
 		steps = steps,
 		root = root,
+		-- 非アクティブでもマークを常時表示し、,wqで消えない（コメントは打てば常に見える）
+		pin = true,
 		-- walkthrough の表示名「step」を pi-comment の文脈では「comment」にする
 		step_label = "comment",
 		-- フロートにフォーカス中のキー: e=編集モーダル（入力UIは comment_modal と同じ） / d=コメント削除
@@ -643,29 +645,14 @@ sync_walkthrough = function()
 	})
 end
 
---- 未提出コメントをwalkthroughに表示する（,wq 等で閉じた後の再表示用の入口）
-function M.show()
-	if #records == 0 then
-		notify("表示するコメントがありません", vim.log.levels.WARN)
-		return
-	end
-	local ok, wt = pcall(require, "walkthrough")
-	if not ok then
-		notify("walkthrough.nvimが見つからないため表示できません", vim.log.levels.ERROR)
-		return
-	end
-	sync_walkthrough()
-	wt.activate("pi-comments")
-end
-
 -- --------------------------------------------------------------------------
 -- setup
 -- --------------------------------------------------------------------------
 local default_keymaps = {
 	-- 提出は <leader>px（,ps は他プラグイン使用済みのため）
+	-- 表示系のキーは持たない: 見る・切替・巡回はすべてwalkthrough側（,wo / ]w 等）
 	annotate = "<leader>pa",
 	submit = "<leader>px",
-	show = "<leader>pl",
 }
 
 local did_setup = false
@@ -696,10 +683,6 @@ function M.setup(opts)
 		M.clear()
 	end, { desc = "Piレビュー: 未提出コメント破棄" })
 
-	vim.api.nvim_create_user_command("PiReviewShow", function()
-		M.show()
-	end, { desc = "Piレビュー: コメントをwalkthroughで表示" })
-
 	if opts.keymaps ~= false then
 		local keys = vim.tbl_extend("force", {}, default_keymaps)
 		if type(opts.keymaps) == "table" then
@@ -713,9 +696,6 @@ function M.setup(opts)
 		end
 		if keys.submit then
 			vim.keymap.set("n", keys.submit, "<Cmd>PiReviewSubmit<CR>", { desc = "[Pi] レビュー提出" })
-		end
-		if keys.show then
-			vim.keymap.set("n", keys.show, "<Cmd>PiReviewShow<CR>", { desc = "[Pi] コメントをwalkthroughで表示" })
 		end
 	end
 
