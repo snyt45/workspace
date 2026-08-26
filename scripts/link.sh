@@ -8,6 +8,7 @@ EXCLUDE=(_archive docs scripts vendor)
 ok=0
 ng=0
 pruned=0
+skipped=0
 
 # src_root配下の全ファイルを dest_root へ同じ相対パスでファイル単位リンクする
 link_tree() {
@@ -16,6 +17,15 @@ link_tree() {
     local rel="${src#$src_root/}"
     local dest="$dest_root/$rel"
     mkdir -p "${dest:h}"
+    # 親ディレクトリの実パスが src_root 配下になる場合はスキップ。
+    # 例: ~/.agents/skills/as-if-planned -> dotfiles直リンク。宛先が symlink を辿って
+    # src_root（dotfiles実ファイル）自身に着地し、-f が実ファイルを自己参照リンクで破壊する。
+    local dest_real="${dest:h}:A"
+    if [[ "$dest_real" == "${src_root:A}"/* ]]; then
+      echo "  SKIP(自己参照回避): ${dest/#$HOME/~}"
+      ((skipped++))
+      continue
+    fi
     ln -sf "$src" "$dest"
     if [[ -L "$dest" && "$(readlink "$dest")" == "$src" ]]; then
       echo "  OK: ${dest/#$HOME/~}"
@@ -73,7 +83,7 @@ for src dest in \
 done
 
 echo
-echo "合計: OK=${ok} NG=${ng} PRUNED=${pruned}"
+echo "合計: OK=${ok} NG=${ng} PRUNED=${pruned} SKIPPED=${skipped}"
 if (( ng > 0 )); then
   echo "一部リンクに失敗しています。確認してください。"
 else
