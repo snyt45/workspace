@@ -36,8 +36,9 @@ carderne/pi-nvim のソケット自動発見・送信を再利用する。**コ�
 |---|---|---|
 | `<leader>pa` | n/x | 行/選択範囲にレビューコメント追加（コード上に常時マーク表示される） |
 | `<leader>px` | n | コメントをpiへ提出（`opts.prompt_suffix` に応じて回答後の指示を付記) |
+| `<leader>py` | n | 提出内容（指示文+コメント一覧）をクリップボードにコピー（piへは送らない。提出と同じ内容を外部に貼り付けたいとき用） |
 
-コマンド: `:PiReviewAnnotate` / `:PiReviewSubmit` / `:PiReviewClear`
+コマンド: `:PiReviewAnnotate` / `:PiReviewSubmit` / `:PiReviewCopy` / `:PiReviewClear`
 
 **メンタルモデル: `,p*` はコメントを作る・送るだけ。見る・切り替える・辿るはすべてwalkthroughのキー（`,wo` `]w` `,wg` `,wt`）。** コメントは `pi-comments` という名前のwalkthroughセッションになり、他のセッションと完全に同じ操作で扱える。
 
@@ -48,6 +49,7 @@ local pc = require("pi-nvim-comment")
 pc.setup(opts)
 pc.annotate(start_line, end_line) -- コメント追加モーダル
 pc.submit()                      -- piへ提出
+pc.copy()                        -- 提出内容をクリップボードにコピー（通知はvim.notify経由でnoice等が表示）
 pc.clear()                       -- 未提出コメント破棄
 ```
 

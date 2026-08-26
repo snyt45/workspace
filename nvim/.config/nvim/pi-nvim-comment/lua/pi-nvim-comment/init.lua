@@ -474,6 +474,16 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 	end,
 })
 
+-- 提出内容（指示文 + コメント一覧）を組み立てる。submit と copy で共用
+local function build_message()
+	local root = project_root()
+	local payload, payload_error = build_payload(root)
+	if not payload then
+		return nil, nil, nil, payload_error
+	end
+	return root, payload, format_review_prompt(root, payload), nil
+end
+
 function M.submit()
 	if submitting then
 		notify("送信処理が進行中です", vim.log.levels.WARN)
@@ -488,14 +498,11 @@ function M.submit()
 		return
 	end
 
-	local root = project_root()
-	local payload, payload_error = build_payload(root)
+	local _, payload, message, build_error = build_message()
 	if not payload then
-		notify(payload_error, vim.log.levels.ERROR)
+		notify(build_error, vim.log.levels.ERROR)
 		return
 	end
-
-	local message = format_review_prompt(root, payload)
 
 	submitting = true
 	pi_nvim().send_raw({ type = "prompt", message = message }, function(err, response)
@@ -509,6 +516,24 @@ function M.submit()
 		sync_walkthrough()
 		notify(("%dコメントをpiに提出しました"):format(#payload))
 	end)
+end
+
+--- 提出内容（指示文 + コメント一覧）をクリップボードにコピーする。piセッションは不要
+function M.copy()
+	if #records == 0 then
+		notify("コピーするコメントがありません", vim.log.levels.WARN)
+		return
+	end
+
+	local _, payload, message, build_error = build_message()
+	if not payload then
+		notify(build_error, vim.log.levels.ERROR)
+		return
+	end
+
+	vim.fn.setreg("+", message) -- システムクリップボード
+	-- vim.notify 経由なので noice（noise）導入時はそのUIに通知として表示される
+	notify(("%dコメント分の提出内容をクリップボードにコピーしました"):format(#payload))
 end
 
 function M.clear()
@@ -653,6 +678,8 @@ local default_keymaps = {
 	-- 表示系のキーは持たない: 見る・切替・巡回はすべてwalkthrough側（,wo / ]w 等）
 	annotate = "<leader>pa",
 	submit = "<leader>px",
+	-- 提出内容のコピーは <leader>py（,pc は他プラグイン使用済みのため yank の y）
+	copy = "<leader>py",
 }
 
 local did_setup = false
@@ -683,6 +710,10 @@ function M.setup(opts)
 		M.clear()
 	end, { desc = "Piレビュー: 未提出コメント破棄" })
 
+	vim.api.nvim_create_user_command("PiReviewCopy", function()
+		M.copy()
+	end, { desc = "Piレビュー: 提出内容をクリップボードにコピー" })
+
 	if opts.keymaps ~= false then
 		local keys = vim.tbl_extend("force", {}, default_keymaps)
 		if type(opts.keymaps) == "table" then
@@ -696,6 +727,9 @@ function M.setup(opts)
 		end
 		if keys.submit then
 			vim.keymap.set("n", keys.submit, "<Cmd>PiReviewSubmit<CR>", { desc = "[Pi] レビュー提出" })
+		end
+		if keys.copy then
+			vim.keymap.set("n", keys.copy, "<Cmd>PiReviewCopy<CR>", { desc = "[Pi] 提出内容をクリップボードにコピー" })
 		end
 	end
 
