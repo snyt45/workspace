@@ -21,21 +21,21 @@ AIが生成したJSON、または他のプラグインが組み立てたLuaテ�
 }
 ```
 
-設定はこの2項目のみ。色は `WalkthroughLocator` / `WalkthroughSeparator` ハイライトグループを `vim.api.nvim_set_hl` で上書きする。
+設定はこの2項目のみ。色は `WalkthroughLocator` / `WalkthroughSeparator` / `WalkthroughAuthor` ハイライトグループを `vim.api.nvim_set_hl` で上書きする。
 
-依存: なし。snacks.nvimがあればステップ一覧（`<leader>wg`）がnoteプレビュー付きpickerになる（なければ `vim.ui.select` にフォールバック）。
+依存: なし。snacks.nvimがあればステップ一覧（`<leader>wl`）がnoteプレビュー付きpickerになる（なければ `vim.ui.select` にフォールバック）。
 
 ## キーマップ（デフォルト）
 
 | キー | 動作 |
 |---|---|
 | `]w` / `[w` | 次 / 前のステップ |
-| `<leader>wg` | ステップ一覧から選んでジャンプ（noteプレビュー付き） |
-| `<leader>wo` | 統合picker: ロード済みセッション（位置保持で切替）+ 未ロードJSON（mtime降順・新規ロード） |
-| `<leader>wt` | 現在ファイルの全ステップのnoteを右側に縦積みでトグル（カーソル位置不問）。ステップのないファイルではアクティブステップのnoteをトグル |
-| `<leader>w<CR>` | noteフロートにフォーカス（連打で次へ循環・アクティブステップのフロート優先・`q` で戻る） |
+| `<leader>wl` | ステップ一覧から選んでジャンプ（noteプレビュー付き） |
+| `<leader>wo` | 統合picker: ロード済みセッション（位置保持で切替）+ 未ロードJSON（mtime降順・新規ロード）。snacks時は `<c-d>`（一覧では `d`）で選択項目を**JSONごと直接削除** |
+| `<leader>wt` | noteフロートをトグル。開くのはカーソル下のステップ（なければアクティブステップ）。表示中でも別ステップの上で押すとそのステップへ切り替え、それ以外は閉じる |
+| `<leader>w<CR>` | noteフロートにフォーカス（閉じていれば開いてフォーカス・`q` で戻る） |
+| `<leader>we` | カーソル下のステップの編集アクションを直接呼ぶ（`hooks.edit`。フロートを開かず1キーで編集モーダルへ） |
 | `<leader>wq` | アクティブセッションを閉じる（pinセッションは非アクティブ化のみ・`,wo`で戻れる） |
-| `<leader>wd` | セッションを一覧から選んで削除（pinセッションも削除可） |
 | `<leader>wR` | JSONを再読み込み（現在位置は維持） |
 
 コマンド: `:Walkthrough [path]`（無指定はpicker）。
@@ -54,15 +54,18 @@ wt.start_file(path)     -- JSONを読んで start() する薄いラッパー
 wt.next() / wt.prev()   -- ステップ移動
 wt.goto_step(n)         -- ステップNへ（プロデューサー・連携用）
 wt.steps()              -- ステップ一覧picker（note+valuesのプレビュー付き。選択でジャンプ）
-wt.open()               -- 統合picker（セッション切替 + JSONロード）
+wt.open()               -- 統合picker（セッション切替 + JSONロード。snacks時は<c-d>/dでJSONごと削除）
 wt.close()              -- アクティブセッションを閉じる（pinは非アクティブ化のみ）
-wt.delete()             -- セッション削除picker
+wt.delete()             -- セッション削除picker（JSONごと削除。,wdキーは廃止、削除は,woへ）
+wt.edit_at_cursor()     -- カーソル下のステップを直接編集（hooks.edit。キーマップ,we）
 wt.reload()             -- JSON再読み込み
 wt.toggle_float() / wt.focus_float()
+wt.set_reply_handler(fn) -- 連携API: thread付きステップのフロートで r を押したときの返信ハンドラ fn(session, idx) を登録（nilで解除）
 wt.get_state()          -- 読み取り専用スナップショット（テスト・連携用）
 
+- `M.remove(name)` はセッションをレジストリから外し、**JSON由来ならファイル自体も削除**する
 - `start(spec)` / `update(spec)` の spec は `hooks = { [キー] = function(session, idx) }` と `step_label`（表示名。デフォルト `step`）を持つことができる
-  （例: pi-nvim-comment はフロート内 `e`=編集・`d`=削除を登録し、`step_label = "comment"` でコメント単位の表記にしている）。フロートにフォーカス中にそのキーが有効になる
+  - フロート内キー（例: pi-nvim-comment は `e`=編集・`d`=削除）に加え、**意味的キー `hooks.edit` / `hooks.delete`** はフロートを開かず直接呼べる（`<leader>we` は `hooks.edit` を呼ぶ）
 ```
 
 `start(spec)` のspec:
@@ -90,6 +93,10 @@ wt.get_state()          -- 読み取り専用スナップショット（テス�
       "file": "src/api.ts",
       "line": 6,
       "note": "このステップの解説。\\nで複数段落",
+      "thread": [
+        { "author": "you", "text": "この分岐いらなくない？" },
+        { "author": "pi", "text": "初回アクセス時に必要です。…" }
+      ],
       "values": [
         { "name": "id", "value": "\"user:42\"", "line": 5 }
       ]
@@ -100,13 +107,16 @@ wt.get_state()          -- 読み取り専用スナップショット（テス�
 
 - `steps[].file`: リポジトリ相対パス（スラッシュ区切り）
 - `steps[].line`: 1始まり
+- `steps[].note` / `steps[].thread`: どちらか一方。`thread` は同じ位置に積み上がる会話（`{author, text}` の時系列フラット配列。ネストなし）。`thread` があれば `note` は表示されない
 - `steps[].values`: 任意。その時点で期待される変数状態。`line` は観測する行（必須）
 - fileの解決: JSONのあるディレクトリのgit rootを基準にする
 
 ## 動作モデル
 
-- 複数セッションをロードでき、フロート・巡回・`,wt`はアクティブな1本のみ。**pinされたセッションはマーク（サイン+要約）だけ常時表示**される
+- 複数セッションをロードでき、フロート・巡回はアクティブな1本のみ。**pinされたセッションはマーク（サイン+要約）だけ常時表示**される
 - アクティブなステップは `▶` + 行ハイライト + 変数値virtual text + 右上noteフロート。**同一セッションの他ステップも `▷` サインで常時表示**される
-- `<leader>wt` は**ファイル単位のnoteビュー**: 現在ファイルに含まれる全ステップのnote（アクティブは `●` 付き）を右側に縦積みで開閉する。ステップ順に見るのは `]w`/`[w`、ファイル単位で眺めるのは `<leader>wt` という使い分け
+- noteフロートは**常に1枚**。`<leader>wt` はカーソル下のステップ（なければアクティブステップ）のnoteをトグルし、表示中に別ステップの上で押すと閉じずにそのステップへ切り替わる。pinセッションのステップ（例: pi-comments）はアクティブでなくてもカーソルを乗せて `<leader>wt` で読める
+- `thread` 付きステップのフロートは発言ごとに `▌ author` ラベル + 区切り線で描画され、**最新の発言（末尾）が見える状態で開く**。`set_reply_handler` が登録されていればフロート内 `r` で返信できる（pi-nvim-comment が登録する）。ステップ一覧（`<leader>wl`）の要約には `💬N` + 最新発言が出る
+- 編集は `<leader>we`（カーソル下のステップ。フロートを開かず `hooks.edit` を直接呼ぶ）。pi-commentsの場合は編集モーダルが開き、確定でコメント・walkthrough双方に反映される
 - 切り替え時は各セッションの現在位置を保持したまま該当ステップへ即ジャンプ
 - 永続化なし。nvim再起動でセッションは消える（JSON由来はファイルから開き直す）

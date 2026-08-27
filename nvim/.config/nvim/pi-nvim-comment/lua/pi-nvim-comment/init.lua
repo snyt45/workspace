@@ -12,6 +12,7 @@ local submitting = false
 local active_modal
 local save_state -- 前方宣言（clear_records 等が先に定義されているため）
 local sync_walkthrough -- 前方宣言（edit_comment を参照するため後方で定義）
+local submit_records -- 前方宣言（annotate の即送信が参照するため後方で定義）
 -- 環境固有の指示はプラグインに埋め込まず setup の opts で注入する
 local prompt_suffix -- opts.prompt_suffix: 提出プロンプトの指示文の後に付記する文
 local instructions -- opts.instructions: 指示文の差し替え（省略時は DEFAULT_INSTRUCTIONS）
@@ -98,7 +99,8 @@ end
 -- --------------------------------------------------------------------------
 -- コメント入力モーダル（多行エディタ）
 -- --------------------------------------------------------------------------
-local function modal_finish(value)
+-- action: "save"=未提出リストへ / "send"=この1件だけ即送信（キャンセル時は value=nil）
+local function modal_finish(value, action)
 	local current = active_modal
 	if not current then
 		return
@@ -112,7 +114,7 @@ local function modal_finish(value)
 		pcall(vim.api.nvim_buf_delete, current.buf, { force = true })
 	end
 	vim.schedule(function()
-		current.callback(value)
+		current.callback(value, action)
 	end)
 end
 
@@ -144,7 +146,7 @@ local function comment_modal(title, initial, callback)
 		border = "rounded",
 		title = " " .. vim.fn.strcharpart(title, 0, math.max(1, width - 4)) .. " ",
 		title_pos = "center",
-		footer = " <C-s> 保存 · <Esc> キャンセル ",
+		footer = " <C-s> 保存 · <C-x> 即送信 · <Esc> キャンセル ",
 		footer_pos = "center",
 	})
 
@@ -168,18 +170,23 @@ local function comment_modal(title, initial, callback)
 		end,
 	})
 
-	local function submit()
+	local function finish(action)
 		if not vim.api.nvim_buf_is_valid(buf) then
 			modal_finish(nil)
 			return
 		end
-		modal_finish(table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n"))
+		modal_finish(table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n"), action)
 	end
 	local function cancel()
 		modal_finish(nil)
 	end
 	local map = { buffer = buf, silent = true, nowait = true }
-	vim.keymap.set({ "n", "i" }, "<C-s>", submit, map)
+	vim.keymap.set({ "n", "i" }, "<C-s>", function()
+		finish("save")
+	end, map)
+	vim.keymap.set({ "n", "i" }, "<C-x>", function()
+		finish("send")
+	end, map)
 	vim.keymap.set({ "n", "i" }, "<Esc>", cancel, map)
 	vim.keymap.set("n", "q", cancel, map)
 	vim.keymap.set({ "n", "i" }, "<C-c>", cancel, map)
@@ -223,7 +230,7 @@ function M.annotate(start_line, end_line)
 	end
 
 	local location = first_line == last_line and tostring(first_line) or string.format("%d-%d", first_line, last_line)
-	comment_modal(string.format("Piコメント · %s:%s", path, location), nil, function(comment)
+	comment_modal(string.format("Piコメント · %s:%s", path, location), nil, function(comment, action)
 		if comment == nil then
 			return
 		end
@@ -233,7 +240,7 @@ function M.annotate(start_line, end_line)
 		end
 
 		-- 行は追加時点で固定（extmark追跡なし）。バッファ編集でずれたら ,pa し直す
-		records[#records + 1] = {
+		local record = {
 			id = next_id,
 			bufnr = bufnr,
 			absolute_path = absolute,
@@ -242,10 +249,16 @@ function M.annotate(start_line, end_line)
 			comment = comment,
 			root = root,
 		}
+		records[#records + 1] = record
 		next_id = next_id + 1
 		save_state()
 		sync_walkthrough()
-		notify(("コメントを追加: %s:%s（切替: ,wo / 巡回: ]w）"):format(path, location))
+		if action == "send" then
+			-- 即送信でも先にrecord化しておく: 送信失敗時は未提出コメントとして残る
+			submit_records({ record }, "コメント%d件をpiへ即送信しました")
+		else
+			notify(("コメントを追加: %s:%s（切替: ,wo / 巡回: ]w）"):format(path, location))
+		end
 	end)
 end
 
@@ -295,9 +308,9 @@ local function source_lines(record, start_line, end_line)
 	return lines
 end
 
-local function build_payload(root)
+local function build_payload(root, list)
 	local resolved = {}
-	for _, record in ipairs(records) do
+	for _, record in ipairs(list) do
 		local path = relative_path(root, record.absolute_path)
 		if not path then
 			return nil, "Piプロジェクトの外にあるコメントを中断しました: " .. record.absolute_path
@@ -317,6 +330,7 @@ local function build_payload(root)
 			endLine = end_line,
 			comment = record.comment,
 			source = source,
+			reply = record.reply_to,
 		}
 	end
 
@@ -358,6 +372,21 @@ local function format_review_prompt(root, payload)
 		parts[#parts + 1] = "## Comment " .. index
 		parts[#parts + 1] = "File: " .. vim.json.encode(annotation.path)
 		parts[#parts + 1] = "Lines: " .. location
+		if annotation.reply then
+			local json_path = relative_path(root, annotation.reply.json) or annotation.reply.json
+			parts[#parts + 1] = string.format(
+				"Reply to walkthrough thread: %s (step %d)",
+				vim.json.encode(json_path),
+				annotation.reply.step
+			)
+			if annotation.reply.context and annotation.reply.context ~= "" then
+				parts[#parts + 1] = ""
+				parts[#parts + 1] = "Thread so far:"
+				for _, line in ipairs(split_lines(annotation.reply.context)) do
+					parts[#parts + 1] = "> " .. line
+				end
+			end
+		end
 		parts[#parts + 1] = ""
 		parts[#parts + 1] = "Review comment:"
 		for _, line in ipairs(split_lines(annotation.comment)) do
@@ -403,6 +432,7 @@ save_state = function()
 			end_line = record.end_line,
 			comment = record.comment,
 			root = record.root,
+			reply_to = record.reply_to,
 		}
 	end
 	for _, item in ipairs(foreign_items) do
@@ -456,6 +486,9 @@ local function load_state()
 					end_line = math.max(start_line, end_line),
 					comment = item.comment,
 					root = root,
+					reply_to = (type(item.reply_to) == "table" and type(item.reply_to.json) == "string")
+							and item.reply_to
+						or nil,
 				}
 				records[#records + 1] = record
 				if record.id >= next_id then
@@ -475,21 +508,24 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 })
 
 -- 提出内容（指示文 + コメント一覧）を組み立てる。submit と copy で共用
-local function build_message()
+local function build_message(list)
 	local root = project_root()
-	local payload, payload_error = build_payload(root)
+	local payload, payload_error = build_payload(root, list)
 	if not payload then
 		return nil, nil, nil, payload_error
 	end
 	return root, payload, format_review_prompt(root, payload), nil
 end
 
-function M.submit()
+-- 指定したrecord群だけを提出する。成功時はそのrecordだけをリストから外す（他の未提出は残る）
+-- label: 成功通知のformat文字列（%d=件数）
+-- 前方宣言と同じスコープのため代入で定義する（save_state と同パターン）
+submit_records = function(list, label)
 	if submitting then
 		notify("送信処理が進行中です", vim.log.levels.WARN)
 		return
 	end
-	if #records == 0 then
+	if #list == 0 then
 		notify("提出するコメントがありません", vim.log.levels.WARN)
 		return
 	end
@@ -498,7 +534,7 @@ function M.submit()
 		return
 	end
 
-	local _, payload, message, build_error = build_message()
+	local _, payload, message, build_error = build_message(list)
 	if not payload then
 		notify(build_error, vim.log.levels.ERROR)
 		return
@@ -512,10 +548,23 @@ function M.submit()
 			return
 		end
 
-		clear_records()
+		local sent = {}
+		for _, record in ipairs(list) do
+			sent[record.id] = true
+		end
+		for i = #records, 1, -1 do
+			if sent[records[i].id] then
+				table.remove(records, i)
+			end
+		end
+		save_state()
 		sync_walkthrough()
-		notify(("%dコメントをpiに提出しました"):format(#payload))
+		notify(label:format(#payload))
 	end)
+end
+
+function M.submit()
+	submit_records(records, "%dコメントをpiに提出しました")
 end
 
 --- 提出内容（指示文 + コメント一覧）をクリップボードにコピーする。piセッションは不要
@@ -525,7 +574,7 @@ function M.copy()
 		return
 	end
 
-	local _, payload, message, build_error = build_message()
+	local _, payload, message, build_error = build_message(records)
 	if not payload then
 		notify(build_error, vim.log.levels.ERROR)
 		return
@@ -561,7 +610,7 @@ local function edit_comment(record)
 	local start_line, end_line = record.start_line, record.end_line
 	local location = start_line == end_line and tostring(start_line) or string.format("%d-%d", start_line, end_line)
 
-	comment_modal(string.format("Piコメント編集 · %s:%s", path, location), record.comment, function(text)
+	comment_modal(string.format("Piコメント編集 · %s:%s", path, location), record.comment, function(text, action)
 		if text == nil then
 			return
 		end
@@ -573,7 +622,75 @@ local function edit_comment(record)
 		record.comment = text
 		save_state()
 		sync_walkthrough()
-		notify(("コメントを編集: %s:%s"):format(path, location))
+		if action == "send" then
+			submit_records({ record }, "コメント%d件をpiへ即送信しました")
+		else
+			notify(("コメントを編集: %s:%s"):format(path, location))
+		end
+	end)
+end
+
+--- walkthroughのthread付きステップへの返信（walkthrough.nvimの set_reply_handler 経由で呼ばれる）
+--- 返信は「そのステップと同じ行に付いた未提出コメント」になり、reply_to にスレッド参照を持つ
+function M.reply(session, idx)
+	local step = session.steps and session.steps[idx]
+	if not step then
+		return
+	end
+	if not session.json_path then
+		notify("このセッションはファイル由来ではないため返信できません", vim.log.levels.WARN)
+		return
+	end
+	local absolute = session.root and (session.root .. "/" .. step.file) or step.file
+	absolute = vim.uv.fs_realpath(absolute)
+	if not absolute then
+		notify("返信先のファイルが見つかりません: " .. tostring(step.file), vim.log.levels.WARN)
+		return
+	end
+
+	-- スレッド履歴のスナップショット（提出プロンプトの Thread so far に使う）
+	local context_lines = {}
+	for _, entry in ipairs(step.thread or {}) do
+		for i, line in ipairs(split_lines(entry.text or "")) do
+			context_lines[#context_lines + 1] = (i == 1 and ("[" .. tostring(entry.author or "?") .. "] ") or "")
+				.. line
+		end
+	end
+
+	local root = project_root()
+	local path = relative_path(root, absolute) or step.file
+	comment_modal(string.format("Pi返信 · %s:%d", path, step.line), nil, function(comment, action)
+		if comment == nil then
+			return
+		end
+		comment = validate_comment(comment)
+		if not comment then
+			return
+		end
+
+		local record = {
+			id = next_id,
+			bufnr = vim.fn.bufadd(absolute),
+			absolute_path = absolute,
+			start_line = step.line,
+			end_line = step.line,
+			comment = comment,
+			root = root,
+			reply_to = {
+				json = session.json_path,
+				step = idx,
+				context = table.concat(context_lines, "\n"),
+			},
+		}
+		records[#records + 1] = record
+		next_id = next_id + 1
+		save_state()
+		sync_walkthrough()
+		if action == "send" then
+			submit_records({ record }, "返信%d件をpiへ即送信しました（回答が返ったら ,wR）")
+		else
+			notify(("返信を追加: %s:%d（,pxで提出）"):format(path, step.line))
+		end
 	end)
 end
 
@@ -630,6 +747,14 @@ sync_walkthrough = function()
 		if end_line > start_line then
 			note = string.format("対象: L%d-%d\n\n%s", start_line, end_line, note)
 		end
+		if record.reply_to then
+			note = string.format(
+				"↩ %s · step %d への返信\n\n%s",
+				vim.fn.fnamemodify(record.reply_to.json, ":t:r"),
+				record.reply_to.step,
+				note
+			)
+		end
 		steps[#steps + 1] = { file = path, line = start_line, note = note, id = record.id }
 	end
 	table.sort(steps, function(a, b)
@@ -642,6 +767,21 @@ sync_walkthrough = function()
 		return a.id < b.id
 	end)
 
+	-- フロート内キー（e/d）と、,we（カーソル下編集）用の意味的キー（edit/delete）で同じアクションを共有
+	local edit_hook = function(session, idx)
+		local record = find_by_step(session, idx)
+		if record then
+			vim.schedule(function()
+				edit_comment(record)
+			end)
+		end
+	end
+	local delete_hook = function(session, idx)
+		local record = find_by_step(session, idx)
+		if record and remove_comment(record.id) then
+			notify("コメントを削除しました")
+		end
+	end
 	wt.update({
 		name = "pi-comments",
 		steps = steps,
@@ -652,20 +792,10 @@ sync_walkthrough = function()
 		step_label = "comment",
 		-- フロートにフォーカス中のキー: e=編集モーダル（入力UIは comment_modal と同じ） / d=コメント削除
 		hooks = {
-			e = function(session, idx)
-				local record = find_by_step(session, idx)
-				if record then
-					vim.schedule(function()
-						edit_comment(record)
-					end)
-				end
-			end,
-			d = function(session, idx)
-				local record = find_by_step(session, idx)
-				if record and remove_comment(record.id) then
-					notify("コメントを削除しました")
-				end
-			end,
+			e = edit_hook,
+			d = delete_hook,
+			edit = edit_hook,
+			delete = delete_hook,
 		},
 	})
 end
@@ -735,6 +865,14 @@ function M.setup(opts)
 
 	load_state()
 	sync_walkthrough()
+
+	-- thread付きステップのフロートで r=返信 を有効にする
+	local ok, wt = pcall(require, "walkthrough")
+	if ok and type(wt.set_reply_handler) == "function" then
+		wt.set_reply_handler(function(session, idx)
+			M.reply(session, idx)
+		end)
+	end
 end
 
 return M

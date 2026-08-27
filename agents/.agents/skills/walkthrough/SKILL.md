@@ -19,6 +19,10 @@ walkthroughは、コード上のポイント列（ステップ）を意図した
       "file": "src/api.ts",
       "line": 6,
       "note": "このポイントで何が成り立ち、何が次に起きるか。\\nで複数段落。",
+      "thread": [
+        { "author": "you", "text": "この分岐いらなくない？" },
+        { "author": "pi", "text": "初回アクセス時に必要です。…" }
+      ],
       "values": [
         { "name": "id", "value": "\"user:42\"", "line": 5 }
       ]
@@ -30,6 +34,7 @@ walkthroughは、コード上のポイント列（ステップ）を意図した
 - `commit`: 必須。行番号のstale検出用（コード編集後は再生成する）
 - `steps[].file`: リポジトリ相対パス（スラッシュ区切り。`./` や絶対パスは不可）
 - `steps[].line`: 1始まり
+- `steps[].note` / `steps[].thread`: どちらか一方を使う。`note` は解説1本、`thread` は同じ位置に積み上がる会話（`{author, text}` の時系列フラット配列。ネストなし）。`thread` があるステップでは `note` は表示されない
 - `steps[].values`: 任意。実行パス説明では使い、diffレビューでは省略してよい
 - `steps[].values[].line`: 必須。その変数が最も意味を持って観測される行（宣言・代入・呼び出し元）
 

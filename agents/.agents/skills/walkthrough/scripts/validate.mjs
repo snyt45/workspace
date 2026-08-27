@@ -91,7 +91,19 @@ function validateStep(s, p) {
   if (!isPositiveInt(s.line)) err(`${p}.line must be a positive integer`);
   if (s.col !== undefined) err(`${p}.col is not a supported field (column positions are unreliable; remove it)`);
   if (s.note !== undefined && typeof s.note !== "string") err(`${p}.note must be a string`);
-  if (s.note === undefined || s.note === "") warn(`${p}.note is missing (recommended)`);
+
+  if (s.thread !== undefined) {
+    if (!Array.isArray(s.thread)) {
+      err(`${p}.thread must be an array`);
+    } else if (s.thread.length === 0) {
+      err(`${p}.thread must not be empty (omit it or add entries)`);
+    } else {
+      s.thread.forEach((t, j) => validateThreadEntry(t, `${p}.thread[${j}]`));
+    }
+  }
+
+  const hasThread = Array.isArray(s.thread) && s.thread.length > 0;
+  if (!hasThread && (s.note === undefined || s.note === "")) warn(`${p}.note is missing (recommended)`);
 
   if (s.values !== undefined) {
     if (!Array.isArray(s.values)) {
@@ -100,6 +112,16 @@ function validateStep(s, p) {
       s.values.forEach((v, j) => validateValue(v, `${p}.values[${j}]`));
     }
   }
+}
+
+function validateThreadEntry(t, p) {
+  if (!isObject(t)) {
+    err(`${p} must be an object`);
+    return;
+  }
+  if (typeof t.text !== "string" || t.text === "") err(`${p}.text must be a non-empty string`);
+  if (t.author !== undefined && typeof t.author !== "string") err(`${p}.author must be a string`);
+  if (t.author === undefined || t.author === "") warn(`${p}.author is missing (recommended)`);
 }
 
 function validateValue(v, p) {

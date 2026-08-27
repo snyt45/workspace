@@ -18,12 +18,12 @@ local config = {
 local default_keymaps = {
 	next = "]w",
 	prev = "[w",
-	steps = "<leader>wg",
+	steps = "<leader>wl",
 	open = "<leader>wo",
 	toggle_float = "<leader>wt",
 	focus_float = "<leader>w<CR>",
 	close = "<leader>wq",
-	delete = "<leader>wd",
+	edit_at_cursor = "<leader>we",
 	reload = "<leader>wR",
 }
 
@@ -36,15 +36,18 @@ local ns_float = vim.api.nvim_create_namespace("walkthrough_float")
 
 vim.api.nvim_set_hl(0, "WalkthroughLocator", { link = "Title", default = true })
 vim.api.nvim_set_hl(0, "WalkthroughSeparator", { link = "FloatBorder", default = true })
+vim.api.nvim_set_hl(0, "WalkthroughAuthor", { link = "Identifier", default = true })
 
 -- セッション: ロード済みwalkthrough 1本 + 現在位置
 --   { name, steps, description?, commit?, root, json_path?, index }
 -- 複数ロードできるが、描画されるのは active の1本だけ
 local sessions = {}
 local active = nil
--- noteフロート。mode = "single"（アクティブステップ1枚）| "file"（現在ファイルの全ステップ）
-local float_state = { wins = {}, mode = nil, bufnr = nil, active_win = nil }
+-- noteフロート（常に1枚）。表示中のステップを覚えてトグル判定に使う
+local float_state = { win = nil, session = nil, idx = nil }
 local unnamed_count = 0
+-- thread付きステップのフロートで r を押したときの返信ハンドラ（連携プラグインが登録）
+local reply_handler = nil
 
 local function notify(message, level)
 	vim.notify("Walkthrough: " .. message, level or vim.log.levels.INFO)
@@ -54,24 +57,16 @@ end
 -- 描画（マーカー・変数値・noteフロート）
 -- --------------------------------------------------------------------------
 local function close_float()
-	for _, win in ipairs(float_state.wins) do
-		if vim.api.nvim_win_is_valid(win) then
-			vim.api.nvim_win_close(win, true)
-		end
+	if float_state.win and vim.api.nvim_win_is_valid(float_state.win) then
+		vim.api.nvim_win_close(float_state.win, true)
 	end
-	float_state.wins = {}
-	float_state.mode = nil
-	float_state.bufnr = nil
-	float_state.active_win = nil
+	float_state.win = nil
+	float_state.session = nil
+	float_state.idx = nil
 end
 
 local function has_float()
-	for _, win in ipairs(float_state.wins) do
-		if vim.api.nvim_win_is_valid(win) then
-			return true
-		end
-	end
-	return false
+	return float_state.win ~= nil and vim.api.nvim_win_is_valid(float_state.win)
 end
 
 
@@ -189,48 +184,83 @@ local function wrap_line(line, max_width)
 	return out
 end
 
--- ステップ1枚分の描画行を組み立てる（ウィンドウは開かない。幅の事前計算にも使う）
+local function has_thread(step)
+	return type(step.thread) == "table" and #step.thread > 0
+end
+
+-- ステップ1枚分の描画行を組み立てる（ウィンドウは開かない）
+-- 戻り値: lines, marks（{row, group} の配列。行ハイライト用）
 local function note_layout(session, idx, max_width)
 	local step = session.steps[idx]
 	local marker = idx == session.index and "●" or "▎"
 	local locator =
 		string.format("  %s %s · %d/%d   %s:%d", marker, session.name, idx, #session.steps, step.file, step.line)
+	if has_thread(step) then
+		locator = locator .. string.format("   💬 %d", #step.thread)
+	end
 
 	local lines = {}
+	local marks = {}
+	local seps = {} -- 区切り行の位置と文字。内容幅が確定してからまとめて引き直す
+
 	for _, sub in ipairs(wrap_line(locator, max_width)) do
-		table.insert(lines, sub)
+		lines[#lines + 1] = sub
+		marks[#marks + 1] = { row = #lines, group = "WalkthroughLocator" }
 	end
-	local locator_lines = #lines
+	lines[#lines + 1] = ""
+	seps[#seps + 1] = { row = #lines, char = "━" }
+	marks[#marks + 1] = { row = #lines, group = "WalkthroughSeparator" }
 
-	local sep_width = 0
+	local function push_text(text)
+		local raw = {}
+		for line in (text or ""):gmatch("([^\n]*)\n?") do
+			if line ~= "" or #raw > 0 then
+				raw[#raw + 1] = line
+			end
+		end
+		if #raw > 0 and raw[#raw] == "" then
+			table.remove(raw)
+		end
+		for _, l in ipairs(raw) do
+			for _, sub in ipairs(wrap_line(l, max_width)) do
+				lines[#lines + 1] = sub
+			end
+		end
+	end
+
+	if has_thread(step) then
+		-- スレッド: 発言ごとに authorラベル + 本文、発言間は区切り線
+		for ei, entry in ipairs(step.thread) do
+			if ei > 1 then
+				lines[#lines + 1] = ""
+				seps[#seps + 1] = { row = #lines, char = "─" }
+				marks[#marks + 1] = { row = #lines, group = "WalkthroughSeparator" }
+			end
+			lines[#lines + 1] = "▌ " .. tostring(entry.author or "?")
+			marks[#marks + 1] = { row = #lines, group = "WalkthroughAuthor" }
+			push_text(entry.text)
+		end
+	else
+		push_text(step.note)
+	end
+
+	local content = 0
 	for _, l in ipairs(lines) do
-		sep_width = math.max(sep_width, vim.fn.strdisplaywidth(l))
+		content = math.max(content, vim.fn.strdisplaywidth(l))
 	end
-	table.insert(lines, string.rep("━", math.min(sep_width, max_width)))
-	local sep_line = #lines
+	content = math.min(math.max(content, 1), max_width)
+	for _, sep in ipairs(seps) do
+		lines[sep.row] = string.rep(sep.char, content)
+	end
 
-	local note_raw = {}
-	for line in (step.note or ""):gmatch("([^\n]*)\n?") do
-		if line ~= "" or #note_raw > 0 then
-			table.insert(note_raw, line)
-		end
-	end
-	if #note_raw > 0 and note_raw[#note_raw] == "" then
-		table.remove(note_raw)
-	end
-	for _, l in ipairs(note_raw) do
-		for _, sub in ipairs(wrap_line(l, max_width)) do
-			table.insert(lines, sub)
-		end
-	end
-	return lines, locator_lines, sep_line
+	return lines, marks
 end
 
--- ステップ1枚分のnoteフロートを row の位置に開き、実際の高さを返す
--- fixed_width 指定時はその幅で開く（縦積みビューは全ボックス同じ幅に揃える）
-local function open_note_float(session, idx, row, max_height, fixed_width)
+-- 指定ステップのnoteフロートを右上に開く（既存のフロートは閉じる）
+local function show_note_float(session, idx)
+	close_float()
 	local max_width = math.max(20, math.floor(vim.o.columns * 0.7) - 2)
-	local lines, locator_lines, sep_line = note_layout(session, idx, max_width)
+	local lines, marks = note_layout(session, idx, max_width)
 
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
@@ -238,27 +268,23 @@ local function open_note_float(session, idx, row, max_height, fixed_width)
 	vim.bo[buf].bufhidden = "wipe"
 	vim.bo[buf].filetype = "markdown"
 
-	for i = 0, locator_lines - 1 do
-		pcall(vim.api.nvim_buf_set_extmark, buf, ns_float, i, 0, { line_hl_group = "WalkthroughLocator" })
+	for _, m in ipairs(marks) do
+		pcall(vim.api.nvim_buf_set_extmark, buf, ns_float, m.row - 1, 0, { line_hl_group = m.group })
 	end
-	pcall(vim.api.nvim_buf_set_extmark, buf, ns_float, sep_line - 1, 0, { line_hl_group = "WalkthroughSeparator" })
 
-	local width = fixed_width
-	if not width then
-		local content = 0
-		for _, l in ipairs(lines) do
-			if vim.fn.strdisplaywidth(l) > content then
-				content = vim.fn.strdisplaywidth(l)
-			end
+	local content = 0
+	for _, l in ipairs(lines) do
+		if vim.fn.strdisplaywidth(l) > content then
+			content = vim.fn.strdisplaywidth(l)
 		end
-		width = math.min(content + 2, math.floor(vim.o.columns * 0.7))
 	end
-	local height = math.min(#lines, math.max(3, max_height))
+	local width = math.min(content + 2, math.floor(vim.o.columns * 0.7))
+	local height = math.min(#lines, math.max(5, math.floor(vim.o.lines * 0.7)))
 
 	local win = vim.api.nvim_open_win(buf, false, {
 		relative = "editor",
 		anchor = "NE",
-		row = row,
+		row = 1,
 		col = vim.o.columns - 1,
 		width = width,
 		height = height,
@@ -284,18 +310,24 @@ local function open_note_float(session, idx, row, max_height, fixed_width)
 		end
 	end
 
-	if idx == session.index then
-		float_state.active_win = win
+	if has_thread(session.steps[idx]) then
+		-- スレッドは最新の発言から読みたいので末尾を表示した状態で開く
+		pcall(vim.api.nvim_win_set_cursor, win, { #lines, 0 })
+		if type(reply_handler) == "function" then
+			vim.keymap.set("n", "r", function()
+				reply_handler(session, idx)
+			end, { buffer = buf, nowait = true, silent = true, desc = "[Walkthrough] スレッドに返信" })
+		end
 	end
-	table.insert(float_state.wins, win)
-	return height
+
+	float_state.win = win
+	float_state.session = session
+	float_state.idx = idx
 end
 
--- アクティブステップのnoteを1枚表示
+-- アクティブステップのnoteを表示
 local function show_float(session)
-	close_float()
-	open_note_float(session, session.index, 1, math.max(5, math.floor(vim.o.lines * 0.7)))
-	float_state.mode = "single"
+	show_note_float(session, session.index)
 end
 
 -- --------------------------------------------------------------------------
@@ -331,6 +363,37 @@ local function buffer_steps(session, bufnr)
 		end
 	end
 	return out
+end
+
+-- カーソル行に該当する (セッション, idx) を返す。アクティブ優先、次にロード順
+local function step_at_cursor()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local line = vim.api.nvim_win_get_cursor(0)[1]
+	local name = vim.api.nvim_buf_get_name(bufnr)
+	if name == "" then
+		return nil
+	end
+	local real = vim.uv.fs_realpath(name) or name
+	local order = {}
+	if active then
+		order[#order + 1] = active
+	end
+	for _, s in ipairs(sessions) do
+		if s ~= active then
+			order[#order + 1] = s
+		end
+	end
+	for _, s in ipairs(order) do
+		for i, step in ipairs(s.steps) do
+			if step.line == line then
+				local p = resolve_path(s, step.file)
+				if p and (vim.uv.fs_realpath(p) or p) == real then
+					return s, i
+				end
+			end
+		end
+	end
+	return nil
 end
 
 -- 描画対象セッション: アクティブ + pinされた非アクティブ（pinはマークのみ常時表示）
@@ -388,47 +451,6 @@ local function refresh_marks()
 			decorate_buffer(b)
 		end
 	end
-end
-
--- 現在ファイルの全ステップのnoteを右側に縦積みで表示（幅は全ボックス統一）
-local function show_file_floats(session, bufnr)
-	close_float()
-	local entries = buffer_steps(session, bufnr)
-	if #entries == 0 then
-		return false
-	end
-
-	-- 先に全ステップの内容幅の最大値を取り、全ボックス同じ幅で開く
-	local max_width = math.max(20, math.floor(vim.o.columns * 0.7) - 2)
-	local uniform = 0
-	for _, entry in ipairs(entries) do
-		local lines = note_layout(session, entry.idx, max_width)
-		for _, l in ipairs(lines) do
-			if vim.fn.strdisplaywidth(l) > uniform then
-				uniform = vim.fn.strdisplaywidth(l)
-			end
-		end
-	end
-	uniform = math.min(uniform + 2, math.floor(vim.o.columns * 0.7))
-
-	local avail = vim.o.lines - vim.o.cmdheight - 2
-	local row = 2
-	local shown = 0
-	for _, entry in ipairs(entries) do
-		if avail - row < 5 then
-			notify(
-				("画面に収まらないため%d件のnoteを省略しました"):format(#entries - shown),
-				vim.log.levels.INFO
-			)
-			break
-		end
-		local height = open_note_float(session, entry.idx, row, math.min(15, avail - row - 2), uniform)
-		row = row + height + 3
-		shown = shown + 1
-	end
-	float_state.mode = "file"
-	float_state.bufnr = bufnr
-	return true
 end
 
 local function jump_to(session, idx)
@@ -536,6 +558,21 @@ local function build_session(spec, name)
 			notify(string.format("ステップ%dのnoteは文字列である必要があります", i), vim.log.levels.ERROR)
 			return nil
 		end
+		if step.thread ~= nil then
+			if type(step.thread) ~= "table" then
+				notify(string.format("ステップ%dのthreadは配列である必要があります", i), vim.log.levels.ERROR)
+				return nil
+			end
+			for j, entry in ipairs(step.thread) do
+				if type(entry) ~= "table" or type(entry.text) ~= "string" then
+					notify(
+						string.format("ステップ%dのthread[%d]が不正です（textが必要）", i, j),
+						vim.log.levels.ERROR
+					)
+					return nil
+				end
+			end
+		end
 	end
 	return {
 		name = name,
@@ -626,23 +663,23 @@ function M.update(spec)
 	if was_active or active == nil then
 		active = session
 		if has_float() then
-			if float_state.mode == "file" and float_state.bufnr and vim.api.nvim_buf_is_valid(float_state.bufnr) then
-				show_file_floats(session, float_state.bufnr)
-			elseif float_state.mode == "single" then
-				show_float(session)
-			end
+			show_float(session)
 		end
 	end
 	refresh_marks()
 end
 
---- セッションを名前で削除（アクティブなら表示もクリア）。連携API
+--- セッションを名前で削除。JSON由来ならファイル自体も削除する（アクティブなら表示もクリア）。連携API
 function M.remove(name)
 	if type(name) ~= "string" or name == "" then
 		return false
 	end
 	for i, s in ipairs(sessions) do
 		if s.name == name then
+			-- 永続化はされない設計だが、JSON由来の場合はファイルごと消す（,woのc-dと同じ挙動）
+			if s.json_path then
+				os.remove(s.json_path)
+			end
 			table.remove(sessions, i)
 			if s == active then
 				active = nil
@@ -655,21 +692,21 @@ function M.remove(name)
 	return false
 end
 
---- セッションを一覧から選んで削除する（pinセッションも削除できる）
+--- セッションを一覧から選んで削除する（JSONごと削除。pinセッションも削除できる）
 function M.delete()
 	if #sessions == 0 then
 		notify("セッションがありません", vim.log.levels.WARN)
 		return
 	end
 	vim.ui.select(sessions, {
-		prompt = "セッション削除",
+		prompt = "セッション削除（JSONごと）",
 		format_item = function(s)
 			local marker = s == active and "● " or "  "
 			return string.format("%s%s  [%d/%d]", marker, s.name, s.index, #s.steps)
 		end,
 	}, function(choice)
 		if choice and M.remove(choice.name) then
-			notify("セッションを削除しました: " .. choice.name)
+			notify("セッションを削除しました（JSONごと）: " .. choice.name)
 		end
 	end)
 end
@@ -718,9 +755,29 @@ function M.goto_step(idx)
 	jump_to(active, idx)
 end
 
--- プレビュー用テキスト: note全文 + values
+--- thread付きステップのフロートで r を押したときの返信ハンドラを登録する。連携API
+--- fn(session, idx)。nil で解除
+function M.set_reply_handler(fn)
+	reply_handler = fn
+end
+
+-- プレビュー用テキスト: note全文（threadは発言ごとにauthor付き）+ values
 local function step_preview_text(step)
-	local parts = { string.format("`%s:%d`", step.file, step.line), "", step.note or "" }
+	local parts = { string.format("`%s:%d`", step.file, step.line), "" }
+	if has_thread(step) then
+		for ei, entry in ipairs(step.thread) do
+			if ei > 1 then
+				parts[#parts + 1] = ""
+				parts[#parts + 1] = "---"
+				parts[#parts + 1] = ""
+			end
+			parts[#parts + 1] = "**" .. tostring(entry.author or "?") .. "**"
+			parts[#parts + 1] = ""
+			parts[#parts + 1] = entry.text or ""
+		end
+	else
+		parts[#parts + 1] = step.note or ""
+	end
 	if type(step.values) == "table" and #step.values > 0 then
 		parts[#parts + 1] = ""
 		parts[#parts + 1] = "**values**"
@@ -742,7 +799,12 @@ function M.steps()
 	local items = {}
 	for i, step in ipairs(active.steps) do
 		local marker = i == active.index and "●" or " "
-		local summary = (step.note or ""):gsub("%s+", " ")
+		local text = step.note or ""
+		if has_thread(step) then
+			-- スレッドは最新の発言を要約に出す
+			text = string.format("💬%d %s", #step.thread, step.thread[#step.thread].text or "")
+		end
+		local summary = text:gsub("%s+", " ")
 		if vim.fn.strchars(summary) > 60 then
 			summary = vim.fn.strcharpart(summary, 0, 60) .. "…"
 		end
@@ -785,11 +847,17 @@ function M.steps()
 end
 
 --- 統合picker: ロード済みセッション（位置保持で切替）+ 保存ディレクトリの未ロードJSON（新規ロード）
+--- snacks があれば <c-d>（または一覧での d）で選択項目を削除（JSONごと直接削除）。なければ vim.ui.select にフォールバック
 function M.open()
 	local items = {}
 	local loaded_paths = {}
 	for _, s in ipairs(sessions) do
-		items[#items + 1] = { session = s }
+		local marker = s == active and "● " or "  "
+		items[#items + 1] = {
+			kind = "session",
+			session = s,
+			text = string.format("%s%s  [%d/%d]", marker, s.name, s.index, #s.steps),
+		}
 		if s.json_path then
 			loaded_paths[s.json_path] = true
 		end
@@ -805,7 +873,13 @@ function M.open()
 	end)
 	for _, f in ipairs(files) do
 		if not loaded_paths[vim.fn.fnamemodify(f, ":p")] then
-			items[#items + 1] = { path = f }
+			local stat = vim.uv.fs_stat(f)
+			local mtime = stat and os.date("%m/%d %H:%M", stat.mtime.sec) or "?"
+			items[#items + 1] = {
+				kind = "file",
+				path = f,
+				text = string.format("  %s  (%s · 未ロード)", vim.fn.fnamemodify(f, ":t:r"), mtime),
+			}
 		end
 	end
 
@@ -814,23 +888,69 @@ function M.open()
 		return
 	end
 
+	local ok, snacks = pcall(require, "snacks")
+	if ok and snacks.picker then
+		snacks.picker.pick({
+			title = "Walkthrough",
+			items = items,
+			format = "text",
+			confirm = function(picker, item)
+				picker:close()
+				if not item then
+					return
+				end
+				vim.schedule(function()
+					if item.kind == "session" then
+						activate(item.session)
+					else
+						M.start_file(item.path)
+					end
+				end)
+			end,
+			actions = {
+				remove = function(picker)
+					local item = picker:current()
+					if not item then
+						return
+					end
+					if item.kind == "session" then
+						local name = item.session.name
+						M.remove(name) -- 内部でJSONごと削除
+						notify("削除しました: " .. name)
+					else
+						os.remove(item.path)
+						notify("削除しました: " .. vim.fn.fnamemodify(item.path, ":t:r"))
+					end
+					picker:close()
+					vim.schedule(M.open) -- 一覧から消えた状態で開き直す
+				end,
+			},
+			win = {
+				input = {
+					keys = {
+						["<c-d>"] = { "remove", mode = { "n", "i" }, desc = "Walkthrough削除（JSONごと）" },
+					},
+				},
+				list = {
+					keys = {
+						["d"] = { "remove", mode = "n", desc = "Walkthrough削除（JSONごと）" },
+					},
+				},
+			},
+		})
+		return
+	end
+
 	vim.ui.select(items, {
 		prompt = "Walkthrough",
 		format_item = function(item)
-			if item.session then
-				local s = item.session
-				local marker = s == active and "● " or "  "
-				return string.format("%s%s  [%d/%d]", marker, s.name, s.index, #s.steps)
-			end
-			local stat = vim.uv.fs_stat(item.path)
-			local mtime = stat and os.date("%m/%d %H:%M", stat.mtime.sec) or "?"
-			return string.format("  %s  (%s · 未ロード)", vim.fn.fnamemodify(item.path, ":t:r"), mtime)
+			return item.text
 		end,
 	}, function(choice)
 		if not choice then
 			return
 		end
-		if choice.session then
+		if choice.kind == "session" then
 			activate(choice.session)
 		else
 			M.start_file(choice.path)
@@ -866,6 +986,23 @@ function M.close()
 	notify(("セッションを閉じました: %s（残り%d）"):format(name, #sessions))
 end
 
+--- カーソル下のステップ（アクティブ優先・ロード順）の編集アクションを呼ぶ。フロートを開かず直接 edit フックへ
+function M.edit_at_cursor()
+	local s, idx = step_at_cursor()
+	if not s then
+		notify("カーソル上にステップがありません（,wtでnote表示はできます）", vim.log.levels.WARN)
+		return
+	end
+	local fn = type(s.hooks) == "table" and s.hooks.edit
+	if type(fn) ~= "function" then
+		notify("このセッションに編集アクションがありません: " .. s.name, vim.log.levels.WARN)
+		return
+	end
+	vim.schedule(function()
+		fn(s, idx)
+	end)
+end
+
 --- アクティブセッションのJSONを再読み込み（現在位置は維持、範囲外ならクランプ）
 function M.reload()
 	if not active then
@@ -885,29 +1022,25 @@ function M.reload()
 	M.start(spec)
 end
 
+--- noteフロートをトグルする。開くのはカーソル下のステップ（なければアクティブステップ）。
+--- 表示中に別ステップの上で押した場合は閉じずにそのステップへ切り替える
 function M.toggle_float()
-	if not active then
-		notify("walkthroughがロードされていません", vim.log.levels.WARN)
-		return
-	end
-
-	-- 現在ファイルにステップがあれば、そのファイルの全noteをまとめてトグル
-	local bufnr = vim.api.nvim_get_current_buf()
-	if #buffer_steps(active, bufnr) > 0 then
-		if float_state.mode == "file" and float_state.bufnr == bufnr then
-			close_float()
+	local s, idx = step_at_cursor()
+	if has_float() then
+		if s and (float_state.session ~= s or float_state.idx ~= idx) then
+			show_note_float(s, idx)
 		else
-			show_file_floats(active, bufnr)
+			close_float()
 		end
 		return
 	end
-
-	-- ステップのないファイルでは従来どおりアクティブステップのnoteをトグル
-	if has_float() then
-		close_float()
-		return
+	if s then
+		show_note_float(s, idx)
+	elseif active then
+		show_float(active)
+	else
+		notify("walkthroughがロードされていません", vim.log.levels.WARN)
 	end
-	show_float(active)
 end
 
 function M.focus_float()
@@ -918,41 +1051,7 @@ function M.focus_float()
 		end
 		show_float(active)
 	end
-	-- フロート外からはアクティブステップのフロートを優先、フロート内からの連打で次へ循環
-	local wins = {}
-	for _, win in ipairs(float_state.wins) do
-		if vim.api.nvim_win_is_valid(win) then
-			wins[#wins + 1] = win
-		end
-	end
-	if #wins == 0 then
-		return
-	end
-
-	local current = vim.api.nvim_get_current_win()
-	local current_idx = 0
-	for i, win in ipairs(wins) do
-		if win == current then
-			current_idx = i
-			break
-		end
-	end
-
-	local target
-	if current_idx == 0 then
-		if float_state.active_win then
-			for _, win in ipairs(wins) do
-				if win == float_state.active_win then
-					target = win
-					break
-				end
-			end
-		end
-		target = target or wins[1]
-	else
-		target = wins[current_idx % #wins + 1]
-	end
-	vim.api.nvim_set_current_win(target)
+	vim.api.nvim_set_current_win(float_state.win)
 end
 
 --- テスト・連携用の読み取り専用スナップショット
@@ -980,7 +1079,7 @@ local function apply_keymaps(keys)
 	map(keys.toggle_float, M.toggle_float, "[Walkthrough] noteフロート表示/非表示")
 	map(keys.focus_float, M.focus_float, "[Walkthrough] noteフロートにフォーカス")
 	map(keys.close, M.close, "[Walkthrough] セッションを閉じる")
-	map(keys.delete, M.delete, "[Walkthrough] セッションを一覧から削除")
+	map(keys.edit_at_cursor, M.edit_at_cursor, "[Walkthrough] カーソル下のステップを編集（hooks.edit）")
 	map(keys.reload, M.reload, "[Walkthrough] JSONを再読み込み")
 end
 
