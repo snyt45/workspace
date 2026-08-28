@@ -112,6 +112,7 @@
       "~/work"
     ]
   },
+  "model": "opus[1m]",
   "hooks": {
     "Stop": [
       {
