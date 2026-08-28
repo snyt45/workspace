@@ -13,6 +13,9 @@ local active_modal
 local save_state -- 前方宣言（clear_records 等が先に定義されているため）
 local sync_walkthrough -- 前方宣言（edit_comment を参照するため後方で定義）
 local submit_records -- 前方宣言（annotate の即送信が参照するため後方で定義）
+local comments_json_path -- 前方宣言（M.reply が参照するため後方で定義）
+local watch_timer -- 回答ファイル監視タイマー（setupで開始）
+local last_answer_mtime -- 回答ファイルの最終mtime（watch_answers用）
 -- 環境固有の指示はプラグインに埋め込まず setup の opts で注入する
 local prompt_suffix -- opts.prompt_suffix: 提出プロンプトの指示文の後に付記する文
 local instructions -- opts.instructions: 指示文の差し替え（省略時は DEFAULT_INSTRUCTIONS）
@@ -20,6 +23,44 @@ local instructions -- opts.instructions: 指示文の差し替え（省略時は
 local MAX_SOURCE_LINES = 1000
 local MAX_SOURCE_CHARS = 64 * 1024
 local MAX_COMMENT_BYTES = 16 * 1024
+
+-- --------------------------------------------------------------------------
+-- コメント位置の追跡（extmark）。行は追加時点で固定せず、バッファ編集でズレても
+-- 提出時のペイロード・表示位置を現在の行に追従させる
+-- --------------------------------------------------------------------------
+local ns_pos = vim.api.nvim_create_namespace("pi_comment_pos")
+local pos_marks = {} -- record.id -> { buf = bufnr, mark = extmark_id }
+local session_steps = {} -- 直近のsync_walkthroughで構築したpi-commentsのステップ列（保存後のフロート表示用）
+
+local function place_pos_mark(record)
+	if not vim.api.nvim_buf_is_valid(record.bufnr) or not vim.api.nvim_buf_is_loaded(record.bufnr) then
+		return
+	end
+	pos_marks[record.id] = {
+		buf = record.bufnr,
+		mark = vim.api.nvim_buf_set_extmark(record.bufnr, ns_pos, record.start_line - 1, 0, {}),
+	}
+end
+
+local function clear_pos_mark(record)
+	local mark = pos_marks[record.id]
+	if mark and vim.api.nvim_buf_is_valid(mark.buf) then
+		pcall(vim.api.nvim_buf_del_extmark, mark.buf, ns_pos, mark.mark)
+	end
+	pos_marks[record.id] = nil
+end
+
+-- コメントの現在行（extmark追跡）。マークが消えていたら記録時の行にフォールバック
+local function record_line(record)
+	local mark = pos_marks[record.id]
+	if mark then
+		local pos = vim.api.nvim_buf_get_extmark_by_id(mark.buf, ns_pos, mark.mark, {})
+		if pos and pos[1] ~= nil then
+			return pos[1] + 1
+		end
+	end
+	return record.start_line
+end
 
 -- 上流 pi-nvim-review の default review instructions と同じテキスト
 local DEFAULT_INSTRUCTIONS = table.concat({
@@ -251,12 +292,25 @@ function M.annotate(start_line, end_line)
 		}
 		records[#records + 1] = record
 		next_id = next_id + 1
+		place_pos_mark(record)
 		save_state()
 		sync_walkthrough()
 		if action == "send" then
 			-- 即送信でも先にrecord化しておく: 送信失敗時は未提出コメントとして残る
 			submit_records({ record }, "コメント%d件をpiへ即送信しました")
 		else
+			-- 保存したコメントをすぐ確認できるよう、そのコメントのフロートを開く（カーソル移動なし）
+			vim.schedule(function()
+				local ok_wt, wt = pcall(require, "walkthrough")
+				if ok_wt and type(wt.show) == "function" then
+					for index, st in ipairs(session_steps) do
+						if st.id == record.id then
+							wt.show("pi-comments", index)
+							break
+						end
+					end
+				end
+			end)
 			notify(("コメントを追加: %s:%s（切替: ,wo / 巡回: ]w）"):format(path, location))
 		end
 	end)
@@ -315,7 +369,8 @@ local function build_payload(root, list)
 		if not path then
 			return nil, "Piプロジェクトの外にあるコメントを中断しました: " .. record.absolute_path
 		end
-		local start_line, end_line = record.start_line, record.end_line
+		local start_line = record_line(record)
+		local end_line = start_line + (record.end_line - record.start_line)
 		if end_line - start_line + 1 > MAX_SOURCE_LINES then
 			return nil, string.format("注釈が %d 行を超えました: %s:%d", MAX_SOURCE_LINES, path, start_line)
 		end
@@ -407,6 +462,9 @@ end
 -- 提出・破棄
 -- --------------------------------------------------------------------------
 local function clear_records()
+	for _, record in ipairs(records) do
+		clear_pos_mark(record)
+	end
 	records = {}
 	save_state()
 end
@@ -494,6 +552,7 @@ local function load_state()
 				if record.id >= next_id then
 					next_id = record.id + 1
 				end
+				place_pos_mark(record)
 			else
 				foreign_items[#foreign_items + 1] = item
 			end
@@ -550,6 +609,7 @@ submit_records = function(list, label)
 
 		local sent = {}
 		for _, record in ipairs(list) do
+			clear_pos_mark(record)
 			sent[record.id] = true
 		end
 		for i = #records, 1, -1 do
@@ -596,6 +656,21 @@ function M.clear()
 	notify(("%dコメントを破棄しました"):format(count))
 end
 
+--- コメント・返信・スレッドを全て削除する（,wo のC-d/dから呼ばれる）。
+--- 未提出レコード（state）と .walkthroughs/comments.json を消し、pi-commentsセッションも閉じる
+function M.purge()
+	clear_records()
+	local path = comments_json_path()
+	if vim.fn.filereadable(path) == 1 then
+		os.remove(path)
+	end
+	local ok, wt = pcall(require, "walkthrough")
+	if ok then
+		wt.remove("pi-comments")
+	end
+	notify("コメント・返信・スレッドを削除しました")
+end
+
 -- --------------------------------------------------------------------------
 -- 一覧・編集・削除・ジャンプ
 -- --------------------------------------------------------------------------
@@ -637,10 +712,8 @@ function M.reply(session, idx)
 	if not step then
 		return
 	end
-	if not session.json_path then
-		notify("このセッションはファイル由来ではないため返信できません", vim.log.levels.WARN)
-		return
-	end
+	-- pi-commentsセッション（統合ビュー）はjson_pathを持たないため、スレッド元の comments.json へフォールバックする
+	local thread_json = session.json_path or comments_json_path()
 	local absolute = session.root and (session.root .. "/" .. step.file) or step.file
 	absolute = vim.uv.fs_realpath(absolute)
 	if not absolute then
@@ -677,17 +750,19 @@ function M.reply(session, idx)
 			comment = comment,
 			root = root,
 			reply_to = {
-				json = session.json_path,
-				step = idx,
+				json = thread_json,
+				-- 統合ビューではセッション内indexとファイル内ステップ番号が一致しないため file_idx を使う
+				step = step.file_idx or idx,
 				context = table.concat(context_lines, "\n"),
 			},
 		}
 		records[#records + 1] = record
 		next_id = next_id + 1
+		place_pos_mark(record)
 		save_state()
 		sync_walkthrough()
 		if action == "send" then
-			submit_records({ record }, "返信%d件をpiへ即送信しました（回答が返ったら ,wR）")
+			submit_records({ record }, "返信%d件をpiへ即送信しました（回答は自動反映されます）")
 		else
 			notify(("返信を追加: %s:%d（,pxで提出）"):format(path, step.line))
 		end
@@ -698,6 +773,7 @@ end
 local function remove_comment(id)
 	for index, record in ipairs(records) do
 		if record.id == id then
+			clear_pos_mark(record)
 			table.remove(records, index)
 			save_state()
 			sync_walkthrough()
@@ -708,7 +784,102 @@ local function remove_comment(id)
 end
 
 -- --------------------------------------------------------------------------
--- walkthrough連携: 未提出コメントは「pi-comments」セッションとして常に同期し、
+-- 回答スレッドファイル（.walkthroughs/comments.json）: 提出コメントへの回答の記録先。
+-- pi-commentsセッションに回答ステップを統合し、ファイル変更を監視して自動反映する
+-- --------------------------------------------------------------------------
+comments_json_path = function(root)
+	return ((root or project_root()) .. "/.walkthroughs/comments.json")
+end
+
+-- comments.jsonの生データ（steps配列）。読めなければnil
+local function read_thread_data()
+	local path = comments_json_path()
+	if vim.fn.filereadable(path) ~= 1 then
+		return nil
+	end
+	local ok, lines = pcall(vim.fn.readfile, path)
+	if not ok or not lines or #lines == 0 then
+		return nil
+	end
+	-- readfileは行ごとに返す。整形（複数行）JSONでも読めるよう全体を連結してデコードする
+	local decode_ok, data = pcall(vim.json.decode, table.concat(lines, "\n"))
+	if not decode_ok or type(data) ~= "table" or type(data.steps) ~= "table" then
+		return nil
+	end
+	return data
+end
+
+-- スレッドごとの発言数（file_idx -> #thread）: どのスレッドが更新されたかの検出に使う
+local function thread_signature(data)
+	local sig = {}
+	if data then
+		for i, st in ipairs(data.steps) do
+			if type(st) == "table" then
+				sig[i] = (type(st.thread) == "table" and #st.thread) or 0
+			end
+		end
+	end
+	return sig
+end
+
+-- comments.jsonの変更監視: mtimeが変わったら再同期して通知（初回はベースライン記録のみ）。
+-- 書き込み途中のJSONを読んでパースに失敗した場合はbaselineを進めず、次のtickで読めるまで再試行する
+local failed_mtime -- 直近でパース失敗したmtime（警告は同じmtimeに1回だけ）
+local last_sig = {} -- 前回同期時点のスレッド発言数（file_idx -> #thread）。変化検出に使う
+local function watch_answers()
+	local st = vim.uv.fs_stat(comments_json_path())
+	local mtime = st and (tostring(st.mtime.sec) .. "." .. tostring(st.mtime.nsec)) or ""
+	if mtime == last_answer_mtime then
+		return
+	end
+	if mtime == "" then
+		last_answer_mtime = ""
+		failed_mtime = nil
+		last_sig = {}
+		return
+	end
+	-- 正常にパースできることを確認してからbaselineを進める（中途半端な書き込みは無視して再試行）
+	local read_ok, data = pcall(read_thread_data)
+	if not read_ok or data == nil then
+		if failed_mtime ~= mtime then
+			failed_mtime = mtime
+			notify("comments.json が読み込めません（書き込み途中？再試行します）", vim.log.levels.WARN)
+		end
+		return
+	end
+	failed_mtime = nil
+	local seen = last_answer_mtime ~= nil
+	last_answer_mtime = mtime
+	local before_sig = last_sig
+	sync_walkthrough()
+	last_sig = thread_signature(read_thread_data())
+	if not seen then
+		return -- 起動時のベースライン。通知・フロートは出さない
+	end
+	-- 回答で追加・更新されたスレッドのフロートを開く／開いている場合は更新する
+	local changed
+	for i, n in pairs(last_sig) do
+		if (before_sig[i] or 0) < n then
+			changed = i
+			break
+		end
+	end
+	notify("Pi回答を反映（フロート更新: r=返信 / q=閉じる）")
+	if changed then
+		local ok_wt, wt = pcall(require, "walkthrough")
+		if ok_wt and type(wt.ensure_float) == "function" then
+			for idx, st in ipairs(session_steps) do
+				if st.file_idx == changed then
+					wt.ensure_float("pi-comments", idx)
+					break
+				end
+			end
+		end
+	end
+end
+
+-- --------------------------------------------------------------------------
+-- walkthrough連携: 未提出コメント＋回答済みスレッドは「pi-comments」セッションとして常に同期し、
 -- コード上の表示はwalkthrough.nvimのUIに一本化する（claim: 表示・移動・フォーカス・編集フック）
 -- --------------------------------------------------------------------------
 -- walkthroughのステップ（id）から対応するrecordを引く
@@ -725,7 +896,7 @@ local function find_by_step(session, idx)
 	return nil
 end
 
---- コメント追加/編集/削除のたびに呼ぶ。0件ならセッションを閉じる
+--- コメント追加/編集/削除/回答反映のたびに呼ぶ。表示対象が0件ならセッションを閉じる
 -- 前方宣言と同じスコープのため `local function` ではなく代入で定義する（save_state と同パターン）
 sync_walkthrough = function()
 	local ok, wt = pcall(require, "walkthrough")
@@ -734,15 +905,34 @@ sync_walkthrough = function()
 	end
 
 	local root = project_root()
-	if #records == 0 then
-		wt.remove("pi-comments")
-		return
+
+	-- 回答済みスレッド（.walkthroughs/comments.json）をステップ化。統合ビューなので
+	-- セッション内indexとファイル内番号が一致しない。file_idxが返信時の追記先になる
+	local steps = {}
+	local data = read_thread_data()
+	if data then
+		for index, st in ipairs(data.steps) do
+			if type(st) == "table" and type(st.file) == "string" and type(st.line) == "number" then
+				local has_thread = type(st.thread) == "table" and #st.thread > 0
+				-- threadで表示するステップはnote不要（nilのままキーなしにする）
+				local note = has_thread and nil or st.note
+				steps[#steps + 1] = {
+					file = st.file,
+					line = st.line,
+					thread = has_thread and st.thread or nil,
+					note = note,
+					-- 未提出コメント（正のid）と衝突しない領域。マイナス符号でファイル順を保つ
+					id = -1000000000 + index,
+					file_idx = index,
+				}
+			end
+		end
 	end
 
-	local steps = {}
 	for _, record in ipairs(records) do
 		local path = relative_path(root, record.absolute_path) or record.absolute_path
-		local start_line, end_line = record.start_line, record.end_line
+		local start_line = record_line(record)
+		local end_line = start_line + (record.end_line - record.start_line)
 		local note = record.comment
 		if end_line > start_line then
 			note = string.format("対象: L%d-%d\n\n%s", start_line, end_line, note)
@@ -767,6 +957,36 @@ sync_walkthrough = function()
 		return a.id < b.id
 	end)
 
+	-- 保存後のフロート自動表示に使う（annotateは record.id で位置を引く）
+	session_steps = steps
+
+	if #steps == 0 then
+		wt.remove("pi-comments")
+		return
+	end
+
+	-- pi回答スレッド（comments.json由来・file_idx付き）の削除: そのステップをファイルから取り除く
+	local function remove_thread_step(session, idx)
+		local step = session.steps and session.steps[idx]
+		if not step or not step.file_idx then
+			return false
+		end
+		if vim.fn.filereadable(comments_json_path()) ~= 1 then
+			return false
+		end
+		local data = read_thread_data()
+		if not data or not table.remove(data.steps, step.file_idx) then
+			return false
+		end
+		local out = io.open(comments_json_path(), "w")
+		if not out then
+			return false
+		end
+		out:write(vim.json.encode(data))
+		out:close()
+		return true
+	end
+
 	-- フロート内キー（e/d）と、,we（カーソル下編集）用の意味的キー（edit/delete）で同じアクションを共有
 	local edit_hook = function(session, idx)
 		local record = find_by_step(session, idx)
@@ -774,18 +994,32 @@ sync_walkthrough = function()
 			vim.schedule(function()
 				edit_comment(record)
 			end)
+		else
+			notify("このステップはpiの回答です（編集は不可・削除は d）", vim.log.levels.WARN)
 		end
 	end
 	local delete_hook = function(session, idx)
 		local record = find_by_step(session, idx)
-		if record and remove_comment(record.id) then
-			notify("コメントを削除しました")
+		if record then
+			if remove_comment(record.id) then
+				notify("コメントを削除しました")
+			end
+			return
+		end
+		-- piの回答スレッド: comments.jsonから該当ステップを除去して再同期
+		if remove_thread_step(session, idx) then
+			sync_walkthrough()
+			notify("スレッドを削除しました（comments.jsonから除外）")
 		end
 	end
 	wt.update({
 		name = "pi-comments",
 		steps = steps,
 		root = root,
+		-- スレッドJSONへの参照を持たせ、,woでは1つのwalkthroughとして扱う（未ロード重複表示を防ぐ）
+		json_path = comments_json_path(),
+		-- このJSONはコメントの記録先なので、セッション削除でファイルまで消さない
+		protect_json = true,
 		-- 非アクティブでもマークを常時表示し、,wqで消えない（コメントは打てば常に見える）
 		pin = true,
 		-- walkthrough の表示名「step」を pi-comment の文脈では「comment」にする
@@ -796,6 +1030,8 @@ sync_walkthrough = function()
 			d = delete_hook,
 			edit = edit_hook,
 			delete = delete_hook,
+			-- ,woのC-d/dでの実削除（コメント・返信・スレッドをまとめて消す）
+			purge = M.purge,
 		},
 	})
 end
@@ -872,6 +1108,12 @@ function M.setup(opts)
 		wt.set_reply_handler(function(session, idx)
 			M.reply(session, idx)
 		end)
+	end
+
+	-- 回答walkthrough（.walkthroughs/comments.json）の変更を監視し、pi-commentsに自動反映する
+	if watch_timer == nil then
+		watch_timer = vim.uv.new_timer()
+		watch_timer:start(3000, 3000, vim.schedule_wrap(watch_answers))
 	end
 end
 

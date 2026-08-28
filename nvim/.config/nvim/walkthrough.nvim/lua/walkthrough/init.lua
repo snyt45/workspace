@@ -384,13 +384,21 @@ local function step_at_cursor()
 		end
 	end
 	for _, s in ipairs(order) do
+		local note_only
 		for i, step in ipairs(s.steps) do
 			if step.line == line then
 				local p = resolve_path(s, step.file)
 				if p and (vim.uv.fs_realpath(p) or p) == real then
-					return s, i
+					-- 同じ行に複数ステップがある場合はスレッド付きを優先（コメント本文でなく返信スレッドを開く）
+					if has_thread(step) then
+						return s, i
+					end
+					note_only = note_only or { i = i }
 				end
 			end
+		end
+		if note_only then
+			return s, note_only.i
 		end
 	end
 	return nil
@@ -586,6 +594,8 @@ local function build_session(spec, name)
 		step_label = spec.step_label or "step",
 		-- pin: 非アクティブでもマークを常時表示し、close()でレジストリから消えない
 		pin = spec.pin == true,
+		-- protect_json: json_pathのファイルをremove()で削除しない（連携セッションが所有するスレッドJSON用）
+		protect_json = spec.protect_json == true,
 	}
 end
 
@@ -658,12 +668,17 @@ function M.update(spec)
 	end
 
 	-- アクティブ表示は奪わない: 更新対象が表示中（または何も表示していない）ときだけフロートを更新する。
-	-- マークはpinセッションを含めて常に再描画する
+	-- マークはpinセッションを含めて常に再描画する。フロートが「このセッションの別ステップ」を表示中なら
+	-- そのステップを維持する（回答反映の自動表示をアクティブステップで上書きしない）
 	local was_active = prev ~= nil and active == prev
 	if was_active or active == nil then
 		active = session
 		if has_float() then
-			show_float(session)
+			if prev and float_state.session == prev and float_state.idx then
+				show_note_float(session, math.min(float_state.idx, #session.steps))
+			else
+				show_float(session)
+			end
 		end
 	end
 	refresh_marks()
@@ -677,7 +692,8 @@ function M.remove(name)
 	for i, s in ipairs(sessions) do
 		if s.name == name then
 			-- 永続化はされない設計だが、JSON由来の場合はファイルごと消す（,woのc-dと同じ挙動）
-			if s.json_path then
+			-- protect_jsonのセッション（pi-comments等）はスレッドJSONを消さない
+			if s.json_path and not s.protect_json then
 				os.remove(s.json_path)
 			end
 			table.remove(sessions, i)
@@ -705,7 +721,21 @@ function M.delete()
 			return string.format("%s%s  [%d/%d]", marker, s.name, s.index, #s.steps)
 		end,
 	}, function(choice)
-		if choice and M.remove(choice.name) then
+		if not choice then
+			return
+		end
+		if choice.protect_json then
+			-- 連携セッション（pi-comments等）: purgeフックがあれば実データごと削除
+			local purge = type(choice.hooks) == "table" and choice.hooks.purge
+			if type(purge) == "function" then
+				pcall(purge, choice, choice.index)
+				notify("削除しました: " .. choice.name)
+			else
+				notify("このセッションは削除できません（purgeフックなし）", vim.log.levels.WARN)
+			end
+			return
+		end
+		if M.remove(choice.name) then
 			notify("セッションを削除しました（JSONごと）: " .. choice.name)
 		end
 	end)
@@ -914,6 +944,19 @@ function M.open()
 						return
 					end
 					if item.kind == "session" then
+						-- 連携セッション（pi-comments等）: purgeフックがあれば実データごと削除、なければ削除不可
+						if item.session.protect_json then
+							local purge = type(item.session.hooks) == "table" and item.session.hooks.purge
+							if type(purge) == "function" then
+								pcall(purge, item.session, item.session.index)
+								picker:close()
+								vim.schedule(M.open) -- 一覧から消えた状態で開き直す
+								return
+							end
+							notify("このセッションは削除できません（purgeフックなし）", vim.log.levels.WARN)
+							picker:close()
+							return
+						end
 						local name = item.session.name
 						M.remove(name) -- 内部でJSONごと削除
 						notify("削除しました: " .. name)
@@ -1024,11 +1067,19 @@ end
 
 --- noteフロートをトグルする。開くのはカーソル下のステップ（なければアクティブステップ）。
 --- 表示中に別ステップの上で押した場合は閉じずにそのステップへ切り替える
+--- フロートが開いていれば現在ウィンドウをフロートに移す（,wtで開いたらそのままキー操作できるように）
+local function focus_float_if_open()
+	if float_state.win and vim.api.nvim_win_is_valid(float_state.win) then
+		pcall(vim.api.nvim_set_current_win, float_state.win)
+	end
+end
+
 function M.toggle_float()
 	local s, idx = step_at_cursor()
 	if has_float() then
 		if s and (float_state.session ~= s or float_state.idx ~= idx) then
 			show_note_float(s, idx)
+			focus_float_if_open()
 		else
 			close_float()
 		end
@@ -1036,11 +1087,50 @@ function M.toggle_float()
 	end
 	if s then
 		show_note_float(s, idx)
+		focus_float_if_open()
 	elseif active then
 		show_float(active)
+		focus_float_if_open()
 	else
 		notify("walkthroughがロードされていません", vim.log.levels.WARN)
 	end
+end
+
+--- セッション名とステップ番号でnoteフロートを開く（カーソル移動なし・フォーカスもしない）。連携API
+--- 例: pi-nvim-comment がコメント保存後にそのコメントのフロートを開く
+function M.show(name, idx)
+	for _, s in ipairs(sessions) do
+		if s.name == name and type(idx) == "number" and idx >= 1 and idx <= #s.steps then
+			show_note_float(s, idx)
+			return true
+		end
+	end
+	return false
+end
+
+--- 回答反映連携: 更新されたスレッドのフロートを表示する。連携API
+--- そのスレッドのフロートが開いていれば再描画（回答が追加される）。開いていなければ開く。
+--- 別のステップのフロートが表示中の場合は触らない
+function M.ensure_float(name, idx)
+	local target
+	for _, s in ipairs(sessions) do
+		if s.name == name then
+			target = s
+			break
+		end
+	end
+	if not target or type(idx) ~= "number" or idx < 1 or idx > #target.steps then
+		return false
+	end
+	if has_float() then
+		if float_state.session and float_state.session.name == name and float_state.idx == idx then
+			show_note_float(target, idx) -- 開いているスレッドを最新化（回答を追加表示）
+			return true
+		end
+		return false -- 別のフロート表示中は触らない
+	end
+	show_note_float(target, idx)
+	return true
 end
 
 function M.focus_float()
