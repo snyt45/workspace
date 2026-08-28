@@ -1,7 +1,7 @@
 # pi-nvim-comment
 
 実行中のpiセッションへ行コメントレビューを送るプラグイン（旧 features/pi_review.lua の後継）。
-carderne/pi-nvim のソケット自動発見・送信を再利用する。**コメントのコード上の表示・移動・編集は walkthrough.nvim のUIに一本化**しており、walkthrough.nvim の公開API（`update` / `remove` / `activate` / `hooks` / `step_label`）のみに依存する。
+carderne/pi-nvim のソケット自動発見・送信を再利用する。**コメントのコード上の表示・移動・編集は walkthrough.nvim のUIに一本化**しており、walkthrough.nvim の公開API（`update` / `remove` / `show` / `set_reply_handler` / `hooks` / `step_label`）のみに依存する。
 
 利用者が知る必要があるのはこのREADMEの内容（設定・キーマップ・公開API）だけ。
 
@@ -54,6 +54,7 @@ pc.submit()                      -- 未提出コメント全部をpiへ提出
 pc.reply(session, idx)           -- walkthroughのthread付きステップへの返信モーダル（walkthroughのset_reply_handler経由で呼ばれる）
 pc.copy()                        -- 提出内容をクリップボードにコピー（通知はvim.notify経由でnoice等が表示）
 pc.clear()                       -- 未提出コメント破棄
+pc.purge()                       -- コメント・返信・スレッドを全削除（,wo の削除アクションから呼ばれる）
 ```
 
 ## コメントの表示（walkthrough連携）
@@ -69,10 +70,10 @@ pc.clear()                       -- 未提出コメント破棄
 ## 回答の自動反映（pi-comments統合ビュー）
 
 - 新規コメントへの回答は `.walkthroughs/comments.json`（1リポジトリ1ファイル）に記録される。pi-nvim-comment はこのファイルを3秒間隔で監視し、変更を検出すると pi-comments セッションに**自動で統合**する（開き直し・`,wo` は不要）。`,wo` には pi-comments の1つだけが並ぶ（comments.json が別枠で重複表示されない・セッション削除でファイルも消えない）
-- 回答が来ると、**追加・更新されたスレッドのフロートが自動で開く**（開いていればその場に追記される。`r`=返信 `q`=閉じる）。C-x即送信したコメントの回答も同じく自動表示される
+- 回答が来ると、**新しい回答スレッドのフロートが自動で開く**（`r`=返信 `q`=閉じる）。既にフロートを開いていればその表示は奪わず、開いているスレッドに追記があればその場で内容が増える（フォーカスは移動しない）。C-x即送信したコメントの回答も同じく自動表示される
 - 回答ステップは提出時のコメント位置にマーク表示され、マーカーにカーソルを置いて `,wt` でスレッド（コメント↔回答）が見え、フロート内 `r` で返信できる（返信も同じJSONに追記され自動反映）
 - nvimを再起動しても `.walkthroughs/comments.json` が残っていれば起動時に pi-comments へ統合される
-- **実データの削除**: `,wo` のC-d/d（または削除picker）で pi-comments を選ぶと、未提出コメント（state）・返信・スレッド（comments.json）を**まとめて削除**する（purge）。1件だけ消す場合はマーカー上で `,wt` → `d`（stateにも反映され再起動後も残らない）
+- **実データの削除**: `,wo` のC-d/dで pi-comments を選ぶと、未提出コメント（state）・返信・スレッド（comments.json）を**まとめて削除**する（purge・確認プロンプトあり）。1件だけ消す場合はマーカー上で `,wt` → `d`（stateにも反映され再起動後も残らない）
 
 ## スレッドへの返信（walkthrough連携）
 
@@ -85,7 +86,33 @@ pc.clear()                       -- 未提出コメント破棄
 
 ## 動作メモ
 
-- 未提出コメントは state ファイルに永続化され、nvim再起動後も復元される（復元時に `pi-comments` セッションへ同期・extmarkを再配置）
+- 未提出コメントは state ファイルに永続化され、nvim再起動後も復元される（復元時に `pi-comments` セッションへ同期）
 - 提出プロンプト = 指示文（`opts.instructions`、省略時はデフォルト指示）+ `opts.prompt_suffix` + コメント一覧。ファイル配置による指示注入は持たない（すべてoptsで完結）
-- 提出はカスタム extmark ではなく walkthrough のセッション表示に一本化している。コメントの**行位置は extmark で追跡**し、注釈〜提出の間にコードを編集しても現在行へ追従する（提出時点より後の編集は従来同様 `,pa` し直し）
-- 統合・自動反映の動作検証: `nvim --headless -u NONE -i NONE -c "luafile test/smoke.lua"`（`PI_TEST_DIR` に `init.lua` と `.walkthroughs/comments.json` 付きの一時プロジェクトを用意して実行）。`,wt` がマーカー位置でスレッドを直接開くことの検証は `test/float_thread.lua`
+- コメントの**行位置は extmark で追跡**し、コードを編集しても現在行に追従する。state復元直後は対象バッファが未ロードでマークを張れないため、`BufReadPost` で張り直す。保存されるのも追従後の行なので、再起動で位置は巻き戻らない
+- コード上の表示はカスタムextmarkを持たず walkthrough のセッション表示に一本化している
+
+## 内部構成
+
+1ファイルに詰めず、責務ごとに分割している（`lua/pi-nvim-comment/`）。
+
+| ファイル | 責務 |
+|---|---|
+| `init.lua` | 公開API・キーマップ・コマンド・autocmd・監視の起動 |
+| `actions.lua` | ユーザー操作（追加・編集・返信・提出・コピー・破棄・全削除） |
+| `state.lua` | 未提出コメントの所有（extmark追跡・state永続化） |
+| `threads.lua` | `.walkthroughs/comments.json` の読み書きと変更監視 |
+| `sync.lua` | `pi-comments` セッションの組み立てと walkthrough への同期 |
+| `prompt.lua` | 提出プロンプト（指示文・コメント一覧・ソース抜粋）の組み立て |
+| `modal.lua` | コメント入力モーダル |
+| `util.lua` | 通知・パス解決・入力検証・アトミック書き込み |
+
+セッションのステップは2種類で、`kind` で区別する。`kind = "draft"` が未提出コメント（`record_id` で state を引く・編集/削除可）、`kind = "thread"` が comments.json のスレッド（`file_idx` でファイル内の位置を指す・返信/削除可）。
+
+## テスト
+
+```sh
+./test/run.sh          # 全部
+./test/run.sh smoke    # 名前で絞る
+```
+
+各テストは専用の一時プロジェクト（`init.lua` + `.walkthroughs/comments.json`）と専用の `XDG_STATE_HOME` で走るので、実環境の未提出コメントには触らない。共通処理は `test/helper.lua`（グローバル `H`）にある。

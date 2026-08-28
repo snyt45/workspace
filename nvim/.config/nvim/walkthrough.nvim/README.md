@@ -31,10 +31,10 @@ AIが生成したJSON、または他のプラグインが組み立てたLuaテ�
 |---|---|
 | `]w` / `[w` | 次 / 前のステップ |
 | `<leader>wl` | ステップ一覧から選んでジャンプ（noteプレビュー付き） |
-| `<leader>wo` | 統合picker: ロード済みセッション（位置保持で切替）+ 未ロードJSON（mtime降順・新規ロード）。snacks時は `<c-d>`（一覧では `d`）で選択項目を**JSONごと直接削除**。`protect_json` の連携セッション（pi-comments等）は、`hooks.purge` があれば実データごと削除（なければ削除不可） |
+| `<leader>wo` | 統合picker: ロード済みセッション（位置保持で切替）+ 未ロードJSON（mtime降順・新規ロード）。snacks時は `<c-d>`（一覧では `d`）で選択項目を**JSONごと削除**（削除前に確認あり）。`protect_json` の連携セッション（pi-comments等）は `hooks.actions.purge` に実データの削除を委ねる（なければ削除不可） |
 | `<leader>wt` | noteフロートをトグル。開くのはカーソル下のステップ（なければアクティブステップ）。**開くと同時にフォーカスされる**（フロート内の e/d/r/q がそのまま使える）。表示中でも別ステップの上で押すとそのステップへ切り替え、それ以外は閉じる |
 | `<leader>w<CR>` | noteフロートにフォーカス（閉じていれば開いてフォーカス・`q` で戻る）。`,wt` で開いた場合はフォーカス済みのため不要 |
-| `<leader>we` | カーソル下のステップの編集アクションを直接呼ぶ（`hooks.edit`。フロートを開かず1キーで編集モーダルへ） |
+| `<leader>we` | カーソル下のステップの編集アクションを直接呼ぶ（`hooks.actions.edit`。フロートを開かず1キーで編集モーダルへ） |
 | `<leader>wq` | アクティブセッションを閉じる（pinセッションは非アクティブ化のみ・`,wo`で戻れる） |
 | `<leader>wR` | JSONを再読み込み（現在位置は維持） |
 
@@ -47,27 +47,39 @@ local wt = require("walkthrough")
 
 wt.setup(opts)          -- 上記2項目
 wt.start(spec)          -- コアAPI: Luaテーブルからセッション作成+アクティブ化。同名セッションは置き換え
-wt.update(spec)         -- 連携API: nameでセッション置換（index省略時は維持）。表示中なら再描画、非アクティブなら裏で更新のみ（表示は奪わない）
+wt.update(spec)         -- 連携API: nameでセッション置換（index省略時は維持）。表示中のフロートはその場で再描画（表示は奪わない）
 wt.remove(name)         -- 連携API: セッションを名前で削除（アクティブなら表示もクリア）
 wt.activate(name)       -- 連携API: セッションを名前でアクティブ化（現在位置へジャンプ）
 wt.start_file(path)     -- JSONを読んで start() する薄いラッパー
 wt.next() / wt.prev()   -- ステップ移動
 wt.goto_step(n)         -- ステップNへ（プロデューサー・連携用）
 wt.steps()              -- ステップ一覧picker（note+valuesのプレビュー付き。選択でジャンプ）
-wt.open()               -- 統合picker（セッション切替 + JSONロード。snacks時は<c-d>/dでJSONごと削除）
+wt.open()               -- 統合picker（セッション切替 + JSONロード。snacks時は<c-d>/dで削除）
 wt.close()              -- アクティブセッションを閉じる（pinは非アクティブ化のみ）
-wt.delete()             -- セッション削除picker（JSONごと削除。,wdキーは廃止、削除は,woへ）
-wt.edit_at_cursor()     -- カーソル下のステップを直接編集（hooks.edit。キーマップ,we）
+wt.edit_at_cursor()     -- カーソル下のステップを直接編集（hooks.actions.edit。キーマップ,we）
 wt.reload()             -- JSON再読み込み
 wt.toggle_float() / wt.focus_float()
 wt.set_reply_handler(fn) -- 連携API: thread付きステップのフロートで r を押したときの返信ハンドラ fn(session, idx) を登録（nilで解除）
-wt.show(name, idx)       -- 連携API: 指定セッションのステップのnoteフロートを開く（カーソル移動・フォーカスなし）
-wt.ensure_float(name, idx) -- 連携API: スレッドのフロートが開いていれば再描画し、開いていなければ開く（別ステップ表示中は触らない。回答反映用）
+wt.show(name, idx, opts) -- 連携API: 指定ステップのnoteフロートを開く（カーソル移動・フォーカスなし）
+                         --   opts.if_free = true なら、既に何か表示中のときは開かない
 wt.get_state()          -- 読み取り専用スナップショット（テスト・連携用）
+```
 
-- `M.remove(name)` はセッションをレジストリから外し、**JSON由来ならファイル自体も削除**する（`protect_json` 指定時はファイルを残す。実データごとの削除は連携プラグインの `hooks.purge` が行う）
-- `start(spec)` / `update(spec)` の spec は `hooks = { [キー] = function(session, idx) }` と `step_label`（表示名。デフォルト `step`）を持つことができる
-  - フロート内キー（例: pi-nvim-comment は `e`=編集・`d`=削除）に加え、**意味的キー `hooks.edit` / `hooks.delete`** はフロートを開かず直接呼べる（`<leader>we` は `hooks.edit` を呼ぶ）
+- `remove(name)` はセッションをレジストリから外し、**JSON由来ならファイル自体も削除**する（`protect_json` 指定時はファイルを残す。実データごとの削除は連携プラグインの `hooks.actions.purge` が行う）
+- **表示中ステップの更新に `show()` は不要**。`update()` がフロートをその場で描き直す（フォーカスも移動しない）。`show()` は「まだ開いていないステップを開きたい」ときだけ使う
+- `start(spec)` / `update(spec)` の spec は `hooks` と `step_label`（表示名。デフォルト `step`）を持てる
+
+```lua
+hooks = {
+  -- フロート内キーマップ。1〜2文字のキーだけを入れる（例: pi-nvim-comment は e=編集・d=削除）
+  keys = { e = function(session, idx) end, d = function(session, idx) end },
+  -- 意味的アクション。キーマップにはならない。walkthrough側の操作から呼ばれる
+  actions = {
+    edit = function(session, idx) end,   -- <leader>we
+    delete = function(session, idx) end, -- 連携プラグイン用
+    purge = function(session, idx) end,  -- <leader>wo の削除（protect_jsonセッションの実データ削除）
+  },
+}
 ```
 
 `start(spec)` のspec:
@@ -120,7 +132,22 @@ wt.get_state()          -- 読み取り専用スナップショット（テス�
 - アクティブなステップは `▶` + 行ハイライト + 変数値virtual text + 右上noteフロート。**同一セッションの他ステップも `▷` サインで常時表示**される
 - noteフロートは**常に1枚**。`<leader>wt` はカーソル下のステップ（なければアクティブステップ）のnoteをトグルし、**開いたらフォーカスも移る**（フロート内 e/d/r/q が直接使える。`q` で戻る）。表示中に別ステップの上で押すと閉じずにそのステップへ切り替わる。pinセッションのステップ（例: pi-comments）はアクティブでなくてもカーソルを乗せて `<leader>wt` で読める
 - `thread` 付きステップのフロートは発言ごとに `▌ author` ラベル + 区切り線で描画され、**最新の発言（末尾）が見える状態で開く**。`set_reply_handler` が登録されていればフロート内 `r` で返信できる（pi-nvim-comment が登録する）。ステップ一覧（`<leader>wl`）の要約には `💬N` + 最新発言が出る
-- 編集は `<leader>we`（カーソル下のステップ。フロートを開かず `hooks.edit` を直接呼ぶ）。pi-commentsの場合は編集モーダルが開き、確定でコメント・walkthrough双方に反映される
+- 編集は `<leader>we`（カーソル下のステップ。フロートを開かず `hooks.actions.edit` を直接呼ぶ）。pi-commentsの場合は編集モーダルが開き、確定でコメント・walkthrough双方に反映される
 - 切り替え時は各セッションの現在位置を保持したまま該当ステップへ即ジャンプ
-- `update()` は表示中のフロートが更新セッションのステップを指していれば**そのステップのまま再描画**する（回答反映で自動表示されたスレッドをアクティブステップで上書きしない）
+- `update()` は表示中のフロートが更新対象セッションを指していれば**同じステップのまま中身だけ差し替える**（ウィンドウを開き直さないのでフォーカスとスクロールが飛ばない）。別セッションを表示中なら触らない
 - 永続化なし。nvim再起動でセッションは消える（JSON由来はファイルから開き直す）
+
+## 内部構成
+
+1ファイルに詰めず、責務ごとに分割している（`lua/walkthrough/`）。
+
+| ファイル | 責務 |
+|---|---|
+| `init.lua` | 公開API・キーマップ・`:Walkthrough` |
+| `session.lua` | セッションレジストリ（データ層）・spec検証・JSON読み込み |
+| `render.lua` | バッファ上のマーカー・values描画 |
+| `float.lua` | noteフロート（レイアウト・表示・トグル・返信ハンドラ） |
+| `nav.lua` | ステップ間ジャンプ・アクティブ化 |
+| `picker.lua` | ステップ一覧・統合picker |
+| `ops.lua` | セッションの破棄（JSON削除・purge・確認） |
+| `util.lua` | 通知・パス解決・折り返し |

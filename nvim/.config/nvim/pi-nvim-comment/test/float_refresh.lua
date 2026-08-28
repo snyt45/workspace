@@ -1,57 +1,26 @@
--- headless: merge while the thread float is OPEN on the pinned pi-comments -> float must refresh
-local ok_all, err_all = pcall(function()
-	local tmp = vim.env.PI_TEST_DIR
-	assert(tmp and vim.fn.isdirectory(tmp) == 1, "PI_TEST_DIR missing")
-
-	package.preload["pi-nvim"] = function()
-		return { get_socket_path = function()
-			return nil
-		end }
-	end
-
-	local cfg = vim.fn.stdpath("config")
-	vim.opt.rtp:prepend(cfg .. "/pi-nvim-comment")
-	vim.opt.rtp:prepend(cfg .. "/walkthrough.nvim")
-
-	local pc = require("pi-nvim-comment")
-	pc.setup({ keymaps = false, prompt_suffix = "" })
+-- スレッドフロートを開いたまま回答が追記されたら、その場で内容が更新される。
+-- このときフォーカスは移動しない（フロート内で読んでいる最中に飛ばされない）
+H.run(function()
+	H.setup()
 	local wt = require("walkthrough")
 
-	local buf = vim.fn.bufadd(tmp .. "/init.lua")
-	vim.api.nvim_set_current_buf(buf)
-	vim.api.nvim_win_set_cursor(0, { 6, 0 })
+	H.open("init.lua", 6)
+	wt.toggle_float() -- ,wt は開くと同時にフォーカスする
 
-	-- スレッドフロートを開く
-	wt.toggle_float()
-
-	local function float_text()
-		for _, w in ipairs(vim.api.nvim_list_wins()) do
-			local b = vim.api.nvim_win_get_buf(w)
-			if vim.bo[b].filetype == "markdown" then
-				return table.concat(vim.api.nvim_buf_get_lines(b, 0, -1, false), "\n")
-			end
-		end
-		return nil
-	end
-	local before = float_text()
+	local before, float_win = H.float_text()
 	assert(before and before:find("💬") ~= nil, "float not showing thread before merge")
+	assert(vim.api.nvim_get_current_win() == float_win, "float should be focused after ,wt")
 
-	-- JSONに返信を追記（mtime変更）→ watcherがマージ → 開いたままのフロートに反映されるか
-	local json = tmp .. "/.walkthroughs/comments.json"
-	local f = io.open(json, "r")
-	local data = vim.json.decode(f:read("*a"))
-	f:close()
-	data.steps[1].thread[#data.steps[1].thread + 1] = { author = "pi", text = "新着返信REPLY" }
-	local out = io.open(json, "w")
-	out:write(vim.json.encode(data))
-	out:close()
+	local data = H.read()
+	table.insert(data.steps[1].thread, { author = "pi", text = "新着返信REPLY" })
+	H.write(data)
 
-	vim.wait(5000, function()
-		local t = float_text()
+	vim.wait(6000, function()
+		local t = H.float_text()
 		return t and t:find("新着返信REPLY") ~= nil
 	end)
-	local after = float_text() or ""
-	assert(after:find("新着返信REPLY") ~= nil, "open float not refreshed: " .. after)
+
+	local after, win_after = H.float_text()
+	assert(after and after:find("新着返信REPLY") ~= nil, "open float not refreshed: " .. tostring(after))
+	assert(vim.api.nvim_get_current_win() == win_after, "focus was stolen by the refresh")
 end)
-print("RESULT: " .. (ok_all and "OK" or ("ERR: " .. tostring(err_all))))
-vim.cmd("qa!")
