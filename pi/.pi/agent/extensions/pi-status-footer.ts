@@ -60,7 +60,7 @@ export default function (pi: ExtensionAPI) {
   let lastPercent: number | null = null;
   let tidyMode = true;
 
-  function buildStatusLine(ctx: ExtensionContext, theme: any): string {
+  function buildStatusLines(ctx: ExtensionContext, theme: any, width: number): string[] {
     try {
       // モデル情報
       const model = ctx.model;
@@ -86,15 +86,21 @@ export default function (pi: ExtensionAPI) {
       const pctStr = lastPercent != null ? `${lastPercent.toFixed(1)}%` : "?%";
       const tokStr = `${formatTokens(lastRealTokens)}/${formatTokens(contextWindow)}`;
 
-      const parts = [
-        theme.fg("accent", `[${modelTag}]`),
-        theme.fg("muted", `[thinking: ${thinkingLevel}]`),
-        `${bar} ${theme.fg("text", pctStr)} ${theme.fg("dim", tokStr)}`,
-      ];
+      const usage = `${bar} ${theme.fg("text", pctStr)} ${theme.fg("dim", tokStr)}`;
+      const modelPart = theme.fg("accent", `[${modelTag}]`);
+      const thinkingPart = theme.fg("muted", `[thinking: ${thinkingLevel}]`);
+      const pidTag = theme.fg("dim", `[pid ${process.pid}]`); // ponytail: ,PS のセッション一覧と目視で対応させるため
 
-      return parts.join(" ");
+      // ponytail: 1行に収まれば1行、無理なら モデル/thinking と 使用量/pid の2行に分ける。さらに狭い場合は各行を … で切る
+      const oneLine = [modelPart, thinkingPart, usage, pidTag].join(" ");
+      const oneLineTruncated = truncateToWidth(oneLine, width, "…");
+      if (oneLineTruncated === oneLine) return [oneLine];
+      return [
+        truncateToWidth([modelPart, thinkingPart].join(" "), width, "…"),
+        truncateToWidth([usage, pidTag].join(" "), width, "…"),
+      ];
     } catch {
-      return "";
+      return [];
     }
   }
 
@@ -105,11 +111,8 @@ export default function (pi: ExtensionAPI) {
         try {
           if (!enabled) return [];
           void tui;
-          const line = buildStatusLine(ctx, theme);
-          if (!line) return [theme.fg("dim", "status ?")];
-          if (line.length <= width) return [line];
-          // 長すぎる場合は詰める
-          return [truncateToWidth(line, width, "…")];
+          const lines = buildStatusLines(ctx, theme, width);
+          return lines.length ? lines : [theme.fg("dim", "status ?")];
         } catch {
           try { return [theme.fg("dim", "status ?")]; } catch { return ["status ?"]; }
         }
