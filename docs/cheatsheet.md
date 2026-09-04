@@ -19,8 +19,6 @@
 | `c` | opencode |
 | `cx` | Claude Code |
 | `pi` | Pi |
-| `inno` | inno-agent を起動（INNO_HOME / INNO_WORKSPACE_DIR 明示） |
-| `inno-web` | inno を server モードで起動（INNO_PORT=8152） |
 
 ## Ghostty
 
