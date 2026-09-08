@@ -26,6 +26,7 @@
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { Type } from "typebox";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
@@ -274,6 +275,53 @@ export default function mdLog(pi: ExtensionAPI) {
 			? answerCalloutQuiz(details)
 			: answerCalloutAsk(details);
 		await withLock(() => appendToFile(block));
+	});
+
+	// --- Tool ---
+
+	pi.registerTool({
+		name: "md_log_link",
+		label: "Link markdown log",
+		description: "Link an existing markdown file so the session is mirrored to it (same as /md-log). Backfills history.",
+		parameters: Type.Object({
+			filepath: Type.String({ description: "Absolute or relative path to the markdown file. Must already exist." }),
+		}),
+		execute: async (_toolCallId, params, _signal, _onUpdate, ctx) => {
+			const filepath = params.filepath.trim();
+			if (!filepath) {
+				ctx.ui.notify("Usage: filepath is required", "warning");
+				return { content: [{ type: "text", text: "Error: filepath is required" }], isError: true };
+			}
+			if (typeof ctx.isIdle === "function" && !ctx.isIdle()) {
+				ctx.ui.notify("Wait for the agent to finish before linking.", "warning");
+				return { content: [{ type: "text", text: "Error: Agent is not idle" }], isError: true };
+			}
+
+			const resolved = path.isAbsolute(filepath) ? filepath : path.resolve(ctx.cwd, filepath);
+
+			if (!fs.existsSync(resolved)) {
+				ctx.ui.notify(`File does not exist: ${resolved}`, "error");
+				return { content: [{ type: "text", text: `Error: File does not exist: ${resolved}` }], isError: true };
+			}
+			if (!fs.statSync(resolved).isFile()) {
+				ctx.ui.notify(`Not a file: ${resolved}`, "error");
+				return { content: [{ type: "text", text: `Error: Not a file: ${resolved}` }], isError: true };
+			}
+
+			logFile = resolved;
+			pi.appendEntry("md-log", { file: resolved });
+
+			const written = backfill(ctx);
+
+			const theme = ctx.ui.theme;
+			ctx.ui.setStatus(
+				"md-log",
+				theme.fg("accent", "🗒 ") + theme.fg("dim", path.basename(resolved)),
+			);
+			ctx.ui.notify(`Linked: ${resolved} (${written} entries backfilled)`, "success");
+
+			return { content: [{ type: "text", text: `Linked: ${resolved} (${written} entries backfilled)` }], isError: false };
+		},
 	});
 
 	// --- Commands ---

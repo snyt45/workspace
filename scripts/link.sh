@@ -20,7 +20,7 @@ link_tree() {
     # 親ディレクトリの実パスが src_root 配下になる場合はスキップ。
     # 例: ~/.agents/skills/as-if-planned -> dotfiles直リンク。宛先が symlink を辿って
     # src_root（dotfiles実ファイル）自身に着地し、-f が実ファイルを自己参照リンクで破壊する。
-    local dest_real="${dest:h}:A"
+    local dest_real="${dest:h:A}"
     if [[ "$dest_real" == "${src_root:A}"/* ]]; then
       echo "  SKIP(自己参照回避): ${dest/#$HOME/~}"
       ((skipped++))
