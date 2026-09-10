@@ -11,6 +11,7 @@
 |----------|--------|
 | ターミナル | Ghostty + tmux |
 | エージェントマルチプレクサ | herdr（tmuxからの移行を試行中） |
+| Agent プラットフォーム | Multica（エージェント+人のタスクボード。ローカルで pi を実行） |
 | ブラウザ(ペイン内) | terminal-browser（zenbu-labs製。herdrプラグイン。実体も自動インストール） |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |

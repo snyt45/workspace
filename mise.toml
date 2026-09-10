@@ -22,7 +22,8 @@ run = '/usr/bin/pgrep -q oahd || softwareupdate --install-rosetta --agree-to-lic
 
 [tasks.packages]
 description = "Homebrew パッケージインストール"
-run = 'brew bundle --file=Brewfile'
+# multica-ai/tap は未信頼タップだと brew bundle が失敗するため、先に trust する
+run = 'brew trust multica-ai/tap && brew bundle --file=Brewfile'
 
 [tasks.link]
 description = "シンボリックリンク作成"

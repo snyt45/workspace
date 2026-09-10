@@ -2,6 +2,7 @@
 tap "k1LoW/tap"
 tap "modem-dev/tap"
 tap "satococoa/tap"
+tap "multica-ai/tap"
 
 # CLI ツール
 brew "fd"
@@ -17,6 +18,7 @@ brew "lazydocker"
 brew "lazygit"
 brew "mise"
 brew "k1LoW/tap/mo"
+brew "multica-ai/tap/multica"
 brew "neovim"
 brew "pi-coding-agent"
 brew "ripgrep"
