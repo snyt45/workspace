@@ -68,6 +68,7 @@ mise run setup
 
 - [手動セットアップガイド](docs/manual-setup.md)
 - [チートシート](docs/cheatsheet.md)
+- [Multica セルフホスト](docs/multica-selfhost.md)
 
 ## メンテナンス
 
