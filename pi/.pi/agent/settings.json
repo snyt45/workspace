@@ -1,6 +1,6 @@
 {
   "theme": "dark",
-  "defaultProvider": "opencode",
+  "defaultProvider": "opencode-go",
   "defaultModel": "deepseek-v4-flash",
   "defaultThinkingLevel": "high",
   "packages": [
@@ -9,9 +9,7 @@
     "npm:@plannotator/pi-extension",
     "npm:@pi-kaush/pi-inline-skill-identifier",
     "npm:pi-compact-thinking",
-    "npm:@aliou/pi-guardrails",
     "npm:@dietrichgebert/ponytail",
-    "npm:@feniix/pi-notion",
     "npm:pi-markdown-preview",
     "https://github.com/carderne/pi-nvim"
   ],
