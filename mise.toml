@@ -12,10 +12,6 @@ description = "mise 管理ツールのインストール (~/.config/mise/config.
 depends = ["packages"]
 run = 'mise install'
 
-[tasks.gems]
-description = "Ruby gems (nvimのruby-lsp。toypo-apiのruby版に合わせる)"
-run = 'mise exec ruby@3.2.8 -- gem list -i ruby-lsp -q >/dev/null || mise exec ruby@3.2.8 -- gem install ruby-lsp'
-
 [tasks.macos]
 description = "macOS システム設定"
 run = './scripts/macos.sh'
