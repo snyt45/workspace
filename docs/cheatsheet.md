@@ -419,3 +419,43 @@ PR/Issue buffer内のキーマップ:
 - plan モードの承認時は自動でブラウザレビューが開く（Approve / Request changes / Approve with notes）
 - CLI 直叩き: `plannotator review` / `plannotator annotate <対象> [--gate]`（`--gate` は承認ゲート）
 - データはローカル（`~/.plannotator/`）。PR へのコメント投稿は明示操作のみ。更新は `curl -fsSL https://plannotator.ai/install.sh | bash`
+
+## tuicr (コードレビューTUI)
+
+コメントと進行状態はすべてセッション（永続ストア）に書かれる。TUI と `tuicr review` CLI は同じストアへの入口。詳細キーは `?` でヘルプ表示。設定は `tuicr/.config/tuicr/config.toml`（`leader = ","`）。
+
+### 起動スコープ
+
+| コマンド | 説明 |
+|----------|------|
+| `tuicr -w` | 未コミット変更（staged+unstaged）← agent の変更レビューが常 |
+| `tuicr -r main..HEAD` | コミット範囲 |
+| `tuicr pr <N>` / `tuicr mr <N>` | GitHub PR / GitLab MR |
+| `tuicr review list --repo <path>` | セッション一覧（slug 取得） |
+
+### TUI 基本キー
+
+| キー | 説明 |
+|------|------|
+| `,e` | ファイルリスト（左パネル）表示切替 |
+| `,h` / `,l` | パネル間フォーカス移動 |
+| `c` | この行にコメント（diff の行以外ではファイルコメント） |
+| `v` → 行選択 → `c` | 範囲コメント |
+| `Tab` | コメント種別切替 issue→suggestion→note→praise |
+| `Enter` | コメント保存 |
+| `e` | 現在のファイルを nvim で開く |
+| `m` / `M` | 次の / 前のコメントへジャンプ |
+| `:summary` | 未投稿コメント一覧 |
+| `:submit` | forge へレビュー提出（GitHub/GitLab等） |
+| `q` | 終了（コメントはストアに残る） |
+
+### エージェント連携（公式スキル vendor 済み: `agents/.agents/skills/tuicr/`）
+
+| コマンド | 説明 |
+|----------|------|
+| `tuicr review comments --session <slug>` | セッションのコメントを JSON で読む |
+| `tuicr review add --session <slug> --target-file <f> --line <n> --side new --type issue --username <名>` | エージェントとしてコメント追加 |
+
+- 種別は人間→エージェントの指示契約: `issue`=必ず直す / `suggestion`=検討して実装 or 却下理由 / `note`=回答 / `praise`=対応不要。pi は尊重し上書きしない
+- コメント 0 件 + `reviewed_count == file_count` は「指摘なし」で正常（確認不要）
+- 同じ HEAD なら同じセッションを再利用するので、修正後の再レビューは状態を引き継ぐ
