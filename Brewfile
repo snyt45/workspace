@@ -12,6 +12,7 @@ brew "imagemagick"
 # svg描画用（visual-tools拡張のrender_svg）。pi拡張のvisual-tools-*.tsから使用
 brew "librsvg"
 brew "modem-dev/tap/hunk"
+brew "tuicr"
 brew "lazydocker"
 brew "lazygit"
 brew "mise"
