@@ -112,7 +112,6 @@
       "~/work"
     ]
   },
-  "model": "sonnet",
   "hooks": {
     "Stop": [
       {
