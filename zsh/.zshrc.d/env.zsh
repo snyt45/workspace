@@ -1,5 +1,4 @@
 export EDITOR=nvim
-export CLAUDE_CODE_NO_FLICKER=1
 
 export PATH="$HOME/bin:$PATH"
 

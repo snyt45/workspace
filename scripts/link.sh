@@ -76,8 +76,7 @@ done
 # Claude Code / OpenCode は ~/.agents/ を読まないためミラーが必要
 for src dest in \
   "$HOME/.agents/skills" "$HOME/.claude/skills" \
-  "$HOME/.agents/agents" "$HOME/.claude/agents" \
-  "$HOME/.agents/agents" "$HOME/.config/opencode/agents"; do
+  "$HOME/.agents/agents" "$HOME/.claude/agents"; do
   prune_links "$src" "$dest"
   link_tree "$src" "$dest"
 done

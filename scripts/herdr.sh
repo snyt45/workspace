@@ -22,7 +22,7 @@ fi
 
 # エージェント状態検知の統合 (各エージェントの設定領域にフック/拡張を生成)
 # ファイル存在ガードだと旧版が更新されないため毎回実行する (冪等)
-for agent in claude opencode pi; do
+for agent in claude pi; do
   command -v "$agent" >/dev/null && herdr integration install "$agent"
 done
 
