@@ -1,11 +1,11 @@
 ---
 name: review-comment
-description: レビュー指摘1件の書き方の基準。結論→影響→直し方の型、書かないもの、既存/新規の区別、副作用の明記、仕様判断の残し方、同型の指摘の畳み方。walkthrough-review など code-review 系スキルから読み込んで使う。出力先（walkthrough・plannotator・チャット・PR）は問わない。
+description: レビュー指摘1件の書き方の基準。結論→影響→直し方の型、書かないもの、既存/新規の区別、副作用の明記、仕様判断の残し方、同型の指摘の畳み方。review など code-review 系スキルから読み込んで使う。出力先（review・plannotator・チャット・PR）は問わない。
 ---
 
 # Review Comment
 
-指摘1件の書き方だけを決める。何を探すか（観点）と、どこに出すか（walkthrough / plannotator / チャット / PR）は呼び出し側が決める。
+指摘1件の書き方だけを決める。何を探すか（観点）と、どこに出すか（review / plannotator / チャット / PR）は呼び出し側が決める。
 
 読み手は経緯を知らない実装者。自分ではない誰かが、このコメントだけを見て直せることがゴール。
 
