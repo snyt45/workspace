@@ -302,22 +302,6 @@ Neovim内から起動:
 | `:ReviewStart [base]` | レビューモード開始 + Diffview 自動起動  |
 | `:ReviewEnd` | レビューモード終了 + Diffview を閉じる |
 
-### Walkthrough (walkthrough.nvim)
-
-AIが生成したwalkthrough JSON（`.walkthroughs/*.json`）やLuaテーブルをステップ順に辿る。詳細は `nvim/.config/nvim/walkthrough.nvim/README.md`。
-
-| キー | モード | 説明 |
-|------|------|------|
-| `]w` / `[w` | n | 次 / 前のステップ |
-| `,wl` | n | ステップ一覧から選んでジャンプ（noteプレビュー付き） |
-| `,wo` | n | 開く/切り替え統合picker（ロード済みセッション + 未ロードJSON。snacks時は `<C-d>`／一覧では `d` で削除。確認あり） |
-| `,wt` | n | noteフロートをトグル（カーソル下のステップ、なければアクティブステップ。開くと同時にフォーカスされ `e`/`d`/`r`/`q` が使える。表示中に別ステップ上で押すと切替） |
-| `,we` | n | カーソル下のステップの編集アクションを直接呼ぶ（フロートを開かず編集モーダルへ） |
-| `,w<CR>` | n | noteフロートにフォーカス（`q`で戻る） |
-| `,wq` | n | アクティブセッションを閉じる（pinセッションは非アクティブ化のみ） |
-| `,wR` | n | JSONを再読み込み |
-| `:Walkthrough [path]` | - | JSONを指定して開く（無指定はpicker） |
-
 ### コマンドパレット
 
 | キー | モード | 説明 |

@@ -10,8 +10,7 @@
     "npm:@pi-kaush/pi-inline-skill-identifier",
     "npm:pi-compact-thinking",
     "npm:@dietrichgebert/ponytail",
-    "npm:pi-markdown-preview",
-    "https://github.com/carderne/pi-nvim"
+    "npm:pi-markdown-preview"
   ],
   "lastChangelogVersion": "0.84.2",
   "hideThinkingBlock": false
