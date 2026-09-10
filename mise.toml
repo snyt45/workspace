@@ -12,11 +12,6 @@ description = "mise 管理ツールのインストール (~/.config/mise/config.
 depends = ["packages"]
 run = 'mise install'
 
-[tasks.npm-latest]
-description = "npm を最新化 (min-release-age v11.10+ のため)"
-depends = ["tools"]
-run = 'mise exec -- npm install -g npm@latest'
-
 [tasks.gems]
 description = "Ruby gems (nvimのruby-lsp。toypo-apiのruby版に合わせる)"
 run = 'mise exec ruby@3.2.8 -- gem list -i ruby-lsp -q >/dev/null || mise exec ruby@3.2.8 -- gem install ruby-lsp'
