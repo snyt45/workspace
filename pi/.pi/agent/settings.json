@@ -12,6 +12,6 @@
     "npm:@dietrichgebert/ponytail",
     "npm:pi-markdown-preview"
   ],
-  "lastChangelogVersion": "0.84.2",
-  "hideThinkingBlock": false
+  "lastChangelogVersion": "0.85.1",
+  "hideThinkingBlock": true
 }
