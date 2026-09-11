@@ -23,7 +23,8 @@
 | 調整データ | Docker volume `multica_pgdata`（PostgreSQL 17 + pgvector） |
 | 添付ファイル | Docker volume `multica_backend_uploads` |
 | 秘密 | `~/work/multica/.env` |
-| CLI 設定・daemon | `~/.multica/` |
+| CLI 設定 | `~/.multica/config.json` |
+| daemon | Desktop アプリが起動する（profile `desktop-localhost-8180`）。ログは `~/.multica/profiles/desktop-localhost-8180/daemon.log`、run の作業ディレクトリは `~/multica_workspaces_desktop-localhost-8180/` |
 | 認証 | メール + 認証コード（メール送信未設定ならコードは backend ログに出る） |
 
 `MULTICA_IMAGE_TAG` は `v0.4.42` にピン留めしてある。`latest` のままだと `pull` のたびに黙って上がる。
@@ -98,7 +99,7 @@ multica daemon status     # Daemon: running / Agents / Workspaces > 0
 multica runtime list      # online の runtime が並ぶ
 ```
 
-daemon は**自動起動しない**。再起動後やログイン後は手で `multica daemon start`。常駐させたい場合は下の「自動起動」を参照。
+ここで起動する CLI の daemon は疎通確認用。**確認できたら `multica daemon stop` し、以後は Desktop アプリの daemon だけを使う**（→「daemon の運用」）。
 
 ## 日常運用
 
@@ -111,6 +112,53 @@ docker compose -f docker-compose.selfhost.yml down       # 停止（volume は�
 ```
 
 **`down -v` は volume ごと消す。DB が消えるので使わない。**
+
+## daemon の運用
+
+### Desktop アプリの daemon に一本化する
+
+CLI の daemon（`multica daemon start`）と Desktop アプリの daemon は、**同じ daemon ID で同じ runtime を受け持つ**。両方動いていると、どちらが task を取るかは運次第になる。作業ディレクトリの root も別々（`~/multica_workspaces/` と `~/multica_workspaces_desktop-localhost-8180/`）なので、前の run の session を引き継げない。実際に、チャットから作った issue の run が、前の session を破棄して最初からやり直した。
+
+```sh
+pgrep -fl 'multica daemon start'    # Multica.app 配下の 1 つだけならよい
+multica daemon stop                 # CLI 側が動いていたら止める
+```
+
+Desktop の daemon を再起動したいときは、アプリを終了して開き直す。
+
+### Desktop アプリは herdr の外から開く
+
+daemon は、起動元の環境変数をそのまま AI CLI に渡す。herdr のペインから Multica.app を開くと `HERDR_*` が daemon に入り、次のことが起きる。
+
+- `review` スキルが「`HERDR_ENV=1` なら herdr で起動」の分岐に入り、herdr にペインを 5 つ開く
+- `SessionStart` hook（`herdr-agent-state.sh`）が、起動元のペインに agent session を報告する
+
+Dock か `open -a Multica` で開く。`open` は呼び出し元の環境変数を渡さない。
+
+```sh
+ps eww -p $(pgrep -f 'Multica.app.*multica daemon start') | tr ' ' '\n' | grep -c '^HERDR_'   # 0 ならよい
+```
+
+### run は `~/.claude` をそのまま使う
+
+daemon は `HOME` を変えずに Claude Code を起動する。そのため、herdr で使うのと同じ次の設定が multica の run でも効く。
+
+- スキル（`~/.claude/skills` → `~/.dotfiles`）。multica 側にスキルをコピーする必要はない
+- user scope の MCP（`~/.claude.json` の `mcpServers`）
+- hooks（`Stop` の `afplay` も run のたびに鳴る）
+
+multica 側で agent に MCP 設定を入れた場合だけ、`--strict-mcp-config` がかかり、user scope の MCP は読まれなくなる。
+
+### リポジトリは SSH の URL で登録する
+
+daemon は、登録されたリポジトリを `git clone --bare` でキャッシュする。https の URL で登録すると、credential helper が無いので `could not read Username for 'https://github.com'` で失敗する。手元の remote と同じ形で登録する。
+
+```sh
+git -C ~/work/<repo> remote get-url origin    # この値をそのまま使う
+multica repo add git@github.com:toypo/<repo>.git
+```
+
+toypo-app と toypo4store-app は `git@github-snyt45:toypo/...`（ssh config の別名）。project の repo リソースも同じ URL にする（`multica project resource update <project-id> <resource-id> --url <ssh url>`）。
 
 ## アップデート
 
@@ -201,6 +249,8 @@ multica login --token mul_...
 multica daemon start
 ```
 
+mac mini でも、疎通を確認したら CLI の daemon は止めて Desktop アプリに一本化する（→「daemon の運用」）。
+
 mac → mac mini はどちらも arm64 macOS なので `pgdata` volume を生でコピーすることもできるが、**pg_dump を使う。** 生の `pgdata` は PostgreSQL の内部表現で、間に入るバージョンが変わると壊れる。dump なら PostgreSQL さえあれば戻せる。
 
 **エージェントは runtime に紐づく。** 新しいマシンは 2 台目の runtime として登録されるので、そちらで動かすには付け替えが要る。
@@ -219,6 +269,9 @@ multica agent update <agent-id> --runtime-id <new-id>
 | daemon に Agents が出ない | AI CLI が PATH にありログイン済みか確認 → `multica daemon restart` |
 | issue が queued のまま | `multica daemon status`。daemon が止まっているか workspace を watch していない |
 | backend が `password authentication failed` で再起動ループ | 下記 |
+| run の session が引き継がれない / 作業ディレクトリが 2 か所にできる | daemon が 2 つ動いている。`pgrep -fl 'multica daemon start'` で確認し、CLI 側を `multica daemon stop` |
+| herdr にペインが勝手に開く | daemon が `HERDR_*` を持っている。Multica.app を終了し、herdr の外から開き直す |
+| daemon ログに `repo cache: clone failed ... could not read Username` | リポジトリを https で登録している。SSH の URL で登録し直す |
 
 ### DB のパスワードが `.env` とずれた場合
 
@@ -250,7 +303,9 @@ docker compose -f docker-compose.selfhost.yml exec -T postgres \
 
 ## 自動起動（任意）
 
-daemon も Docker Desktop も既定では自動起動しない。常駐させたい場合のみ。
+Docker Desktop は既定では自動起動しない。サービス（web / API / PostgreSQL）はその上で動くので、ログイン後に Docker Desktop が起動していることを確認する。
+
+daemon は Desktop アプリがログイン時に起動するので、この plist は使っていない。Desktop アプリを使わない構成（mac mini をヘッドレスで回すなど）にするときだけ使う。**Desktop アプリと併用しない**（runtime を取り合う）。
 
 `~/Library/LaunchAgents/ai.multica.daemon.plist`:
 
