@@ -29,9 +29,13 @@ description: teach + md-log を一気通貫で起動する薄いラッパー。�
 - `n` または別パス指定 → 指定されたパスを使用（存在しない場合は親ディレクトリを `mkdir -p` してから作成）
 
 **ファイル名:**
-トピックを英語に翻訳しスネークケースに変換、末尾に `.md` を付ける。既存と衝突したら `_2`、`_3` … を付ける。
+知見キャプチャの instructions のメモ形式に合わせ、`<YYYY-MM-DD HHmm> <日本語タイトル>.md` とする。英語に翻訳しない。
 
-例: `微分形式` → `differential_forms.md`
+- 日時はファイル作成時点のローカル日時を `date "+%Y-%m-%d %H%M"` で取得する
+- 日本語タイトルはトピックを簡潔に表すもの（例: `featureTestHarness bootstrapFailedとonRouterReady`）
+- 既存と衝突したら `_2`、`_3` … を付ける
+
+例: `2026-09-14 1530 featureTestHarness bootstrapFailedとonRouterReady.md`
 
 ### 3. ファイルを作成
 
