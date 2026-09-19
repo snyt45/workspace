@@ -12,6 +12,7 @@
 | ターミナル | Ghostty + tmux |
 | エージェントマルチプレクサ | herdr（tmuxからの移行を試行中） |
 | Agent プラットフォーム | Multica（エージェント+人のタスクボード。ローカルで pi を実行） |
+| Vault統合（仕事場） | obsidian-second-brain（vaultを全agentの仕事場にする47コマンド+スキル） |
 | ブラウザ(ペイン内) | terminal-browser（zenbu-labs製。herdrプラグイン。実体も自動インストール） |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
@@ -91,6 +92,7 @@ brew upgrade
 | `mise run plannotator` | Plannotator（レビューUI）インストール |
 | `mise run herdr` | herdrプラグイン・外部ツール統合のインストール（herdr起動中のみ） |
 | `mise run auth` | GitHub CLI認証 |
+| `mise run second-brain` | obsidian-second-brain 導入・更新（~/.claude/skills に clone、settings の hooks/env は dotfiles 管理） |
 | `mise tasks` | タスク一覧表示 |
 
 ## シンボリックリンクの仕組み
@@ -101,6 +103,7 @@ brew upgrade
 - スキル共有: 正規置き場は `~/.agents/skills`（Pi はここをネイティブに読む）
   - スキルは自作・外部由来を問わずすべて `agents/.agents/skills/` のファイルとして管理し、上記の仕組みでリンクする（外部由来は vendor 方式: 上流からコピーして取り込み、更新は再コピー）
   - 例外は Plannotator のスキルだけ（インストーラが `~/.agents/skills/plannotator-*` に実ディレクトリとして配置し、自前で更新する）
+  - 外部由来の大型スキル（例: obsidian-second-brain）は vendor 方式で `~/.claude/skills/obsidian-second-brain` に git clone し、`mise run second-brain` で更新。settings.json の hooks（SessionStart の vault コンテキスト読込・PostCompact の background agent）と env（`OBSIDIAN_VAULT_PATH`）は claude パッケージで管理
   - Claude Code は `~/.agents/skills` を読まないため、同じ処理で `~/.agents/skills` → `~/.claude/skills` にミラーする
 - エージェント共有: 正規置き場は `~/.agents/agents`（自作エージェントを `agents/.agents/agents/` からリンク）
   - Claude Code 用の frontmatter（`name` / `description` / `mode: subagent`）を書く

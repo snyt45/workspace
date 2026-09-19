@@ -134,6 +134,15 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/snyt45/.claude/skills/obsidian-second-brain/hooks/load_vault_context.sh"
+          }
+        ]
       }
     ]
   },
@@ -170,5 +179,6 @@
   "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754364589827
-  }
+  },
+  "model": "opus[1m]"
 }

@@ -42,3 +42,9 @@ stow方式。各パッケージは `$HOME` 相対パスで配置し、`scripts/l
 - エイリアスやPATHを追加したら、依存パッケージが `Brewfile` に含まれているか確認
 - シェル設定（.zshrc, .zshrc.d/*.zsh）を変更したら、外部ファイルのsourceに存在チェックがあるか確認
 - Neovimプラグインを追加したら、キーマップを `docs/cheatsheet.md` に追記
+
+## obsidian-second-brain の管理
+
+- 実体は `~/.claude/skills/obsidian-second-brain`（git clone・上流 vendor）。更新は `mise run second-brain`
+- commands のリンク・hooks・env は install.sh が冪等に登録するが、**settings.json の hooks/env（load_vault_context・PostCompact background agent・OBSIDIAN_VAULT_PATH）の正規管理は本リポジトリの claude/.claude/settings.json**。second-brain 動作の変更はこちらの設定を編集する
+- vault（brain）自体は dotfiles 管理外（iCloud）。_CLAUDE.md 等の生成物は /obsidian-init が作る
