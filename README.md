@@ -88,7 +88,7 @@ brew upgrade
 | `mise run tools` | mise管理ツールのインストール |
 | `mise run link` | シンボリックリンク作成（dotfiles 由来の切れたリンクも掃除） |
 | `mise run npm-latest` | npm を最新化（サプライチェーン対策の min-release-age v11.10+ 用） |
-| `mise run claude-plugins` | Claude Codeプラグインインストール |
+| `mise run claude-plugins` | Claude Codeプラグインインストール（plannotator / ruby-lsp / obsidian-second-brain） |
 | `mise run plannotator` | Plannotator（レビューUI）インストール |
 | `mise run herdr` | herdrプラグイン・外部ツール統合のインストール（herdr起動中のみ） |
 | `mise run auth` | GitHub CLI認証 |
@@ -103,7 +103,8 @@ brew upgrade
 - スキル共有: 正規置き場は `~/.agents/skills`（Pi はここをネイティブに読む）
   - スキルは自作・外部由来を問わずすべて `agents/.agents/skills/` のファイルとして管理し、上記の仕組みでリンクする（外部由来は vendor 方式: 上流からコピーして取り込み、更新は再コピー）
   - 例外は Plannotator のスキルだけ（インストーラが `~/.agents/skills/plannotator-*` に実ディレクトリとして配置し、自前で更新する）
-  - 外部由来の大型スキル（例: obsidian-second-brain）は vendor 方式で `~/.claude/skills/obsidian-second-brain` に git clone し、`mise run second-brain` で更新。settings.json の hooks（SessionStart の vault コンテキスト読込・PostCompact の background agent）と env（`OBSIDIAN_VAULT_PATH`）は claude パッケージで管理
+  - 外部由来の大型スキル（例: obsidian-second-brain）は Claude Code のプラグイン機構で管理する（`mise run claude-plugins` が marketplace 登録 + install を冪等に実行）。実体は `~/.claude/plugins/marketplaces/`。settings.json の `enabledPlugins`・`extraKnownMarketplaces`・env（`OBSIDIAN_VAULT_PATH`）は claude パッケージで宣言する
+  - 注意: Claude Code が settings.json を保存すると symlink が実体化することがある。`mise run link` で再リンクする（差分があれば先に dotfiles へ取り込む）
   - Claude Code は `~/.agents/skills` を読まないため、同じ処理で `~/.agents/skills` → `~/.claude/skills` にミラーする
 - エージェント共有: 正規置き場は `~/.agents/agents`（自作エージェントを `agents/.agents/agents/` からリンク）
   - Claude Code 用の frontmatter（`name` / `description` / `mode: subagent`）を書く

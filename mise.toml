@@ -47,7 +47,3 @@ run = './scripts/herdr.sh'
 description = "GitHub CLI 認証"
 depends = ["packages"]
 run = 'gh auth status 2>/dev/null || gh auth login'
-
-[tasks.second-brain]
-description = "obsidian-second-brain 導入・更新（~/.claude/skills に clone、commands/hooks は冪等 install）"
-run = './scripts/second-brain.sh'

@@ -1,7 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "env": {
-    "ENABLE_LSP_TOOL": "1"
+    "ENABLE_LSP_TOOL": "1",
+    "OBSIDIAN_VAULT_PATH": "/Users/snyt45/Library/Mobile Documents/iCloud~md~obsidian/Documents/second-brain"
   },
   "attribution": {
     "commit": "Created by author with Claude Code",
@@ -134,15 +135,6 @@
             "timeout": 10
           }
         ]
-      },
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/Users/snyt45/.claude/skills/obsidian-second-brain/hooks/load_vault_context.sh"
-          }
-        ]
       }
     ]
   },
@@ -155,13 +147,20 @@
   },
   "enabledPlugins": {
     "plannotator@plannotator": true,
-    "ruby-lsp@claude-plugins-official": true
+    "ruby-lsp@claude-plugins-official": true,
+    "obsidian-second-brain@obsidian-second-brain": true
   },
   "extraKnownMarketplaces": {
     "plannotator": {
       "source": {
         "source": "github",
         "repo": "backnotprop/plannotator"
+      }
+    },
+    "obsidian-second-brain": {
+      "source": {
+        "source": "github",
+        "repo": "eugeniughelbur/obsidian-second-brain"
       }
     }
   },

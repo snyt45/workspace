@@ -45,6 +45,7 @@ stow方式。各パッケージは `$HOME` 相対パスで配置し、`scripts/l
 
 ## obsidian-second-brain の管理
 
-- 実体は `~/.claude/skills/obsidian-second-brain`（git clone・上流 vendor）。更新は `mise run second-brain`
-- commands のリンク・hooks・env は install.sh が冪等に登録するが、**settings.json の hooks/env（load_vault_context・PostCompact background agent・OBSIDIAN_VAULT_PATH）の正規管理は本リポジトリの claude/.claude/settings.json**。second-brain 動作の変更はこちらの設定を編集する
-- vault（brain）自体は dotfiles 管理外（iCloud）。_CLAUDE.md 等の生成物は /obsidian-init が作る
+- 導入は Claude Code プラグイン（`mise run claude-plugins` が marketplace 登録 + install を冪等に実行）。実体は `~/.claude/plugins/marketplaces/obsidian-second-brain`、更新は `claude plugin update obsidian-second-brain`
+- 設定は claude/.claude/settings.json で宣言: `enabledPlugins`・`extraKnownMarketplaces`・env の `OBSIDIAN_VAULT_PATH`
+- プラグインが提供するのは commands（47個, `/obsidian-second-brain:*`）+ MCP（vault）。hooks は提供しない（vault の `.claude/CLAUDE.md` の `@../_CLAUDE.md` import がマニュアル読込を担う）
+- **settings.json が実体化していたら**: Claude Code が設定保存時に symlink を実体化することがある。実体に dotfiles に無い差分があれば取り込んでから `mise run link` で再リンクする
