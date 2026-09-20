@@ -11,7 +11,6 @@
 |----------|--------|
 | ターミナル | Ghostty + tmux |
 | エージェントマルチプレクサ | herdr（tmuxからの移行を試行中） |
-| Agent プラットフォーム | Multica（エージェント+人のタスクボード。ローカルで pi を実行） |
 | Vault統合（仕事場） | obsidian-second-brain（vaultを全agentの仕事場にする47コマンド+スキル） |
 | ブラウザ(ペイン内) | terminal-browser（zenbu-labs製。herdrプラグイン。実体も自動インストール） |
 | エディタ(CLI) | Neovim |
@@ -69,7 +68,6 @@ mise run setup
 
 - [手動セットアップガイド](docs/manual-setup.md)
 - [チートシート](docs/cheatsheet.md)
-- [Multica セルフホスト](docs/multica-selfhost.md)
 
 ## メンテナンス
 
