@@ -146,16 +146,7 @@
     "command": "~/.claude/statusline.py"
   },
   "enabledPlugins": {
-    "plannotator@plannotator": true,
     "ruby-lsp@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "plannotator": {
-      "source": {
-        "source": "github",
-        "repo": "backnotprop/plannotator"
-      }
-    }
   },
   "language": "ja",
   "alwaysThinkingEnabled": true,

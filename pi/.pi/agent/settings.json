@@ -6,7 +6,6 @@
   "packages": [
     "npm:pi-fff",
     "npm:pi-web-access",
-    "npm:@plannotator/pi-extension",
     "npm:@pi-kaush/pi-inline-skill-identifier",
     "npm:pi-compact-thinking",
     "npm:@dietrichgebert/ponytail",

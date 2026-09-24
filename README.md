@@ -18,7 +18,6 @@
 | Git UI (TUI) | lazygit / lazydocker |
 | PRレビュー | diffview.nvim + gitsigns |
 | 差分ビューア(TUI) | hunk |
-| レビューUI (plan/diff/文書) | Plannotator |
 | AIコーディング | Claude Code (`cx`) + Pi (`pi`) |
 | シェル | zsh + pure |
 | 検索 | fzf, ripgrep, fd |
@@ -85,8 +84,6 @@ brew upgrade
 | `mise run tools` | mise管理ツールのインストール |
 | `mise run link` | シンボリックリンク作成（dotfiles 由来の切れたリンクも掃除） |
 | `mise run npm-latest` | npm を最新化（サプライチェーン対策の min-release-age v11.10+ 用） |
-| `mise run claude-plugins` | Claude Codeプラグインインストール（plannotator / ruby-lsp） |
-| `mise run plannotator` | Plannotator（レビューUI）インストール |
 | `mise run herdr` | herdrプラグイン・外部ツール統合のインストール（herdr起動中のみ） |
 | `mise run auth` | GitHub CLI認証 |
 | `mise tasks` | タスク一覧表示 |
@@ -98,7 +95,6 @@ brew upgrade
 - dotfiles直下のディレクトリは `EXCLUDE`（`_archive` `docs` `scripts` `vendor`）以外すべて `$HOME` へリンクされる（stow規約: 各パッケージは `$HOME` 相対パスで配置）
 - スキル共有: 正規置き場は `~/.agents/skills`（Pi はここをネイティブに読む）
   - スキルは自作・外部由来を問わずすべて `agents/.agents/skills/` のファイルとして管理し、上記の仕組みでリンクする（外部由来は vendor 方式: 上流からコピーして取り込み、更新は再コピー）
-  - 例外は Plannotator のスキルだけ（インストーラが `~/.agents/skills/plannotator-*` に実ディレクトリとして配置し、自前で更新する）
   - 注意: Claude Code が settings.json を保存すると symlink が実体化することがある。`mise run link` で再リンクする（差分があれば先に dotfiles へ取り込む）
   - Claude Code は `~/.agents/skills` を読まないため、同じ処理で `~/.agents/skills` → `~/.claude/skills` にミラーする
 - エージェント共有: 正規置き場は `~/.agents/agents`（自作エージェントを `agents/.agents/agents/` からリンク）

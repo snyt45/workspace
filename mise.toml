@@ -1,6 +1,6 @@
 [tasks.setup]
 description = "全セットアップ実行"
-depends = ["system", "packages", "tools", "link", "claude-plugins", "plannotator", "herdr"]
+depends = ["system", "packages", "tools", "link", "herdr"]
 run = 'echo "セットアップ完了。再起動してください。"'
 
 [tasks.system]
@@ -27,15 +27,6 @@ run = 'brew bundle --file=Brewfile'
 [tasks.link]
 description = "シンボリックリンク作成"
 run = './scripts/link.sh'
-
-[tasks.claude-plugins]
-description = "Claude Code プラグインインストール"
-depends = ["packages"]
-run = './scripts/claude-plugins.sh'
-
-[tasks.plannotator]
-description = "Plannotator インストール (plan/diff/文書レビューUI)"
-run = 'command -v plannotator >/dev/null || curl -fsSL https://plannotator.ai/install.sh | bash'
 
 [tasks.herdr]
 description = "herdr プラグイン・外部ツール統合のインストール"

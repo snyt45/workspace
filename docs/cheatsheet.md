@@ -15,7 +15,6 @@
 | `v` | nvim |
 | `vd` | nvim +DiffviewOpen |
 | `vdh` | nvim +DiffviewFileHistory |
-| `pv` | plannotator review（コミット/差分をブラウザでレビュー） |
 | `cx` | Claude Code |
 | `pi` | Pi |
 
@@ -404,21 +403,6 @@ PR/Issue buffer内のキーマップ:
 
 - `.wtp.yml` は dotfiles の `wtp/work/<repo>/` で管理し、`mise run link` で各リポジトリへリンク (リポジトリ側は `.git/info/exclude` に追加)
 - worktree 内の DB は `docker compose up` 後に `rails db:create db:migrate db:seed` を手動実行 (hook で流すとメイン側の共有 DB に当たる)
-
-## Plannotator (plan/diff/文書レビューUI)
-
-エージェントの成果物をブラウザで注釈レビューしてフィードバックを返す。フィードバックチャネルはこれ1本。
-
-| コマンド | 説明 |
-|----------|------|
-| `pv` / `/plannotator-review` | origin/main 以降の全変更をレビュー（コミット単位の履歴レールあり） |
-| `/plannotator-review <PR_URL>` | GitHub PR / GitLab MR をレビュー（議論スレッド込み、botフィルタあり） |
-| `/plannotator-annotate <file\|url\|folder>` | Markdown / HTML / URL を注釈UIで開く |
-| `/plannotator-last` | 直近のレビュー結果をエージェントに再取得させる |
-
-- plan モードの承認時は自動でブラウザレビューが開く（Approve / Request changes / Approve with notes）
-- CLI 直叩き: `plannotator review` / `plannotator annotate <対象> [--gate]`（`--gate` は承認ゲート）
-- データはローカル（`~/.plannotator/`）。PR へのコメント投稿は明示操作のみ。更新は `curl -fsSL https://plannotator.ai/install.sh | bash`
 
 ## tuicr (コードレビューTUI)
 
