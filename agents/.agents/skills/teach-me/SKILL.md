@@ -17,10 +17,7 @@ description: teach + md-log を一気通貫で起動する薄いラッパー。�
 
 ### 2. 保存先・ファイル名を決定
 
-**デフォルトパス:**
-```
-/Users/snyt45/Library/Mobile Documents/iCloud~md~obsidian/Documents/pkm-vault/Learn
-```
+**デフォルトパス:** `pkm-vault` スキルの vault 直下の `Learn/`
 
 ユーザーに以下のように確認する:
 > デフォルトの `Learn` フォルダに保存しますか？（Y / n / 別のパスを指定）

@@ -211,7 +211,7 @@ tuicr review add --repo /path/to/repo --session <slug> \
   --line 42 \
   --side new \
   --type issue \
-  --username "Codex" \
+  --username "<agent name, e.g. Claude>" \
   "Handle the empty case here."
 ```
 
@@ -219,7 +219,7 @@ tuicr review add --repo /path/to/repo --session <slug> \
 tuicr review add --repo /path/to/repo --session <slug> \
   --target-file src/main.rs \
   --type suggestion \
-  --username "Codex" \
+  --username "<agent name, e.g. Claude>" \
   "Consider splitting this file-level concern into a helper."
 ```
 
@@ -233,7 +233,7 @@ For structured input, use `--input` with literal JSON, `@path/to/file.json`, or
 `file`, not `path`. `target.type` is inferred from the fields present:
 
 ```bash
-tuicr review add --session <slug> --username "Codex" --input \
+tuicr review add --session <slug> --username "<agent name, e.g. Claude>" --input \
   '{"file":"src/main.rs","line":42,"side":"new","comment_type":"issue","content":"Handle the empty case."}'
 ```
 
