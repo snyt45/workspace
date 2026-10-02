@@ -112,7 +112,7 @@
       "~/work"
     ]
   },
-  "model": "sonnet",
+  "model": "claude-fable-5-1",
   "hooks": {
     "Stop": [
       {
@@ -138,6 +138,16 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh ~/.claude/hooks/guard-bash.sh",
+            "timeout": 10
+          }
+        ]
+      },
       {
         "matcher": "Write|Edit",
         "hooks": [
