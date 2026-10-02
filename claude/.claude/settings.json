@@ -112,7 +112,7 @@
       "~/work"
     ]
   },
-  "model": "claude-fable-5-1[1m]",
+  "model": "sonnet",
   "hooks": {
     "Stop": [
       {
@@ -133,6 +133,18 @@
             "type": "command",
             "command": "bash '/Users/snyt45/.claude/hooks/herdr-agent-state.sh' session",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"/Users/snyt45/Library/Mobile Documents/iCloud~md~obsidian/Documents/my-vault/AIOS/scripts/hook_check.py\"",
+            "timeout": 90
           }
         ]
       }
