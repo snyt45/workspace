@@ -16,6 +16,7 @@
 | `vd` | nvim +DiffviewOpen |
 | `vdh` | nvim +DiffviewFileHistory |
 | `cx` | Claude Code |
+| `obs <file>` | ファイルを Obsidian で開く（Claude が vault にノートを新しく作ると自動で開き、開き直し用に `! obs "..."` を返す） |
 
 ## Ghostty
 

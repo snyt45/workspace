@@ -7,7 +7,7 @@ description: teach + md-log を一気通貫で起動する薄いラッパー。�
 
 `teach` スキルに教授を移譲し、会話を md ファイルに写して Obsidian で読めるようにする。本スキルはファイル作成と移譲だけを行う。
 
-写すのは md-log hook（`~/.claude/hooks/md-log.py`）。このセッションで Write した、frontmatter に `md-log: true` を持つファイルへ、ターンの終わりごとにユーザーの発言・本文・AskUserQuestion の問いと回答を書き出す。ファイルは毎回作り直されるので、セッション中に手で編集しない。
+写すのは md-log hook（`~/.claude/hooks/md-log.py`）。このセッションで Write した、frontmatter に `md-log: true` を持つファイルへ、ターンの終わりごとにユーザーの発言・本文・AskUserQuestion の問いと回答を書き出す。ファイルは毎回作り直されるので、セッション中に手で編集しない。記録を止めたいときはファイルを消す。
 
 ## フロー
 
@@ -17,16 +17,18 @@ description: teach + md-log を一気通貫で起動する薄いラッパー。�
 
 ### 2. 保存先・ファイル名を決定
 
-**デフォルトパス:** `pkm-vault` スキルの vault 直下の `Learn/`
+**デフォルトパス:** my-vault の `Atlas/Learn/`（`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/my-vault/Atlas/Learn/`）
 
 ユーザーに以下のように確認する:
-> デフォルトの `Learn` フォルダに保存しますか？（Y / n / 別のパスを指定）
+> デフォルトの `Atlas/Learn` フォルダに保存しますか？（Y / n / 別のパスを指定）
 
 - `Y` または未入力 → デフォルトパスを使用
-- `n` または別パス指定 → 指定されたパスを使用（存在しない場合は親ディレクトリを `mkdir -p` してから作成）
+- `n` または別パス指定 → 指定されたパスを使用
+
+フォルダが無ければ `mkdir -p` してから作成する。
 
 **ファイル名:**
-知見キャプチャの instructions のメモ形式に合わせ、`<YYYY-MM-DD HHmm> <日本語タイトル>.md` とする。英語に翻訳しない。
+`<YYYY-MM-DD HHmm> <日本語タイトル>.md` とする。英語に翻訳しない。
 
 - 日時はファイル作成時点のローカル日時を `date "+%Y-%m-%d %H%M"` で取得する
 - 日本語タイトルはトピックを簡潔に表すもの（例: `featureTestHarness bootstrapFailedとonRouterReady`）

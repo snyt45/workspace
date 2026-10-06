@@ -188,6 +188,28 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh ~/.claude/hooks/obsidian-link.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/quiz-grade.py",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "worktree": {
