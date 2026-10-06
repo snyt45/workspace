@@ -112,7 +112,7 @@
       "~/work"
     ]
   },
-  "model": "claude-fable-5-1",
+  "model": "opus",
   "hooks": {
     "Stop": [
       {
@@ -125,6 +125,11 @@
           {
             "type": "command",
             "command": "python3 \"/Users/snyt45/Library/Mobile Documents/iCloud~md~obsidian/Documents/my-vault/AIOS/scripts/task_check.py\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/md-log.py",
             "timeout": 10
           }
         ]
@@ -172,6 +177,16 @@
             "timeout": 90
           }
         ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/md-log.py",
+            "timeout": 10
+          }
+        ]
       }
     ]
   },
@@ -185,14 +200,15 @@
   "enabledPlugins": {
     "ruby-lsp@claude-plugins-official": true
   },
-  "language": "ja",
   "outputStyle": "Concise",
+  "language": "ja",
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "preferredNotifChannel": "terminal_bell",
   "autoCompactEnabled": false,
+  "switchModelsOnFlag": true,
   "remoteControlAtStartup": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,

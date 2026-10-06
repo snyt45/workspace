@@ -11,14 +11,12 @@
 |----------|--------|
 | ターミナル | Ghostty + tmux |
 | エージェントマルチプレクサ | herdr（tmuxからの移行を試行中） |
-| ブラウザ(ペイン内) | terminal-browser（zenbu-labs製。herdrプラグイン。実体も自動インストール） |
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
-| エディタ(ペイン内) | terminal-code『tode』（VS Code in terminal。code-server + terminal-browser） |
 | Git UI (TUI) | lazygit / lazydocker |
 | PRレビュー | diffview.nvim + gitsigns |
 | 差分ビューア(TUI) | hunk |
-| AIコーディング | Claude Code (`cx`) + Pi (`pi`) |
+| AIコーディング | Claude Code (`cx`) |
 | シェル | zsh + pure |
 | 検索 | fzf, ripgrep, fd |
 | バージョン管理 | mise |
@@ -84,7 +82,7 @@ brew upgrade
 | `mise run tools` | mise管理ツールのインストール |
 | `mise run link` | シンボリックリンク作成（dotfiles 由来の切れたリンクも掃除） |
 | `mise run npm-latest` | npm を最新化（サプライチェーン対策の min-release-age v11.10+ 用） |
-| `mise run herdr` | herdrプラグイン・外部ツール統合のインストール（herdr起動中のみ） |
+| `mise run herdr` | herdr の Claude Code 統合のインストール |
 | `mise run auth` | GitHub CLI認証 |
 | `mise tasks` | タスク一覧表示 |
 
@@ -93,14 +91,9 @@ brew upgrade
 `scripts/link.sh` は「src配下の全ファイルを同じ相対パスでファイル単位リンクし、srcから消えたものはdest側の切れたリンクを掃除する」処理（`link_tree` / `prune_links`）だけで構成される。
 
 - dotfiles直下のディレクトリは `EXCLUDE`（`docs` `scripts` `vendor`）以外すべて `$HOME` へリンクされる（stow規約: 各パッケージは `$HOME` 相対パスで配置）
-- スキル共有: 正規置き場は `~/.agents/skills`（Pi はここをネイティブに読む）
-  - スキルは自作・外部由来を問わずすべて `agents/.agents/skills/` のファイルとして管理し、上記の仕組みでリンクする（外部由来は vendor 方式: 上流からコピーして取り込み、更新は再コピー）
-  - 注意: Claude Code が settings.json を保存すると symlink が実体化することがある。`mise run link` で再リンクする（差分があれば先に dotfiles へ取り込む）
-  - Claude Code は `~/.agents/skills` を読まないため、同じ処理で `~/.agents/skills` → `~/.claude/skills` にミラーする
-- エージェント共有: 正規置き場は `~/.agents/agents`（自作エージェントを `agents/.agents/agents/` からリンク）
-  - Claude Code 用の frontmatter（`name` / `description` / `mode: subagent`）を書く
-  - Claude Code は `~/.agents/agents` を読まないため、同じ処理で `~/.claude/agents` にミラーする
-  - Pi は本体にサブエージェント機能がないため対象外（必要になったら pi-subagents 等の拡張を導入）
+- スキル: `claude/.claude/skills/` に置き、`~/.claude/skills` へリンクする（外部由来は vendor 方式: 上流からコピーして取り込み、更新は再コピー）
+  - ツールが自分で `~/.claude/skills` に入れるスキルは dotfiles に置かない。同じパスに二重にリンクされるため
+- 注意: Claude Code が settings.json を保存すると symlink が実体化することがある。`mise run link` で再リンクする（差分があれば先に dotfiles へ取り込む）
 
 ## mise (ランタイムバージョン管理)
 

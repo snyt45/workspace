@@ -29,7 +29,7 @@ description = "シンボリックリンク作成"
 run = './scripts/link.sh'
 
 [tasks.herdr]
-description = "herdr プラグイン・外部ツール統合のインストール"
+description = "herdr の Claude Code 統合のインストール"
 depends = ["packages"]
 run = './scripts/herdr.sh'
 

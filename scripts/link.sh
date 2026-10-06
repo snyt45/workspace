@@ -18,8 +18,7 @@ link_tree() {
     local dest="$dest_root/$rel"
     mkdir -p "${dest:h}"
     # 親ディレクトリの実パスが src_root 配下になる場合はスキップ。
-    # 例: ~/.agents/skills/as-if-planned -> dotfiles直リンク。宛先が symlink を辿って
-    # src_root（dotfiles実ファイル）自身に着地し、-f が実ファイルを自己参照リンクで破壊する。
+    # 宛先が symlink を辿って src_root（dotfiles実ファイル）自身に着地すると、-f が実ファイルを自己参照リンクで破壊する。
     local dest_real="${dest:h:A}"
     if [[ "$dest_real" == "${src_root:A}"/* ]]; then
       echo "  SKIP(自己参照回避): ${dest/#$HOME/~}"
@@ -70,15 +69,6 @@ for pkg in "$DOTFILES_DIR"/*(N/); do
     prune_links "$pkg" "$HOME/${entry:t}"
   done
   link_tree "$pkg" "$HOME"
-done
-
-# スキル/エージェントのミラー: 正規置き場 → 各ツールが読む場所へ
-# Claude Code / OpenCode は ~/.agents/ を読まないためミラーが必要
-for src dest in \
-  "$HOME/.agents/skills" "$HOME/.claude/skills" \
-  "$HOME/.agents/agents" "$HOME/.claude/agents"; do
-  prune_links "$src" "$dest"
-  link_tree "$src" "$dest"
 done
 
 echo
