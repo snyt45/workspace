@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# シンボルの呼び出し元を列挙する。使い方: callers <symbol> [dir]
+# テストと定義行（def / function / class / const 〜 = / name()）は除く。出力は path:line:text で1行1件
+# 近似（grep）なので、動的ディスパッチや再エクスポートは拾えない。正確さが要るときは LSP の参照検索で補う
+[ -n "$1" ] || { echo "usage: callers <symbol> [dir]" >&2; exit 1; }
+sym=$1
+dir=${2:-.}
+esc=$(printf '%s' "$sym" | sed 's/[][\.*^$?+(){}|/]/\\&/g')
+rg -nFw --no-heading --color never "$sym" "$dir" \
+  --glob '!**/spec/**' --glob '!**/test/**' --glob '!**/__tests__/**' \
+  --glob '!**/*_spec.rb' --glob '!**/*_test.rb' --glob '!**/*.test.*' --glob '!**/*.spec.*' \
+  | grep -vE "(def|function|class|module|interface|type)[[:space:]]+${esc}([^[:alnum:]_]|$)|(const|let|var)[[:space:]]+${esc}[[:space:]]*=|:[[:space:]]*${esc}[[:space:]]*\(\)" \
+  | sort -t: -k1,1 -k2,2n

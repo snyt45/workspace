@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# シンボルを触るテストファイルを列挙する。使い方: tests-for <symbol|file> [dir]
+# 引数が存在するファイルなら、その basename（拡張子なし）で探す。出力はパスのみ1行1件
+# callers と繋ぐ: callers foo | cut -d: -f1 | sort -u | xargs -n1 tests-for | sort -u
+[ -n "$1" ] || { echo "usage: tests-for <symbol|file> [dir]" >&2; exit 1; }
+sym=$1
+dir=${2:-.}
+if [ -f "$sym" ]; then
+  sym=$(basename "$sym")
+  sym=${sym%%.*}
+fi
+rg -lFw --color never "$sym" "$dir" \
+  --glob '**/spec/**' --glob '**/test/**' --glob '**/__tests__/**' \
+  --glob '**/*_spec.rb' --glob '**/*_test.rb' --glob '**/*.test.*' --glob '**/*.spec.*' \
+  | sort

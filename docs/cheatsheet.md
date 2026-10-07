@@ -17,6 +17,8 @@
 | `vdh` | nvim +DiffviewFileHistory |
 | `cx` | Claude Code |
 | `obs <file>` | ファイルを Obsidian で開く（Claude が vault にノートを新しく作ると自動で開き、開き直し用に `! obs "..."` を返す） |
+| `callers <symbol> [dir]` | 呼び出し元を列挙（テスト・定義行を除く。grep 近似なので正確さが要るときは LSP で補う） |
+| `tests-for <symbol\|file> [dir]` | そのシンボルを触るテストファイルを列挙。`callers foo \| cut -d: -f1 \| sort -u \| xargs -n1 tests-for` で影響範囲のテストに繋ぐ |
 
 ## Ghostty
 
