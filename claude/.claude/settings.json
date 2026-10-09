@@ -220,7 +220,16 @@
     "command": "~/.claude/statusline.py"
   },
   "enabledPlugins": {
-    "ruby-lsp@claude-plugins-official": true
+    "ruby-lsp@claude-plugins-official": true,
+    "html-plan@claude-community": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-community": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-community"
+      }
+    }
   },
   "outputStyle": "Concise",
   "language": "ja",
