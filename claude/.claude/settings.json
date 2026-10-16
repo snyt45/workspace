@@ -112,7 +112,6 @@
       "~/work"
     ]
   },
-  "model": "opus",
   "hooks": {
     "Stop": [
       {
@@ -165,16 +164,6 @@
             "type": "command",
             "command": "sh ~/.claude/hooks/guard-bash.sh",
             "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"/Users/snyt45/Library/Mobile Documents/iCloud~md~obsidian/Documents/my-vault/AIOS/scripts/hook_check.py\"",
-            "timeout": 90
           }
         ]
       },
@@ -247,5 +236,6 @@
   "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754364589827
-  }
+  },
+  "model": "opus"
 }
