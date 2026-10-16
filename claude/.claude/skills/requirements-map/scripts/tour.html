@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root {
+  --bg: #f7f7f5; --panel: #ffffff; --text: #1d1d1b; --muted: #6b6b66; --line: #e3e2dd;
+  --accent: #2f5bd3; --accent-soft: #e8eefc; --hl: #fff6d1; --hl-bar: #e0b100;
+  --ok: #1f7a4d; --ok-soft: #e6f4ec; --warn: #9a5b00; --warn-soft: #fbf0dc; --ng: #b3261e; --ng-soft: #fbe7e5;
+  --code-bg: #fafaf8; --ic-bg: #efeee9; --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --k: #a626a4; --s: #2b7a2b; --c: #8a8a84; --n: #b45f06; --t: #2f5bd3; --sym: #0b7285; --attr: #9c4221;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615; --panel: #1f1f1d; --text: #ecebe6; --muted: #9a9993; --line: #33322f;
+    --accent: #8aa8ff; --accent-soft: #24304d; --hl: #3a3314; --hl-bar: #d9a92a;
+    --ok: #5cc493; --ok-soft: #1b3328; --warn: #e3a64a; --warn-soft: #3a2c14; --ng: #ff8a80; --ng-soft: #3d1f1c;
+    --code-bg: #191918; --ic-bg: #2c2b28;
+    --k: #d38cf0; --s: #8fd18f; --c: #7d7c76; --n: #f0a45d; --t: #8aa8ff; --sym: #6fd3e0; --attr: #f2a37b;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161615; --panel: #1f1f1d; --text: #ecebe6; --muted: #9a9993; --line: #33322f;
+  --accent: #8aa8ff; --accent-soft: #24304d; --hl: #3a3314; --hl-bar: #d9a92a;
+  --ok: #5cc493; --ok-soft: #1b3328; --warn: #e3a64a; --warn-soft: #3a2c14; --ng: #ff8a80; --ng-soft: #3d1f1c;
+  --code-bg: #191918; --ic-bg: #2c2b28;
+  --k: #d38cf0; --s: #8fd18f; --c: #7d7c76; --n: #f0a45d; --t: #8aa8ff; --sym: #6fd3e0; --attr: #f2a37b;
+}
+:root { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; } :root[data-theme="dark"] { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.75 -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+header { padding: 12px 24px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 16px; background: var(--panel); position: sticky; top: 0; z-index: 2; }
+header h1 { font-size: 15px; margin: 0; flex: 1; }
+.nav { display: flex; align-items: center; gap: 8px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.nav button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 2px 12px; font-size: 16px; cursor: pointer; }
+main { padding: 20px 24px; max-width: 1120px; margin: 0 auto; }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; padding: 16px; } header { padding: 10px 16px; } .tree { position: static !important; } }
+
+/* 判断の木 */
+.tree { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; align-self: start; position: sticky; top: 64px; }
+.tree ul { list-style: none; margin: 0; padding-left: 14px; border-left: 1px solid var(--line); }
+.tree > ul { padding-left: 0; border-left: 0; }
+.tree li { margin: 3px 0; }
+.tree .group { color: var(--muted); font-size: 12px; margin-top: 8px; }
+.node { display: block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 1px 8px; border-radius: 6px; cursor: pointer; font-size: 13.5px; }
+.node:hover { background: var(--accent-soft); }
+.node.on { background: var(--accent); color: var(--panel); }
+.node .tag { font-weight: 700; margin-right: 4px; }
+
+/* 停留所 */
+.stop { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 22px 26px; min-width: 0; }
+.where { color: var(--muted); font-size: 13px; }
+.item { font-size: 20px; font-weight: 700; margin: 2px 0 6px; }
+.note { color: var(--muted); }
+ul.plain { margin: 8px 0; padding-left: 1.2em; }
+ul.plain li { margin: 6px 0; }
+.hint { color: var(--muted); font-size: 12px; margin-top: 22px; }
+a { color: var(--accent); }
+
+/* 文中の要素 */
+.pill { display: inline-block; font-size: 12px; font-weight: 700; line-height: 1.6; padding: 0 9px; margin: 0 3px; border-radius: 999px; background: var(--accent); color: var(--panel); cursor: pointer; white-space: nowrap; vertical-align: 1px; }
+code.ic { font-family: var(--mono); font-size: 0.86em; background: var(--ic-bg); border-radius: 4px; padding: 1px 5px; color: var(--attr); }
+.repo { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+
+/* 事実 */
+.fact { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 18px; }
+.fact.first { margin-top: 4px; border-top: 0; padding-top: 0; }
+.item.claim { font-size: 19px; }
+.claim { font-size: 17px; font-weight: 700; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.claim .pill { margin-left: 0; font-size: 13px; }
+.ref { display: inline-flex; align-items: center; justify-content: center; min-width: 17px; height: 17px; padding: 0 4px; margin: 0 1px 0 3px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); font-size: 10.5px; font-weight: 600; line-height: 1; vertical-align: 2px; cursor: pointer; font-variant-numeric: tabular-nums; }
+.ref:hover { border-color: var(--accent); color: var(--accent); }
+.then { color: var(--muted); margin-top: -2px; }
+.context { margin-bottom: 12px; }
+.hl-on { background: var(--hl); box-shadow: inset 0 -2px 0 var(--hl-bar); color: var(--text); }
+.hl-off { color: var(--muted); }
+dl.gate { margin: 14px 0; }
+.so { font-size: 12.5px; font-weight: 700; color: var(--accent); margin-top: 18px; }
+.context .quote { color: var(--muted); border-left: 3px solid var(--line); padding: 1px 0 1px 12px; margin: 4px 0; }
+.effects { margin: 20px 0 4px; border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; }
+.effects .title { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.effect { margin: 4px 0; }
+.effect .at { font-size: 12px; color: var(--muted); }
+.when { font-size: 12px; color: var(--warn); margin-top: 2px; }
+.cmp-wrap { overflow-x: auto; }
+table.cmp td.opt { font-weight: 600; min-width: 11em; }
+table.cmp td.opt .note { font-weight: 400; font-size: 12.5px; margin-top: 2px; }
+table.cmp .id { display: inline-block; font-weight: 700; margin-right: 6px; color: var(--accent); }
+dl { display: grid; grid-template-columns: 6.5em minmax(0, 1fr); gap: 6px 12px; margin: 0; }
+dt { color: var(--muted); font-size: 13px; padding-top: 2px; }
+dd { margin: 0; min-width: 0; }
+.scope { list-style: none; margin: 0; padding: 0; }
+.scope li { margin: 2px 0; }
+.scope .zero { color: var(--muted); font-size: 13px; }
+.scope ul { list-style: none; margin: 0; padding-left: 16px; }
+.scope ul li { font-family: var(--mono); font-size: 12.5px; overflow-wrap: anywhere; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+.chip-s { font-size: 12px; font-weight: 600; padding: 1px 10px; border-radius: 999px; }
+.chip-s.ok { background: var(--ok-soft); color: var(--ok); } .chip-s.wait { background: var(--warn-soft); color: var(--warn); } .chip-s.ng { background: var(--ng-soft); color: var(--ng); }
+.how { margin: 12px 0; } .how .at, .effect .at { font-size: 12px; color: var(--muted); }
+.how a { display: block; }
+details.fold-sec { border-top: 1px solid var(--line); }
+details.fold-sec:last-of-type { border-bottom: 1px solid var(--line); }
+details.fold-sec.bg { margin: 10px 0 0; border-bottom: 1px solid var(--line); }
+details.fold-sec.bg[open] > summary .meta { display: none; }
+details.fold-sec > summary { cursor: pointer; padding: 9px 2px; font-weight: 600; font-size: 14px; list-style: none; display: flex; gap: 12px; align-items: baseline; }
+details.fold-sec > summary::-webkit-details-marker { display: none; }
+details.fold-sec > summary::before { content: "▸"; color: var(--muted); width: 1em; }
+details.fold-sec[open] > summary::before { content: "▾"; }
+details.fold-sec > summary .meta { font-weight: 400; font-size: 12.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+details.fold-sec > *:not(summary) { margin: 2px 0 14px 1.4em; }
+.pad { padding: 2px 0; }
+/* コードの道筋 */
+.sec { font-weight: 700; font-size: 13px; color: var(--muted); margin: 20px 0 8px; }
+.steps { list-style: none; margin: 0; padding: 0; }
+.step { position: relative; padding-left: 38px; padding-bottom: 18px; }
+.step::before { content: ""; position: absolute; left: 12px; top: 26px; bottom: 0; width: 2px; background: var(--line); }
+.step:last-child::before { display: none; }
+.step .num { position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--panel); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.step .label { font-weight: 600; margin-bottom: 6px; }
+.codebox { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--code-bg); }
+.codebox .path { font-family: var(--mono); font-size: 12px; padding: 6px 12px; border-bottom: 1px solid var(--line); color: var(--muted); display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+.codebox .path b { color: var(--text); font-weight: 600; }
+pre.code { margin: 0; padding: 6px 0; overflow-x: auto; font: 12.5px/1.65 var(--mono); }
+.ln { display: block; padding: 0 12px 0 0; white-space: pre; border-left: 3px solid transparent; }
+.ln.ctx { opacity: .5; }
+.ln.key, .ln.hit { background: var(--hl); border-left-color: var(--hl-bar); }
+.fold { display: block; width: 100%; text-align: left; border: 0; border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); background: transparent; color: var(--muted); font: 12px var(--mono); padding: 2px 0 2px 4.6em; cursor: pointer; }
+.fold:hover { color: var(--accent); }
+/* 全体 */
+table.cmp { width: 100%; border-collapse: collapse; margin: 10px 0 4px; font-size: 14px; }
+table.cmp th, table.cmp td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+table.cmp th { font-size: 12px; color: var(--muted); font-weight: 600; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+@media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
+.card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; }
+.card h3 { font-size: 13px; color: var(--muted); margin: 0 0 4px; }
+.card ul { margin: 0; padding-left: 1.1em; }
+.card li { margin: 6px 0; }
+h2.title-q { font-size: 24px; font-weight: 800; margin: 0 0 6px; }
+h3.sec { font-size: 17px; font-weight: 800; color: var(--text); margin: 30px 0 10px; padding-left: 10px; border-left: 4px solid var(--accent); line-height: 1.3; }
+.decide { font-weight: 700; }
+.then { color: var(--text); }
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0 12px; }
+.plan { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: grid; grid-row: span var(--rows); grid-template-rows: subgrid; margin-bottom: 12px; }
+.plan-h { background: var(--accent-soft); padding: 10px 14px; cursor: pointer; font-weight: 700; line-height: 1.45; }
+.plan-h .id { color: var(--accent); font-weight: 800; margin-right: 6px; }
+.plan-note { padding: 8px 14px 0; font-size: 13px; }
+.plan-note:empty { padding: 0; }
+.plan-row { padding: 10px 14px; border-top: 1px solid var(--line); min-width: 0; overflow-wrap: anywhere; }
+.plans > .plan, .plan > * { min-width: 0; }
+.fbox pre.code { max-width: 100%; }
+.plan-h + .plan-row, .plan-note + .plan-row { border-top: 0; }
+.plan-row .axis { font-size: 12.5px; font-weight: 700; color: var(--accent); }
+.plan-row .short { font-size: 16px; font-weight: 800; margin: 2px 0 4px; }
+.plan-row .text { font-size: 13.5px; line-height: 1.6; }
+.goto { cursor: pointer; }
+.plan-row.goto:hover, li.goto:hover { background: var(--accent-soft); }
+.lead { font-size: 15px; line-height: 1.7; margin: 6px 0 4px; }
+.clause { font-size: 13px; font-weight: 700; color: var(--accent); margin: 22px 0 6px; }
+.clause + .fact { margin-top: 0; border-top: 0; padding-top: 0; }
+.others { font-size: 12.5px; margin-top: 10px; }
+.others .at { color: var(--muted); }
+.others a { cursor: pointer; }
+.tree .group-o { font-weight: 700; margin-top: 6px; }
+.tree .group-o .tag { color: var(--accent); margin-right: 6px; }
+.ref { font: inherit; display: inline-flex; align-items: center; gap: 1px; height: 18px; padding: 0 6px; margin: 0 2px 0 3px; border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 1; vertical-align: 2px; cursor: pointer; border: 1px solid; background: transparent; }
+.ref.ok { color: var(--ok); border-color: var(--ok); } .ref.doc { color: var(--warn); border-color: var(--warn); } .ref.wait { color: var(--ng); border-color: var(--ng); }
+.ref.open { background: var(--accent-soft); }
+.facts { margin: 8px 0 2px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.fbox, .fbox * { min-width: 0; }
+.fbox details.fold-sec > summary > span:first-child { white-space: nowrap; flex-shrink: 0; }
+.fbox .fclaim { overflow-wrap: anywhere; }
+.fbox .codebox, .fbox .search { max-width: 100%; }
+.fbox .step { padding-left: 32px; }
+.fbox { border-left: 3px solid var(--line); padding: 2px 0 0 10px; font-size: 13.5px; font-weight: 400; }
+.fhead { display: flex; gap: 6px; align-items: baseline; }
+.fmark { font-size: 11px; font-weight: 800; } .fmark.ok { color: var(--ok); } .fmark.doc { color: var(--warn); } .fmark.wait { color: var(--ng); }
+.fbox details.fold-sec { border: 0 !important; }
+.fbox details.fold-sec > summary { padding: 2px 0; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.fbox details.fold-sec details.fold-sec > summary { color: var(--text); }
+.fbox .how { margin: 6px 0; }
+.why { font-size: 12.5px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+.pane { position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 100%); background: var(--panel); border-left: 1px solid var(--line); overflow-y: auto; padding: 16px 20px 32px; z-index: 5; box-shadow: -8px 0 24px rgba(0,0,0,.18); }
+.pane-bar { display: flex; justify-content: flex-end; gap: 6px; position: sticky; top: -16px; background: var(--panel); padding: 4px 0; z-index: 1; }
+.pane-btn { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 2px 10px; cursor: pointer; font-size: 13px; }
+.pane.wide { width: min(1000px, 92vw); }
+@media (max-width: 1100px) { .pane.wide { height: 92vh; width: 100%; } }
+body.pane-open main { margin-right: 480px; }
+@media (max-width: 1100px) { body.pane-open main { margin-right: auto; } .pane { top: auto; height: 70vh; width: 100%; border-left: 0; border-top: 1px solid var(--line); box-shadow: 0 -8px 24px rgba(0,0,0,.18); } }
+.fpanel .fid { font-size: 12px; font-weight: 800; color: var(--accent); margin-top: 4px; }
+.fpanel .fclaim { font-size: 17px; font-weight: 700; line-height: 1.6; margin: 2px 0 6px; }
+.tally { display: flex; gap: 4px; margin-top: 4px; } .tally .ref { cursor: default; margin: 0; } .tally .none { font-size: 11px; color: var(--muted); }
+.hint-s { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.card h4 { font-size: 14px; color: var(--text); font-weight: 700; margin: 0 0 6px; }
+h2.h { font-size: 13px; color: var(--muted); margin: 22px 0 4px; font-weight: 700; }
+.ln .n { display: inline-block; width: 3.8em; padding-right: 1em; text-align: right; color: var(--muted); user-select: none; }
+
+/* 検索 */
+.search { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; }
+.search .head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-weight: 600; }
+.search .count { font-variant-numeric: tabular-nums; }
+.search .pattern { margin: 6px 0 10px; font-size: 13px; color: var(--muted); }
+.search .r { margin: 4px 0; }
+.search details { margin: 2px 0 2px 16px; }
+.search summary { cursor: pointer; font-family: var(--mono); font-size: 12.5px; overflow-wrap: anywhere; }
+.search details pre.code { margin: 4px 0 6px; background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; }
+
+/* シンタックスハイライト */
+.hljs-keyword, .hljs-selector-tag, .hljs-built_in { color: var(--k); }
+.hljs-string, .hljs-regexp, .hljs-template-tag { color: var(--s); }
+.hljs-comment, .hljs-quote { color: var(--c); font-style: italic; }
+.hljs-number, .hljs-literal { color: var(--n); }
+.hljs-title, .hljs-title.function_, .hljs-title.class_ { color: var(--t); }
+.hljs-symbol, .hljs-variable, .hljs-template-variable { color: var(--sym); }
+.hljs-attr, .hljs-attribute, .hljs-params, .hljs-property { color: var(--attr); }
+.hljs-meta, .hljs-section { color: var(--t); font-weight: 600; }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title"></h1>
+</header>
+<main>
+  <section class="stop" id="stop"></section>
+  <aside class="pane wide" id="pane" hidden></aside>
+</main>
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+// 確かめ方の状態。ok = AI が確認し、無いことの主張なら検索もした / doc = 資料だけ / wait = それ以外
+function factState(f) {
+  if (!f) return 'wait';
+  if (f.verdict === '資料のみ') return 'doc';
+  if (f.verdict === '支持' && (!f.absence || f.searches.length)) return 'ok';
+  return 'wait';
+}
+const MARK = { ok: '✓', doc: '資', wait: '△' };
+
+// 文中の根拠の番号。押すと右のパネルにその事実を出す
+function ref(id) {
+  const st = factState(D.facts[id]);
+  const r = el('button', 'ref ' + st, MARK[st] + id.replace(/^F/, '')); r.type = 'button'; r.dataset.id = id;
+  r.onclick = (ev) => { ev.stopPropagation(); openFact(id === openId ? null : id); };
+  return r;
+}
+
+let openId = null;
+function openFact(id) {
+  openId = id;
+  const pane = document.getElementById('pane');
+  document.body.classList.toggle('pane-open', !!id);
+  pane.hidden = !id;
+  if (!id) return;
+  pane.replaceChildren();
+  const bar = el('div', 'pane-bar');
+  const wide = el('button', 'pane-btn', pane.classList.contains('wide') ? '狭める' : '広げる'); wide.type = 'button';
+  wide.onclick = () => { pane.classList.toggle('wide'); wide.textContent = pane.classList.contains('wide') ? '狭める' : '広げる'; };
+  const close = el('button', 'pane-btn', '閉じる'); close.type = 'button'; close.onclick = () => openFact(null);
+  bar.appendChild(wide); bar.appendChild(close); pane.appendChild(bar);
+  const fp = factPanel(D.facts[id]); pane.appendChild(fp);
+  // コードや検索を開いたら、読めるように広げる
+  fp.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => {
+    if (d.open && /コード|検索/.test(d.querySelector('summary').textContent) && !pane.classList.contains('wide')) { pane.classList.add('wide'); wide.textContent = '狭める'; }
+  }));
+  pane.scrollTop = 0;
+}
+
+// 文中の F1 を丸いラベルに、`…`・ファイルの場所・API のパス・識別子をコードの見た目にする
+const RICH = new RegExp([
+  '\\b(F\\d+)\\b',
+  '`([^`]+)`',
+  '((?:[\\w.-]+\\/)*[\\w.-]+\\.(?:rb|jsx?|tsx?|md|json|ya?ml)(?::\\d+(?:[-,]\\s?\\d+)*)?)',
+  '((?:GET|POST|PUT|PATCH|DELETE)\\s+\\/[\\w\\/:.${}-]+|\\/api\\/[\\w\\/:.-]+|…\\/[\\w\\/:.-]+)',
+  '((?<![\\w:]):[a-z_]\\w*[!?]?|\\b[A-Za-z]\\w*(?:::\\w+)+|\\b[A-Za-z]\\w*#\\w+[!?]?|\\b[A-Za-z]\\w*_\\w*[!?]?|\\b[a-z]\\w*[!?](?=\\W|$)|\\b[A-Z][a-z0-9]+[A-Z]\\w*|\\b[a-z]+[A-Z]\\w*)',
+].join('|'), 'g');
+function rich(tag, cls, text) {
+  const e = el(tag, cls); const s = String(text || ''); let last = 0, m;
+  RICH.lastIndex = 0;
+  while ((m = RICH.exec(s))) {
+    if (m.index > last) e.appendChild(document.createTextNode(s.slice(last, m.index)));
+    if (m[1]) e.appendChild(ref(m[1]));
+    else e.appendChild(el('code', 'ic', m[2] || m[3] || m[4] || m[5]));
+    last = RICH.lastIndex;
+  }
+  if (last < s.length) e.appendChild(document.createTextNode(s.slice(last)));
+  return e;
+}
+
+// シンタックスハイライト。hljs が読めなければ素の文字で出す
+const LANG = { rb: 'ruby', js: 'javascript', jsx: 'javascript', ts: 'typescript', tsx: 'typescript', md: 'markdown', json: 'json', yml: 'yaml', yaml: 'yaml' };
+function highlightLines(path, lines) {
+  const lang = LANG[(path.split('.').pop() || '').toLowerCase()];
+  if (!window.hljs || !lang || !hljs.getLanguage(lang)) return null;
+  const html = hljs.highlight(lines.join('\n'), { language: lang, ignoreIllegals: true }).value;
+  // 複数行にまたがる span を、行ごとに閉じて開き直す
+  const out = [], stack = [];
+  html.split('\n').forEach(line => {
+    const s = stack.join('') + line;
+    (line.match(/<span[^>]*>|<\/span>/g) || []).forEach(t => { if (t[1] === '/') stack.pop(); else stack.push(t); });
+    out.push(s + '</span>'.repeat(stack.length));
+  });
+  return out;
+}
+
+// rows: [[行番号, 文, 'key' | 'in' | 'ctx' | true]]。長いときは要の行の前後だけ出し、残りは畳む
+const FOLD_OVER = 12, AROUND = 2;
+function codeLines(path, rows) {
+  const pre = el('pre', 'code'), hl = highlightLines(path, rows.map(r => r[1]));
+  const kindOf = r => r[2] === true ? 'key' : r[2];
+  let show = rows.map(() => true);
+  const keys = rows.map((r, i) => kindOf(r) === 'key' ? i : -1).filter(i => i >= 0);
+  if (rows.length > FOLD_OVER && keys.length) show = rows.map((_, i) => keys.some(k => Math.abs(k - i) <= AROUND));
+  const draw = (all) => {
+    pre.replaceChildren(); let hidden = 0;
+    const flush = () => { if (!hidden) return; const b = el('button', 'fold', '… ' + hidden + ' 行を畳んでいる（クリックで全体）'); b.onclick = () => draw(true); pre.appendChild(b); hidden = 0; };
+    rows.forEach((r, i) => {
+      if (!all && !show[i]) { hidden++; return; }
+      flush();
+      const l = el('span', 'ln ' + kindOf(r)); l.appendChild(el('span', 'n', r[0]));
+      const c = el('span'); if (hl) c.innerHTML = hl[i]; else c.textContent = r[1]; l.appendChild(c); pre.appendChild(l);
+    });
+    flush();
+  };
+  draw(false);
+  return pre;
+}
+
+function codeBox(repo, path, rows, range) {
+  const box = el('div', 'codebox'), head = el('div', 'path');
+  const left = el('span'); left.appendChild(document.createTextNode(repo + ' › ')); left.appendChild(el('b', '', path));
+  head.appendChild(left); head.appendChild(el('span', '', range)); box.appendChild(head);
+  box.appendChild(codeLines(path, rows));
+  return box;
+}
+
+
+
+const BASIS = {
+  '支持': ['ok', '根拠: AI確認'],
+  '一部': ['ng', 'AI確認: 一部だけ言える'],
+  '不支持': ['ng', 'AI確認: 言えない'],
+  '資料のみ': ['wait', '根拠: 資料'],
+  '': ['wait', 'AI確認: まだ'],
+};
+
+// 範囲: リポジトリごとに、読んだコードと検索のヒットをファイルと行でまとめる
+function scopeList(f) {
+  const repos = [...new Set([...f.scope, ...f.code.map(c => c.repo), ...f.searches.flatMap(s => s.repos)])];
+  const ul = el('ul', 'scope');
+  repos.forEach(r => {
+    const files = new Map(), add = (p, l) => { if (!files.has(p)) files.set(p, []); if (!files.get(p).includes(l)) files.get(p).push(l); };
+    f.code.filter(c => c.repo === r).forEach(c => add(c.path, c.start === c.end ? '' + c.start : c.start + '-' + c.end));
+    const searched = f.searches.some(s => s.repos.includes(r));
+    f.searches.forEach(s => s.hits.filter(h => h.repo === r).forEach(h => add(h.path, '' + h.line)));
+    const li = el('li'), head = el('div'); head.appendChild(el('span', 'repo', r));
+    if (!files.size) head.appendChild(el('span', 'zero', searched ? '　検索して 0 件' : '　見ていない'));
+    li.appendChild(head);
+    if (files.size) {
+      const sub = el('ul');
+      files.forEach((ls, p) => sub.appendChild(el('li', '', p + ':' + ls.join(', '))));
+      li.appendChild(sub);
+    }
+    ul.appendChild(li);
+  });
+  return ul;
+}
+
+function renderSearch(s) {
+  const sb = el('div', 'search'), head = el('div', 'head');
+  head.appendChild(rich('span', '', s.what)); head.appendChild(el('span', 'count', s.count + ' 件')); sb.appendChild(head);
+  const pt = el('div', 'pattern'); pt.appendChild(document.createTextNode('git grep ')); pt.appendChild(el('code', 'ic', s.pattern));
+  pt.appendChild(document.createTextNode('　' + s.repos.length + ' つのリポジトリ')); sb.appendChild(pt);
+  s.repos.forEach(r => {
+    const hits = s.hits.filter(h => h.repo === r), rd = el('div', 'r'), rh = el('div');
+    rh.appendChild(el('span', 'repo', r)); rh.appendChild(el('span', 'note', '　' + hits.length + ' 件')); rd.appendChild(rh);
+    const byFile = new Map(); hits.forEach(h => { if (!byFile.has(h.path)) byFile.set(h.path, []); byFile.get(h.path).push(h); });
+    byFile.forEach((hs, p) => {
+      const d = el('details'); d.appendChild(el('summary', '', p + ':' + hs.map(h => h.line).join(', ')));
+      d.appendChild(codeLines(p, hs.map(h => [h.line, h.text, true])));
+      hs.filter(h => h.note).forEach(h => d.appendChild(rich('div', 'when', h.line + ' 行目: ' + h.note)));
+      rd.appendChild(d);
+    });
+    sb.appendChild(rd);
+  });
+  return sb;
+}
+
+// 根拠のページ。最初に見えるのは「主張・効くところ・確かめ方の要約・調べ方」だけ。範囲・確認の理由・コード・検索は開いたときだけ
+function fold(title, meta, body, open) {
+  const d = el('details', 'fold-sec'); if (open) d.open = true;
+  const sm = el('summary'); sm.appendChild(el('span', '', title)); if (meta) sm.appendChild(el('span', 'meta', meta));
+  d.appendChild(sm); d.appendChild(body); return d;
+}
+
+
+
+function factPanel(f) {
+  const box = el('div', 'fpanel');
+  const st = factState(f);
+  box.appendChild(el('div', 'fid', 'Fact ' + f.id.replace(/^F/, '')));
+  box.appendChild(rich('div', 'fclaim', f.claim));
+  const [, title] = BASIS[f.verdict] || BASIS[''];
+  const chips = el('div', 'chips'); chips.appendChild(el('span', 'chip-s ' + (st === 'doc' ? 'wait' : st === 'ok' ? 'ok' : 'ng'), MARK[st] + ' ' + title));
+  if (f.absence && st !== 'doc') chips.appendChild(el('span', 'chip-s ' + (f.searches.length ? 'ok' : 'wait'),
+    f.searches.length ? '無いこと: ' + [...new Set(f.searches.flatMap(x => x.repos))].length + ' つのリポジトリを検索' : '無いこと: 読んだ範囲だけ'));
+  box.appendChild(chips);
+  if (f.verdict_reason && f.verdict !== '資料のみ') {
+    const ai = el('div', 'how'); ai.appendChild(el('div', 'at', 'AI が確認したこと')); ai.appendChild(rich('div', '', f.verdict_reason)); box.appendChild(ai);
+  }
+  const how = el('div', 'how'); how.appendChild(el('div', 'at', '調べ方')); how.appendChild(rich('div', '', f.method)); box.appendChild(how);
+
+  if (f.sources.length) {
+    const d = el('div', 'how'); d.appendChild(el('div', 'at', '資料'));
+    f.sources.forEach(s => { const a = el('a', '', s.label); a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; d.appendChild(a); });
+    box.appendChild(d);
+  }
+
+  const repos = [...new Set([...f.scope, ...f.code.map(x => x.repo), ...f.searches.flatMap(x => x.repos)])];
+  if (repos.length) box.appendChild(fold('範囲', repos.length + ' つのリポジトリ', scopeList(f)));
+  if (f.code.length) {
+    const steps = el('ol', 'steps');
+    f.code.forEach((cb, i) => {
+      const st = el('li', 'step'); st.appendChild(el('span', 'num', i + 1));
+      if (cb.label) st.appendChild(rich('div', 'label', cb.label));
+      st.appendChild(codeBox(cb.repo, cb.path, cb.lines, cb.start === cb.end ? 'L' + cb.start : 'L' + cb.start + '–' + cb.end));
+      steps.appendChild(st);
+    });
+    box.appendChild(fold('コード', f.code.length + ' か所　' + f.code.map(x => x.label.split(':')[0]).join(' / '), steps));
+  }
+  if (f.searches.length) {
+    const sb = el('div'); f.searches.forEach(s => sb.appendChild(renderSearch(s)));
+    box.appendChild(fold('検索', f.searches.map(s => s.what + ' ' + s.count + ' 件').join(' / '), sb));
+  }
+  return box;
+}
+
+function withRefs(tag, cls, text, grounds) {
+  const e = rich(tag, cls, text);
+  (grounds || []).forEach(g => e.appendChild(ref(g)));
+  return e;
+}
+
+// 評価の文。[F1] はその直前の節の根拠。focus を渡すと、その根拠が支える節だけを光らせる
+const REF = /\[(F\d+)\]/g;
+function evalText(tag, cls, text, grounds, focus) {
+  const s = String(text || '');
+  if (!REF.test(s)) return withRefs(tag, cls, s, grounds);
+  const e = el(tag, cls); let last = 0, m; REF.lastIndex = 0;
+  const seg = (t, on) => {
+    // 前の節から続く「が、」「。」などのつなぎは光らせない
+    const lead = (t.match(/^.{0,4}?[、。]\s*/) || [''])[0];
+    if (lead) e.appendChild(rich('span', focus ? 'hl-off' : '', lead));
+    e.appendChild(rich('span', focus ? (on ? 'hl-on' : 'hl-off') : '', t.slice(lead.length)));
+  };
+  while ((m = REF.exec(s))) {
+    seg(s.slice(last, m.index), m[1] === focus);
+    e.appendChild(ref(m[1]));
+    last = REF.lastIndex;
+  }
+  if (last < s.length) seg(s.slice(last), false);
+  return e;
+}
+
+// 1枚目: 話すための全体。大見出しは決めること。案は料金表のように、列が案・行が軸で、マスは短い一言
+function renderOverview(box) {
+  box.appendChild(rich('h2', 'title-q', D.question));
+  box.appendChild(el('h3', 'sec', '背景'));
+  const bg = el('ul', 'plain'); D.background.forEach(b => bg.appendChild(rich('li', '', b))); box.appendChild(bg);
+  box.appendChild(el('h3', 'sec', '決めること'));
+  const dq = el('ul', 'plain');
+  [D.question, ...[].concat(D.question_then || [])].forEach(q => dq.appendChild(rich('li', '', q)));
+  box.appendChild(dq);
+
+  box.appendChild(el('h3', 'sec', '案'));
+  // 料金表のプランのように、案ごとのカードを横に並べる。軸ごとに一言（short）と全文
+  const plans = el('div', 'plans'); plans.style.setProperty('--rows', D.axes.length + 2);
+  D.options.forEach(o => {
+    const card = el('div', 'plan');
+    const h = el('div', 'plan-h'); h.appendChild(el('span', 'id', o.id)); h.appendChild(rich('span', 'name', o.label));
+    const ids = [...new Set(D.axes.flatMap(a => { const c = (o.eval || {})[a.id] || {}; return [...(String(c.text || '').match(/F\d+(?=\])/g) || []), ...(c.grounds || [])]; }))];
+    const cnt = {}; ids.forEach(g => { const st = factState(D.facts[g]); cnt[st] = (cnt[st] || 0) + 1; });
+    const tally = el('div', 'tally'); ['ok', 'doc', 'wait'].forEach(k => { if (cnt[k]) tally.appendChild(el('span', 'ref ' + k, MARK[k] + cnt[k])); });
+    if (!ids.length) tally.appendChild(el('span', 'none', '根拠なし'));
+    h.appendChild(tally);
+    card.appendChild(h);
+    card.appendChild(rich('div', 'plan-note', o.note || ''));  // 行を揃えるため、補足が無くても空の行を置く
+    D.axes.forEach(a => {
+      const c = (o.eval || {})[a.id] || {}, row = el('div', 'plan-row host'); row.dataset.place = '案 ' + o.id + '・' + a.label;
+      row.appendChild(el('div', 'axis', a.label));
+      if (c.short) row.appendChild(rich('div', 'short', c.short));
+      row.appendChild(evalText('div', 'text', c.text || '—', c.grounds));
+      card.appendChild(row);
+    });
+    plans.appendChild(card);
+  });
+  box.appendChild(plans);
+  box.appendChild(el('div', 'hint-s', '番号を押すと、右に裏付けが開く。✓ は AI が確認済み、資 は資料のみ、△ は確認が足りない。案の名前の下の数は、その案の根拠の内訳'));
+
+  (D.ifs || []).forEach(cond => {
+    box.appendChild(el('h3', 'sec', cond.option + ' を選んだ場合'));
+    const cols = el('div', 'cols');
+    [['estimate', '見積に入るもの'], ['ask', '先方に聞くこと']].forEach(([k, name]) => {
+      const c = el('div', 'card'); c.appendChild(el('h4', '', name)); const ul = el('ul');
+      (cond[k] || []).forEach((x, i) => {
+        const li = withRefs('li', 'host', x.label + ' ', x.grounds); li.dataset.place = cond.option + ' を選んだら' + (k === 'estimate' ? '作るもの' : '聞くこと') + '「' + x.label + '」';
+        if (x.why) li.appendChild(rich('div', 'why', x.why.replace(/ので$/, '')));
+        if (x.note && !(x.grounds || []).length) li.appendChild(rich('div', 'why', x.note));
+        if (x.when) li.appendChild(rich('div', 'when', '条件つき: ' + x.when));
+        ul.appendChild(li);
+      });
+      c.appendChild(ul); cols.appendChild(c);
+    });
+    box.appendChild(cols);
+  });
+}
+
+
+// 文中で、その事実が支える節（[F1] の直前）
+
+// 疑う単位のページ: その文 → 支える事実を順に
+
+
+
+document.getElementById('title').textContent = D.title;
+renderOverview(document.getElementById('stop'));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') openFact(null); });
+</script>
+</body>
+</html>

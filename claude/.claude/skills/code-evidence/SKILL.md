@@ -1,0 +1,60 @@
+---
+name: code-evidence
+description: 「今のコードは実際どう動くか」を、主張・調べ方・根拠の組にして evidence.json に残し、別の AI の確認まで済ませて返す。根拠は各リポジトリのコミットを固定して git から読み、抜き出しと検索の件数をスクリプトで照合する。確認の後に中身が変わると確認は自動で無効になるので、返すものは常に確認済み。requirements-map の判断の根拠を集めるとき、コードレビューや障害・仕様の調査で今の挙動を確かめるときに使う。「根拠を集めて」「今の挙動を調べて」「As-Is を出して」「コードで裏取りして」「code-evidence」といった依頼で使う。
+---
+
+# code-evidence
+
+狙い: 判断の根拠になる事実を、人が「どう調べたか」を見れば足りるかを判断でき、疑ったときだけコードを開けばよい形で残す。調べた本人の思い込みが残らないよう、確認は毎回、文脈を持たない別の AI にさせる。
+
+## 受け取るもの
+
+確かめたい問いの一覧。requirements-map から来るときは、案や見積の項目ごとに「これが言えるか」が渡される。問いの無い網羅的な洗い出しはしない。
+
+## evidence.json
+
+形は `scripts/evidence.py` の冒頭が正本。1つの事実は次の組。
+
+| 項目 | 書くこと |
+|---|---|
+| claim | 主張を1文。コードを読めない人にもわかる言葉で。良し悪しや提案は書かない |
+| method | 調べ方。「起点 → 何で探したか → どこまでたどったか」の順。リポジトリの数は「N つのリポジトリ」と書く。人はまずここを読む |
+| scope | 見たリポジトリ。method と合わせて「範囲が足りているか」を判断する材料 |
+| evidence | 根拠のコード。`label`、`repo` `path` `lines`、その中の要の行 `snippet` |
+| searches | 「どこにも無い」と言うときの検索。`what` `repos` `pattern`（git grep -P）`count`、任意で `pathspec` と `notes` |
+| sources | コードではない根拠（資料・議事録の URL） |
+| verdict / verdict_reason / verified_hash | 確認の結果。手で書かず、`--record` で書き込む |
+
+- repos の commit は、ふつうは各リポジトリの origin/main。作業中のブランチは使わない
+- evidence は役割ごとに分ける（送る API・受け取る API・処理の本体など）。lines はメソッドやブロック1つ分、snippet はその中の要の行。ページでは snippet の行が光り、長いコードは要の行の前後だけが出る
+- label は「何のコードか: 何をしているか」。コードを読めない人が見出しだけで根拠の意味をつかめるように書く
+- 「だけ」「しか」「無い」「しない」「できない」「見ない」を含む claim は、無いことの主張として扱われる。ページにバッジが付き、searches があれば「✓ 無いこと: N つのリポジトリを検索」、無ければ「△ 無いこと: 読んだ範囲だけ（検索なし）」と出る。範囲が広い主張は searches を付ける
+- 「どこにも無い」は、名前そのものの検索を searches に入れ、範囲は関係するリポジトリを全部にする。Rails で「列に書き込む経路が無い」と言うときは、名前の検索に見えない書き方（`permit!`、`to_unsafe_h`、`permit(*配列)`、`update_all`、`update_columns`、生の SQL、`assign_attributes`、`send`、管理画面の gem）も潰す
+- 検索に関係ないヒットが混ざるときは、count は実際の件数のままにし、`notes` に `"repo:path:line": "関係ない理由"` を書く。ページでヒットの下に出る
+- コードの根拠が無く、資料だけが根拠の事実は、evidence と searches を書かず、sources だけにする。確認の AI は `資料のみ` と返し、ページには「根拠: 資料」と出る
+
+## 手順
+
+1. 問いごとに、起点を決めて読む。読んで確かめたことだけを事実にする
+2. 照合する。NG が0になるまで直す
+   ```
+   python3 ~/.claude/skills/code-evidence/scripts/evidence.py <evidence.json>
+   ```
+3. 確認する。毎回、新しい別のエージェント（Agent ツール、subagent_type: Explore）を立てる。前に確認させたエージェントに SendMessage で再判定させない。渡すのは evidence.json のパスと、次の指示だけ:
+   - repos のコミットから git で読む。作業ツリーは読まない
+   - 各事実について、claim がそのとおりに言えるか、各 evidence の label がそのコードに合っているか、method と scope で足りているかを厳しく見る
+   - `支持` / `一部` / `不支持` と、結論を1文の理由で返す。理由にファイル名や行番号は書かない（一部・不支持の反証を除く）。資料だけの事実は `資料のみ`
+   - `{"F1": {"verdict": "...", "reason": "..."}}` の JSON だけを返す
+4. 返ってきた JSON をファイルに保存して書き込む。書き込むときに中身のハッシュが記録される
+   ```
+   python3 ~/.claude/skills/code-evidence/scripts/evidence.py <evidence.json> --record <結果.json>
+   ```
+5. `一部` と `不支持` の事実は、主張か調べ方を直す。直すと、その事実の確認は自動で「まだ」に戻るので、手順2に戻り、直した事実だけを新しいエージェントに確認させる
+6. `--strict` で NG が0になったら返す
+   ```
+   python3 ~/.claude/skills/code-evidence/scripts/evidence.py <evidence.json> --strict
+   ```
+
+## 置き場所
+
+呼ぶ側が決める。指定がなければ、作業中のリポジトリの `docs/plans/<題>/evidence.json`。
