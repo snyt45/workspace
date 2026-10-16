@@ -1,5 +1,5 @@
 return {
-	"sindrets/diffview.nvim",
+	"dlyongemallo/diffview-plus.nvim",
 	cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory", "DiffviewToggleFiles", "DiffviewRefresh" },
 	keys = {
 		{ "<leader>gg", function() require("features.review").code_diff() end, desc = "[Diffview] 全差分 (レビューモード時はbase...HEAD)" },

@@ -14,7 +14,7 @@
 | エディタ(CLI) | Neovim |
 | エディタ(GUI) | VSCode |
 | Git UI (TUI) | lazygit / lazydocker |
-| PRレビュー | diffview.nvim + gitsigns |
+| PRレビュー | diffview-plus.nvim + gitsigns |
 | AIコーディング | Claude Code (`cx`) |
 | シェル | zsh + pure |
 | 検索 | fzf, ripgrep, fd |
