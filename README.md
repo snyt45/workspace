@@ -15,7 +15,6 @@
 | エディタ(GUI) | VSCode |
 | Git UI (TUI) | lazygit / lazydocker |
 | PRレビュー | diffview.nvim + gitsigns |
-| 差分ビューア(TUI) | hunk |
 | AIコーディング | Claude Code (`cx`) |
 | シェル | zsh + pure |
 | 検索 | fzf, ripgrep, fd |

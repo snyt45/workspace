@@ -1,5 +1,2 @@
-git:
-  diffRenderers:
-    - command: hunk pager --mode split
 os:
   editPreset: "nvim"

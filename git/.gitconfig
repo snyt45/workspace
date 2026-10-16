@@ -3,7 +3,6 @@
         email = snyt45@gmail.com
 [core]
         editor = nvim
-        pager = hunk pager
 [column]
         ui = auto
 [branch]

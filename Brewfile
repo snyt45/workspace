@@ -1,6 +1,5 @@
 # タップ
 tap "k1LoW/tap"
-tap "modem-dev/tap"
 tap "satococoa/tap"
 
 # CLI ツール
@@ -9,7 +8,6 @@ brew "fzf"
 brew "gh"
 brew "herdr"
 brew "imagemagick"
-brew "modem-dev/tap/hunk"
 brew "tuicr"
 brew "lazydocker"
 brew "lazygit"
