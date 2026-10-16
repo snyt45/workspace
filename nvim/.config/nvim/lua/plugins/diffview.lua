@@ -7,6 +7,22 @@ return {
 		{ "<leader>gh", "<cmd>DiffviewFileHistory<cr>", desc = "[Diffview] 履歴" },
 	},
 	opts = {
+		view = {
+			-- 1画面unified で開き、g<C-x> で左右2画面と切り替える
+			default = { layout = "diff1_inline" },
+			file_history = { layout = "diff1_inline" },
+			cycle_layouts = {
+				default = { "diff1_inline", "diff2_horizontal" },
+			},
+			-- 新規・削除ファイルは空ペインを出さず1画面で表示する
+			one_sided_layout = "raw",
+			-- unified で変更のない部分を折りたたむ（zo / zR で開く）
+			inline = { fold_unchanged = true },
+			-- 差分ウィンドウでの定義ジャンプなどでレイアウトが崩れる代わりにエラーで止める
+			winfixbuf = true,
+		},
+		-- w で選んだファイルと H で隠した状態を再起動後も残す
+		persist_selections = { enabled = true },
 		keymaps = {
 			view = {
 				{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close Diffview" } },
