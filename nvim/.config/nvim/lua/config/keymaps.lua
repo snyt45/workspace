@@ -76,3 +76,4 @@ end, { desc = "[General] ファイルパス+コードコピー" })
 
 -- コールフロー: 入口からカーソル下の関数までの呼び出しの道筋
 map("n", "<leader>ci", function() require("features.callflow").callers() end, { desc = "[Callflow] 呼び出し元" })
+map("n", "<leader>cu", function() require("features.callflow").reopen() end, { desc = "[Callflow] 直前の呼び出しの流れを開き直す" })

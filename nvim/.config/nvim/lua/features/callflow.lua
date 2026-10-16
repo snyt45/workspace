@@ -2,12 +2,14 @@
 -- 呼び出し元を裏でさかのぼって入口までの道筋を全部集め、ピッカーで絞り込む（右に木のプレビュー）
 -- 呼び出し元は LSP の call hierarchy（TS など）、無ければ cymbal（名前で探す。Ruby など）で調べる
 --
+-- 道筋が少なければ全部まとめた木を開き、多ければ先にピッカーで絞り込む（右に木のプレビュー）
 -- ピッカー: <CR> 選んだ道筋を木で開く / <C-t> 絞り込んだ道筋を全部まとめた木で開く
--- 木: <CR> その場所へ / zc・zo で畳む・開く / q で閉じる
+-- 木: <CR> その場所へ / zc・zo で畳む・開く / q で閉じる。M.reopen で直前の木を開き直す
 local M = {}
 
 local MAX_DEPTH = 8 -- さかのぼる段数
 local MAX_PATHS = 300 -- 道筋の数の上限
+local PICK_OVER = 30 -- 道筋がこれより多いときだけ、先にピッカーで絞り込む
 
 -- 一番上で止まった理由。入口（呼び出し元が無い）なら付けない
 local STOP_LABEL = {
@@ -82,13 +84,17 @@ local function names_of(path)
 end
 
 -- 名前だけでは Hash#merge のような別物も拾うので、定義しているクラスへの呼び出しらしいものだけ残す
---   同じファイル内（self への呼び出し） / User.merge / user.merge・current_user.merge・@user.merge
+--   同じファイル内で受け手なし・self.merge（self への呼び出し） / User.merge / user.merge・current_user.merge・@user.merge
 local function likely_call(row, name, def_path)
+	local text = row.context and row.context[1] or ""
 	if row.file == def_path then
-		return true
+		local pat = vim.pesc(name) .. "%f[^%w_?!]"
+		-- 行頭か、. 以外の文字のあとに名前があれば受け手なしの呼び出し
+		if text:find("^%s*" .. pat) or text:find("[^%.%w_@]" .. pat) or text:find("self%." .. pat) then
+			return true
+		end
 	end
 	local const, snake = names_of(def_path)
-	local text = row.context and row.context[1] or ""
 	if text:find(const .. "." .. name, 1, true) then
 		return true
 	end
@@ -256,7 +262,10 @@ function M.foldexpr(lnum)
 	return next > this and ">" .. (this + 1) or tostring(this)
 end
 
-local function show(state, chains, title)
+local last -- 直前に開いた木（開き直す用）
+
+local function show(state, chains, title, cursor)
+	last = { state = state, chains = chains, title = title, cursor = cursor or 1 }
 	local lines, extmarks, nodes, levels = build_tree(state, chains)
 	local win = Snacks.win({
 		text = lines,
@@ -275,7 +284,10 @@ local function show(state, chains, title)
 		keys = {
 			q = "close",
 			["<CR>"] = function(self)
-				local n = nodes[vim.api.nvim_win_get_cursor(0)[1]]
+				local row = vim.api.nvim_win_get_cursor(0)[1]
+				local n = nodes[row]
+				-- 開き直したとき同じ行に戻れるよう覚えておく
+				last.cursor = row
 				self:close()
 				vim.cmd.edit(vim.fn.fnameescape(n.path))
 				vim.api.nvim_win_set_cursor(0, { n.lnum, 0 })
@@ -291,6 +303,14 @@ local function show(state, chains, title)
 	for _, e in ipairs(extmarks) do
 		vim.api.nvim_buf_set_extmark(win.buf, ns, e.row - 1, e.col, { end_col = e.end_col, hl_group = e.hl_group })
 	end
+	vim.api.nvim_win_set_cursor(win.win, { math.min(last.cursor, #lines), 0 })
+end
+
+function M.reopen()
+	if not last then
+		return vim.notify("まだ呼び出しの流れを開いていない", vim.log.levels.INFO)
+	end
+	show(last.state, last.chains, last.title, last.cursor)
 end
 
 local function pick(state, start)
@@ -298,6 +318,10 @@ local function pick(state, start)
 	collect(state, start, function(paths, truncated)
 		if #paths == 1 and #paths[1] == 1 and not paths[1][1].stop then
 			return vim.notify(("%s の呼び出し元は見つからない"):format(start.name), vim.log.levels.INFO)
+		end
+		local title = ("%s への道筋 %d 本%s"):format(start.name, #paths, truncated and "（上限で打ち切り）" or "")
+		if #paths <= PICK_OVER then
+			return show(state, paths, " " .. title .. " ")
 		end
 		local items = {}
 		for i, chain in ipairs(paths) do
@@ -313,7 +337,7 @@ local function pick(state, start)
 			}
 		end
 		Snacks.picker.pick({
-			title = ("%s への道筋 %d 本%s"):format(start.name, #paths, truncated and "（上限で打ち切り）" or ""),
+			title = title,
 			items = items,
 			format = "text",
 			preview = "preview",
@@ -337,6 +361,27 @@ local function pick(state, start)
 	end)
 end
 
+-- cymbal で調べるときの起点。カーソルが定義ではなく呼び出し（user.merge）の上なら、
+-- 受け手の名前（user / current_user / @user）から呼ばれる側の定義（user.rb の merge）を起点にする
+local function start_node(state, buf, word, line)
+	local path, lnum = vim.api.nvim_buf_get_name(buf), vim.fn.line(".")
+	if line:match("^%s*def%s+[%w_.]*" .. vim.pesc(word) .. "%f[^%w_?!]") then
+		return { name = word, path = path, lnum = lnum, def_path = path }
+	end
+	local res = vim.system({ "cymbal", "search", "--json", "--exact", "--limit", "50", word }, { cwd = state.root, text = true }):wait()
+	local ok, data = pcall(vim.json.decode, res.stdout or "")
+	local defs = ok and data.results or {}
+	local recv = line:match("([@%w_]+)%." .. vim.pesc(word) .. "%f[^%w_?!]")
+	recv = recv and recv:gsub("^@+", "")
+	for _, d in ipairs(defs) do
+		local snake = vim.fn.fnamemodify(d.file, ":t:r")
+		if #defs == 1 or (recv and (recv == snake or recv:sub(-#snake - 1) == "_" .. snake)) then
+			return { name = word, path = d.file, lnum = d.start_line, def_path = d.file }
+		end
+	end
+	return { name = word, path = path, lnum = lnum, def_path = path }
+end
+
 function M.callers()
 	local buf = vim.api.nvim_get_current_buf()
 	local word = vim.fn.expand("<cword>")
@@ -352,8 +397,7 @@ function M.callers()
 		local line, col = vim.api.nvim_get_current_line(), vim.fn.col(".")
 		local tail = line:sub(col):match("^[%w_]*([?!])")
 		word = word .. (tail or "")
-		local path = vim.api.nvim_buf_get_name(buf)
-		return pick(state, { name = word, path = path, lnum = vim.fn.line("."), def_path = path })
+		return pick(state, start_node(state, buf, word, line))
 	end
 	local params = vim.lsp.util.make_position_params(0, state.client.offset_encoding)
 	state.client:request("textDocument/prepareCallHierarchy", params, function(_, result)
