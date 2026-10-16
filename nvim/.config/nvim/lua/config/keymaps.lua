@@ -74,3 +74,5 @@ map("v", "<leader>cc", function()
 	vim.notify("Copied: @" .. path .. " with selected text", vim.log.levels.INFO)
 end, { desc = "[General] ファイルパス+コードコピー" })
 
+-- コールフロー: 入口からカーソル下の関数までの呼び出しの道筋
+map("n", "<leader>ci", function() require("features.callflow").callers() end, { desc = "[Callflow] 呼び出し元" })

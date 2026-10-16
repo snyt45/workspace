@@ -3,6 +3,7 @@ tap "k1LoW/tap"
 tap "satococoa/tap"
 
 # CLI ツール
+brew "cymbal"
 brew "fd"
 brew "fzf"
 brew "gh"
