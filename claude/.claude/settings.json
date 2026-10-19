@@ -144,16 +144,6 @@
             "timeout": 10
           }
         ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"/Users/snyt45/Library/Mobile Documents/iCloud~md~obsidian/Documents/my-vault/AIOS/scripts/judge.py\" --skill vault rules",
-            "timeout": 10
-          }
-        ]
       }
     ],
     "PreToolUse": [
