@@ -34,3 +34,7 @@ rename_tab = "prefix+comma"
 
 next_agent = "prefix+a"
 previous_agent = "prefix+shift+a"
+
+[advanced]
+# ペインごとの履歴の上限（既定 10MB ≒ Rails のログで数万行）。数万行のログでも途切れないよう 100MB にする
+scrollback_limit_bytes = 100000000

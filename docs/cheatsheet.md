@@ -109,6 +109,14 @@ tmuxに合わせて変更したキー:
 | `Prefix - g` | goto（ペイン選択オーバーレイ。`hjkl`=ペイン、`↑↓`=workspace、`1-9`=タブ） |
 | `Prefix - r` | リサイズモード（`hjkl` で境界移動、`Esc` で抜ける） |
 
+ペインの履歴（Ghostty の検索は herdr が描いている画面しか見えない。履歴の上限は config.toml の `scrollback_limit_bytes` で 100MB にしている）:
+
+| キー/コマンド | 説明 |
+|---------------|------|
+| `Prefix - e` | 履歴を丸ごと nvim で開く。`/` で検索、`:g/word/` で一致行だけ並べる |
+| `Prefix - [` | コピーモード。`?` / `/` で上 / 下へ検索、`n` / `N` で次 / 前、`v` で選択、`y` でコピー、`q` で抜ける |
+| `herdr pane read <id> --source recent-unwrapped --lines N` | 履歴を標準出力に出す（grep 用）。`<id>` は `herdr pane list` で確認 |
+
 セッション全体の終了（キーなし・コマンドで行う）:
 
 | コマンド | 説明 |
