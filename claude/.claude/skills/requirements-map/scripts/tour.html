@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>__TITLE__</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
 <style>
 :root {
   --bg: #f7f7f5; --panel: #ffffff; --text: #1d1d1b; --muted: #6b6b66; --line: #e3e2dd;
@@ -35,21 +37,9 @@
 body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.75 -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
 header { padding: 12px 24px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 16px; background: var(--panel); position: sticky; top: 0; z-index: 2; }
 header h1 { font-size: 15px; margin: 0; flex: 1; }
-.nav { display: flex; align-items: center; gap: 8px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.nav button { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 6px; padding: 2px 12px; font-size: 16px; cursor: pointer; }
 main { padding: 20px 24px; max-width: 1120px; margin: 0 auto; }
-@media (max-width: 860px) { main { grid-template-columns: 1fr; padding: 16px; } header { padding: 10px 16px; } .tree { position: static !important; } }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; padding: 16px; } header { padding: 10px 16px; } }
 
-/* 判断の木 */
-.tree { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; align-self: start; position: sticky; top: 64px; }
-.tree ul { list-style: none; margin: 0; padding-left: 14px; border-left: 1px solid var(--line); }
-.tree > ul { padding-left: 0; border-left: 0; }
-.tree li { margin: 3px 0; }
-.tree .group { color: var(--muted); font-size: 12px; margin-top: 8px; }
-.node { display: block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 1px 8px; border-radius: 6px; cursor: pointer; font-size: 13.5px; }
-.node:hover { background: var(--accent-soft); }
-.node.on { background: var(--accent); color: var(--panel); }
-.node .tag { font-weight: 700; margin-right: 4px; }
 
 /* 停留所 */
 .stop { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 22px 26px; min-width: 0; }
@@ -76,13 +66,9 @@ code.ic { font-family: var(--mono); font-size: 0.86em; background: var(--ic-bg);
 .ref:hover { border-color: var(--accent); color: var(--accent); }
 .then { color: var(--muted); margin-top: -2px; }
 .context { margin-bottom: 12px; }
-.hl-on { background: var(--hl); box-shadow: inset 0 -2px 0 var(--hl-bar); color: var(--text); }
-.hl-off { color: var(--muted); }
 dl.gate { margin: 14px 0; }
 .so { font-size: 12.5px; font-weight: 700; color: var(--accent); margin-top: 18px; }
 .context .quote { color: var(--muted); border-left: 3px solid var(--line); padding: 1px 0 1px 12px; margin: 4px 0; }
-.effects { margin: 20px 0 4px; border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; }
-.effects .title { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
 .effect { margin: 4px 0; }
 .effect .at { font-size: 12px; color: var(--muted); }
 .when { font-size: 12px; color: var(--warn); margin-top: 2px; }
@@ -162,13 +148,6 @@ h3.sec { font-size: 17px; font-weight: 800; color: var(--text); margin: 30px 0 1
 .goto { cursor: pointer; }
 .plan-row.goto:hover, li.goto:hover { background: var(--accent-soft); }
 .lead { font-size: 15px; line-height: 1.7; margin: 6px 0 4px; }
-.clause { font-size: 13px; font-weight: 700; color: var(--accent); margin: 22px 0 6px; }
-.clause + .fact { margin-top: 0; border-top: 0; padding-top: 0; }
-.others { font-size: 12.5px; margin-top: 10px; }
-.others .at { color: var(--muted); }
-.others a { cursor: pointer; }
-.tree .group-o { font-weight: 700; margin-top: 6px; }
-.tree .group-o .tag { color: var(--accent); margin-right: 6px; }
 .ref { font: inherit; display: inline-flex; align-items: center; gap: 1px; height: 18px; padding: 0 6px; margin: 0 2px 0 3px; border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 1; vertical-align: 2px; cursor: pointer; border: 1px solid; background: transparent; }
 .ref.ok { color: var(--ok); border-color: var(--ok); } .ref.doc { color: var(--warn); border-color: var(--warn); } .ref.wait { color: var(--ng); border-color: var(--ng); }
 .ref.open { background: var(--accent-soft); }
@@ -220,6 +199,66 @@ h2.h { font-size: 13px; color: var(--muted); margin: 22px 0 4px; font-weight: 70
 .hljs-symbol, .hljs-variable, .hljs-template-variable { color: var(--sym); }
 .hljs-attr, .hljs-attribute, .hljs-params, .hljs-property { color: var(--attr); }
 .hljs-meta, .hljs-section { color: var(--t); font-weight: 600; }
+/* 今の仕組み */
+.asis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.el { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+.el-h { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; margin-bottom: 8px; }
+.el-h .name { font-family: var(--mono); font-size: 13px; background: var(--ic-bg); border-radius: 4px; padding: 0 6px; }
+.el-h .role { font-weight: 700; }
+.flow { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px; margin: 4px 0 8px; font-size: 12.5px; }
+.flow .node { display: inline-flex; flex-direction: column; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; background: var(--code-bg); cursor: default; white-space: normal; max-width: none; }
+.flow .node:hover { background: var(--code-bg); }
+.flow .no { color: var(--ng); font-size: 11.5px; }
+.flow .fstep { display: inline-flex; align-items: flex-start; gap: 4px; }
+.flow .arrow { color: var(--muted); padding-top: 2px; }
+.el .text { font-size: 14px; }
+.asis-link { font-size: 13px; margin-top: 8px; }
+.diagram { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--code-bg); overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+.diagram .box { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.diagram .gate { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.4; }
+.diagram .data { fill: var(--ic-bg); stroke: var(--muted); stroke-width: 1.2; }
+.diagram .t { fill: var(--text); font-size: 13px; font-weight: 700; }
+.diagram .s { fill: var(--muted); font-size: 11.5px; }
+.diagram .ng { fill: var(--ng); font-size: 11.5px; font-weight: 600; }
+.diagram .lane { fill: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .04em; }
+.diagram .ar { stroke: var(--muted); stroke-width: 1.4; fill: none; }
+.diagram .ar.feed { stroke-dasharray: 4 3; }
+.diagram .head { fill: var(--muted); }
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 6px 20px; margin-top: 12px; }
+.legend .lg { display: grid; grid-template-columns: 1.6em 1fr; gap: 0 4px; font-size: 14px; }
+.legend .mk { color: var(--accent); font-weight: 800; }
+.legend .hd { font-weight: 700; }
+.legend .hd .nm { font-family: var(--mono); font-size: 12.5px; background: var(--ic-bg); border-radius: 4px; padding: 0 5px; margin-right: 6px; font-weight: 400; }
+details.asis-detail { margin-top: 30px; border: 1px solid var(--line); border-radius: 10px; padding: 0 16px; }
+details.asis-detail > summary { cursor: pointer; padding: 12px 0; font-weight: 800; font-size: 16px; }
+.md { padding-bottom: 12px; overflow-x: auto; }
+.md h1 { font-size: 18px; } .md h2 { font-size: 16px; margin-top: 22px; } .md h3 { font-size: 14px; }
+.md table { border-collapse: collapse; font-size: 13.5px; margin: 8px 0; }
+.md th, .md td { border: 1px solid var(--line); padding: 4px 8px; text-align: left; vertical-align: top; }
+.md code { font-family: var(--mono); font-size: 12.5px; background: var(--ic-bg); border-radius: 4px; padding: 0 4px; }
+.md .mermaid { background: var(--code-bg); border-radius: 8px; padding: 8px; margin: 8px 0; }
+.tally.has { cursor: pointer; }
+.tally.has:hover .ref { border-color: var(--accent); }
+.flist { list-style: none; padding: 0; margin: 8px 0; }
+.flist li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.asis-link a { color: var(--accent); }
+.chg-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+table.chg { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.chg th, table.chg td { border-bottom: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+table.chg tr:last-child th, table.chg tr:last-child td { border-bottom: 0; }
+table.chg thead th { font-size: 13px; color: var(--muted); font-weight: 700; background: var(--code-bg); }
+table.chg tbody th { font-weight: 700; white-space: nowrap; }
+table.chg thead th + th, table.chg td { min-width: 9em; }
+table.chg td.same { color: var(--muted); }
+.units { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+@media (max-width: 640px) { .units { grid-template-columns: 1fr; } }
+.unit { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
+.unit .k { font-size: 12px; color: var(--muted); font-weight: 700; }
+.unit .v { font-weight: 700; }
+.unit.want { border-color: var(--accent); }
+table.chg td.gap-now { color: var(--text); }
+table.chg tr.host th { white-space: normal; min-width: 12em; }
 </style>
 </head>
 <body>
@@ -233,6 +272,7 @@ h2.h { font-size: 13px; color: var(--muted); margin: 22px 0 4px; font-weight: 70
 <script id="data" type="application/json">__DATA__</script>
 <script>
 const D = JSON.parse(document.getElementById('data').textContent);
+if (window.mermaid) mermaid.initialize({ startOnLoad: false });  // 畳んだ details の中で勝手に描かせない
 
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
@@ -247,10 +287,21 @@ const MARK = { ok: '✓', doc: '資', wait: '△' };
 
 // 文中の根拠の番号。押すと右のパネルにその事実を出す
 function ref(id) {
+  if (!D.facts[id]) return document.createTextNode(id);  // tour.py が拾わない欄の番号は押せない文字のまま
   const st = factState(D.facts[id]);
   const r = el('button', 'ref ' + st, MARK[st] + id.replace(/^F/, '')); r.type = 'button'; r.dataset.id = id;
   r.onclick = (ev) => { ev.stopPropagation(); openFact(id === openId ? null : id); };
   return r;
+}
+
+// 案の根拠の一覧。主張を並べ、番号を押すとその事実の詳細に移る
+function openList(ids, title) {
+  openFact('__list__');
+  const pane = document.getElementById('pane'), fp = pane.lastChild;
+  fp.replaceChildren(el('div', 'item', title));
+  const ul = el('ul', 'flist');
+  ids.forEach(g => { const li = el('li'); li.appendChild(ref(g)); li.appendChild(rich('span', '', ' ' + D.facts[g].claim)); ul.appendChild(li); });
+  fp.appendChild(ul);
 }
 
 let openId = null;
@@ -266,7 +317,7 @@ function openFact(id) {
   wide.onclick = () => { pane.classList.toggle('wide'); wide.textContent = pane.classList.contains('wide') ? '狭める' : '広げる'; };
   const close = el('button', 'pane-btn', '閉じる'); close.type = 'button'; close.onclick = () => openFact(null);
   bar.appendChild(wide); bar.appendChild(close); pane.appendChild(bar);
-  const fp = factPanel(D.facts[id]); pane.appendChild(fp);
+  const fp = id === '__list__' ? el('div') : factPanel(D.facts[id]); pane.appendChild(fp);
   // コードや検索を開いたら、読めるように広げる
   fp.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => {
     if (d.open && /コード|検索/.test(d.querySelector('summary').textContent) && !pane.classList.contains('wide')) { pane.classList.add('wide'); wide.textContent = '狭める'; }
@@ -449,24 +500,19 @@ function withRefs(tag, cls, text, grounds) {
   return e;
 }
 
-// 評価の文。[F1] はその直前の節の根拠。focus を渡すと、その根拠が支える節だけを光らせる
+// 評価の文。[F1] はその直前の節の根拠。番号だけを押せるボタンにし、本文は光らせない
 const REF = /\[(F\d+)\]/g;
-function evalText(tag, cls, text, grounds, focus) {
+function evalText(tag, cls, text, grounds) {
   const s = String(text || '');
   if (!REF.test(s)) return withRefs(tag, cls, s, grounds);
   const e = el(tag, cls); let last = 0, m; REF.lastIndex = 0;
-  const seg = (t, on) => {
-    // 前の節から続く「が、」「。」などのつなぎは光らせない
-    const lead = (t.match(/^.{0,4}?[、。]\s*/) || [''])[0];
-    if (lead) e.appendChild(rich('span', focus ? 'hl-off' : '', lead));
-    e.appendChild(rich('span', focus ? (on ? 'hl-on' : 'hl-off') : '', t.slice(lead.length)));
-  };
+  const seg = (t) => e.appendChild(rich('span', '', t));
   while ((m = REF.exec(s))) {
-    seg(s.slice(last, m.index), m[1] === focus);
+    seg(s.slice(last, m.index));
     e.appendChild(ref(m[1]));
     last = REF.lastIndex;
   }
-  if (last < s.length) seg(s.slice(last), false);
+  if (last < s.length) seg(s.slice(last));
   return e;
 }
 
@@ -480,16 +526,19 @@ function renderOverview(box) {
   [D.question, ...[].concat(D.question_then || [])].forEach(q => dq.appendChild(rich('li', '', q)));
   box.appendChild(dq);
 
+  renderAsis(box);
+
   box.appendChild(el('h3', 'sec', '案'));
   // 料金表のプランのように、案ごとのカードを横に並べる。軸ごとに一言（short）と全文
   const plans = el('div', 'plans'); plans.style.setProperty('--rows', D.axes.length + 2);
   D.options.forEach(o => {
     const card = el('div', 'plan');
     const h = el('div', 'plan-h'); h.appendChild(el('span', 'id', o.id)); h.appendChild(rich('span', 'name', o.label));
-    const ids = [...new Set(D.axes.flatMap(a => { const c = (o.eval || {})[a.id] || {}; return [...(String(c.text || '').match(/F\d+(?=\])/g) || []), ...(c.grounds || [])]; }))];
+    const ids = [...new Set([...(o.grounds || []), ...D.axes.flatMap(a => { const c = (o.eval || {})[a.id] || {}; return [...(String(c.text || '').match(/F\d+(?=\])/g) || []), ...(c.grounds || [])]; })])];
     const cnt = {}; ids.forEach(g => { const st = factState(D.facts[g]); cnt[st] = (cnt[st] || 0) + 1; });
     const tally = el('div', 'tally'); ['ok', 'doc', 'wait'].forEach(k => { if (cnt[k]) tally.appendChild(el('span', 'ref ' + k, MARK[k] + cnt[k])); });
     if (!ids.length) tally.appendChild(el('span', 'none', '根拠なし'));
+    else { tally.classList.add('has'); tally.title = 'この案の根拠を一覧で開く'; tally.onclick = (ev) => { ev.stopPropagation(); openList(ids, '案 ' + o.id + ' の根拠'); }; }
     h.appendChild(tally);
     card.appendChild(h);
     card.appendChild(rich('div', 'plan-note', o.note || ''));  // 行を揃えるため、補足が無くても空の行を置く
@@ -524,14 +573,132 @@ function renderOverview(box) {
 }
 
 
-// 文中で、その事実が支える節（[F1] の直前）
+// 今の仕組み（asis を呼んだ論点だけ）: 要素ごとに働きの1文と小さな流れ図。続けて、案が各要素をどう変えるかの表
+function renderAsis(box) {
+  const els = (D.asis || {}).elements || [];
+  if (!els.length) return;
+  box.appendChild(el('h3', 'sec', '今の仕組み'));
+  // 制御の単位を先に。同じ言葉（権限など）でも、今の仕組みと要望で決めている単位が違うことが多い
+  const gp = D.gaps || {};
+  if (gp.unit_now || gp.unit_want) {
+    const u = el('div', 'units');
+    [['now', '今の仕組みが決めること', gp.unit_now], ['want', '要望が決めたいこと', gp.unit_want]].forEach(([c, k, v]) => {
+      const b = el('div', 'unit ' + c); b.appendChild(el('div', 'k', k)); b.appendChild(rich('div', 'v', v || '—')); u.appendChild(b);
+    });
+    box.appendChild(u);
+  }
+  const MK = '①②③④⑤⑥⑦⑧⑨';
+  if (D.asis.diagram) {
+    // 構成図は decision.json の SVG。番号は要素の順と同じ
+    const dg = el('div', 'diagram'); dg.innerHTML = D.asis.diagram; box.appendChild(dg);
+    const lg = el('div', 'legend');
+    els.forEach((e, i) => {
+      const r = el('div', 'lg host'); r.dataset.place = '今の仕組み・' + e.name;
+      r.appendChild(el('span', 'mk', MK[i]));
+      const b = el('div'); const hd = el('div', 'hd'); hd.appendChild(el('span', 'nm', e.name)); hd.appendChild(rich('span', '', e.role));
+      b.appendChild(hd); b.appendChild(evalText('div', 'text', e.text, e.grounds)); r.appendChild(b); lg.appendChild(r);
+    });
+    box.appendChild(lg);
+  }
+  const grid = el('div', 'asis');
+  els.forEach(e => {
+    const c = el('div', 'el host'); c.dataset.place = '今の仕組み・' + e.name;
+    const h = el('div', 'el-h'); h.appendChild(el('span', 'name', e.name)); h.appendChild(rich('span', 'role', e.role)); c.appendChild(h);
+    if ((e.flow || []).length) {
+      const f = el('div', 'flow');
+      e.flow.forEach((n, i) => {
+        // 矢印は次の箱と一緒に折り返す
+        const st = el('span', 'fstep');
+        if (i) st.appendChild(el('span', 'arrow', '→'));
+        const nd = el('span', 'node'); nd.appendChild(rich('span', '', n.t));
+        if (n.no) nd.appendChild(el('span', 'no', '✕ ' + n.no));
+        st.appendChild(nd); f.appendChild(st);
+      });
+      c.appendChild(f);
+    }
+    c.appendChild(evalText('div', 'text', e.text, e.grounds));
+    grid.appendChild(c);
+  });
+  if (!D.asis.diagram) box.appendChild(grid);
+  if (D.asis_md) {
+    const l = el('div', 'asis-link'); l.appendChild(document.createTextNode('読み手の一覧と例外は、ページの最後の '));
+    const a = el('a', '', '今の仕組みの詳細'); a.href = '#asis-detail';
+    a.onclick = () => { document.getElementById('asis-detail').open = true; };
+    l.appendChild(a); box.appendChild(l);
+  }
 
-// 疑う単位のページ: その文 → 支える事実を順に
+  // 要望の操作ごとに、今どこにあって、止められるかを示す
+  if ((gp.rows || []).length) {
+    box.appendChild(el('h3', 'sec', '要望と今の仕組みのずれ'));
+    const w = el('div', 'chg-wrap'), t = el('table', 'chg');
+    const hr = el('tr'); ['要望の操作', 'その操作がある場所', '今止められるか'].forEach(h => hr.appendChild(el('th', '', h)));
+    const th = el('thead'); th.appendChild(hr); t.appendChild(th);
+    const tb = el('tbody');
+    gp.rows.forEach(r => {
+      const tr = el('tr', 'host'); tr.dataset.place = 'ずれ・' + r.want;
+      tr.appendChild(rich('th', '', r.want)); tr.appendChild(rich('td', '', r.where)); tr.appendChild(evalText('td', 'gap-now', r.now));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); w.appendChild(t); box.appendChild(w);
+  }
 
+  box.appendChild(el('h3', 'sec', '案が今の仕組みをどう変えるか'));
+  const wrap = el('div', 'chg-wrap'), t = el('table', 'chg');
+  const hr = el('tr'); hr.appendChild(el('th', '', '今の仕組み'));
+  D.options.forEach(o => hr.appendChild(rich('th', '', o.id + ' ' + o.label)));
+  const th = el('thead'); th.appendChild(hr); t.appendChild(th);
+  const tb = el('tbody');
+  els.forEach(e => {
+    const r = el('tr'); r.appendChild(el('th', '', e.name));
+    D.options.forEach(o => {
+      const v = ((D.changes || {})[e.id] || {})[o.id] || '—';
+      r.appendChild(evalText('td', v === 'そのまま' ? 'same' : '', v));
+    });
+    tb.appendChild(r);
+  });
+  t.appendChild(tb); wrap.appendChild(t); box.appendChild(wrap);
+}
 
+// この比較に入れていないこと。案を選んだあとに詰める論点を、忘れないように残す
+function renderOpen(box) {
+  if (!(D.open || []).length) return;
+  box.appendChild(el('h3', 'sec', '決めていないこと（この比較に入れていないもの）'));
+  const ul = el('ul', 'plain'); D.open.forEach(t => ul.appendChild(rich('li', '', t))); box.appendChild(ul);
+}
+
+// asis.md をページの最後に畳んで入れる。[F1] は押せる番号に、mermaid は図にする
+function renderAsisDetail(box) {
+  if (!D.asis_md) return;
+  const d = el('details', 'asis-detail'); d.id = 'asis-detail';
+  d.appendChild(el('summary', '', '今の仕組みの詳細（読み手の一覧と例外）'));
+  const md = el('div', 'md');
+  if (window.marked) {
+    md.innerHTML = marked.parse(D.asis_md);
+  } else {
+    md.appendChild(el('pre', '', D.asis_md));
+  }
+  md.querySelectorAll('pre > code.language-mermaid').forEach(c => { const m = el('div', 'mermaid'); m.textContent = c.textContent; c.parentNode.replaceWith(m); });
+  const walker = document.createTreeWalker(md, NodeFilter.SHOW_TEXT), nodes = [];
+  while (walker.nextNode()) if (/\[F\d+\]/.test(walker.currentNode.nodeValue) && !walker.currentNode.parentNode.closest('.mermaid')) nodes.push(walker.currentNode);
+  nodes.forEach(n => {
+    const frag = document.createDocumentFragment(); let last = 0, m; const re = /\[(F\d+)\]/g;
+    while ((m = re.exec(n.nodeValue))) { frag.appendChild(document.createTextNode(n.nodeValue.slice(last, m.index))); frag.appendChild(D.facts[m[1]] ? ref(m[1]) : document.createTextNode(m[0])); last = re.lastIndex; }
+    frag.appendChild(document.createTextNode(n.nodeValue.slice(last))); n.replaceWith(frag);
+  });
+  d.appendChild(md); box.appendChild(d);
+  let drawn = false;
+  d.addEventListener('toggle', () => {
+    if (!d.open || drawn || !window.mermaid) return; drawn = true;
+    const dark = document.documentElement.dataset.theme === 'dark' || (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
+    mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'default' });
+    mermaid.run({ nodes: md.querySelectorAll('.mermaid') });
+  });
+}
 
 document.getElementById('title').textContent = D.title;
 renderOverview(document.getElementById('stop'));
+renderOpen(document.getElementById('stop'));
+renderAsisDetail(document.getElementById('stop'));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') openFact(null); });
 </script>
 </body>

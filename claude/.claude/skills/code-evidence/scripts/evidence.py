@@ -38,7 +38,7 @@ evidence.json の形:
   - 根拠（evidence / searches / sources）が1つも無い事実は 未確認 として数える
   - verdict が決まった値であること
   - --strict のときは、status が 支持 / 資料のみ でない事実を NG にする
-無いことの主張（claim に だけ / しか / 無い / しない / できない / 見ない）で searches が無いものは、注意として出す（NG にはしない）
+無いことの主張（claim に だけ / しか / 無い / しない / できない / 見ない、文末や句読点の直前の ない）で searches が無いものは、注意として出す（NG にはしない）
 ほかのスクリプトからは load()、check()、status()、is_absence() を使う
 """
 import argparse, hashlib, json, os, re, subprocess, sys
