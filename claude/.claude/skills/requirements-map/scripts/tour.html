@@ -243,6 +243,14 @@ details.asis-detail > summary { cursor: pointer; padding: 12px 0; font-weight: 8
 .flist { list-style: none; padding: 0; margin: 8px 0; }
 .flist li { padding: 8px 0; border-bottom: 1px solid var(--line); }
 .asis-link a { color: var(--accent); }
+.ov-wrap { margin: 12px 0 16px; }
+.ov th.ax { white-space: nowrap; }
+.ov .st { display: inline-block; font-size: 12px; border-radius: 4px; padding: 0 6px; background: var(--ic-bg); white-space: nowrap; }
+.ov .st.legacy { color: var(--ng); }
+.ov .tc { font-weight: 700; white-space: nowrap; }
+.ov .tc.no { color: var(--muted); font-weight: 400; }
+.ov .sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.open-how { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: pre-wrap; margin: 2px 0 6px; padding: 6px 8px; background: var(--code-bg); border-radius: 6px; }
 .src-q { font-family: var(--mono); font-size: 12px; white-space: pre-wrap; background: var(--code-bg); border-radius: 6px; padding: 6px 8px; margin: 4px 0; }
 .src-meta { font-size: 12px; color: var(--muted); }
 .chg-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
@@ -595,6 +603,24 @@ function renderAsis(box) {
     });
     box.appendChild(u);
   }
+  // 全体像の表: 軸ごとに、答える問い・正本のデータ・読む場所・状態・To-Be で触るか。細部はこの表のどの行かで位置づける
+  const ov = D.asis.overview || [];
+  if (ov.length) {
+    const w = el('div', 'chg-wrap ov-wrap'), t = el('table', 'chg ov');
+    const hr = el('tr'); ['軸', '答える問い', '正本のデータ', '読む場所', '状態', 'To-Be'].forEach(h => hr.appendChild(el('th', '', h)));
+    const th = el('thead'); th.appendChild(hr); t.appendChild(th);
+    const tb = el('tbody');
+    ov.forEach((r, i) => {
+      const tr = el('tr', 'host'); tr.dataset.place = '全体像・' + r.axis;
+      tr.appendChild(el('th', 'ax', (i + 1) + ' ' + r.axis));
+      const q = el('td'); q.appendChild(rich('div', '', r.question)); if (r.text) q.appendChild(evalText('div', 'sub', r.text)); tr.appendChild(q);
+      tr.appendChild(rich('td', '', r.data)); tr.appendChild(rich('td', '', r.where));
+      const st = el('td'); st.appendChild(el('span', 'st' + (r.status === '現役' ? '' : ' legacy'), r.status)); tr.appendChild(st);
+      tr.appendChild(el('td', 'tc' + (r.touch === '触る' ? '' : ' no'), r.touch));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); w.appendChild(t); box.appendChild(w);
+  }
   const MK = '①②③④⑤⑥⑦⑧⑨';
   if (D.asis.diagram) {
     // 構成図は decision.json の SVG。番号は要素の順と同じ
@@ -671,7 +697,9 @@ function renderAsis(box) {
 function renderOpen(box) {
   if (!(D.open || []).length) return;
   box.appendChild(el('h3', 'sec', '決めていないこと（この比較に入れていないもの）'));
-  const ul = el('ul', 'plain'); D.open.forEach(t => ul.appendChild(rich('li', '', t))); box.appendChild(ul);
+  const ul = el('ul', 'plain');
+  D.open.forEach(x => { const li = rich('li', '', x.text); if (x.how) li.appendChild(el('div', 'open-how', x.how)); ul.appendChild(li); });
+  box.appendChild(ul);
 }
 
 // asis.md をページの最後に畳んで入れる。[F1] は押せる番号に、mermaid は図にする

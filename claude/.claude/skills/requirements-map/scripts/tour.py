@@ -6,9 +6,10 @@
 
 やること:
   1. decision.json を検査する（量の上限 LIMITS / CHARS、軸ごとの評価と short が全部の案にあるか、根拠の id が evidence.json にあるか、
-     根拠も note も無い項目が無いか、根拠があるのに why が無い項目が無いか、asis・ずれ・changes の欄の抜けと根拠、[F1] を書けない欄に書いていないか）。NG なら exit 1
+     根拠も note も無い項目が無いか、根拠があるのに why が無い項目が無いか、asis（overview・elements）・ずれ・changes の欄の抜けと根拠、
+     [F1] を書けない欄に書いていないか、open の how の字数）。NG なら exit 1
   2. evidence.json を code-evidence の evidence.py で照合する（--strict。確認が済んでいない事実があれば NG）。NG なら exit 1
-  3. 1枚のページを作る: 背景・決めること・（asis があれば）今の仕組みと要望とのずれ・案が今の仕組みをどう変えるか・案のカード・
+  3. 1枚のページを作る: 背景・決めること・（asis があれば）今の仕組み（制御の単位 → 全体像の表 → 構成図 → 要素）と要望とのずれ・案が今の仕組みをどう変えるか・案のカード・
      案ごとの見積と聞くこと・（asis があれば）最後に畳んだ asis.md。根拠は文中の番号で、押すと右のパネル（狭い画面では下のシート）に
      その事実（主張・確かめ方・AI の確認・コード・検索）が出る
   4. コードは各リポジトリの指定コミットから読み（evidence.py）、HTML に埋め込む。LLM の文は使わない
@@ -44,15 +45,28 @@ def option_grounds(o):
 
 
 # 人と話しながら使える量の上限。超えたら削るか、論点を分ける
-LIMITS = {"background": 3, "axes": 3, "options": 3, "estimate": 5, "ask": 4, "facts": 10, "elements": 6, "flow": 4, "gaps": 6, "open": 5}
+LIMITS = {"background": 3, "axes": 3, "options": 3, "estimate": 5, "ask": 4, "facts": 10, "overview": 8, "elements": 6, "flow": 4, "gaps": 6, "open": 5}
 CHARS = {"background": 70, "question": 40, "option": 30, "eval": 45, "short": 16, "item": 40, "why": 50,
          "role": 24, "asis": 60, "node": 18, "change": 20,
-         "unit": 30, "want": 30, "where": 24, "now": 45, "open": 60}
+         "unit": 30, "want": 30, "where": 60, "now": 45, "open": 60, "how": 200,
+         "ov_axis": 14, "ov_question": 36, "ov_data": 30, "ov_where": 50, "ov_status": 16, "ov_text": 60}
+OV_STATUS = {"現役", "遺物", "書けるが読まれない", "読まれるが書けない"}
+OV_TOUCH = {"触る", "触らない"}
 
 
 def elements(dec):
     """今の仕組みの要素。asis を呼んだ論点だけにある"""
     return (dec.get("asis") or {}).get("elements", [])
+
+
+def overview(dec):
+    """今の仕組みの全体像。軸ごとに1行"""
+    return (dec.get("asis") or {}).get("overview", [])
+
+
+def open_items(dec):
+    """決めていないこと。文字列か {text, how}"""
+    return [x if isinstance(x, dict) else {"text": str(x)} for x in (dec.get("open") or [])]
 
 
 def asis_md(dec, base):
@@ -80,7 +94,8 @@ def no_ref_fields(dec):
     gp = dec.get("gaps") or {}
     out += [("gaps の unit", gp.get(k, "")) for k in ("unit_now", "unit_want")]
     out += [(f"gaps の {k}", r.get(k, "")) for r in gp.get("rows", []) for k in ("want", "where")]
-    out += [("open", t) for t in (dec.get("open") or [])]
+    out += [("open", x.get("text", "")) for x in open_items(dec)] + [("open の how", x.get("how", "")) for x in open_items(dec)]
+    out += [(f"overview の {k}", r.get(k, "")) for r in overview(dec) for k in ("axis", "question", "data", "where", "status", "touch")]
     return [f"{where}「{str(t)[:15]}…」に [F1] は書けない（根拠は text / now / eval の文に）" for where, t in out if t and REF.search(str(t))]
 
 
@@ -149,10 +164,35 @@ def validate_asis(dec, facts):
             if not gs:
                 ng.append(f"gaps「{r.get('want', '?')[:15]}」: now に根拠 [F1] が無い")
             ng += [f"gaps「{r.get('want', '?')[:15]}」: 根拠 {g} が evidence.json に無い" for g in gs if g not in facts]
-    op = dec.get("open") or []
+    op = open_items(dec)
     if len(op) > LIMITS["open"]:
         ng.append(f"open（決めていないこと）が {len(op)} 個（{LIMITS['open']} 個まで）")
-    ng += [f"open「{str(t)[:15]}…」が {CHARS['open']} 字を超える" for t in op if len(str(t)) > CHARS["open"]]
+    for x in op:
+        if not x.get("text"):
+            ng.append("open の項目に text が無い")
+        elif len(x["text"]) > CHARS["open"]:
+            ng.append(f"open「{x['text'][:15]}…」が {CHARS['open']} 字を超える")
+        if len(x.get("how") or "") > CHARS["how"]:
+            ng.append(f"open「{x.get('text', '')[:15]}…」の how が {CHARS['how']} 字を超える")
+    ov = overview(dec)
+    if len(ov) > LIMITS["overview"]:
+        ng.append(f"asis.overview が {len(ov)} 行（{LIMITS['overview']} 行まで）。軸の切り方を見直す")
+    for r in ov:
+        nm = r.get("axis") or "?"
+        for k in ("axis", "question", "data", "where", "status", "touch"):
+            if not r.get(k):
+                ng.append(f"overview「{nm}」: {k} が無い")
+            elif k != "touch" and len(plain(str(r[k]))) > CHARS["ov_" + k]:
+                ng.append(f"overview「{nm}」の {k} が {CHARS['ov_' + k]} 字を超える")
+        if r.get("status") and r["status"] not in OV_STATUS:
+            ng.append(f"overview「{nm}」の status は {' / '.join(sorted(OV_STATUS))} のどれか")
+        if r.get("touch") and r["touch"] not in OV_TOUCH:
+            ng.append(f"overview「{nm}」の touch は 触る / 触らない のどちらか")
+        if len(plain(r.get("text") or "")) > CHARS["ov_text"]:
+            ng.append(f"overview「{nm}」の text が {CHARS['ov_text']} 字を超える")
+        ng += [f"overview「{nm}」: 根拠 {g} が evidence.json に無い" for g in REF.findall(r.get("text") or "") if g not in facts]
+    if ov and not els:
+        ng.append("asis.overview があるのに asis.elements が無い")
     dg = (dec.get("asis") or {}).get("diagram", "")
     if dg and not dg.lstrip().startswith("<svg"):
         ng.append("asis.diagram は <svg> で始める（インラインの SVG）")
@@ -249,6 +289,7 @@ def facts_used(dec, md=""):
     gs = [g for o in dec["options"] for g in option_grounds(o)]
     gs += [g for k in ("estimate", "ask") for x in cond_items(dec, k) for g in x.get("grounds", [])]
     gs += [g for e in elements(dec) for g in REF.findall(e.get("text", ""))]
+    gs += [g for r in overview(dec) for g in REF.findall(r.get("text", ""))]
     gs += [g for row in (dec.get("changes") or {}).values() for t in row.values() for g in REF.findall(t)]
     gs += [g for r in (dec.get("gaps") or {}).get("rows", []) for g in REF.findall(r.get("now", ""))]
     gs += REF.findall(md or "")
@@ -310,7 +351,7 @@ def main():
     payload = {"title": dec["title"], "background": dec["background"], "question": dec["question"],
                "question_then": dec.get("question_then", ""), "axes": dec["axes"],
                "options": dec["options"], "ifs": conds(dec),
-               "asis": dec.get("asis") or {}, "changes": dec.get("changes") or {}, "asis_md": md or "", "gaps": dec.get("gaps") or {}, "open": dec.get("open") or [],
+               "asis": dec.get("asis") or {}, "changes": dec.get("changes") or {}, "asis_md": md or "", "gaps": dec.get("gaps") or {}, "open": open_items(dec),
                "facts": {g: fact_payload(data, facts[g], res[g]) for g in facts_used(dec, md)}}
     out = a.out or os.path.join(base, "tour.html")
     tpl = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "tour.html"), encoding="utf-8").read()
