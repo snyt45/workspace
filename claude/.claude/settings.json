@@ -112,6 +112,7 @@
       "~/work"
     ]
   },
+  "model": "fable",
   "hooks": {
     "Stop": [
       {
@@ -226,6 +227,5 @@
   "voiceEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754364589827
-  },
-  "model": "opus"
+  }
 }
