@@ -243,6 +243,8 @@ details.asis-detail > summary { cursor: pointer; padding: 12px 0; font-weight: 8
 .flist { list-style: none; padding: 0; margin: 8px 0; }
 .flist li { padding: 8px 0; border-bottom: 1px solid var(--line); }
 .asis-link a { color: var(--accent); }
+.src-q { font-family: var(--mono); font-size: 12px; white-space: pre-wrap; background: var(--code-bg); border-radius: 6px; padding: 6px 8px; margin: 4px 0; }
+.src-meta { font-size: 12px; color: var(--muted); }
 .chg-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
 table.chg { border-collapse: collapse; width: 100%; font-size: 14px; }
 table.chg th, table.chg td { border-bottom: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
@@ -471,7 +473,13 @@ function factPanel(f) {
 
   if (f.sources.length) {
     const d = el('div', 'how'); d.appendChild(el('div', 'at', '資料'));
-    f.sources.forEach(s => { const a = el('a', '', s.label); a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; d.appendChild(a); });
+    f.sources.forEach(s => {
+      if (s.url) { const a = el('a', '', s.label); a.href = s.url; a.target = '_blank'; a.rel = 'noopener'; d.appendChild(a); return; }
+      d.appendChild(el('div', '', s.label));
+      if (s.query) d.appendChild(el('div', 'src-q', s.query));
+      if (s.result) d.appendChild(el('div', 'src-q', s.result));
+      const meta = [s.env, s.at].filter(Boolean).join(' / '); if (meta) d.appendChild(el('div', 'src-meta', meta));
+    });
     box.appendChild(d);
   }
 

@@ -17,7 +17,8 @@ evidence.json の形:
                     "lines": "144-145", "snippet": ["要の行", ...]}],
       "searches": [{"what": "潰すもの", "repos": [...], "pattern": "PCRE", "pathspec": ["app/models"], "count": 11,
                     "notes": {"toypo-api:app/controllers/x.rb:70": "関係ないヒットの理由"}}],
-      "sources": [{"label": "資料の名前", "url": "..."}],
+      "sources": [{"label": "資料の名前", "url": "..."},
+                  {"label": "DB で確かめたこと", "query": "select ...", "result": "結果", "at": "2026-10-22 10:00 JST", "env": "sandbox"}],
       "verdict": "" | "支持" | "一部" | "不支持" | "資料のみ",
       "verdict_reason": "確認した AI の結論を1文",
       "verified_hash": "確認したときの中身のハッシュ（--record が書く）"

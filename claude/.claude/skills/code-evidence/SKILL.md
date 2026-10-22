@@ -22,7 +22,7 @@ description: 「今のコードは実際どう動くか」を、主張・調べ�
 | scope | 見たリポジトリ。method と合わせて「範囲が足りているか」を判断する材料 |
 | evidence | 根拠のコード。`label`、`repo` `path` `lines`、その中の要の行 `snippet` |
 | searches | 「どこにも無い」と言うときの検索。`what` `repos` `pattern`（git grep -P）`count`、任意で `pathspec` と `notes` |
-| sources | コードではない根拠（資料・議事録の URL） |
+| sources | コードではない根拠。資料・議事録なら `label` `url`。DB で確かめたことなら `label` `query`（実行した SQL）`result`（結果をそのまま）`at`（実行日時）`env`（実行した環境） |
 | verdict / verdict_reason / verified_hash | 確認の結果。手で書かず、`--record` で書き込む |
 
 - repos の commit は、ふつうは各リポジトリの origin/main。作業中のブランチは使わない
@@ -34,6 +34,7 @@ description: 「今のコードは実際どう動くか」を、主張・調べ�
 - 「どこにも無い」は、名前そのものの検索を searches に入れ、範囲は関係するリポジトリを全部にする。Rails で「列に書き込む経路が無い」と言うときは、名前の検索に見えない書き方（`permit!`、`to_unsafe_h`、`permit(*配列)`、`update_all`、`update_columns`、生の SQL、`assign_attributes`、`send`、管理画面の gem）も潰す
 - 検索に関係ないヒットが混ざるときは、count は実際の件数のままにし、`notes` に `"repo:path:line": "関係ない理由"` を書く。ページでヒットの下に出る
 - コードの根拠が無く、資料だけが根拠の事実は、evidence と searches を書かず、sources だけにする。確認の AI は `資料のみ` と返し、ページには「根拠: 資料」と出る
+- 「遺物か」「今も使われているか」「最後に書かれたのはいつか」のように DB の状態でしか言えない部分は、実行した SQL と結果を sources に置く。コードの根拠（書く経路の有無）と同じ事実に並べてよい。確認の AI はコードの部分を見て、SQL の部分は claim と結果の整合だけを見る
 
 ## 手順
 
