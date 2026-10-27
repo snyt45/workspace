@@ -10,12 +10,17 @@ description: HTML・PDF を Shelf（Cloudflare R2 ＋ Worker のスマホで読�
 ## 上げ方
 
 ```
-~/work/shelf/bin/shelf-put [--as <ID>] [--series <名前> | --folder <名前>] <ファイル> [タイトル]
+~/work/shelf/bin/shelf-put [--as <ID>] [--series <名前> | --folder <名前>] [--desc <説明>] <ファイル> [タイトル]
 ~/work/shelf/bin/shelf-put --id <ファイル>      上げずに ID だけ出す
 ~/work/shelf/bin/shelf-move <ID かファイル> <フォルダ | ->            上げ直さずにページをフォルダへ移す（- で外す）
 ~/work/shelf/bin/shelf-move --folder <フォルダ名> <親フォルダ | ->   フォルダごと別のフォルダの下へ（- でいちばん上へ）
 ~/work/shelf/bin/shelf-rename <今の名前> <新しい名前>                 フォルダの名前を変える
+~/work/shelf/bin/shelf-seen <ID かファイル>                           最後に上げてから開いたか（read・unread・none）
+~/work/shelf/bin/shelf-rm <ID かファイル>...                          Shelf から消す（目録と R2 のファイル。元のファイルは残る）
 ```
+
+- Cowork のシェルでは `~/work/shelf/bin` の代わりに `$HOME/mnt/shelf/bin`。ログインできないので `$HOME/mnt/shelf/.env`（R2 と D1 の権限のトークン）が要る
+- HTML の `<meta>` で渡せるもの: `description`（一覧に出す1〜2行）、`shelf-series` / `shelf-folder`（まとまり）、`shelf-source`（出どころ。サイト名など）、`shelf-progress`（`3/12` の進み具合）、`shelf-minutes`（読む時間。省くと開いたままの文字数から出す）、`shelf-write`（「書く」で開く `obsidian://` のリンク）
 
 - まとまりは2種類。シリーズは地続きのもの（前へ・次へ、進み具合）、フォルダは単発のページを束ねるだけのもの。1ページが入るのは1つまで
 - まとまりを省くと、HTML の `<meta name="shelf-series">` か `<meta name="shelf-folder">` から取り、それも無ければ今のまとまりのまま変えない。外すときは `-`
@@ -33,4 +38,4 @@ description: HTML・PDF を Shelf（Cloudflare R2 ＋ Worker のスマホで読�
 - HTML は1ファイルで完結させる。相対パスの CSS・画像・JS は読み込めない（外部 CDN は可）
 - 容量の確認（バケット合計 5GB）で止まったら、`SHELF_ALLOW_EMPTY=1` で通さずに止めて報告する
 - 認証は `~/work/shelf/.env`（`CLOUDFLARE_API_TOKEN` と `CLOUDFLARE_ACCOUNT_ID`）。無ければ Mac の `wrangler login` を使う。トークンの中身は表示しない
-- 消す操作はしない。フォルダの入れ替えと名前の変更は、頼まれたときだけ行う
+- 消す・フォルダの入れ替え・名前の変更は、頼まれたときだけ行う
