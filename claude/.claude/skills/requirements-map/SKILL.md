@@ -69,7 +69,7 @@ tour.html の雛形が決めるので、decision.json では変えられない�
 
 1. 材料を読み、背景と決めることを書いて見せる。ここがずれていると後が全部ずれるので、確認を取ってから進む
 2. 決めることが既存の仕組みを変える・置き換える・広げるものなら、asis を呼んで今の仕組みを洗い出し、見せる。案はその要素と働きの上に立てる。機能を使うか・作るかの論点では呼ばない
-3. 案・軸・`if` の項目を書く。各項目について「これが言えるか」を code-evidence に渡す。code-evidence は根拠を集め、別の AI の確認まで済ませて返す。asis を呼んだときは同じ evidence.json に足し、asis で確かめた事実はそのまま引く
+3. 案・軸・`if` の項目を書く。文章は essence スキルの原則で書き、案を比べる軸と推奨は design-principles スキルの原則（1 つの問いにつまみは 1 つ、仕組みと設定値を分ける、自由度は説明コストで測る）で立てる。各項目について「これが言えるか」を code-evidence に渡す。code-evidence は根拠を集め、別の AI の確認まで済ませて返す。asis を呼んだときは同じ evidence.json に足し、asis で確かめた事実はそのまま引く
 4. ページを作る。NG が出たら直す
    ```
    python3 ~/.claude/skills/requirements-map/scripts/tour.py <decision.json>
