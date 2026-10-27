@@ -201,13 +201,20 @@
   },
   "enabledPlugins": {
     "ruby-lsp@claude-plugins-official": true,
-    "html-plan@claude-community": true
+    "html-plan@claude-community": true,
+    "yomiyasu@yomiyasu": true
   },
   "extraKnownMarketplaces": {
     "claude-community": {
       "source": {
         "source": "github",
         "repo": "anthropics/claude-plugins-community"
+      }
+    },
+    "yomiyasu": {
+      "source": {
+        "source": "github",
+        "repo": "nanaism/yomiyasu"
       }
     }
   },
