@@ -112,7 +112,7 @@
       "~/work"
     ]
   },
-  "model": "fable",
+  "model": "opus",
   "hooks": {
     "Stop": [
       {
