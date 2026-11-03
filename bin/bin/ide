@@ -131,7 +131,98 @@ select_agent() {
   echo "$selected" | cut -f1
 }
 
+# herdr-app のペインを分割し「pane terminal」を返す。分割の比率は指定できず常に半分になる
+app_split() {
+  # pane.split は作業フォルダを指定できず、作ったばかりのペインを分割すると別の場所で開く
+  herdr-app do pane.focus --pane "$1" >/dev/null
+  herdr-app do terminal.open --folder "$PWD" --place "$2" |
+    grep -oE '"(pane|terminal)": *"[^"]*"' | cut -d'"' -f4 | tr '\n' ' '
+}
+
+apply_layout_herdr_app() {
+  local p1
+  p1=$(herdr-app status | sed -n 's/.*"focused_pane": *"\([^"]*\)".*/\1/p')
+  local pane terminal b b2 b3 ai_pane ai_terminal r2 r3
+  case "$1" in
+    default)
+      app_split "$p1" down >/dev/null
+      app_split "$p1" right >/dev/null
+      ;;
+    default-quad)
+      read -r b _ < <(app_split "$p1" down)
+      app_split "$p1" right >/dev/null
+      read -r b2 _ < <(app_split "$b" right)
+      app_split "$b" right >/dev/null
+      app_split "$b2" right >/dev/null
+      ;;
+    grid)
+      read -r b _ < <(app_split "$p1" down)
+      read -r b2 _ < <(app_split "$b" right)
+      app_split "$b2" right >/dev/null
+      ;;
+    grid-full)
+      read -r r3 _ < <(app_split "$p1" down)
+      read -r b3 _ < <(app_split "$r3" right)
+      app_split "$b3" right >/dev/null
+      read -r r2 _ < <(app_split "$p1" down)
+      read -r b2 _ < <(app_split "$r2" right)
+      app_split "$b2" right >/dev/null
+      ;;
+    ai-dual)
+      local top_agent="$2"
+      local bottom_agent="$3"
+      if [[ -z "$top_agent" ]]; then
+        echo "上段エージェント:"
+        top_agent=$(select_agent)
+        [[ -z "$top_agent" ]] && return 0
+      fi
+      if [[ -z "$bottom_agent" ]]; then
+        echo "下段エージェント:"
+        bottom_agent=$(select_agent)
+        [[ -z "$bottom_agent" ]] && return 0
+      fi
+      app_split "$p1" down >/dev/null
+      read -r ai_pane ai_terminal < <(app_split "$p1" right)
+      read -r pane terminal < <(app_split "$ai_pane" down)
+      hc send "$ai_terminal" "$top_agent" >/dev/null
+      hc send "$terminal" "$bottom_agent" >/dev/null
+      ;;
+    ai-single)
+      local agent="$2"
+      if [[ -z "$agent" ]]; then
+        agent=$(select_agent)
+        [[ -z "$agent" ]] && return 0
+      fi
+      app_split "$p1" down >/dev/null
+      read -r ai_pane ai_terminal < <(app_split "$p1" right)
+      hc send "$ai_terminal" "$agent" >/dev/null
+      ;;
+    pair)
+      app_split "$p1" down >/dev/null
+      app_split "$p1" right >/dev/null
+      ;;
+    pair-ai)
+      local agent="$2"
+      if [[ -z "$agent" ]]; then
+        agent=$(select_agent)
+        [[ -z "$agent" ]] && return 0
+      fi
+      app_split "$p1" down >/dev/null
+      read -r ai_pane ai_terminal < <(app_split "$p1" right)
+      app_split "$p1" right >/dev/null
+      hc send "$ai_terminal" "$agent" >/dev/null
+      ;;
+  esac
+  herdr-app do pane.focus --pane "$p1" >/dev/null
+}
+
 apply_layout() {
+  # tmux の外の herdr-app のペインなら herdr-app で組む
+  if [[ -z "$TMUX" && -n "$HC_TERMINAL_ID" ]]; then
+    apply_layout_herdr_app "$@"
+    return
+  fi
+
   case "$1" in
     default)
       local base_pane="$TMUX_PANE"

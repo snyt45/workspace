@@ -4,7 +4,7 @@
 
 | キー/コマンド | 説明 |
 |---------------|------|
-| `ide` | レイアウト選択（tmux用） |
+| `ide` | レイアウト選択（tmux・herdr-app用。herdr-app は比率指定なしで半分ずつ） |
 | `herdr-ide` / `hide` | レイアウト選択（herdr用） |
 | `Ctrl + r` | 履歴検索 (fzf) |
 | `z <dir>` | ディレクトリ移動 (zoxide) |
