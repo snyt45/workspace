@@ -166,6 +166,14 @@ op read "op://Development/anthropic/credential"
 - [HackGen](https://github.com/yuru7/HackGen/releases/latest)から`HackGen_NF_vx.x.x.zip`をダウンロード
 - `HackGenConsoleNF-Regular.ttf`をインストール
 
+### herdr-app の mod
+
+Herdr を一度起動してから、Agent に頼む。Git ボタンは任意の手順なので、聞かれたら入れると答える。
+
+```text
+Read ~/.config/herdr-app/AGENTS.md, then add the mods in ~/.dotfiles/herdr-app-mods.txt
+```
+
 ### DeepTutor
 
 個人学習アプリ（自ホスト）。セットアップ手順は長いので別ファイルに分割:

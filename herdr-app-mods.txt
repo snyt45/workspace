@@ -1,0 +1,5 @@
+# herdr-app の mod 一覧。Agent に次のように頼んで入れる
+# Read ~/.config/herdr-app/AGENTS.md, then add the mods in ~/.dotfiles/herdr-app-mods.txt
+https://github.com/rabeeh-ta/herdr-git-graph
+https://github.com/vytasgavelis/herdr-reviewer
+https://github.com/jjongkwann/herdr-files-plus
