@@ -45,15 +45,6 @@ map("n", "<leader>q", function()
 end, { desc = "[Quickfix] quickfixトグル" })
 map("n", "<leader>Q", "<cmd>cexpr []<cr>", { desc = "[Quickfix] quickfixクリア" })
 
-map("n", "<leader>m", function()
-	local file = vim.fn.shellescape(vim.fn.expand("%"))
-	local output = vim.fn.system("mo " .. file .. " 2>&1")
-	local url = output:match("(http://[^%s]+)")
-	if url then
-		vim.fn.jobstart({ "open", url })
-	end
-end, { desc = "[General] Markdownプレビュー" })
-
 -- terminal
 map("n", "<leader>t", "<cmd>split | terminal<cr>", { desc = "[Terminal] 水平分割でターミナルを開く" })
 map("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "[Terminal] ターミナルモードを抜ける" })

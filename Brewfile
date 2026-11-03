@@ -1,5 +1,4 @@
 # タップ
-tap "k1LoW/tap"
 tap "satococoa/tap"
 
 # CLI ツール
@@ -12,7 +11,6 @@ brew "imagemagick"
 brew "lazydocker"
 brew "lazygit"
 brew "mise"
-brew "k1LoW/tap/mo"
 brew "neovim"
 brew "ripgrep"
 brew "pure"
@@ -20,6 +18,7 @@ brew "zoxide"
 brew "tmux"
 brew "satococoa/tap/wtp"
 brew "zsh-autosuggestions"
+brew "mole"
 
 # アプリケーション
 cask "1password"
