@@ -3,7 +3,7 @@
 ## 前提条件
 
 - MacBookPro(M4)
-- macOS Sequoia 15 系
+- macOS 27 系
 
 ## 構成
 
