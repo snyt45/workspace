@@ -173,9 +173,3 @@ Herdr を一度起動してから、Agent に頼む。Git ボタンは任意の�
 ```text
 Read ~/.config/herdr-app/AGENTS.md, then add the mods in ~/.dotfiles/herdr-app-mods.txt
 ```
-
-### DeepTutor
-
-個人学習アプリ（自ホスト）。セットアップ手順は長いので別ファイルに分割:
-
-→ [DeepTutor セットアップ](deeptutor-setup.md)

@@ -80,7 +80,6 @@ brew upgrade
 | `mise run packages` | Homebrewパッケージインストール |
 | `mise run tools` | mise管理ツールのインストール |
 | `mise run link` | シンボリックリンク作成（dotfiles 由来の切れたリンクも掃除） |
-| `mise run npm-latest` | npm を最新化（サプライチェーン対策の min-release-age v11.10+ 用） |
 | `mise run herdr` | herdr の Claude Code 統合のインストール |
 | `mise run auth` | GitHub CLI認証 |
 | `mise tasks` | タスク一覧表示 |
