@@ -11,3 +11,5 @@ require("config.lazy")
 require("config.lsp")
 require("features.palette")
 require("features.review")
+
+require("config.herdr-nvim")

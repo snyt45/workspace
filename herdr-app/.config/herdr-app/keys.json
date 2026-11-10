@@ -87,7 +87,9 @@
     "ctrl-t 6": "tab.select:6",
     "ctrl-t 7": "tab.select:7",
     "ctrl-t 8": "tab.select:8",
-    "ctrl-t 9": "tab.select:9"
+    "ctrl-t 9": "tab.select:9",
+    "cmd-e": "mod.open:herdr-nvim",
+    "cmd-o": "herdr-nvim.pick"
   },
   "terminal": {
     "cmd-c": "terminal.copy",

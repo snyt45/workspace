@@ -168,3 +168,5 @@ Herdr を一度起動してから、Agent に頼む。Git ボタンは任意の�
 ```text
 Read ~/.config/herdr-app/AGENTS.md, then add the mods in ~/.dotfiles/herdr-app-mods.txt
 ```
+
+herdr-nvim のインストーラは `keys.json` のリンクを実ファイルに置き換える。キーは dotfiles 側に入っているので、入れた後に `mise run link` でリンクに戻す。
