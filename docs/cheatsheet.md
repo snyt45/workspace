@@ -198,6 +198,18 @@ LSP管理は組み込みコマンドを使う
 | `:lsp disable [config]` | LSPを無効化 (起動中なら停止) |
 | `:checkhealth vim.lsp` | LSP状態を確認  |
 
+### 補完 (config/completion.lua)
+
+入力中に自動で候補が出る（LSP → 今のバッファ → 他のバッファ）。プラグインは使わない。
+
+| キー | モード | 説明 |
+|------|------|------|
+| `Tab` / `Shift + Tab` | i | 次 / 前の候補 |
+| `Enter` | i | 確定（何も選んでいなければ先頭）。import の追加やスニペットの展開もここで行われる |
+| `Ctrl + e` | i | 候補を閉じる |
+| `Ctrl + Space` | i | LSP の候補を出す |
+| `Ctrl + x` `Ctrl + f` | i | ファイルパスを補完 |
+
 ### cursortab.nvim (Mercury API)
 
 | キー | モード | 説明 |

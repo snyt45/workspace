@@ -9,6 +9,7 @@ require("config.autocmds")
 require("config.lazy")
 
 require("config.lsp")
+require("config.completion")
 require("features.palette")
 require("features.review")
 
