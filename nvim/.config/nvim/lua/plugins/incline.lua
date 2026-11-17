@@ -15,7 +15,7 @@ return {
 
 		require("incline").setup({
 			window = {
-				placement = { vertical = "top", horizontal = "left" },
+				placement = { vertical = "top", horizontal = "right" },
 				winhighlight = {
 					active = { Normal = "InclineNormal" },
 					inactive = { Normal = "InclineNormalNC" },
@@ -33,7 +33,7 @@ return {
 				local ext = vim.fn.fnamemodify(filename, ":e")
 				local icon, color = devicons.get_icon_color(filename, ext, { default = true })
 				return {
-					{ icon, guifg = color },
+					{ icon,       guifg = color },
 					{ " " .. dir, guifg = C.overlay0 },
 					{ filename },
 				}
