@@ -217,6 +217,7 @@ LSP管理は組み込みコマンドを使う
 | `[c` | n | 前の変更箇所へ |
 | `,gb` | n | blame表示 |
 | `,ga` | n | 現在のファイルをstage (git add) |
+| `,gc` | n | ステージ済みをコミット。下にメッセージ欄が開き、Claude の下書きが1行入る。`:wq` でコミット、`:q!` で取りやめ (features/commit.lua) |
 | `,go` | n/v | カーソル位置をGitHubで開く (snacks.gitbrowse) |
 
 ### Git diff (Diffview)
