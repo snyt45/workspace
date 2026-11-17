@@ -1,6 +1,7 @@
 vim.g.mapleader = ","
 
 -- Load settings
+require("config.runtime")
 require("config.options")
 require("config.keymaps")
 require("config.autocmds")
