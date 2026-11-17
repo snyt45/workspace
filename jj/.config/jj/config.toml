@@ -1,0 +1,15 @@
+[user]
+name = "yuta.sano"
+email = "snyt45@gmail.com"
+
+[ui]
+merge-editor = "diffconflicts"
+
+# jj resolve で nvim の diffconflicts.nvim を開く（衝突の印は既定の "diff" 形式が前提）
+[merge-tools.diffconflicts]
+program = "nvim"
+merge-args = [
+  "-c", "let g:jj_diffconflicts_marker_length=$marker_length",
+  "-c", "DiffConflicts", "$output", "$base", "$left", "$right",
+]
+merge-tool-edits-conflict-markers = true
