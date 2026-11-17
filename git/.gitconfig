@@ -15,6 +15,13 @@
         autosquash = true
 [push]
 	autoSetupRemote = true
+[merge]
+	tool = diffconflicts
+[mergetool]
+	keepBackup = false
+[mergetool "diffconflicts"]
+	cmd = nvim -c DiffConflicts \"$MERGED\" \"$BASE\" \"$LOCAL\" \"$REMOTE\"
+	trustExitCode = true
 [alias]
 	s = status
 	l = log --pretty=format:"%C(yellow)%h%C(cyan)%x09%an%Creset%x09%C(magenta)%ar%x09%Creset%s" -50
