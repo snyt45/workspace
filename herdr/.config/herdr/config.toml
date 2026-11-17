@@ -1,4 +1,4 @@
-# tmux(prefix C-t)の操作感に合わせた最小構成。ここにない項目はデフォルトに従う
+# 最小構成。ここにない項目はデフォルトに従う
 # デフォルト一覧: herdr --default-config
 
 onboarding = false

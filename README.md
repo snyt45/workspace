@@ -9,8 +9,8 @@
 
 | レイヤー | ツール |
 |----------|--------|
-| ターミナル | Ghostty + tmux |
-| エージェントマルチプレクサ | herdr（tmuxからの移行を試行中） |
+| ターミナル | Ghostty |
+| エージェントマルチプレクサ | herdr / herdr-app |
 | エディタ(CLI) | Neovim |
 | Git UI (TUI) | lazygit / lazydocker |
 | PRレビュー | diffview-plus.nvim + gitsigns |

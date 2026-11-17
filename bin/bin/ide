@@ -1,4 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env zsh
+# herdr / herdr-app のペインで IDE レイアウトを組む
+# 使い方: ペインでプロジェクトディレクトリに移動して ide [レイアウト] [エージェント...]
+# 引数なしはfzfで選択（プレビュー付き）
+# herdr: 分割ペインのcwdは実行ペインを引き継ぐ(new_cwd=follow)。split --ratio は「元ペインが保持する割合」
+# herdr-app: 分割の比率は指定できず常に半分になる
 
 show_preview() {
   case "$1" in
@@ -112,6 +117,18 @@ EOF
   esac
 }
 
+# --preview モードの場合（fzfから呼ばれる）
+if [[ "$1" == "--preview" ]]; then
+  show_preview "$2"
+  exit 0
+fi
+
+
+if [[ -z "$HERDR_PANE_ID" && -z "$HC_TERMINAL_ID" ]]; then
+  echo "herdr か herdr-app のペイン内で実行してください" >&2
+  exit 1
+fi
+
 select_agent() {
   local agents="cx	claude --enable-auto-mode"
 
@@ -131,7 +148,70 @@ select_agent() {
   echo "$selected" | cut -f1
 }
 
-# herdr-app のペインを分割し「pane terminal」を返す。分割の比率は指定できず常に半分になる
+# --- herdr ---
+pane_id() { grep -o '"pane_id":"[^"]*"' | head -1 | cut -d'"' -f4 }
+sp() { herdr pane split "$1" --direction "$2" --ratio "$3" --no-focus | pane_id }
+run_in() { herdr pane run "$1" "$2" >/dev/null }
+
+layout_herdr() {
+  local p1=$HERDR_PANE_ID
+  case "$1" in
+    default)
+      # 下段(15%)と右30%を作成
+      sp $p1 down 0.85 >/dev/null
+      sp $p1 right 0.70 >/dev/null
+      ;;
+    default-quad)
+      # 下段(15%)を作成して25%ずつ4分割、右30%も作成
+      local bottom=$(sp $p1 down 0.85)
+      sp $p1 right 0.70 >/dev/null
+      local b2=$(sp $bottom right 0.25)
+      local b3=$(sp $b2 right 0.34)
+      sp $b3 right 0.5 >/dev/null
+      ;;
+    ai-single)
+      sp $p1 down 0.85 >/dev/null
+      local ai_pane=$(sp $p1 right 0.70)
+      sleep 1
+      run_in $ai_pane "$2"
+      ;;
+    ai-dual)
+      sp $p1 down 0.85 >/dev/null
+      local ai_pane=$(sp $p1 right 0.70)
+      local bottom_pane=$(sp $ai_pane down 0.5)
+      sleep 1
+      run_in $ai_pane "$2"
+      run_in $bottom_pane "$3"
+      ;;
+    pair)
+      sp $p1 down 0.85 >/dev/null
+      sp $p1 right 0.50 >/dev/null
+      ;;
+    pair-ai)
+      sp $p1 down 0.85 >/dev/null
+      local ai_pane=$(sp $p1 right 0.80)
+      sp $p1 right 0.50 >/dev/null
+      sleep 1
+      run_in $ai_pane "$2"
+      ;;
+    grid)
+      local bottom=$(sp $p1 down 0.75)
+      local b2=$(sp $bottom right 0.34)
+      sp $b2 right 0.5 >/dev/null
+      ;;
+    grid-full)
+      local row3=$(sp $p1 down 0.75)
+      local r3b=$(sp $row3 right 0.34)
+      sp $r3b right 0.5 >/dev/null
+      local row2=$(sp $p1 down 0.67)
+      local r2b=$(sp $row2 right 0.34)
+      sp $r2b right 0.5 >/dev/null
+      ;;
+  esac
+}
+
+# --- herdr-app ---
+# ペインを分割し「pane terminal」を返す
 app_split() {
   # pane.split は作業フォルダを指定できず、作ったばかりのペインを分割すると別の場所で開く
   herdr-app do pane.focus --pane "$1" >/dev/null
@@ -139,12 +219,12 @@ app_split() {
     grep -oE '"(pane|terminal)": *"[^"]*"' | cut -d'"' -f4 | tr '\n' ' '
 }
 
-apply_layout_herdr_app() {
+layout_herdr_app() {
   local p1
   p1=$(herdr-app status | sed -n 's/.*"focused_pane": *"\([^"]*\)".*/\1/p')
-  local pane terminal b b2 b3 ai_pane ai_terminal r2 r3
+  local b b2 b3 r2 r3 ai_pane ai_terminal bottom_terminal
   case "$1" in
-    default)
+    default|pair)
       app_split "$p1" down >/dev/null
       app_split "$p1" right >/dev/null
       ;;
@@ -154,6 +234,24 @@ apply_layout_herdr_app() {
       read -r b2 _ < <(app_split "$b" right)
       app_split "$b" right >/dev/null
       app_split "$b2" right >/dev/null
+      ;;
+    ai-single)
+      app_split "$p1" down >/dev/null
+      read -r _ ai_terminal < <(app_split "$p1" right)
+      hc send "$ai_terminal" "$2" >/dev/null
+      ;;
+    ai-dual)
+      app_split "$p1" down >/dev/null
+      read -r ai_pane ai_terminal < <(app_split "$p1" right)
+      read -r _ bottom_terminal < <(app_split "$ai_pane" down)
+      hc send "$ai_terminal" "$2" >/dev/null
+      hc send "$bottom_terminal" "$3" >/dev/null
+      ;;
+    pair-ai)
+      app_split "$p1" down >/dev/null
+      read -r _ ai_terminal < <(app_split "$p1" right)
+      app_split "$p1" right >/dev/null
+      hc send "$ai_terminal" "$2" >/dev/null
       ;;
     grid)
       read -r b _ < <(app_split "$p1" down)
@@ -168,252 +266,54 @@ apply_layout_herdr_app() {
       read -r b2 _ < <(app_split "$r2" right)
       app_split "$b2" right >/dev/null
       ;;
-    ai-dual)
-      local top_agent="$2"
-      local bottom_agent="$3"
-      if [[ -z "$top_agent" ]]; then
-        echo "上段エージェント:"
-        top_agent=$(select_agent)
-        [[ -z "$top_agent" ]] && return 0
-      fi
-      if [[ -z "$bottom_agent" ]]; then
-        echo "下段エージェント:"
-        bottom_agent=$(select_agent)
-        [[ -z "$bottom_agent" ]] && return 0
-      fi
-      app_split "$p1" down >/dev/null
-      read -r ai_pane ai_terminal < <(app_split "$p1" right)
-      read -r pane terminal < <(app_split "$ai_pane" down)
-      hc send "$ai_terminal" "$top_agent" >/dev/null
-      hc send "$terminal" "$bottom_agent" >/dev/null
-      ;;
-    ai-single)
-      local agent="$2"
-      if [[ -z "$agent" ]]; then
-        agent=$(select_agent)
-        [[ -z "$agent" ]] && return 0
-      fi
-      app_split "$p1" down >/dev/null
-      read -r ai_pane ai_terminal < <(app_split "$p1" right)
-      hc send "$ai_terminal" "$agent" >/dev/null
-      ;;
-    pair)
-      app_split "$p1" down >/dev/null
-      app_split "$p1" right >/dev/null
-      ;;
-    pair-ai)
-      local agent="$2"
-      if [[ -z "$agent" ]]; then
-        agent=$(select_agent)
-        [[ -z "$agent" ]] && return 0
-      fi
-      app_split "$p1" down >/dev/null
-      read -r ai_pane ai_terminal < <(app_split "$p1" right)
-      app_split "$p1" right >/dev/null
-      hc send "$ai_terminal" "$agent" >/dev/null
-      ;;
   esac
   herdr-app do pane.focus --pane "$p1" >/dev/null
 }
 
+# 足りないエージェントを選んでから、今いる側（herdr / herdr-app）で組む
 apply_layout() {
-  # tmux の外の herdr-app のペインなら herdr-app で組む
-  if [[ -z "$TMUX" && -n "$HC_TERMINAL_ID" ]]; then
-    apply_layout_herdr_app "$@"
-    return
-  fi
-
-  case "$1" in
-    default)
-      local base_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # 上段の右30%を分割
-      tmux split-window -h -l 30% -t "$base_pane"
-      # 左上にフォーカス
-      tmux select-pane -t "$base_pane"
-      ;;
-    default-quad)
-      local base_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      local bottom_pane
-      bottom_pane=$(tmux split-window -v -l 15% -P -F '#{pane_id}')
-      # 上段の右30%を分割
-      tmux split-window -h -l 30% -t "$base_pane"
-      # 下段を25%ずつ4分割
-      tmux split-window -h -l 75% -t "$bottom_pane"
-      tmux split-window -h -l 66%
-      tmux split-window -h -l 50%
-      # 左上にフォーカス
-      tmux select-pane -t "$base_pane"
-      ;;
-    grid)
-      local top_pane="$TMUX_PANE"
-      # 下段（25%）を作成
-      tmux split-window -v -l 25%
-      # 下段を3分割
-      tmux split-window -h -l 66%
-      tmux split-window -h -l 50%
-      # 上段にフォーカス
-      tmux select-pane -t "$top_pane"
-      ;;
-    grid-full)
-      local top_pane="$TMUX_PANE"
-      # 3行目（下25%）を作成
-      tmux split-window -v -l 25%
-      # 3行目を3分割
-      tmux split-window -h -l 66%
-      tmux split-window -h -l 50%
-      # 1行目に戻って2行目（残りの下33%）を作成
-      tmux select-pane -t "$top_pane"
-      tmux split-window -v -l 33%
-      # 2行目を3分割
-      tmux split-window -h -l 66%
-      tmux split-window -h -l 50%
-      # 上段にフォーカス
-      tmux select-pane -t "$top_pane"
+  local layout="$1" agent1="$2" agent2="$3"
+  case "$layout" in
+    ai-single|pair-ai)
+      [[ -n "$agent1" ]] || agent1=$(select_agent) || return 0
       ;;
     ai-dual)
-      local top_agent="$2"
-      local bottom_agent="$3"
-      if [[ -z "$top_agent" ]]; then
+      if [[ -z "$agent1" ]]; then
         echo "上段エージェント:"
-        top_agent=$(select_agent)
-        [[ -z "$top_agent" ]] && return 0
+        agent1=$(select_agent) || return 0
       fi
-      if [[ -z "$bottom_agent" ]]; then
+      if [[ -z "$agent2" ]]; then
         echo "下段エージェント:"
-        bottom_agent=$(select_agent)
-        [[ -z "$bottom_agent" ]] && return 0
+        agent2=$(select_agent) || return 0
       fi
-      local editor_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # エディタペインの右30%を分割してAIペインを作成
-      local ai_pane
-      ai_pane=$(tmux split-window -h -l 30% -t "$editor_pane" -P -F '#{pane_id}')
-      # AIペインを縦分割して下段AIペインを作成
-      local bottom_pane
-      bottom_pane=$(tmux split-window -v -t "$ai_pane" -P -F '#{pane_id}')
-      # 各ペインでコマンドを起動 (エディタは自動起動しない)
-      tmux send-keys -t "$ai_pane" "$top_agent" C-m
-      tmux send-keys -t "$bottom_pane" "$bottom_agent" C-m
-      # エディタにフォーカス
-      tmux select-pane -t "$editor_pane"
-      ;;
-    ai-single)
-      local agent="$2"
-      if [[ -z "$agent" ]]; then
-        agent=$(select_agent)
-        [[ -z "$agent" ]] && return 0
-      fi
-      local editor_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # エディタペインの右30%を分割してAIペインを作成
-      local ai_pane
-      ai_pane=$(tmux split-window -h -l 30% -t "$editor_pane" -P -F '#{pane_id}')
-      # AIペインでエージェントを起動 (エディタは自動起動しない)
-      tmux send-keys -t "$ai_pane" "$agent" C-m
-      # エディタにフォーカス
-      tmux select-pane -t "$editor_pane"
-      ;;
-    pair)
-      local editor_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # エディタペインを左右50%で分割
-      local right_pane
-      right_pane=$(tmux split-window -h -l 50% -t "$editor_pane" -P -F '#{pane_id}')
-      # エディタは自動起動しない
-      # 左にフォーカス
-      tmux select-pane -t "$editor_pane"
-      ;;
-    pair-ai)
-      local agent="$2"
-      if [[ -z "$agent" ]]; then
-        agent=$(select_agent)
-        [[ -z "$agent" ]] && return 0
-      fi
-      local editor_pane="$TMUX_PANE"
-      # 下段（15%）を作成
-      tmux split-window -v -l 15%
-      # エディタペインの右20%を分割してAIペインを作成
-      local ai_pane
-      ai_pane=$(tmux split-window -h -l 20% -t "$editor_pane" -P -F '#{pane_id}')
-      # 残った左側(80%)を左右50%で分割して editor2 を作成
-      local editor2_pane
-      editor2_pane=$(tmux split-window -h -l 50% -t "$editor_pane" -P -F '#{pane_id}')
-      # AIペインでエージェントを起動 (エディタは自動起動しない)
-      tmux send-keys -t "$ai_pane" "$agent" C-m
-      # 左のエディタにフォーカス
-      tmux select-pane -t "$editor_pane"
       ;;
   esac
-
-  # 各ペインで画面クリア
-  local final_pane=$(tmux display-message -p '#{pane_id}')
-  for pane in $(tmux list-panes -F '#{pane_id}'); do
-    tmux select-pane -t "$pane" && tmux send-keys C-l
-  done
-  tmux select-pane -t "$final_pane"
+  if [[ -n "$HERDR_PANE_ID" ]]; then
+    layout_herdr "$layout" "$agent1" "$agent2"
+  else
+    layout_herdr_app "$layout" "$agent1" "$agent2"
+  fi
 }
 
-# --preview モードの場合（fzfから呼ばれる）
-if [[ "$1" == "--preview" ]]; then
-  show_preview "$2"
-  exit 0
-fi
+layouts=(default default-quad ai-single ai-dual pair pair-ai grid grid-full)
 
 # 引数があればそのまま実行
 if [[ -n "$1" ]]; then
-  case "$1" in
-    default|default-quad|grid|grid-full|pair)
-      apply_layout "$1"
-      exit 0
-      ;;
-    ai-single)
-      apply_layout "$1" "$2"
-      exit 0
-      ;;
-    ai-dual)
-      apply_layout "$1" "$2" "$3"
-      exit 0
-      ;;
-    pair-ai)
-      apply_layout "$1" "$2"
-      exit 0
-      ;;
-    *)
-      echo "Unknown layout: $1"
-      exit 1
-      ;;
-  esac
+  if (( ! ${layouts[(Ie)$1]} )); then
+    echo "Unknown layout: $1"
+    exit 1
+  fi
+  apply_layout "$@"
+  exit 0
 fi
 
 # fzfで選択
-layouts="default
-default-quad
-ai-single
-ai-dual
-pair
-pair-ai
-grid
-grid-full"
-
-selected=$(echo "$layouts" | fzf \
+selected=$(print -l $layouts | fzf \
   --height=40% \
   --layout=reverse \
-  --delimiter=$'\t' \
-  --with-nth=1.. \
   --preview="$0 --preview {1}" \
   --preview-window=right:40% \
   --header="レイアウトを選択" \
   --no-info)
 
-if [[ -z "$selected" ]]; then
-  exit 0
-fi
-
-layout=$(echo "$selected" | cut -f1)
-apply_layout "$layout"
+[[ -n "$selected" ]] && apply_layout "$selected"
