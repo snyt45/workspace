@@ -1,7 +1,10 @@
 -- ==========================================================================
 -- LSP設定 (Neovim 0.11+ 組み込み API)
--- mason-lspconfigでインストール、自動的にLSPサーバーを起動
+-- ts_ls・lua_ls は mason-lspconfig がインストールして自動で起動する
+-- ruby_lsp は各 Ruby の gem を使うので、ここで起動する
 -- ==========================================================================
+
+vim.lsp.enable("ruby_lsp")
 
 vim.diagnostic.config({
 	virtual_text = { prefix = "●" },

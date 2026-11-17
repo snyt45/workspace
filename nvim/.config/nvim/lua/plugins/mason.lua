@@ -4,7 +4,8 @@ return {
 	config = function()
 		require("mason").setup()
 		require("mason-lspconfig").setup({
-			ensure_installed = { "ts_ls", "ruby_lsp", "lua_ls" },
+			-- ruby_lsp は mason で入れない（lsp/ruby_lsp.lua）
+			ensure_installed = { "ts_ls", "lua_ls" },
 		})
 	end,
 }
