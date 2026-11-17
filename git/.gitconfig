@@ -3,6 +3,8 @@
         email = snyt45@gmail.com
 [core]
         editor = nvim
+[init]
+        defaultBranch = main
 [column]
         ui = auto
 [branch]
