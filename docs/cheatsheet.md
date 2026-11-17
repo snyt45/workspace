@@ -157,12 +157,6 @@ leader = `,`
 | `,b` | n | バッファ一覧 (snacks) |
 | `,gs` | n | git status (snacks) |
 
-### カーソルジャンプ (flash)
-
-| キー | モード | 説明 |
-|------|------|------|
-| `s` | n/v/o | ラベル付きジャンプ |
-
 ### コールフロー (features/callflow.lua)
 
 カーソル下の関数に、入口からどう呼ばれてたどり着くかを出す。TS は LSP、Ruby は cymbal（名前で探す）で調べる。
