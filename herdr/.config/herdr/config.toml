@@ -10,11 +10,6 @@ name = "catppuccin"
 pane_gaps = false
 sidebar_collapsed_mode = "hidden"
 
-agent_panel_sort = "spaces"
-
-[experimental]
-kitty_graphics = true
-
 [keys]
 prefix = "ctrl+t"
 
