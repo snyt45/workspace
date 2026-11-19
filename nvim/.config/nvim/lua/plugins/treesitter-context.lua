@@ -1,4 +1,4 @@
--- スクロールしても、画面の上端がどのクラス・メソッドの中かを、定義行を1行だけ上に残して示す
+-- スクロールしても、画面の上端がどのクラス・メソッドの中かを、定義行を上に残して示す（1行目がクラス、2行目がメソッド）
 -- 何を残すか（クラス・メソッドだけ。if や case は残さない）は queries/<言語>/context.scm で決めている
 return {
 	"nvim-treesitter/nvim-treesitter-context",
@@ -13,8 +13,9 @@ return {
 			-- カーソルの位置ではなく、画面の一番上の行を基準にする。
 			-- カーソル基準だと、カーソルが別のメソッドや空行にあるときに出たり消えたりする
 			mode = "topline",
-			-- 残すのは1行。メソッドの中ならメソッド、外ならクラス
-			max_lines = 1,
+			-- 残すのは2行。1行目がクラス、2行目がメソッド。
+			-- module > class > method のように3段以上あるときは、外側から削る（trim_scope = "outer"）
+			max_lines = 2,
 			trim_scope = "outer",
 			multiline_threshold = 1,
 		})
